@@ -13,7 +13,7 @@
             style="width: 100%;margin-bottom: 20px;"
             row-key="id"
             border>
-            <el-table-column label="头像" min-width="70">
+            <el-table-column label="头像" min-width="80">
                 <template slot-scope="scope">
                     <el-avatar :src="scope.row.avatar"></el-avatar>
                 </template>
@@ -31,7 +31,12 @@
                 label="用户角色"
                 min-width="180">
                 <template slot-scope="scope">
-                    <el-tag v-for="(item, index) in scope.row.roles" :key="index+item.name" size="mini">{{item.displayName}}</el-tag>
+                    <el-tag 
+                        v-for="(item, index) in scope.row.roles" 
+                        :key="index+item.name" 
+                        size="mini"
+                        style="margin-right: 5px"
+                    >{{item.displayName}}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column
@@ -41,6 +46,7 @@
                     <el-button 
                         size="mini"
                         type="success"
+                        @click="editCurrentMember(scope.row)"
                     >
                         编辑
                     </el-button>
@@ -49,7 +55,7 @@
                         placement="top"
                         :ref="scope.row.id"
                         width="200">
-                        <p>此操作将永久删除此用户【{{scope.row.nickname}}】, 是否继续?</p>
+                        <p>此操作将移除组织, 是否继续?</p>
                         <div style="text-align: right; margin: 0">
                             <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
                             <el-button type="primary" size="mini" @click="delCurrentMember(scope.row.id)">确定</el-button>
@@ -66,10 +72,10 @@
             </el-table-column>
         </el-table>
 
-        <!-- 添加用户 -->
+        <!-- 编辑用户角色 -->
         <el-dialog
-            title="新增用户"
-            :visible.sync="addMemberDialog"
+            title="编辑用户"
+            :visible.sync="editMemberDialog"
             :close-on-click-modal="false"
             :close-on-press-escape="false"
             width="850px">
@@ -79,48 +85,38 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item label="登录名">
-                            <el-input v-model="addParams.displayName"></el-input>
+                            {{currentParams.accountName}}
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="昵称">
-                            <el-input v-model="addParams.displayName"></el-input>
+                            {{currentParams.nickname}}
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="email">
-                            <el-input v-model="addParams.displayName"></el-input>
+                            {{currentParams.email}}
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="手机号">
-                            <el-input v-model="addParams.displayName"></el-input>
+                            {{currentParams.mobile}}
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="QQ">
-                            <el-input v-model="addParams.displayName"></el-input>
+                            {{currentParams.qq}}
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="微信">
-                            <el-input v-model="addParams.displayName"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="组织">
-                            <template slot-scope="scope">
-                                <el-select v-model="addParams.group" placeholder="请选择组织" style="width:100%">
-                                    <el-option value="1" label="组织1"></el-option>
-                                    <el-option value="2" label="组织2"></el-option>
-                                </el-select>
-                            </template>
+                            {{currentParams.wechat}}
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="角色">
                             <template slot-scope="scope">
-                                <el-select v-model="addParams.roleArry" multiple placeholder="请选择角色" style="width:100%">
+                                <el-select v-model="currentParams.roles" multiple placeholder="请选择角色" style="width:100%">
                                     <el-option
                                         v-for="item in roleData"
                                         :key="item.id"
@@ -134,8 +130,43 @@
                 </el-row>
             </el-form>
             <span slot="footer" class="dialog-footer">
+                <el-button @click="editMemberDialog=false">取 消</el-button>
+                <el-button type="primary" :loading="editBtnLoading" @click="editMemeberSureBtn">确 定</el-button>
+            </span>
+        </el-dialog>
+
+        <!-- 添加成员 -->
+        <el-dialog
+            title="添加成员"
+            :visible.sync="addMemberDialog"
+            width="520px">
+            <el-input placeholder="请输入用户名 回车搜索" @change="searchMemberChange" v-model="keyword" class="input-with-select"></el-input>
+            <div v-if="searchMemberList.length">
+                <ul class="search-member-list" v-loading="loadingSearchMember">
+                    <li class="s-header">
+                        <span>头像</span>
+                        <span>登录名</span>
+                        <span>昵称</span>
+                        <span class="add-wrap"></span>
+                    </li>
+                    <li v-for="(item, index) in searchMemberList" :key="item.id">
+                        <span><img :src="item.avatar"></span>
+                        <span :title="item.accountName">{{item.accountName}}</span>
+                        <span :title="item.nickname">{{item.nickname}}</span>
+                        <span class="add-wrap">
+                            <i 
+                                v-if="!item.haveAdd" 
+                                class="el-icon-circle-plus" 
+                                title="添加此用户" 
+                                @click="addCurrentMember(item.id, index)"
+                            ></i>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="search-member-list" v-if="!searchMemberList.length && keyword">暂无数据~</div>
+            <span slot="footer" class="dialog-footer">
                 <el-button @click="addMemberDialog=false">取 消</el-button>
-                <el-button type="primary" :loading="addBtnLoading" @click="addMemeberSureBtn">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -143,16 +174,20 @@
 </template>
 
 <script>
-import { groupMemberList, getAllRoleList } from '@/api/user';
+import { groupMemberList, getAllRoleList, memberCreated, memberDelete, memberSearch, memberRoleUpdate } from '@/api/user';
 export default {
     data(){
         return {
             resData: [],
             tLoading: false,
-            addMemberDialog: false,      //添加用户 modal   
-            addParams: {},               //添加用户 参数
-            roleData: [],                //角色列表
-            addBtnLoading: false,
+            editMemberDialog: false,      //编辑用户 modal   
+            currentParams: {},            //选中的用户 参数
+            roleData: [],                 //角色列表
+            editBtnLoading: false,
+            keyword: '',                 //搜索用户名
+            addMemberDialog: false,      //添加用户 modal  
+            searchMemberList: [],        //搜索返回的用户列表 
+            loadingSearchMember: false,  //搜索  loading
         }
     },
     created() {
@@ -170,14 +205,27 @@ export default {
             })
         },
 
-        //删除用户
-        delCurrentMember(){
-
+        //更新用户角色
+        editMemeberSureBtn(){
+            this.editBtnLoading = true;
+            memberRoleUpdate().then(res => {
+                this.editBtnLoading = false;
+                if(res.code === this.$successCode){
+                    this.$message.success('更新成功~');
+                    this.editMemberDialog = false;
+                }
+            })
         },
 
-        //添加用户
-        addMemeberSureBtn(){
-            
+        //点击编辑用户
+        editCurrentMember(data){
+            this.currentParams = JSON.parse(JSON.stringify(data));
+            let ids = [];
+            this.currentParams.roles.forEach(item => {
+                ids.push(item.id);
+            })
+            this.currentParams.roles = ids;
+            this.editMemberDialog = true;
         },
 
 
@@ -188,7 +236,96 @@ export default {
                     this.roleData = res.obj;
                 }
             })
-        }
+        },
+
+        //搜索用户
+        searchMemberChange(){
+            if(!this.keyword){
+                this.$message.warning('搜索不能为空~');
+                return
+            }
+            this.loadingSearchMember = true;
+            memberSearch(this.keyword).then(res => {
+                this.loadingSearchMember = false;
+                if(res.code === this.$successCode){
+                    this.searchMemberList = res.obj;
+                }
+            })
+        },
+
+        //添加用户到组织
+        addCurrentMember(id, index){
+            let data = {
+                oid: 1,
+                uid: id
+            }
+            memberCreated(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('添加成功~');
+                    let d = this.searchMemberList[index];
+                    d.haveAdd = true;
+                    this.$set(this.searchMemberList, index, d);
+                    this.init();
+                }
+            })
+        },
+
+        //将用户移除  组织
+        delCurrentMember(id){
+            let data = {
+                oid: 1,
+                uid: id
+            }
+            memberDelete(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('删除成功~');
+                    this.init();
+                }
+            })
+        },
     },
 }
 </script>
+
+<style lang="scss" scope>
+    .search-member-list{
+        width: 100%;
+        padding: 20px 0;
+        text-align: center;
+        li{
+            display: flex;
+            flex-wrap: nowrap;
+            padding: 15px 0;
+            line-height: 50px;
+            &:hover{
+                background: #e9f3fb;
+            }
+            &.s-header{
+                background: #f5f5f5;
+                line-height: 20px;
+                &:hover{
+                   background: #f5f5f5; 
+                }
+            }
+            span{
+                flex: 1;
+                padding: 0 10px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                img{
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 20px;
+                    display: block;
+                    margin-top: 5px;
+                }
+                i{
+                    color: #67c23a;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+</style>

@@ -154,11 +154,11 @@ export default {
 
         //添加 编辑  角色
         addRoleSureBtn(){
-            if(!this.addParams.name){
-                this.$message.warning('请填写角色标识~');
-                return
-            }else if(!this.addParams.displayName){
+            if(!this.addParams.displayName){
                 this.$message.warning('请填写角色名称~');
+                return
+            }else if(!this.addParams.name){
+                this.$message.warning('请填写角色标识~');
                 return
             }
             this.addBtnLoading = true;

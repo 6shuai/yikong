@@ -169,6 +169,7 @@ export default {
                 route: record.route, 
                 parentID: record.parentID, 
                 enabled: record.enabled, 
+                requestUrl: record.requestUrl,
                 children: []
             };
 

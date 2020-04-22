@@ -56,3 +56,25 @@ export function groupMemberList(data) { return get(`/system/member/${data}`); }
 
 //成员管理   获取所有角色
 export function getAllRoleList(data) { return get('/system/member/roles/', data); }
+
+//成员管理   添加成员
+export function memberCreated(data) { return post(`/system/member/?oid=${data.oid}&uid=${data.uid}`); }
+
+//成员管理   移除成员
+export function memberDelete(data) { return del(`/system/member/?oid=${data.oid}&uid=${data.uid}`); }
+
+//成员管理   搜索用户
+export function memberSearch(data) { return get(`/system/member/search_user/${data}`,); }
+
+//成员管理   更新成员拥有的角色
+export function memberRoleUpdate(data) { return put(`/system/member/role${data}`); }
+
+
+//组织列表   新建组织
+export function organizationCreated(data) { return post('/system/member/organization/', data); }
+
+//组织列表   删除组织
+export function organizationDelete(data) { return del(`/system/member/organization/${data}`,); }
+
+
+

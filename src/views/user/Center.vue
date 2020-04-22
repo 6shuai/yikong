@@ -83,8 +83,10 @@ export default {
                     userUpdate(difference).then(resp => {
                         this.loading = false;
                         if (resp && resp.obj) {
-                            localStorage.loginData = JSON.stringify(resp.obj);
+                            let d = Object.assign(JSON.parse(localStorage.loginData), difference);
+                            localStorage.loginData = JSON.stringify(d);
                             this.$message.success("资料更新成功！");
+                            this.$store.commit('user/SET_LOGIN_DATA', d);
                         }
                     })
                 }

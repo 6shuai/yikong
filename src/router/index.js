@@ -51,10 +51,10 @@ export const constantRoutes = [
 
   //个人中心
   {
-    path: '/user',
+    path: '/',
     component: Layout,
     children: [{
-      path: 'center',
+      path: '/user',
       component: () => import('@/views/user/Center'),
       meta: { title: '个人中心' }
     }],

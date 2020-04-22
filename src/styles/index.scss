@@ -12,6 +12,9 @@ body {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
+.el-table th.gutter{
+  display: table-cell!important;
+}
 
 html {
   height: 100%;

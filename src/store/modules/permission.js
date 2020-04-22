@@ -9,6 +9,7 @@ const moduleMap = {
 	"Authority": "system/Authority",
 	"Role": "system/Role",
 	"Member": "system/Member",
+	"Organizations": "system/Organizations",
 	"User": "system/User"
 }
 
