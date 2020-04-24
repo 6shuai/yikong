@@ -3,6 +3,7 @@
 		<logo v-if="showLogo" :collapse="isCollapse" />
 		<el-scrollbar wrap-class="scrollbar-wrapper">
 			<el-menu
+				:show-timeout="200"
 				:collapse="isCollapse"
 				:background-color="variables.menuBg"
 				:text-color="variables.menuText"
@@ -11,6 +12,7 @@
 				:collapse-transition="false"
 				mode="vertical"
 			>
+			<!-- :default-active="$route.path" -->
 				<sidebar-item
 					v-for="route in permission_routes"
 					:key="route.path"

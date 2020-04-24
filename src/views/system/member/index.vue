@@ -19,14 +19,19 @@
             <el-table
                 v-loading="tLoading"
                 v-if="groupData.id"
+                stripe
                 size="small"
                 :data="resData"
                 style="width: 100%;margin-bottom: 20px;"
                 row-key="id"
                 border>
-                <el-table-column label="头像" min-width="80">
+                <el-table-column label="头像" min-width="50">
                     <template slot-scope="scope">
-                        <el-avatar :src="scope.row.avatar"></el-avatar>
+                        <el-image
+                            class="member-header-img"
+                            :src="scope.row.avatar"
+                            :fit="fit">
+                        </el-image>
                     </template>
                 </el-table-column>
                 <el-table-column prop="accountName" label="登录名" min-width="80"></el-table-column>
@@ -287,6 +292,11 @@ export default {
             span{
                 margin-right: 5px;
             }
+        }
+        .member-header-img{
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
         }
         .search-member-list{
             width: 100%;

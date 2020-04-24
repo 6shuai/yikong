@@ -61,8 +61,7 @@ export default {
       margin-right: 12px;
     }
     & .sidebar-logo-big{
-      width: 160px;
-      height: 53px;
+      height: 50px;
     }
 
     & .sidebar-title {

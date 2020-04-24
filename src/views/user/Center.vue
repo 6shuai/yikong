@@ -1,5 +1,8 @@
 <template>
     <el-card shadow="never" class="user-center-wrap">
+        <div slot="header" class="clearfix">
+            个人中心
+        </div>
         <el-row :gutter="10">
             <el-col :xs="24" :sm="12">
                 <el-form

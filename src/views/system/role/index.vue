@@ -9,6 +9,7 @@
         <el-table
             v-loading="tLoading"
             :data="resData"
+            stripe
             style="width: 100%;margin-bottom: 20px;"
             size="small"
             row-key="id"
@@ -25,7 +26,7 @@
             </el-table-column>
             <el-table-column
                 label="操作"
-                min-width="180">
+                min-width="220">
                 <template slot-scope="scope">
                     <el-button 
                         size="mini"
@@ -55,6 +56,7 @@
                             size="mini"
                             type="danger"
                             slot="reference"
+                            :disabled="scope.row.id===1"
                         >
                             删除
                         </el-button>
