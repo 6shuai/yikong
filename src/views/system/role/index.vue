@@ -4,12 +4,13 @@
             角色管理
         </div>
         <div class="top-operation-wrap">
-            <el-button size="small" type="primary" @click="addRoleDialog=true;addParams={}">添加角色</el-button>
+            <el-button size="small" type="primary" icon="el-icon-plus" @click="addRoleDialog=true;addParams={}">添加角色</el-button>
         </div>
         <el-table
             v-loading="tLoading"
             :data="resData"
             style="width: 100%;margin-bottom: 20px;"
+            size="small"
             row-key="id"
             border>
             <el-table-column

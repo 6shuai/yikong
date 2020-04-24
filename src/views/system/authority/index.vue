@@ -4,7 +4,7 @@
             权限管理
         </div>
         <div class="top-operation-wrap">
-            <el-button size="small" type="primary" @click="addAuthDialog=true">添加权限</el-button>
+            <el-button size="small" type="primary" icon="el-icon-plus" @click="addAuthDialog=true">添加权限</el-button>
         </div>
         <el-table
             v-loading="tLoading"
@@ -12,6 +12,7 @@
             style="width: 100%;margin-bottom: 20px;"
             row-key="id"
             border
+            size="small"
             :row-key="getRowKeys"
             :expand-row-keys="expandRowKeys"
             :tree-props="{children: 'children', hasChildren: 'hasChildren'}">

@@ -58,7 +58,6 @@
 		</el-form-item>
 
 		<div class="tips">
-			<!-- <el-checkbox v-model="checked">记住账号</el-checkbox> -->
 			<router-link to="/login">登录</router-link>
 		</div>
 		</el-form>
@@ -116,8 +115,16 @@ export default {
 				userRegister(this.registerForm).then((resp) => {
 					this.loading = false;
 					if (resp && resp.obj) {
-						// 跳转到登录页面
-						this.$router.push("/");
+						this.registerForm = {};
+						this.$message({
+							message: '注册成功~',
+							type: 'success',
+							onClose: () => {
+								// 跳转到登录页面
+								this.$router.push("/");
+							}
+						});
+						
 					}
 				});
 			} else {
@@ -209,17 +216,9 @@ $light_gray: #eee;
     color: #fff;
     margin-top: 20px;
     text-align: center;
-    .el-checkbox {
-      color: #fff;
-    }
-    .register-btn {
-      color: #409eff;
-    }
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-      }
-    }
+    &:hover{
+		text-decoration: underline;
+	}
   }
 }
 </style>

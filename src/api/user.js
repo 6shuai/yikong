@@ -69,12 +69,12 @@ export function memberSearch(data) { return get(`/system/member/search_user/${da
 //成员管理   更新成员拥有的角色
 export function memberRoleUpdate(data) { return put(`/system/member/role${data}`); }
 
+//成员管理   查询自己的组织  获取组织id去查询组织下的成员
+export function organizationSearchId(data) { return get(`/system/member/organization/${data}`); }
 
-//组织列表   新建组织
+//成员管理   新建组织 
 export function organizationCreated(data) { return post('/system/member/organization/', data); }
 
-//组织列表   删除组织
-export function organizationDelete(data) { return del(`/system/member/organization/${data}`,); }
-
-
+//成员管理   删除组织
+export function organizationDelete(data) { return del(`/system/member/organization/?id=${data}`,); }
 

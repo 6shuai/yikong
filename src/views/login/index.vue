@@ -9,7 +9,7 @@
 		label-position="left"
     >
 		<div class="title-container">
-			<h3 class="title">系统登录</h3>
+			<img src="../../assets/images/login_logo.png" alt="易控">
 		</div>
 
 		<el-form-item prop="username">
@@ -54,7 +54,7 @@
 			type="primary"
 			style="width:100%;margin-bottom:30px;"
 			@click.native.prevent="submitLogin"
-			>登录</el-button
+			>{{loading ? '登录中' : '登录'}}</el-button
 		>
 
 		<div class="tips">
@@ -234,6 +234,9 @@ $light_gray: #eee;
 	}
 	.register-btn{
 		float:right;
+		&:hover{
+			text-decoration: underline;
+		}
 	}
     span {
       &:first-of-type {
@@ -260,6 +263,13 @@ $light_gray: #eee;
       text-align: center;
       font-weight: bold;
     }
+	img{
+		width: 70%;
+		min-width: 240px;
+		height: auto;
+		display: block;
+		margin: 0px auto 40px auto;
+	}
   }
 
   .show-pwd {

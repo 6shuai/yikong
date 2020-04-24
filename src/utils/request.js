@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { MessageBox, Message } from 'element-ui';
 import qs from 'qs';
+import store from '../store';
+import router from '@/router';
 
 const ajaxUrl = process.env.NODE_ENV === 'development'
 	? '/' : `${document.location.origin}/`;   
@@ -28,31 +30,18 @@ axios.interceptors.response.use(
 		const res = response.data;
 
 		if (res.code !== 0) {
-			if (res.code == 504 || res.code == 404) {
-				Message.error({message: '服务器被吃了( ╯□╰ )'})
-			} else if (res.code == 403) {
-				Message.error({message: '权限不足，请联系管理员'})
-			} else if (res.code == 401) {
-				Message.error({message: '尚未登录，请登录'})
-				router.replace('/');
-			} else {
+			Message.closeAll()
+			//4 账号的时效期 过期
+			//103 无权限访问 先做退出登录
+			if(res.code === 4 || res.code === 103){
+				store.dispatch('user/logout').then(() => {
+					location.reload() // 为了重新实例化vue-router对象 避免bug
+				})
+			}else{
 				Message.error({message: res.message});
 			}
 
-			if (res.code == 4) {
-				// 登录过期
-				MessageBox.confirm(
-					'You have been logged out, you can cancel to stay on this page, or log in again',
-					'Confirm logout',
-					{
-						confirmButtonText: 'Re-Login',
-						cancelButtonText: 'Cancel',
-						type: 'warning'
-					}
-				).then(() => {
-
-				});
-			}
+			
 			// return new Promise(() => {});
 			return res
 		} else {
@@ -60,12 +49,29 @@ axios.interceptors.response.use(
 		}
 	},
 	(error) => {
-		console.log(error)
-		Message({
-			message: error.message,
-			type: 'error',
-			duration: 3000
-		});
+		Message.closeAll();
+		switch (error.response.status) {
+			case 504:
+			case 404:
+				Message.error({message: '服务器被吃了( ╯□╰ )'});
+				break;
+			case 403:
+				Message.error({
+					message: '权限不足，请联系管理员',
+					onClose: () => {
+						router.push({ path: '/home' })
+					}
+				});
+				
+				break;
+			case 401:
+				Message.error({message: '尚未登录，请登录'});
+				router.push({ path: '/login' })
+				break;
+			default:
+				Message.error({message: 'error'});
+				break;
+		}
 		return Promise.reject(error);
 	}
 );

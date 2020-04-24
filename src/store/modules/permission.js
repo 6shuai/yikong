@@ -6,11 +6,11 @@ import Layout from '@/layout';
 
 const moduleMap = {
 	"Home": "home/index",
-	"Authority": "system/Authority",
-	"Role": "system/Role",
-	"Member": "system/Member",
-	"Organizations": "system/Organizations",
-	"User": "system/User"
+	"Authority": "system/authority/index",                //权限管理
+	"Role": "system/role/index",						  //角色管理
+	"Member": "system/member/index",				      //成员管理
+	"Organizations": "system/organizations/index",		  
+	"User": "user/Center"								  //个人中心
 }
 
 /**
@@ -55,7 +55,6 @@ const mutations = {
 	SET_ROUTES: (state, routes) => {
 		state.addRoutes = routes;
 		state.routes = constantRoutes.concat(routes);
-		console.log(state.routes)
 	},
 };
 
@@ -80,13 +79,15 @@ export const filterAsyncRouter = (data) => {
             children: formattedChildren || [], 
 			component: one.parentID === 1 ? Layout : (resolve) => require(['@/views/' + moduleMap[one.moduleName] + '.vue'], resolve),
 			meta: {
-				title: one.displayName
+				title: one.displayName,
+				icon: one.moduleName
 			}
         }
         result.push(oneRouter);
 	})
     return result;
 }
+
 
 export default {
 	namespaced: true,

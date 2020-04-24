@@ -25,7 +25,7 @@
 						首页
 						</el-dropdown-item>
 					</router-link>
-					<router-link to="/user/center">
+					<router-link to="/user">
 						<el-dropdown-item>
 						个人中心
 						</el-dropdown-item>

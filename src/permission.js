@@ -27,6 +27,7 @@ router.beforeEach((to, from, next) => {
     }else {
       if(!store.state.permission.addRoutes.length){
         getAuthMenu().then(res => {
+            // 无访问权限
             const asyncRouter = filterAsyncRouter(res.obj)
             asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
             store.dispatch('permission/GenerateRoutes', asyncRouter).then(() => { // 存储路由

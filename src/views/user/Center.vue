@@ -1,19 +1,23 @@
 <template>
-    <el-card shadow="never">
+    <el-card shadow="never" class="user-center-wrap">
         <el-row :gutter="10">
             <el-col :xs="24" :sm="12">
                 <el-form
                     label-width="80px"
                 >
+                    <el-form-item label="头像：">
+                        <el-upload
+                            class="avatar-uploader"
+                            action=""
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                            <img v-if="userData.avatar" :src="userData.avatar" class="avatar">
+                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        </el-upload>
+                    </el-form-item>
                     <el-form-item label="昵称：">
                         <el-input  placeholder="昵称" v-model="userData.nickname"></el-input>
-                    </el-form-item>
-                    <el-form-item label="头像：">
-                        <el-image
-                            style="width: 100px; height: 100px"
-                            :src="userData.avata"
-                            fit="cover">
-                        </el-image>
                     </el-form-item>
                     <el-form-item label="email：">
                         <el-input  placeholder="email" v-model="userData.email"></el-input>
@@ -94,11 +98,50 @@ export default {
             initialize() {              
                 this.userData = JSON.parse(localStorage.loginData);
                 this.rawData = {... this.userData};
+            },
+
+            //上传头像成功
+            handleAvatarSuccess(){
+
+            },
+
+            //上传之前
+            beforeAvatarUpload(){
+
             }
         }
 }
 </script>
 
 <style lang="scss" scope>
-    
+    .user-center-wrap{
+        .header-img{
+            width: 100%;
+            height: 100%;
+            border: 6px;
+        }
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 128px;
+            height: 128px;
+            line-height: 128px;
+            text-align: center;
+        }
+        .avatar {
+            width: 128px;
+            height: 128px;
+            display: block;
+        }
+    }
 </style>
