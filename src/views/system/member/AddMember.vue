@@ -53,6 +53,7 @@
 <script>
 import { memberSearch, memberCreated } from '@/api/user';
 export default {
+    props: ['groupId'],
     data(){
         return {
             searchLoading: false,        //搜索按钮  loaidng
@@ -85,7 +86,7 @@ export default {
         //添加用户到组织
         addCurrentMember(id, index){
             let data = {
-                oid: 1,
+                oid: this.groupId,
                 uid: id
             }
             memberCreated(data).then(res => {

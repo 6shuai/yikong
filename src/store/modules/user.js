@@ -22,7 +22,6 @@ const actions = {
 	// user login
 	login({ commit }, userInfo) {
 		return new Promise((resolve, reject) => {
-		console.log(userInfo);
 		userLogin(userInfo)
 			.then((response) => {
 				commit("SET_TOKEN", response.obj.username);

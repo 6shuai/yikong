@@ -54,8 +54,8 @@ export function roleAuthUpdate(data) { return put(`/system/role/role_authority/$
 //成员管理  获取所有权限列表 id 获取分组下的成员
 export function groupMemberList(data) { return get(`/system/member/${data}`); }
 
-//成员管理   获取所有角色
-export function getAllRoleList(data) { return get('/system/member/roles/', data); }
+//成员管理   获取所有角色  data是一个数字，表示自己的组织类型
+export function getAllRoleList(data) { return get(`/system/member/roles/${data}`); }
 
 //成员管理   添加成员
 export function memberCreated(data) { return post(`/system/member/?oid=${data.oid}&uid=${data.uid}`); }
@@ -74,6 +74,9 @@ export function organizationSearchId(data) { return get(`/system/member/organiza
 
 //成员管理   新建组织 
 export function organizationCreated(data) { return post('/system/member/organization/', data); }
+
+//成员管理   获取组织类型 
+export function organizationType(data) { return get(`/common/organization_type/${data}`); }
 
 //成员管理   删除组织
 export function organizationDelete(data) { return del(`/system/member/organization/?id=${data}`,); }

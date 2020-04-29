@@ -66,8 +66,16 @@ div:focus {
 
 .top-operation-wrap{
   padding-bottom: 10px;
+  .el-input{
+    width: 200px;
+    display: inline-block;
+  }
 }
 
 .app-main .template-card{
-  margin: 20px;
+  margin: 10px;
+}
+
+.el-pagination{
+  text-align: right;
 }

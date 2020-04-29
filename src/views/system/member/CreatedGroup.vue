@@ -12,6 +12,16 @@
             <el-form-item label="组织名称">
                 <el-input v-model="addParams.displayName"></el-input>
             </el-form-item>
+            <el-form-item label="组织类型">
+                <el-select v-model="addParams.organizationType" placeholder="请选择组织类别" style="width:100%">
+                    <el-option
+                        v-for="item in groupTypeList"
+                        :key="item.id"
+                        :label="item.displayName"
+                        :value="item.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="addGroupDialog=false">取 消</el-button>
@@ -20,13 +30,14 @@
     </el-dialog>
 </template>
 <script>
-import { organizationCreated } from '@/api/user';
+import { organizationCreated, organizationType } from '@/api/user';
 export default {
     data(){
         return {
             addParams:{}, 
             addGroupDialog: false,      //添加组织modal
             addBtnLoading: false,       //添加按钮loading
+            groupTypeList: [],          //组织类型
         }
     },
     methods: {
@@ -34,12 +45,16 @@ export default {
         showDialog(){
             this.addParams = {};
             this.addGroupDialog = true;
+            this.getGroupType();
         },
 
         //添加组织
         addGroupSureBtn(){
             if(!this.addParams.displayName){
                 this.$message.warning('请填写组织名称~');
+                return
+            }else if(!this.addParams.organizationType){
+                this.$message.warning('请选择组织类型~');
                 return
             }
             
@@ -54,6 +69,18 @@ export default {
                 }
             })
         },
-    },
+
+        //获取组织类型   新建组织 commonType： 0
+        getGroupType(){
+            organizationType(0).then(res => {
+                if(res.code === this.$successCode){
+                    // 新建组织的时候，前端列出的可选组织类型，不包含组织外类型，就是说组织类型数据的commonType: true的数据不列出。
+                    this.groupTypeList = res.obj.filter(item => {
+                        return !item.commonType
+                    })
+                }
+            })
+        }
+    }
 }
 </script>

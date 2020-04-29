@@ -9,7 +9,7 @@
                     <el-link type="danger" @click="deleteGroup" v-if="isCreator">解散组织</el-link>
                 </div>
             </div>
-            <div v-if="!groupData.id">
+            <div v-if="!groupData.id && pageLoad">
                 <p>还没有组织，<el-link type="primary" @click="$refs.createdGroup.showDialog()">创建组织</el-link></p>
             </div>
             <!-- 只有创建者才能添加成员 -->
@@ -29,8 +29,7 @@
                     <template slot-scope="scope">
                         <el-image
                             class="member-header-img"
-                            :src="scope.row.avatar"
-                            :fit="fit">
+                            :src="scope.row.avatar">
                         </el-image>
                     </template>
                 </el-table-column>
@@ -156,7 +155,7 @@
         <created-group ref="createdGroup"></created-group>
 
         <!-- 添加成员 -->
-        <add-member ref="addMember"></add-member>
+        <add-member ref="addMember" :groupId="this.groupData.id"></add-member>
     </div>
 </template>
 
@@ -174,6 +173,7 @@ export default {
             roleData: [],                 //角色列表
             editBtnLoading: false,
             groupData: {},                //组织信息
+            pageLoad: false,
         }
     },
     computed: {
@@ -182,7 +182,6 @@ export default {
         }
     },
     created() {
-        this.roleList();
         this.searchGroupInfo();
     },
     methods: {
@@ -227,7 +226,7 @@ export default {
 
         //所有角色列表
         roleList(){
-            getAllRoleList().then(res => {
+            getAllRoleList(this.groupData.organizationType).then(res => {
                 if(res.code === this.$successCode){
                     this.roleData = res.obj;
                 }
@@ -251,11 +250,13 @@ export default {
         //查询自己的组织信息
         searchGroupInfo(){
             organizationSearchId(Number(this.$store.state.user.loginData.id)).then(res => {
+                this.pageLoad = true;
                 if(!res.obj && typeof(res.obj)!='undefined' && res.obj!=0){
                     this.groupData = {};
                 }else{
                     this.groupData = res.obj;
                     this.init();
+                    if(this.isCreator) this.roleList();
                 }
             })
         },

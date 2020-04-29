@@ -1,16 +1,18 @@
 import {
 	asyncRoutes,
 	constantRoutes
-} from "@/router";
+} from '@/router';
 import Layout from '@/layout';
 
 const moduleMap = {
-	"Home": "home/index",
-	"Authority": "system/authority/index",                //权限管理
-	"Role": "system/role/index",						  //角色管理
-	"Member": "system/member/index",				      //成员管理
-	"Organizations": "system/organizations/index",		  
-	"User": "user/Center"								  //个人中心
+	'Home': 'home/index',
+	'Place': 'place/list/index',                          //商场  场所列表
+	'Screen': 'screen/index',                          //商场  场所列表
+	'Authority': 'system/authority/index',                //权限管理
+	'Role': 'system/role/index',						  //角色管理
+	'Member': 'system/member/index',				      //成员管理
+	'Organizations': 'system/organizations/index',		  
+	'User': 'user/Center'								  //个人中心
 }
 
 /**
