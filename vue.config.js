@@ -32,7 +32,7 @@ module.exports = {
 	productionSourceMap: false,
 	devServer: {
 		port: 8080,
-		proxy: 'http://211.159.173.153:8181',
+		proxy: 'http://www.xfengjing.com:8181',
 		public: '192.168.137.1:8080'
 		//   'http://www.xfengjing.com:8181',
 	},

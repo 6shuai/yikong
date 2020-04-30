@@ -20,3 +20,6 @@ export function placeCitysData(data) { return get(`/place/citys/${data}`) }
 
 //场所管理  根据市代码获取区县列表
 export function placeAreasData(data) { return get(`/place/areas/${data}`) }
+
+//场所管理  根据区县代码获取省市区数据
+export function adcodeFindData(data) { return get(`/place/areaData/${data}`) }

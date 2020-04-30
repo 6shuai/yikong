@@ -65,7 +65,7 @@
                 <el-input v-model="placeForm.address" placeholder="详细地址"></el-input>
             </el-form-item>
             <el-form-item label="场所经纬度">
-                <el-input @focus="showMap=true" :value="coordinate" placeholder="场所经纬度"></el-input>
+                <el-input @focus="showMap=true" :value="`${placeForm.longitude ? placeForm.longitude + ' , ' : ''}${placeForm.latitude || ''}`" placeholder="场所经纬度"></el-input>
             </el-form-item>
             <el-form-item label="场所照片">
                 <upload-img :isArray="true" :imgList="[]"></upload-img>
@@ -82,31 +82,36 @@
             <el-button @click="addPlaceDialog=false">取 消</el-button>
             <el-button type="primary" :loading="btnLoading" @click="placeSureBtn">确 定</el-button>
         </span>
-
         <el-dialog
             width="640px"
             title="场所位置"
             :visible.sync="showMap"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            @close="hideMap"
             append-to-body>
             <the-map 
+                ref="theMap"
                 v-if="showMap"
                 @getLocation="getLocation" 
                 :visible="true"
                 :lng="placeForm.longitude"
                 :lat="placeForm.latitude"
                 :showSearch="true"
+                :address="addressJoin"
             ></the-map>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="showMap=false">确 定</el-button>
+                <el-button type="primary" @click="hideMap">确 定</el-button>
             </span>
         </el-dialog>
     </el-dialog>
 </template>
 <script>
-import { placeCreated, placeUpdate, placeProvincesData, placeCitysData, placeAreasData } from '@/api/place';
+import { placeCreated, placeUpdate, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData } from '@/api/place';
 import { organizationSearchId } from '@/api/user';
 import TheMap from '@/components/BaiduMap/index';
 import UploadImg from '@/components/Upload/UploadImg';
+import axios from 'axios';
 export default {
     data(){
         return {
@@ -115,13 +120,8 @@ export default {
             showMap: false,                  //显示百度地图
             region: {},                      //省市县
             btnLoading: false,               //确定按钮  loading
-            placeFormType: null
-        }
-    },
-    computed: {
-        coordinate(){
-            if(!this.placeForm.longitude || !this.placeForm.latitude) return;
-            return `${this.placeForm.longitude}  ,  ${this.placeForm.latitude}`;
+            placeFormType: null,
+            addressJoin: '',
         }
     },
     methods: {
@@ -167,11 +167,38 @@ export default {
 
         //获取位置的坐标
         getLocation(location) {
-            //赋值经度纬度和地址
+            //赋值经度纬度和地址   
             if (location) {       
                 this.$set(this.placeForm, 'longitude', Number(location.lng));   //经度
                 this.$set(this.placeForm, 'latitude', Number(location.lat));    //纬度 
             }
+        },
+
+        //关闭地图  
+        hideMap(){
+            //根据经纬度 获取行政编号
+            this.showMap = false;
+            if(!this.placeForm.longitude) return
+            let script = document.createElement("script")
+            script.src = `http://api.map.baidu.com/reverse_geocoding/v3/?ak=WpKtslGW53yQ5v1ehnCYKVqSlloS7R7p&output=json&coordtype=wgs84ll&location=${this.placeForm.latitude},${this.placeForm.longitude}&callback=showLocation`
+            document.head.appendChild(script);
+            window.showLocation = (res) => {
+                this.findCurrentAdressCode(res.result.addressComponent.adcode);
+            }
+        },
+
+
+        //根据区县代码获取省市区数据
+        findCurrentAdressCode(code){
+            adcodeFindData(code).then(res => {
+                this.placeForm = {
+                    ...this.placeForm,
+                    ...res.obj
+                }
+                if(this.placeForm.proNo){
+                    this.cityList();
+                }
+            })
         },
 
         //省份
@@ -207,9 +234,15 @@ export default {
             switch (type) {
                 case 'proName':
                     obj = this.region.provinces;
+                    this.$set(this.placeForm, 'cityName', '');
+                    this.$set(this.placeForm, 'cityNo', '');
+                    this.$set(this.placeForm, 'areaName', '');
+                    this.$set(this.placeForm, 'areaNo', '');
                     break;
                 case 'cityName':
                     obj = this.region.city;
+                    this.$set(this.placeForm, 'areaName', '');
+                    this.$set(this.placeForm, 'areaNo', '');
                     break;
                 case 'areaName':
                     obj = this.region.areas;
@@ -222,6 +255,9 @@ export default {
                     this.placeForm[type] = item[type];
                 }
             })
+            this.placeForm.longitude = '';
+            this.placeForm.latitude = '';
+            this.addressJoin = this.placeForm.proName + this.placeForm.cityName + this.placeForm.areaName;
         },
 
         //查询自己的组织id

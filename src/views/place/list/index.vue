@@ -9,102 +9,72 @@
                 <el-button size="small" type="primary" icon="el-icon-search">搜索</el-button>
                 <el-button size="small" type="primary" icon="el-icon-plus" @click="$refs.addPlace.showDialog({enabled: true})">添加场所</el-button>
             </div>
-            <el-table
-                v-loading="tLoading"
-                stripe
-                size="small"
-                :data="resData"
-                style="width: 100%;margin-bottom: 20px;"
-                row-key="id"
-                border>
-                <el-table-column prop="displayName" label="场所名" min-width="90"></el-table-column>
-                <el-table-column prop="nickname" label="所属品牌" min-width="80">
-                    <template slot-scope="scope">
-                        <div class="organization-logo">
-                            <img src="https://game.xfengjing.com/app/upload/market/photo/7YmAs4QpmOCRNvD84Imkw8MQq7Ctdt1sr3d5kS8S.png" alt="中粮" title="中粮">
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="type" label="场所类型" min-width="80"></el-table-column>
-                <el-table-column prop="address" label="场所地址" min-width="80">
-                    <template slot-scope="scope">
-                        <el-link title="点击查看位置" @click="currentPlace=scope.row;showMap=true">{{addressJoint(scope.row)}}</el-link>
-                    </template>
-                </el-table-column>
-                <el-table-column label="场所照片" min-width="120">
-                    <template slot-scope="scope">
-                        <el-image
-                            class="place-img"
-                            fit="contain"
-                            src="https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg"
-                            :preview-src-list="imgList">
-                        </el-image>
-                    </template>
-                </el-table-column>
-                <!-- <el-table-column prop="qq" label="联系人" min-width="80"></el-table-column>
-                <el-table-column prop="mobile" label="联系电话" min-width="90"></el-table-column>
-                <el-table-column prop="email" label="联系邮箱" min-width="100"></el-table-column> -->
-                <el-table-column prop="email" label="联系场所" min-width="120">
-                    <template slot-scope="scope">
-                        <p title="联系人">
-                            <i class="el-icon-user"></i>
-                            <span>刘帅</span>
-                        </p>
-                        <p title="手机号">
-                            <i class="el-icon-mobile"></i>
-                            <span>18810498554</span>
-                        </p>
-                        <p title="邮箱">
-                            <i class="el-icon-message"></i>
-                            <span>245691516@qq.com</span>
-                        </p>
-                    </template>
-                </el-table-column>
-                <el-table-column
-                    label="操作"
-                    min-width="150">
-                    <template slot-scope="scope">
+        </el-card>
+        <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">暂无数据~</div>
+        <div v-else class="place-content">
+            <div class="place-box" v-loading="tLoading">
+                <el-card 
+                    class="place-list" 
+                    shadow="always"
+                    v-for="item in resData"
+                    :key="item.id"
+                >
+                    <div class="place-img">
+                        <img src="https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg" class="image">
+                        <!-- 编辑 -->
                         <el-button 
-                            size="mini" 
-                            type="success"
-                            @click="editCurrentPlace(scope.row)"
-                        >
-                            编辑
+                            class="icon-button edit" 
+                            size="small" 
+                            type="primary" 
+                            icon="el-icon-edit" 
+                            title="编辑"
+                            @click="editCurrentPlace(item)"
+                            round>
                         </el-button>
+                        <!-- 删除 -->
                         <el-popover
                             style="margin-left:10px"
                             placement="top"
-                            :ref="scope.row.id"
+                            class="icon-button delete"
+                            :ref="item.id"
                             width="200">
-                            <p>此操作将删除场所【{{scope.row.displayName}}】, 是否继续?</p>
+                            <p>此操作将删除场所【{{item.displayName}}】, 是否继续?</p>
                             <div style="text-align: right; margin: 0">
-                                <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-                                <el-button type="primary" size="mini" @click="delCurrentPlace(scope.row.id)">确定</el-button>
+                                <el-button size="mini" type="text" @click="$refs[item.id][0].doClose()">取消</el-button>
+                                <el-button type="primary" size="mini" @click="delCurrentPlace(item.id)">确定</el-button>
                             </div>
-                            <el-button 
-                                size="mini"
-                                type="danger"
-                                slot="reference"
-                            >
-                                删除
-                            </el-button>
+                            <el-button size="small" type="danger" slot="reference" icon="el-icon-delete" round title="删除"></el-button>
                         </el-popover>
-                    </template>
-                </el-table-column>
-            </el-table>
+                    </div>
+                    <div style="padding: 14px;">
+                        <div class="place-title" @click="$refs.placeDetail.show()">
+                            <p>{{item.displayName}}</p>
+                        </div>
+                        <div class="bottom clearfix">
+                            <div class="adress" title="点击查看位置" @click="currentPlace=item;showMap=true">
+                                <i class="el-icon-location-information"></i>{{addressJoint(item)}}
+                            </div>
+                            <div class="place-logo">
+                                <img src="https://game.xfengjing.com/app/upload/market/photo/7YmAs4QpmOCRNvD84Imkw8MQq7Ctdt1sr3d5kS8S.png" alt="中粮" title="中粮">
+                            </div>
+                        </div>
+                    </div>
+                </el-card>
+
+            </div>
 
             <el-pagination
                 background
                 layout="total, prev, pager, next, sizes"
-                :page-sizes="[10, 20, 30, 50]"
+                :page-sizes="[20, 30, 40, 50]"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :total="totalCount">
             </el-pagination>
-        </el-card>
+        </div>
 
         <!-- 添加场所 -->
-        <add-place ref="addPlace"></add-place>
+        <place-add ref="addPlace"></place-add>
         
         <!-- 查看地理位置  地图 -->
         <el-dialog
@@ -124,36 +94,30 @@
             </span>
         </el-dialog>
 
+        <!-- 场所详情 -->
+        <place-detail ref="placeDetail"></place-detail>
+
     </div>
 </template>
 
 <script>
 import { placeList, placeDelete } from '@/api/place';
-import AddPlace from './AddPlace';
+import PlaceAdd from './PlaceAdd';
 import TheMap from '@/components/BaiduMap/index';
+import PlaceDetail from './PlaceDetail';
 
 export default {
     data(){
         return {
             params: {
                 pageNo: 1,
-                pageSize: 10
+                pageSize: 20
             },
             showMap: false,                //地图
             currentPlace: {},              //选中的场所参数
-            resData: [
-                {
-                    displayName: '马东东',
-                    mobile: '18810498554',
-                    email: '245691516@qq.com',
-                    avatar: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'
-                }
-            ],
-            totalCount: 10,        //总条数
-            tLoading: false,
-            imgList: [             //大图预览
-                'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'
-            ]
+            resData: [],
+            totalCount: 0,         //总条数
+            tLoading: true
         }
     },
     created() {
@@ -205,22 +169,107 @@ export default {
         }
     },
     components: {
-        AddPlace,
-        TheMap
+        PlaceAdd,
+        TheMap,
+        PlaceDetail
     }
 }
 </script>
 <style lang="scss">
     .place-list-wrap{
-        .place-img img{
-            max-height: 120px;
-            cursor: pointer;
-        }
         .organization-logo{
             height: 40px;
             img{
                 height: 100%;
             }
+        }
+        .place-content{
+            margin-left: -20px;
+            padding:15px;
+            .place-box{
+                display: flex;
+                flex-wrap: wrap;
+                .place-list{
+                    width: 280px;
+                    height: 250px;
+                    overflow: hidden;
+                    margin: 0 0 20px 20px;
+                    &:hover .place-img{
+                        .icon-button{
+                            opacity: 1;
+                        }
+                        img{
+                            transform: scale(1.05);
+                        }
+                    }
+                    .el-card__body{
+                        padding: 0;
+                    }
+                    .place-title{
+                        color: #333;
+                        cursor: pointer;
+                        p{
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            width: 100%;
+                            margin: 0;
+                            &:hover{
+                                color: #409EFF;
+                            }
+                        }
+                    }
+                    .place-img{
+                        width: 100%;
+                        height: 170px;
+                        overflow: hidden;
+                        position: relative;
+                        img.image{
+                            width: 100%;
+                            height: 170px;
+                            transition: all .5s ease-in-out;
+                        }
+                        .icon-button{
+                            position: absolute;
+                            right: 10px;
+                            opacity: 0;
+                            transition: all .5s ease-in-out;
+                            &.edit{
+                                top: 40px;
+                            }
+                            &.delete{
+                                top: 90px;
+                            }
+                        }
+                    }
+                    .bottom{
+                        padding-top: 5px;
+                        font-size: 12px;
+                        color: #999;
+                        display: flex;
+                        .adress{
+                            width: 140px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            cursor: pointer;
+                            line-height: 30px;
+                            &:hover{
+                                text-decoration: underline;
+                            }
+                        }
+                        .place-logo{
+                            width: 110px;
+                            text-align: right;
+                            img{
+                                max-width: 100%;
+                                height: 30px;
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 </style>

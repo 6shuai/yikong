@@ -6,8 +6,9 @@ import Layout from '@/layout';
 
 const moduleMap = {
 	'Home': 'home/index',
-	'Place': 'place/list/index',                          //商场  场所列表
-	'Screen': 'screen/index',                          //商场  场所列表
+	'Place': 'place/list/index',                          //场所管理 场所列表
+	'Screen': 'screen/index',                          	  //屏幕管理  
+	
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理
 	'Member': 'system/member/index',				      //成员管理
@@ -74,7 +75,7 @@ export const filterAsyncRouter = (data) => {
         let formattedChildren = null;
         if (one.children != null && one.children instanceof Array) {
             formattedChildren = filterAsyncRouter(one.children);
-        }
+		}
         let oneRouter = {
             path: one.route, 
             name: one.moduleName, 
@@ -84,7 +85,7 @@ export const filterAsyncRouter = (data) => {
 				title: one.displayName,
 				icon: one.moduleName
 			}
-        }
+		}
         result.push(oneRouter);
 	})
     return result;

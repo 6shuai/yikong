@@ -16,7 +16,14 @@
 import BMap from 'BMap'
 export default {
     name: "theMap",
-    props: ['lng', 'lat', 'showSearch'],
+    props: ['lng', 'lat', 'showSearch', 'address'],
+    props: {
+        lng: [String, Number],
+        lat: [String, Number],
+        showSearch: Boolean,        //是否显示搜索
+        address: String,            //地区  省市区
+        disableZoom: Boolean,       //是否禁用鼠标滚轮缩放
+    },
     data() {
         return {
             visible: true,
@@ -34,6 +41,9 @@ export default {
         if(this.showSearch) this.setSearch();
         if(this.lng && this.lat){
             this.mapCoordinate(this.lng, this.lat);
+        }else if(this.address){
+            this.keyword = this.address;
+            this.setPlace(this.address)
         }
     },
     methods: {
@@ -46,14 +56,14 @@ export default {
                 anchor: BMAP_ANCHOR_BOTTOM_LEFT,
             });
             // 城市选择控件
-            const cityListControl = new BMap.CityListControl({
-                anchor: BMAP_ANCHOR_TOP_RIGHT,
-            });
+            // const cityListControl = new BMap.CityListControl({
+            //     anchor: BMAP_ANCHOR_TOP_RIGHT,
+            // });
             // 比例尺控件
             const topLeftNavigation = new BMap.NavigationControl();
             this.map.addControl(topLeftControl);
             this.map.addControl(topLeftNavigation);
-            this.map.addControl(cityListControl);
+            // this.map.addControl(cityListControl);
             const _this = this;
             // 鼠标缩放
             this.map.enableScrollWheelZoom(true);
@@ -131,7 +141,7 @@ export default {
             });
             let myValue;
             //鼠标点击下拉列表后的事件
-            this.ac.addEventListener("onconfirm", function(e) {
+            this.ac.addEventListener("onconfirm", (e) => {
                 let _value = e.item.value;
                 myValue =
                 _value.province +
@@ -191,13 +201,19 @@ export default {
             },
             deep: true,
         },
+        address: {
+            handler(){
+                if(this.lng && this.lat) return
+                this.keyword = this.address;
+                this.setPlace(this.address);
+            }
+        },
         visible() {
             console.log("ddd");
         },
     },
 };
 </script>
-
 <style lang="scss" scoped>
 .map {
     width: 100%;
