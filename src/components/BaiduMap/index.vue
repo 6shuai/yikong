@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import BMap from 'BMap'
+import BMap from 'BMap';
 export default {
     name: "theMap",
     props: ['lng', 'lat', 'showSearch', 'address'],
@@ -49,8 +49,15 @@ export default {
     methods: {
         // 初始化地图
         setMap() {
+            const _this = this;
             this.map = new BMap.Map("map-core");
-            this.map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);
+            // 默认定位北京故宫
+            let [lng, lat] = [116.403684,39.920072];
+            if(localStorage.lng && localStorage.lat){
+                [lng, lat] = [localStorage.lng, localStorage.lat];
+            }
+            this.map.centerAndZoom(new BMap.Point(lng, lat), 11);
+
             // 地图缩放控件
             const topLeftControl = new BMap.ScaleControl({
                 anchor: BMAP_ANCHOR_BOTTOM_LEFT,
@@ -64,15 +71,15 @@ export default {
             this.map.addControl(topLeftControl);
             this.map.addControl(topLeftNavigation);
             // this.map.addControl(cityListControl);
-            const _this = this;
+            
             // 鼠标缩放
-            this.map.enableScrollWheelZoom(true);
+            if(!this.disableZoom) this.map.enableScrollWheelZoom(true);
 
             var geoc = new BMap.Geocoder();
             // 点击获取经纬度和具体位置
             this.map.addEventListener("click", function(e) {
-                _this.location.lng = parseFloat(e.point.lng).toFixed(3);
-                _this.location.lat = parseFloat(e.point.lat).toFixed(3);
+                _this.location.lng = parseFloat(e.point.lng);
+                _this.location.lat = parseFloat(e.point.lat);
 
                 var pt = e.point;
 

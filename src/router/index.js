@@ -40,9 +40,8 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/home',
     children: [{
-      path: 'home',
+      path: '/',
       name: 'Home',
       component: () => import('@/views/home/index'),
       meta: { title: '首页', icon: 'home' }

@@ -38,7 +38,7 @@ export default {
 			const first = matched[0];
 
 			if (!this.isHome(first)) {
-				matched = [{ path: "/home", meta: { title: "Home" } }].concat(
+				matched = [{ path: "/", meta: { title: "首页" } }].concat(
 					matched
 				);
 			}

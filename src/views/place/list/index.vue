@@ -96,7 +96,7 @@
 
         <!-- 场所详情 -->
         <place-detail ref="placeDetail"></place-detail>
-
+        <div id="allmap"></div>
     </div>
 </template>
 
@@ -105,6 +105,7 @@ import { placeList, placeDelete } from '@/api/place';
 import PlaceAdd from './PlaceAdd';
 import TheMap from '@/components/BaiduMap/index';
 import PlaceDetail from './PlaceDetail';
+import BMap from 'BMap'
 
 export default {
     data(){
@@ -122,6 +123,9 @@ export default {
     },
     created() {
         this.init();
+    },
+    mounted() {
+        this.getLocation();
     },
     methods: {
         //场所列表
@@ -166,6 +170,20 @@ export default {
         //场所地址  省市区 拼接
         addressJoint(row){
             return `${row.proName ? row.proName+'  ' : ''}${row.cityName ? row.cityName+'  ' : ''}${row.areaName ? row.areaName : ''}`;
+        },
+
+        //定位 获取浏览器定位
+        getLocation(){
+            if(!localStorage.lng || !localStorage.lat){
+                var map = new BMap.Map("allmap");
+                var geolocation = new BMap.Geolocation();
+                geolocation.getCurrentPosition(function(r){
+                    if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                        localStorage.lng = r.point.lng;
+                        localStorage.lat = r.point.lat;
+                    }       
+                });
+            }
         }
     },
     components: {
