@@ -23,3 +23,16 @@ export function placeAreasData(data) { return get(`/place/areas/${data}`) }
 
 //场所管理  根据区县代码获取省市区数据
 export function adcodeFindData(data) { return get(`/place/areaData/${data}`) }
+
+//场所管理  查询所有场所类型
+export function placeTypeList(data) { return get('/place/placeType', data) }
+
+//场所管理  查询场所所属组织下所有用户信息
+export function placeGroupUserList(data) { return get(`/place/organizationUserInfo/${data}`) }
+
+//场所管理  收藏 或 取消收藏
+export function placeFavorite(data) { return put(`/place/isFavorite${data}`) }
+
+//场所管理  查询场所详情
+export function placeDetail(data) { return get(`/place/placeDetail/${data}`) }
+

@@ -84,6 +84,7 @@ export default {
 	z-index: 9;
 	width: calc(100% - #{$sideBarWidth});
 	transition: width 0.28s;
+	z-index: 999;
 }
 
 .hideSidebar .fixed-header {

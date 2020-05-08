@@ -17,7 +17,7 @@
 						fit="cover">
 					</el-image>
 					<span class="nickname">{{ user.nickname }}</span>
-					<i class="el-icon-caret-bottom" />
+					<i class="el-icon-arrow-down" />
 				</div>
 				<el-dropdown-menu slot="dropdown" class="user-dropdown">
 					<router-link to="/">
@@ -70,14 +70,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 72px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 70px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -123,13 +123,13 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
+        margin-top: 12px;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
           vertical-align: middle;
         }
 

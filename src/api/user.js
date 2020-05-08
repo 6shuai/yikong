@@ -81,3 +81,6 @@ export function organizationType(data) { return get(`/common/organization_type/$
 //成员管理   删除组织
 export function organizationDelete(data) { return del(`/system/member/organization/?id=${data}`,); }
 
+//查询所有的组织  品牌
+export function organizationList(data) { return get('/system/member/organization/', data); }
+

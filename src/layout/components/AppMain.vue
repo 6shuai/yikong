@@ -25,19 +25,20 @@ export default {
 <style lang="scss" scoped>
 .app-main {
   /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 0px);
   width: 100%;
   position: relative;
   overflow: hidden;
 }
 
 .fixed-header+.app-main {
-  padding-top: 50px;
+  padding-top: 72px;
   background: #f5f5f5;
+  overflow-x: auto;
 }
 
 .app-main>.el-card{
-  margin: 20px;
+  margin: 10px;
 }
 
 .hasTagsView {

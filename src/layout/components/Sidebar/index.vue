@@ -4,7 +4,7 @@
 		<el-scrollbar wrap-class="scrollbar-wrapper">
 			<el-menu
 				:show-timeout="200"
-				:default-active="$route.path"
+				:default-active="$route.name.split('--')[0]"
 				:collapse="isCollapse"
 				:background-color="variables.menuBg"
 				:text-color="variables.menuText"

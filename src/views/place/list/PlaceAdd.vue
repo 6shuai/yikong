@@ -1,26 +1,96 @@
 <template>
-    <el-dialog
-        title="添加场所"
-        :visible.sync="addPlaceDialog"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        width="800px">
-        <el-form 
-            label-width="160px"
-        >
-            <el-form-item label="场所名">
-                <el-input v-model="placeForm.displayName" placeholder="场所名"></el-input>
-            </el-form-item>
-            <el-form-item label="场所类型">
-                <el-select v-model="placeFormType" placeholder="请选择场所类型" style="width:100%">
-                    <el-option label="类型1" :value="1"></el-option>
-                    <el-option label="类型2" :value="2"></el-option>
-                </el-select>
-            </el-form-item>
-            <el-form-item label="场所描述">
-                <el-input type="textarea" :rows="2" v-model="placeForm.description" placeholder="场所描述"></el-input>
-            </el-form-item>
-            <el-form-item label="地区">
+    <div>
+        <el-card class="template-card">
+            <el-page-header @back="$router.go(-1)">
+                <div slot="content">
+                    {{$route.params.id ? '编辑场所' : '创建场所'}}
+                </div>
+            </el-page-header>
+            <el-row :gutter="10" class="mt30">
+                <el-col :xs="24" :sm="24" :md="12">
+                    <el-form 
+                        label-width="160px"
+                        ref="placeForm"
+                        :model="placeForm"
+                        :rules="placeRules"
+                    >
+                        <el-form-item label="场所名称" prop="displayName">
+                            <el-input v-model="placeForm.displayName" placeholder="场所名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="场所类型" prop="placeType">
+                            <el-select v-model="placeForm.placeType" filterable placeholder="请选择场所类型" style="width:100%">
+                                <el-option 
+                                    v-for="item in placeTypeData" 
+                                    :key="item.id"
+                                    :label="item.displayName" 
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="所属品牌" prop="owner">
+                            <el-select v-model="placeForm.owner" filterable @change="groupUserList(placeForm.owner)" placeholder="请选择所属品牌" style="width:100%">
+                                <el-option 
+                                    v-for="item in groupData" 
+                                    :key="item.id"
+                                    :label="item.displayName" 
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="场所描述">
+                            <el-input type="textarea" :rows="3" v-model="placeForm.description" placeholder="场所描述"></el-input>
+                        </el-form-item>
+                        <el-form-item label="地理位置">
+                            <el-input @focus="showMap=true" :value="`${placeForm.longitude ? placeForm.longitude + ' , ' : ''}${placeForm.latitude || ''}`" placeholder="场所经纬度"></el-input>
+                        </el-form-item>
+                        <el-form-item label="详细地址">
+                            <el-input v-model="placeForm.address" placeholder="详细地址"></el-input>
+                        </el-form-item>
+                        <el-form-item label="展示图片" prop="placeShowData">
+                            <upload-img :isArray="true" :imgList="placeForm.placeShowData"></upload-img>
+                        </el-form-item>
+                        <el-form-item label="场所微信号二维码">
+                            <upload-img :isArray="false" imgList=""></upload-img>
+                        </el-form-item>
+                        <el-form-item label="联系人">
+                            <el-select v-model="place_contact" multiple placeholder="请选择联系人" style="width:100%">
+                                <el-option 
+                                    v-for="item in userData" 
+                                    :key="item.userId"
+                                    :label="item.accountName" 
+                                    :value="item.userId">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="placeSureBtn">提  交</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+        </el-card>
+
+        <el-dialog
+            width="640px"
+            title="场所位置"
+            :visible.sync="showMap"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            @close="showMap=false"
+            append-to-body>
+            <div style="width: 600px;height: 400px">
+                <the-map 
+                    ref="theMap"
+                    v-if="showMap"
+                    @getLocation="getLocation" 
+                    :visible="true"
+                    :lng="placeForm.longitude"
+                    :lat="placeForm.latitude"
+                    :showSearch="true"
+                    :address="addressJoin"
+                ></the-map>
+            </div>
+            <div class="mt20">
                 <el-select 
                     v-model="placeForm.proNo" 
                     placeholder="请选择省份" 
@@ -60,108 +130,99 @@
                         :value="item.areaNo">
                     </el-option>
                 </el-select>
-            </el-form-item>
-            <el-form-item label="详细地址">
-                <el-input v-model="placeForm.address" placeholder="详细地址"></el-input>
-            </el-form-item>
-            <el-form-item label="场所经纬度">
-                <el-input @focus="showMap=true" :value="`${placeForm.longitude ? placeForm.longitude + ' , ' : ''}${placeForm.latitude || ''}`" placeholder="场所经纬度"></el-input>
-            </el-form-item>
-            <el-form-item label="场所照片">
-                <upload-img :isArray="true" :imgList="[]"></upload-img>
-            </el-form-item>
-            <el-form-item label="场所微信号二维码">
-                <upload-img :isArray="false" imgList=""></upload-img>
-            </el-form-item>
-            <el-form-item label="是否启用">
-                <el-switch v-model="placeForm.enabled"></el-switch>
-            </el-form-item>
-            
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="addPlaceDialog=false">取 消</el-button>
-            <el-button type="primary" :loading="btnLoading" @click="placeSureBtn">确 定</el-button>
-        </span>
-        <el-dialog
-            width="640px"
-            title="场所位置"
-            :visible.sync="showMap"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            @close="hideMap"
-            append-to-body>
-            <the-map 
-                ref="theMap"
-                v-if="showMap"
-                @getLocation="getLocation" 
-                :visible="true"
-                :lng="placeForm.longitude"
-                :lat="placeForm.latitude"
-                :showSearch="true"
-                :address="addressJoin"
-            ></the-map>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="hideMap">确 定</el-button>
-            </span>
+            </div>
         </el-dialog>
-    </el-dialog>
+    </div>
 </template>
 <script>
-import { placeCreated, placeUpdate, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData } from '@/api/place';
-import { organizationSearchId } from '@/api/user';
+import { placeCreated, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData } from '@/api/place';
 import TheMap from '@/components/BaiduMap/index';
 import UploadImg from '@/components/Upload/UploadImg';
+import { getOrganizationList, getOrganizationUserList } from '@/mixins';
+import { getPlaceTypeList, placeDetailData } from '@/views/place/mixins';
 import axios from 'axios';
 export default {
+    mixins: [getOrganizationList, getOrganizationUserList, getPlaceTypeList, placeDetailData],
     data(){
         return {
-            addPlaceDialog: false,
-            placeForm: {},
+            placeForm: {
+                wechat: 'wechat.png',
+                placeShowData: [
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                ]
+            },
+            place_contact: [],               //联系人 【1,2】
             showMap: false,                  //显示百度地图
             region: {},                      //省市县
             btnLoading: false,               //确定按钮  loading
             placeFormType: null,
             addressJoin: '',
+            placeRules: {
+                displayName: [{ required: true, trigger: "blur", message: '请输入场所名称~' }],
+                placeType: [{ required: true, trigger: "change", message: '请选择场所类型~' }],
+                owner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
+                placeShowData: [{ required: true, trigger: "change", message: '请至少上传一张展示图片~' }]
+            }
         }
     },
+    mounted() {
+        this.init();
+    },
     methods: {
-        showDialog(data){
-            this.placeForm = {
-                ...data,
-                country: 3,
-                wechat: 'wechatqr.png'
-            };
-            this.addPlaceDialog = true;
+        init(data){
             this.provincesList();
-            if(!this.placeForm.owner) this.getGroupId();
+            if(this.$route.params.id){
+                new Promise((resolve) => {
+                    this.initDetail(resolve);
+                }).then(res => {
+                    this.placeForm = this.resData;
+                    this.groupUserList(this.placeForm.owner);
+                    this.placeForm.placeContactData.forEach(item => {
+                        this.place_contact.push(item.userId);
+                    })
+                })
+            }
         },
 
         //添加 编辑 场所
         placeSureBtn(){
-            if(!this.placeForm.displayName){
-                this.$message.warning('请输入场所名称~');
-                return
-            }
-            this.btnLoading = true;
-            if(!this.placeForm.id){
-                //添加场所
-                placeCreated(this.placeForm).then(res => {
-                    this.placeRes(res);
-                })
-            }else{
-                //编辑场所
-                placeUpdate(this.placeForm).then(res => {
-                    this.placeRes(res);
-                })
-            }
+            this.$refs.placeForm.validate((valid) => {
+                
+                if (valid) {
+                    this.btnLoading = true;
+                    let s = [];
+                    for(let i = 0; i< this.place_contact.length; i++){
+                        s.push({
+                            userId: this.place_contact[i],
+                            placeId: this.placeForm.placeContactData && this.placeForm.placeContactData[i] ? Number(this.$route.params.id) : null,
+                            id: this.placeForm.placeContactData && this.placeForm.placeContactData[i] ? this.placeForm.placeContactData[i].id : null
+                        })
+                    }
+                    this.placeForm.placeContactData = s;
+                    placeCreated(this.placeForm).then(res => {
+                        this.placeRes(res);
+                    })
+                }else{
+                    this.$message.warning('必填项未填写完整~');
+                }
+            })
         },
 
         placeRes(res){
             this.btnLoading = false;
             if(res.code == this.$successCode){
-                this.addPlaceDialog = false;
-                this.$message.success(res.message);
-                this.$parent.init();
+                this.$message.success({
+                    message: '操作成功~',
+                    duration: 1000,
+                    onClose: () => {
+                        this.$router.push('/place/index');
+                    }
+                });
             }
         },
 
@@ -171,13 +232,12 @@ export default {
             if (location) {       
                 this.$set(this.placeForm, 'longitude', Number(location.lng));   //经度
                 this.$set(this.placeForm, 'latitude', Number(location.lat));    //纬度 
+                this.geocoding();
             }
         },
 
-        //关闭地图  
-        hideMap(){
-            //根据经纬度 获取行政编号
-            this.showMap = false;
+        //根据经纬度 获取行政编号  
+        geocoding(){
             if(!this.placeForm.longitude) return
             let script = document.createElement("script")
             script.src = `http://api.map.baidu.com/reverse_geocoding/v3/?ak=WpKtslGW53yQ5v1ehnCYKVqSlloS7R7p&output=json&coordtype=wgs84ll&location=${this.placeForm.latitude},${this.placeForm.longitude}&callback=showLocation`
@@ -238,11 +298,14 @@ export default {
                     this.$set(this.placeForm, 'cityNo', '');
                     this.$set(this.placeForm, 'areaName', '');
                     this.$set(this.placeForm, 'areaNo', '');
+                    this.$set(this.region, 'city', []);
+                    this.$set(this.region, 'areas', []);
                     break;
                 case 'cityName':
                     obj = this.region.city;
                     this.$set(this.placeForm, 'areaName', '');
                     this.$set(this.placeForm, 'areaNo', '');
+                    this.$set(this.region, 'areas', []);
                     break;
                 case 'areaName':
                     obj = this.region.areas;
@@ -258,15 +321,6 @@ export default {
             this.placeForm.longitude = '';
             this.placeForm.latitude = '';
             this.addressJoin = this.placeForm.proName + this.placeForm.cityName + this.placeForm.areaName;
-        },
-
-        //查询自己的组织id
-        getGroupId(){
-            organizationSearchId(Number(this.$store.state.user.loginData.id)).then(res => {
-                if(res.code === this.$successCode){
-                    this.placeForm.owner = res.obj.id;
-                }
-            })
         }
     },
     components: {

@@ -1,13 +1,16 @@
 <template>
     <div class="map">
-        <el-input
-            id="suggestId"
-            prefix-icon="iconfont"
-            v-model="keyword"
-            v-if="showSearch"
-            placeholder="请输入关键字,选定后搜索"
-            @change="setPlace(keyword)"
-        ></el-input>
+        <div class="search-wrap" v-if="showSearch">
+            <el-input
+                id="suggestId"
+                prefix-icon="el-icon-search"
+                v-model="keyword"
+                size="small"
+                placeholder="请输入关键字,选定后搜索"
+                @change="setPlace(keyword)">
+            </el-input>
+            <el-button type="primary" size="small" @click="$parent.$parent.showMap = false">确定</el-button>
+        </div>
         <div id="map-core"></div>
     </div>
 </template>
@@ -57,20 +60,6 @@ export default {
                 [lng, lat] = [localStorage.lng, localStorage.lat];
             }
             this.map.centerAndZoom(new BMap.Point(lng, lat), 11);
-
-            // 地图缩放控件
-            const topLeftControl = new BMap.ScaleControl({
-                anchor: BMAP_ANCHOR_BOTTOM_LEFT,
-            });
-            // 城市选择控件
-            // const cityListControl = new BMap.CityListControl({
-            //     anchor: BMAP_ANCHOR_TOP_RIGHT,
-            // });
-            // 比例尺控件
-            const topLeftNavigation = new BMap.NavigationControl();
-            this.map.addControl(topLeftControl);
-            this.map.addControl(topLeftNavigation);
-            // this.map.addControl(cityListControl);
             
             // 鼠标缩放
             if(!this.disableZoom) this.map.enableScrollWheelZoom(true);
@@ -227,9 +216,22 @@ export default {
     height: 100%;
     font-size: 14px;
     position: relative;
+    .search-wrap{
+        position: absolute;
+        width: 100%;
+        top: 10px;
+        left: 10px;
+        z-index: 9999;
+        .el-input{
+            width: 400px;
+        }
+        .el-button{
+            margin-left: 6px;
+        }
+    }
     #map-core {
-        width: 600px;
-        height: 400px;
+        width: 100%;
+        height: 100%;
         margin-top: 10px;
     }
     .search {

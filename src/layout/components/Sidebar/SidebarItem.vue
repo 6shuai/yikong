@@ -1,15 +1,15 @@
 <template>
   <div v-if="!item.hidden" class="menu-wrapper">
     <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
+      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, 'path')">
+        <el-menu-item :index="resolvePath(onlyOneChild.name, 'name')" :class="{'submenu-title-noDropdown':!isNest}">
           <item v-if="!onlyOneChild.noShowingChildren" :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
           <item v-else :title="onlyOneChild.meta.title" />
         </el-menu-item>
       </app-link>
     </template>
 
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+    <el-submenu v-else ref="subMenu" :index="resolvePath(item.name, 'name')" popper-append-to-body>
       <template slot="title">
         <item v-if="item.meta && item.meta.icon && item.meta.icon!='Home'" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
         <item v-else icon="menu-item" :title="item.meta.title" />
@@ -19,7 +19,7 @@
         :key="child.path"
         :is-nest="true"
         :item="child"
-        :base-path="resolvePath(child.path)"
+        :base-path="resolvePath(child.path, 'path')"
         class="nest-menu"
       />
     </el-submenu>
@@ -84,14 +84,18 @@ export default {
 
       return false
     },
-    resolvePath(routePath) {
-      if (isExternal(routePath)) {
+    resolvePath(routePath, type) {
+      if(type === 'path'){
+        if (isExternal(routePath)) {
+          return routePath
+        }
+        if (isExternal(this.basePath)) {
+          return this.basePath
+        }
+        return path.resolve(this.basePath, routePath)
+      }else{
         return routePath
       }
-      if (isExternal(this.basePath)) {
-        return this.basePath
-      }
-      return path.resolve(this.basePath, routePath)
     }
   }
 }
