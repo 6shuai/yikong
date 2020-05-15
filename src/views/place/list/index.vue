@@ -12,17 +12,21 @@
                             class="place-list" 
                             shadow="always"
                         >
-                            <div class="place-img">
-                                <img :src="item.defaultShow" class="image">
+                            <div 
+                                class="place-img" 
+                                :style="{height: imageH+'px'}"
+                                @click.stop="$router.push(`/place/details/${item.id}`)"
+                            >
+                                <img :style="{height: imageH+'px'}" :src="item.defaultShow" class="image">
                                 <!-- 收藏 -->
                                 <el-button 
                                     class="icon-button collect" 
                                     size="small" 
-                                    :type="item.isFavorite ? 'warning' : 'danger'" 
+                                    :type="item.isFavorite ? 'warning' : 'info'" 
                                     slot="reference" 
                                     :icon="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'" 
                                     :title="item.isFavorite ? '取消收藏' : '收藏'"
-                                    @click="handleCollect(item, index)"
+                                    @click.stop="handleCollect(item, index)"
                                 >
                                 </el-button>
                             
@@ -39,12 +43,11 @@
                                     </span>
                                 </div>
                                 <div class="bottom clearfix">
-                                    <div class="adress" title="点击查看位置" @click="currentPlace=item;showMap=true">
-                                        <i class="el-icon-location-information"></i>{{item.address || addressJoint(item)}}
+                                    <div class="adress overflow" :title="addressJoint(item) + item.address" @click="$refs.mapDialog.showMapDialog(item)">
+                                        <font-awesome-icon :icon="['fas', 'location-arrow']" />{{addressJoint(item)}}  {{item.address}}
                                     </div>
-                                    <div class="place-logo">
-                                        <img v-if="item.logo" :src="item.logo" :alt="item.organizationName" :title="item.organizationName">
-                                        <span v-else>{{item.organizationName}}</span>
+                                    <div class="place-logo" :title="item.organizationName">
+                                        <span><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.organizationName}}</span>
                                     </div>
                                 </div>
                             </div>                    
@@ -65,24 +68,7 @@
         </div>
 
         <!-- 查看地理位置  地图 -->
-        <el-dialog
-            width="640px"
-            :title="currentPlace.displayName"
-            :visible.sync="showMap"
-            append-to-body>
-            <p>{{currentPlace.address}}</p>
-            <div style="width: 600px;height: 400px">
-                <the-map 
-                    v-if="showMap"
-                    :lng="currentPlace.longitude"
-                    :lat="currentPlace.latitude"
-                    :visible="true"
-                ></the-map>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="showMap=false">确 定</el-button>
-            </span>
-        </el-dialog>
+        <map-dialog ref="mapDialog"></map-dialog>
 
         <div id="allmap"></div>
     </div>
@@ -93,6 +79,7 @@ import { placeList } from '@/api/place';
 import Search from './components/Search';
 import TheMap from '@/components/BaiduMap/index';
 import BMap from 'BMap'
+import MapDialog from '@/components/BaiduMap/MapDialog';
 import { screenSizeWatch } from '@/mixins';
 import { placeIsFavorite } from '@/views/place/mixins';
 
@@ -190,7 +177,8 @@ export default {
     },
     components: {
         Search,
-        TheMap
+        TheMap,
+        MapDialog
     }
 }
 </script>

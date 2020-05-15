@@ -7,7 +7,10 @@ import Layout from '@/layout';
 const moduleMap = {
 	'Home': 'home/index',
 	'Place': 'place/list/index',                          //场所管理 场所列表
+
 	'Screen': 'screen/index',                          	  //屏幕管理  
+
+	'Content': 'content/index',                          	  //内容管理  
 	
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理

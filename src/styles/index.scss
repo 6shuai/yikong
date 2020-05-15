@@ -97,8 +97,44 @@ li{
   white-space: nowrap;
 }
 
+.text-hover:hover{
+  color: $--color-primary !important;
+}
+
 .el-page-header__left:hover{
   color: $--color-primary;
+}
+
+.detail-header-wrap{
+  overflow: hidden;
+  .el-page-header__left:hover{
+      color: $--color-primary;
+  }
+  .el-page-header{
+      float: left;
+      width: 100px;
+  }
+  .header-right{
+      float: right;
+      width: 250px;
+      span{
+          cursor: pointer;
+          &:hover{
+              color: $--color-primary;
+              & i{
+                  color: $--color-primary;
+              }
+          }
+          i{
+              margin-right: 2px;
+              color: #999;
+          }
+      }
+  }
+  .title{
+      margin: 0 250px 0 100px;
+      text-align: center;
+  }
 }
 
 // margin-top

@@ -3,6 +3,7 @@ export const screenSizeWatch = {
     data(){
         return {
             placeW: '25%',                      //卡片宽度
+            imageH: 170,                        //卡片 图片高度
         }
     },
     mounted() {
@@ -19,20 +20,69 @@ export const screenSizeWatch = {
         //监听id为test的元素 大小变化
         erd.listenTo(document.getElementById("app-main-wrap"), function(element) {
             let width = element.offsetWidth;
-            if(width > 1400){
+            if(width >= 1600){
                 _this.placeW = '20%';
-            }else if(width > 1150){
+                _this.imageH = parseInt((width / 5) / 1.7);
+            }else if(width >= 1200){
                 _this.placeW = '25%';
-            }else if(width > 840){
+                _this.imageH = parseInt((width / 4) / 1.7);
+            }else if(width >= 840){
                 _this.placeW = '33.3%';
-            }else if(width > 560){
+                _this.imageH = parseInt((width / 3) / 1.7);
+            }else if(width >= 580){
                 _this.placeW = '50%';
+                _this.imageH = parseInt((width / 2) / 1.7);
             }else {
                 _this.placeW = '100%';
+                _this.imageH = parseInt((width / 1) / 1.7);
             }
         });
     },
 }
+
+/**
+ * 用于递归判断两个对象是否一致，以区分是否修改
+ * @param {*} oldObj 
+ * @param {*} newObj 
+ * 返回false：不相等
+ */
+export const objsDifferMethod = {
+    data(){
+        return {
+            oldParams: {}, 
+            diffStatus: true        
+        }
+    },
+    methods: {
+        objsDiffer(oldObj, newObj){
+            var aProps = Object.getOwnPropertyNames(oldObj);
+            var bProps = Object.getOwnPropertyNames(newObj);
+            //判断属性名的length是否一致
+            if (aProps.length != bProps.length) {
+                this.diffStatus = false;
+            }
+            //循环取出属性名，再判断属性值是否一致
+            for (var i = 0; i < aProps.length; i++) {
+                var propName = aProps[i];
+                
+                if ( oldObj[propName] instanceof Array && newObj[propName] instanceof Array ) {
+                    if( oldObj[propName].length != newObj[propName].length ){
+                      this.diffStatus = false
+                    }else{
+                        for(var j = 0; j < oldObj[propName].length; j++){
+                            this.objsDiffer(oldObj[propName][j], newObj[propName][j]);
+                        }
+                    }
+                }else if (propName !== '__ob__' && oldObj[propName] !== newObj[propName]) {
+                    this.diffStatus = false;
+                }
+            }
+            return this.diffStatus;
+        }
+        
+    }
+}
+
 
 // 获取所有品牌(组织)列表 
 import { organizationList } from '@/api/user';
@@ -55,13 +105,17 @@ import { placeGroupUserList } from '@/api/place';
 export const getOrganizationUserList = {
     data(){
         return {
-            userData: []  
+            userData: []
         }
     },
     methods: {
-        groupUserList(id){
-            placeGroupUserList(id).then(res =>{
+        groupUserList(id, resolve){
+            placeGroupUserList(id, resolve).then(res =>{
+                res.obj.forEach(item => {
+                    item.description = '';
+                })
                 this.userData = res.obj;
+                if(resolve) return resolve('success');
             })
         }
     },

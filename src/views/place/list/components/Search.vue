@@ -11,10 +11,11 @@
         </div>
         <div class="search-list-wrap">
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">场所名称</el-col>
+                <el-col :md="2" :sm="24" class="title">场所名称</el-col>
                 <el-col :md="22" :sm="24">
                     <el-input 
                         size="small" 
+                        class="dispaly-name"
                         v-model="searchParams.displayName" 
                         placeholder="场所名"
                         @input="searchPlace"
@@ -22,13 +23,13 @@
                 </el-col>
             </el-row>
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">地区</el-col>
+                <el-col :md="2" :sm="24" class="title">地区</el-col>
                 <el-col :md="22" :sm="24">
                     <select-region @selectArea="searchParams={...searchParams, ...$event};searchPlace()"></select-region>
                 </el-col>
             </el-row>
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">品牌</el-col>
+                <el-col :md="2" :sm="24" class="title">品牌</el-col>
                 <el-col :md="22" :sm="24">
                     <el-button 
                         :class="{focus: !searchParams.owner}" 
@@ -46,7 +47,7 @@
                 </el-col>
             </el-row>
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">场所类型</el-col>
+                <el-col :md="2" :sm="24" class="title">场所类型</el-col>
                 <el-col :md="22" :sm="24">
                     <el-button 
                         :class="{focus: !searchParams.placeType}" 
@@ -64,7 +65,7 @@
                 </el-col>
             </el-row>
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">收藏</el-col>
+                <el-col :md="2" :sm="24" class="title">收藏</el-col>
                 <el-col :md="22" :sm="24">
                     <el-button 
                         :class="{focus: !searchParams.isFavorite}" 
@@ -116,6 +117,7 @@ export default {
             }
             .region-select{
                 width: 128px;
+                margin-right: 10px;
             }
             .focus{
                 color: #8484FF;

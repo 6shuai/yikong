@@ -79,7 +79,7 @@ export default {
                 }
 
                 if (difference === null) {
-                    this.$message.error('你没有做任何更改！');
+                    this.$message.warning('你没有做任何更改~');
                 } else {
                     difference.id = this.rawData.id;
 

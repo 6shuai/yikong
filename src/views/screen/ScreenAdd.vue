@@ -1,5 +1,5 @@
 <template>
-    <el-card>
+    <el-card class="screen-add-wrap">
         <el-page-header @back="$router.go(-1)">
             <div slot="content">
                 {{$route.params.id ? '编辑大屏' : '创建大屏'}}
@@ -17,13 +17,17 @@
                         <el-input v-model="screenParams.displayName" placeholder="大屏名称"></el-input>
                     </el-form-item>
                     <el-form-item label="场所" prop="place">
-                        <el-select filterable v-model="screenParams.place" placeholder="请选择场所">
-                            <el-option label="场所1" :value="1"></el-option>
-                            <el-option label="场所2" :value="2"></el-option>
+                        <el-select filterable v-model="screenParams.place" placeholder="请选择场所" style="width:100%">
+                            <el-option 
+                                v-for="item in placeData" 
+                                :label="item.displayName" 
+                                :key="item.id"
+                                :value="item.id">
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="品牌" prop="owner">
-                        <el-select v-model="screenParams.owner" @change="groupUserList(placeForm.owner)" placeholder="请选择所属品牌" style="width:100%">
+                        <el-select v-model="screenParams.owner" @change="groupUserList(screenParams.owner)" placeholder="请选择所属品牌" style="width:100%">
                             <el-option 
                                 v-for="item in groupData" 
                                 :key="item.id"
@@ -37,8 +41,12 @@
                     </el-form-item>
                     <el-form-item label="点距规格" prop="dotPitch">
                         <el-select v-model="screenParams.dotPitch" placeholder="请选择点距规格">
-                            <el-option label="规格1" :value="1"></el-option>
-                            <el-option label="规格2" :value="2"></el-option>
+                            <el-option 
+                                v-for="item in dotpitchData" 
+                                :key="item.id"
+                                :label="item.displayName" 
+                                :value="item.id">
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="分辨率(像素)" class="is-required">
@@ -77,42 +85,63 @@
                     </el-form-item>
                     <el-form-item label="分辨率(宽高比)" prop="aspectRatio">
                         <el-select v-model="screenParams.aspectRatio" placeholder="请选择分辨率">
-                            <el-option label="16 : 9" :value="1"></el-option>
-                            <el-option label="21 : 9 " :value="2"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="登录用户名" prop="account">
-                        <el-row>
-                            <el-col :span="18">
-                                <el-input v-model="screenParams.account" placeholder="登录用户名"></el-input>
-                            </el-col>
-                            <el-col :span="4" :offset="2">
-                                <el-button size="mini" type="info" @click="randomAccount">自动生成</el-button>
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item label="登录密码" prop="password">
-                        <el-row>
-                            <el-col :span="18">
-                                <el-input v-model="screenParams.password" placeholder="登录密码"></el-input>
-                            </el-col>
-                            <el-col :span="4" :offset="2">
-                                <el-button size="mini" type="info" @click="randomPassword">自动生成</el-button>
-                            </el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item label="大屏截图" prop="placeShowData">
-                        <upload-img :isArray="true" :imgList="screenParams.placeShowData"></upload-img>
-                    </el-form-item>
-                    <el-form-item label="联系人">
-                        <el-select v-model="place_contact" multiple placeholder="请选择联系人" style="width:100%">
                             <el-option 
-                                v-for="item in userData" 
-                                :key="item.userId"
-                                :label="item.accountName" 
-                                :value="item.userId">
+                                v-for="item in aspectRatioData" 
+                                :key="item.id"
+                                :label="item.width + ' : ' + item.height"
+                                :value="item.id">
                             </el-option>
                         </el-select>
+                    </el-form-item>
+                    <div v-if="!screenParams.id || showUserInput">
+                        <el-form-item label="登录用户名" prop="account">
+                            <el-row>
+                                <el-col :span="18">
+                                    <el-input v-model="screenParams.account" placeholder="登录用户名"></el-input>
+                                </el-col>
+                                <el-col :span="4" :offset="2">
+                                    <el-button size="mini" type="info" @click="randomAccount">自动生成</el-button>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="登录密码" prop="password">
+                            <el-row>
+                                <el-col :span="18">
+                                    <el-input v-model="screenParams.password" placeholder="登录密码"></el-input>
+                                </el-col>
+                                <el-col :span="4" :offset="2">
+                                    <el-button size="mini" type="info" @click="randomPassword">自动生成</el-button>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                    </div>
+                    <el-form-item v-if="screenParams.id && !showUserInput" label="登录用户名">
+                        <span>{{screenParams.account}}</span>
+                        <el-button 
+                            size="mini" 
+                            type="primary" 
+                            style="margin-left: 15px"
+                            @click="showUserInput=true;screenParams.isUpdateAccount=1">编辑
+                        </el-button>
+                    </el-form-item>
+                    <el-form-item label="实景图片" prop="screenShowData">
+                        <upload-img 
+                            :isArray="true" 
+                            :imgList="screenParams.screenShowData"
+                            @deleteImg="ShowDelete"
+                        ></upload-img>
+                    </el-form-item>
+                    <el-form-item label="联系人"  v-if="userData && userData.length">
+                        <ul class="contact-wrap">
+                            <li class="clearfix" v-for="(item, index) in userData" :key="index" >
+                                <div class="left" >
+                                    <el-checkbox :border="true" :value="isChecked(item)" @change="selectedContact($event, index)"><span class="name">{{item.accountName}}</span></el-checkbox>
+                                </div>
+                                <div class="right">
+                                    <el-input v-model="item.description" placeholder="备注"></el-input>
+                                </div>
+                            </li>
+                        </ul>
                     </el-form-item>
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="screenSureBtn">提  交</el-button>
@@ -123,10 +152,12 @@
     </el-card>
 </template>
 <script>
-import { getOrganizationList, getOrganizationUserList } from '@/mixins';
+import { screenPlaceList, screenCreated, screenShowDelete, screenContactDelete } from '@/api/screen';
+import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
+import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import uploadImg from '@/components/Upload/UploadImg';
 export default {
-    mixins: [getOrganizationList, getOrganizationUserList],
+    mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getDotPitch, getAspectRatio, getScreenDetail],
     data(){
         // 校验密码是否  包含大写字母、小写字母、数字和特殊字符其中 两种 不能低于八位
 		let validatePass = (rule, value, callback) => {
@@ -140,12 +171,16 @@ export default {
 		};
         return {
             screenParams: {
-                placeShowData: [
+                screenShowData: [
                     {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
+                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'}
                 ]
             },
-            place_contact: [],      //联系人
-            btnLoading: false,                
+            screen_contact: [],           //联系人
+            btnLoading: false,     
+            placeData: [],                //场所列表         
+            showUserInput: false,         //是否显示用户名密码框
             screenRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入大屏名称~' }],
                 place: [{ required: true, trigger: "change", message: '请选择场所~' }],
@@ -158,11 +193,139 @@ export default {
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
                 account: [{ required: true, trigger: "blur", message: '请输入登录用户名~' }],
                 password: [{ required: true, trigger: "blur", message: '请输入登录密码~' },{ validator: validatePass, trigger: "blur" },],
-                placeShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }]
+                screenShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }]
             }
         }
     },
+    mounted() {
+        this.init();
+    },
     methods: {
+        init(){
+            this.getplaceList();
+            if(this.$route.params.id){
+                new Promise((resolve) => {
+                    this.initDetail(resolve);
+                }).then(res => {
+                    this.screenParams = this.resData;
+                    this.screenParams.place = this.resData.placeId;
+                    this.contactList();
+                })
+            }
+        },
+
+        //联系人列表
+        contactList(){
+            new Promise((resolve) => {
+                this.groupUserList(this.screenParams.owner, resolve);
+            }).then(res => {
+                this.screenParams.screenContactData.forEach(item => {
+                    item.screenId = Number(this.$route.params.id);
+                    this.screen_contact.push(item.userId);
+                    var index = this.indexOf(item.userId, this.userData, 'userId');
+                    this.userData[index].description = item.description;
+                })
+                this.oldParams = JSON.parse(JSON.stringify(this.screenParams));
+            })
+        },
+
+        //提交
+        screenSureBtn(){
+            this.$refs.screenParams.validate((valid) => {
+                if (valid) {
+                    this.screenParams.screenContactData = this.contactParams();
+                    this.diffStatus = true;
+                    if(this.screenParams.id && this.objsDiffer(this.oldParams, this.screenParams)){
+                        this.$message.warning('你没有做任何更改~');
+                        return
+                    }
+                    this.btnLoading = true;
+                    screenCreated(this.screenParams).then(res => {
+                        this.btnLoading = false;
+                        if(res.code === this.$successCode){
+                            this.$router.push('/screen/index');
+                            this.$message.success('操作成功~');
+                        }
+                    })
+                }else{
+                    this.$message.warning('必填项未填写完整~');
+                }
+            })
+        },
+
+        //联系人参数 整理
+        contactParams(){
+            let s = [];
+            for(let i = 0; i< this.screen_contact.length; i++){
+                var index = this.indexOf(this.screen_contact[i], this.userData, 'userId');
+                if(this.screenParams.screenContactData && this.screenParams.screenContactData[i]){
+                    this.screenParams.screenContactData[i].description = index>-1 ? this.userData[index].description : '';
+                    s.push(this.screenParams.screenContactData[i]);
+                }else{
+                    s.push({
+                        userId: this.screen_contact[i],
+                        description: index>-1 ? this.userData[index].description : ''
+                    });
+                }
+            }
+            return s;
+        },
+
+        //场所列表
+        getplaceList(){
+            screenPlaceList().then(res => {
+                this.placeData = res.obj;
+            })
+        },
+
+        //删除实景图片
+        ShowDelete(id, resolve){
+            screenShowDelete(id).then(res => {
+                if(res.code === this.$successCode){
+                    resolve('success');
+                }
+            })
+        },
+
+        //选择联系人
+        selectedContact(value, index){
+            let userId = this.userData[index].userId;
+            if(value){
+                this.screen_contact.push(userId);
+            }else{
+                this.screen_contact.splice(this.indexOf(userId, this.screen_contact), 1);
+                this.screenParams.screenContactData.forEach((item, index) => {
+                    if(item.userId === userId){
+                        this.contactDelete(item.id);
+                        this.screenParams.screenContactData.splice(index, 1);
+                    }
+                })
+            }
+        },
+
+        //查询下标
+        indexOf(val, arr, key){
+            for(var i = 0; i < arr.length; i++){
+                if(key){
+                    if(arr[i][key] == val) {return i;}
+                }else if(arr[i] == val){return i;}
+            }
+            return -1;
+        },
+
+        //删除联系人
+        contactDelete(id){
+            screenContactDelete(id).then(res =>{
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~');
+                }
+            })
+        },
+
+        isChecked(item){
+            return this.screen_contact.includes(item.userId);
+        },
+
         //用户名自动生成   Admin+6位随机数字
         randomAccount(){
             let n = Math.random().toString().slice(-6);
@@ -229,17 +392,6 @@ export default {
                 }  
                 return modes;  
             }  
-        }, 
-        
-        //提交
-        screenSureBtn(){
-            this.$refs.screenParams.validate((valid) => {
-                if (valid) {
-
-                }else{
-                    this.$message.warning('必填项未填写完整~');
-                }
-            })
         }
     },
     components: {
@@ -247,3 +399,33 @@ export default {
     }
 }
 </script>
+<style lang="scss" scope>
+    .screen-add-wrap{
+        .edit-btn{
+            line-height: 1;
+            margin: -3px 0 0 15px;
+        }
+        .contact-wrap{
+            li{
+                padding-bottom: 10px;
+                .left{
+                    width: 142px;
+                    float: left;
+                    .name{
+                        display: inline-block;
+                        width: 85px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        line-height: 12px;
+                    }
+                }
+                .right{
+                    margin-left: 10px;
+                    width: calc(100% - 152px);
+                    float: left;
+                }
+            }
+        }
+    }
+</style>

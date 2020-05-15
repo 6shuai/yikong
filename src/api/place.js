@@ -36,3 +36,12 @@ export function placeFavorite(data) { return put(`/place/isFavorite${data}`) }
 //场所管理  查询场所详情
 export function placeDetail(data) { return get(`/place/placeDetail/${data}`) }
 
+//场所管理  删除场所图片
+export function placeShowDelete(data) { return del(`/place/placeShow/${data}`) }
+
+//场所管理  删除场所联系人
+export function placeContactDelete(data) { return del(`/place/placeContact/${data}`) }
+
+//场所管理  设置图片为列表 封面默认图片
+export function placeShowDefault(data) { return put(`place/placeShow/${data}`) }
+

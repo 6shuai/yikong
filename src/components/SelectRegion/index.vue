@@ -82,6 +82,7 @@ export default {
         cityList(){
             this.$set(this.params, 'cityNo', '');
             this.$set(this.params, 'areaNo', '');
+            this.$set(this.region, 'city', []);
             this.$set(this.region, 'areas', []);
             if(!this.params.proNo) return
             placeCitysData(this.params.proNo).then(res => {
@@ -91,7 +92,8 @@ export default {
 
         //县
         areasList(){
-            this.$set(this.region, 'areas', '');
+            this.$set(this.params, 'areaNo', '');
+            this.$set(this.region, 'areas', []);
             if(!this.params.cityNo) return
             placeAreasData(this.params.cityNo).then(res => {
                 this.$set(this.region, 'areas', res.obj);

@@ -13,7 +13,7 @@
             <el-row class="search-list">
                 <el-col :md="2" :sm="24"  class="title">大屏名称</el-col>
                 <el-col :md="22" :sm="24">
-                    <el-input size="small" placeholder="大屏名称"></el-input>
+                    <el-input class="dispaly-name" size="small" placeholder="大屏名称"></el-input>
                 </el-col>
             </el-row>
             <el-row class="search-list">
@@ -26,15 +26,17 @@
                 <el-col :md="2" :sm="24"  class="title">点距规格</el-col>
                 <el-col :md="22" :sm="24">
                     <el-select 
+                        clearable
                         size="small"
                         placeholder="点距规格"
-                        v-model="searchParams.dot_pitch"
+                        v-model="searchParams.dotPitch"
+                        @change="searchScreen"
                     >
                         <el-option
-                            v-for="item in ['p3','p4']"
-                            :key="item"
-                            :label="item"
-                            :value="item">
+                            v-for="item in dotpitchData"
+                            :key="item.id"
+                            :label="item.displayName"
+                            :value="item.id">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -43,15 +45,17 @@
                 <el-col :md="2" :sm="24"  class="title">宽高比</el-col>
                 <el-col :md="22" :sm="24">
                     <el-select 
+                        clearable
                         size="small"
                         placeholder="宽高比"
-                        v-model="searchParams.dot_pitch"
+                        v-model="searchParams.aspectRatio"
+                        @change="searchScreen"
                     >
                         <el-option
-                            v-for="item in ['16 : 9','16 : 10']"
-                            :key="item"
-                            :label="item"
-                            :value="item">
+                            v-for="item in aspectRatioData"
+                            :key="item.id"
+                            :label="item.width + ' : ' + item.height"
+                            :value="item.id">
                         </el-option>
                     </el-select>
                 </el-col>
@@ -77,31 +81,55 @@
             <el-row class="search-list">
                 <el-col :md="2" :sm="24"  class="title">状态</el-col>
                 <el-col :md="22" :sm="24">
-                    <el-button class="focus" size="small">不限</el-button>
-                    <el-button size="small">在线</el-button>
-                    <el-button size="small">离线</el-button>
+                    <el-button 
+                        :class="{focus: !searchParams.state && searchParams.state !== 0}" 
+                        @click="$delete(searchParams, 'state');searchScreen()" 
+                        size="small">不限
+                    </el-button>
+                    <el-button
+                        size="small"
+                        v-for="item in statusList"
+                        :key="item.id"
+                        :class="{focus: searchParams.state == item.id}"
+                        @click="$set(searchParams, 'state', item.id);searchScreen()"
+                        :value="item.id">{{item.label}}
+                    </el-button>
                 </el-col>
             </el-row>
             <el-row class="search-list">
                 <el-col :md="2" :sm="24"  class="title">收藏</el-col>
                 <el-col :md="22" :sm="24">
-                    <el-button class="focus" size="small">不限</el-button>
-                    <el-button size="small">已收藏</el-button>
+                    <el-button 
+                        :class="{focus: !searchParams.isFavorite}" 
+                        @click="$delete(searchParams, 'isFavorite');searchScreen()" 
+                        size="small">不限
+                    </el-button>
+                    <el-button 
+                        size="small" 
+                        :class="{focus: searchParams.isFavorite}" 
+                        @click="$set(searchParams, 'isFavorite', 1);searchScreen()"
+                        >已收藏
+                    </el-button>
                 </el-col>
             </el-row>
         </div>
     </el-card>
 </template>
 <script>
-import { placeProvincesData, placeCitysData, placeAreasData } from '@/api/place';
 import { getOrganizationList } from '@/mixins';
+import { getDotPitch, getAspectRatio } from '@/views/screen/mixins';
 import SelectRegion from '@/components/SelectRegion/index';
 
 export default {
-    mixins: [getOrganizationList],
+    mixins: [getOrganizationList, getDotPitch, getAspectRatio],
     data(){
         return{
-            searchParams: {}
+            searchParams: {},
+            statusList: [
+                { id: 0, label: '建设中' },
+                { id: 1, label: '在线' },
+                { id: 2, label: '离线' }
+            ]
         }
     },
     mounted() {
@@ -129,6 +157,7 @@ export default {
             }
             .region-select{
                 width: 128px;
+                margin-right: 10px;
             }
             .focus{
                 color: #8484FF;

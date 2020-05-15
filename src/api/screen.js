@@ -1,0 +1,31 @@
+import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+
+//屏幕管理  获取所有点距规格数据
+export function screenDotPitchList(data) { return get('/screen/dotPitch', data) }
+
+//屏幕管理  获取所有场所ID和名称
+export function screenPlaceList(data) { return get('/screen/place', data) }
+
+//屏幕管理  获取所有宽高比
+export function screenAspectRatioList(data) { return get('/screen/aspectRatio', data) }
+
+//屏幕管理  列表
+export function screenList(data) { return get('/screen/', data) }
+
+//屏幕管理  创建屏幕
+export function screenCreated(data) { return post('/screen/', data) }
+
+//屏幕管理  删除屏幕
+export function screenDelete(data) { return del(`/screen/${data}`) }
+
+//屏幕管理  屏幕详情
+export function screenDetail(data) { return get(`/screen/screenDetail${data}`) }
+
+//屏幕管理  收藏 或 取消收藏
+export function screenFavorite(data) { return put(`/screen/isFavorite${data}`) }
+
+//屏幕管理  删除实景图片
+export function screenShowDelete(data) { return del(`/screen/screenShow/${data}`) }
+
+//屏幕管理  删除联系人
+export function screenContactDelete(data) { return del(`/screen/screenContact/${data}`) }

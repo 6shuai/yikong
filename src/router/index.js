@@ -42,7 +42,7 @@ export const constantRoutes = [
     component: Layout,
     children: [{
       path: '/',
-      name: 'Home',
+      name: 'home',
       component: () => import('@/views/home/index'),
       meta: { title: '首页', icon: 'home' }
     }]
@@ -64,7 +64,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    meta: { title: '屏幕管理' },
+    meta: { title: '场所管理' },
     children: [{
       path: '/place/add',
       name: 'Place--add',
@@ -78,7 +78,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    meta: { title: '屏幕管理' },
+    meta: { title: '场所管理' },
     children: [{
       path: '/place/edit/:id',
       name: 'Place--edit',
@@ -138,6 +138,48 @@ export const constantRoutes = [
       name: 'Screen--details',
       component: () => import('@/views/screen/ScreenDetails'),
       meta: { title: '屏幕详情' }
+    }],
+    hidden: true
+  },
+
+  //资源管理  创建资源
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '资源管理' },
+    children: [{
+      path: '/content/add',
+      name: 'Content--add',
+      component: () => import('@/views/content/ContentAdd'),
+      meta: { title: '创建资源' }
+    }],
+    hidden: true
+  },
+
+  //资源管理  编辑资源
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '资源管理' },
+    children: [{
+      path: '/content/edit/:id',
+      name: 'Content--edit',
+      component: () => import('@/views/content/ContentAdd'),
+      meta: { title: '编辑资源' }
+    }],
+    hidden: true
+  },
+
+  //资源管理  资源详情
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '资源管理' },
+    children: [{
+      path: '/content/details/:id',
+      name: 'Content--details',
+      component: () => import('@/views/content/ContentDetails'),
+      meta: { title: '资源详情' }
     }],
     hidden: true
   },

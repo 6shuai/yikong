@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="place-add-wrap">
         <el-card class="template-card">
             <el-page-header @back="$router.go(-1)">
                 <div slot="content">
@@ -41,26 +41,38 @@
                             <el-input type="textarea" :rows="3" v-model="placeForm.description" placeholder="场所描述"></el-input>
                         </el-form-item>
                         <el-form-item label="地理位置">
-                            <el-input @focus="showMap=true" :value="`${placeForm.longitude ? placeForm.longitude + ' , ' : ''}${placeForm.latitude || ''}`" placeholder="场所经纬度"></el-input>
+                            <el-input 
+                                @focus="showMap=true" 
+                                :value="`${placeForm.proName || ''}${placeForm.cityName ? ' - ' + placeForm.cityName : ''}${placeForm.areaName ? ' - ' + placeForm.areaName : ''}`" 
+                                placeholder="地理位置"
+                            ></el-input>
                         </el-form-item>
                         <el-form-item label="详细地址">
                             <el-input v-model="placeForm.address" placeholder="详细地址"></el-input>
                         </el-form-item>
                         <el-form-item label="展示图片" prop="placeShowData">
-                            <upload-img :isArray="true" :imgList="placeForm.placeShowData"></upload-img>
+                            <upload-img 
+                                :isArray="true" 
+                                :imgList="placeForm.placeShowData"
+                                :showCover="true"
+                                @deleteImg="ShowDelete"
+                                @showDefault="showDefault"
+                            ></upload-img>
                         </el-form-item>
-                        <el-form-item label="场所微信号二维码">
+                        <el-form-item label="场所微信二维码">
                             <upload-img :isArray="false" imgList=""></upload-img>
                         </el-form-item>
-                        <el-form-item label="联系人">
-                            <el-select v-model="place_contact" multiple placeholder="请选择联系人" style="width:100%">
-                                <el-option 
-                                    v-for="item in userData" 
-                                    :key="item.userId"
-                                    :label="item.accountName" 
-                                    :value="item.userId">
-                                </el-option>
-                            </el-select>
+                        <el-form-item label="联系人" v-if="userData && userData.length">
+                            <ul class="contact-wrap">
+                                <li class="clearfix" v-for="(item, index) in userData" :key="index" >
+                                    <div class="left" >
+                                        <el-checkbox :border="true" :value="isChecked(item)" @change="selectedContact($event, index)"><span class="name">{{item.accountName}}</span></el-checkbox>
+                                    </div>
+                                    <div class="right">
+                                        <el-input v-model="item.description" placeholder="备注"></el-input>
+                                    </div>
+                                </li>
+                            </ul>
                         </el-form-item>
                         <el-form-item label="">
                             <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="placeSureBtn">提  交</el-button>
@@ -135,14 +147,14 @@
     </div>
 </template>
 <script>
-import { placeCreated, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData } from '@/api/place';
+import { placeCreated, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData, placeShowDelete, placeContactDelete, placeShowDefault } from '@/api/place';
 import TheMap from '@/components/BaiduMap/index';
 import UploadImg from '@/components/Upload/UploadImg';
-import { getOrganizationList, getOrganizationUserList } from '@/mixins';
+import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
 import { getPlaceTypeList, placeDetailData } from '@/views/place/mixins';
 import axios from 'axios';
 export default {
-    mixins: [getOrganizationList, getOrganizationUserList, getPlaceTypeList, placeDetailData],
+    mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getPlaceTypeList, placeDetailData],
     data(){
         return {
             placeForm: {
@@ -181,12 +193,24 @@ export default {
                     this.initDetail(resolve);
                 }).then(res => {
                     this.placeForm = this.resData;
-                    this.groupUserList(this.placeForm.owner);
-                    this.placeForm.placeContactData.forEach(item => {
-                        this.place_contact.push(item.userId);
-                    })
+                    this.contactList();
                 })
             }
+        },
+
+        //联系人列表
+        contactList(){
+            new Promise((resolve) => {
+                this.groupUserList(this.placeForm.owner, resolve);
+            }).then(res => {
+                this.placeForm.placeContactData.forEach(item => {
+                    item.placeId = Number(this.$route.params.id);
+                    this.place_contact.push(item.userId);
+                    var index = this.indexOf(item.userId, this.userData, 'userId');
+                    this.userData[index].description = item.description;
+                })
+                this.oldParams = JSON.parse(JSON.stringify(this.placeForm));
+            })
         },
 
         //添加 编辑 场所
@@ -194,16 +218,13 @@ export default {
             this.$refs.placeForm.validate((valid) => {
                 
                 if (valid) {
-                    this.btnLoading = true;
-                    let s = [];
-                    for(let i = 0; i< this.place_contact.length; i++){
-                        s.push({
-                            userId: this.place_contact[i],
-                            placeId: this.placeForm.placeContactData && this.placeForm.placeContactData[i] ? Number(this.$route.params.id) : null,
-                            id: this.placeForm.placeContactData && this.placeForm.placeContactData[i] ? this.placeForm.placeContactData[i].id : null
-                        })
+                    this.placeForm.placeContactData = this.contactParams();
+                    this.diffStatus = true;
+                    if(this.placeForm.id && this.objsDiffer(this.oldParams, this.placeForm)){
+                        this.$message.warning('你没有做任何更改~');
+                        return
                     }
-                    this.placeForm.placeContactData = s;
+                    this.btnLoading = true;
                     placeCreated(this.placeForm).then(res => {
                         this.placeRes(res);
                     })
@@ -216,14 +237,84 @@ export default {
         placeRes(res){
             this.btnLoading = false;
             if(res.code == this.$successCode){
-                this.$message.success({
-                    message: '操作成功~',
-                    duration: 1000,
-                    onClose: () => {
-                        this.$router.push('/place/index');
-                    }
-                });
+                this.$router.push('/place/index');
+                this.$message.success('操作成功~');
             }
+        },
+
+        //联系人参数 整理
+        contactParams(){
+            let s = [];
+            for(let i = 0; i< this.place_contact.length; i++){
+                var index = this.indexOf(this.place_contact[i], this.userData, 'userId');
+                if(this.placeForm.placeContactData && this.placeForm.placeContactData[i]){
+                    this.placeForm.placeContactData[i].description = index>-1 ? this.userData[index].description : '';
+                    s.push(this.placeForm.placeContactData[i]);
+                }else{
+                    s.push({
+                        userId: this.place_contact[i],
+                        description: index>-1 ? this.userData[index].description : ''
+                    });
+                }
+            }
+            return s;
+        },
+
+        //选择联系人
+        selectedContact(value, index){
+            let userId = this.userData[index].userId;
+            if(value){
+                this.place_contact.push(userId);
+            }else{
+                this.place_contact.splice(this.indexOf(userId, this.place_contact), 1);
+                this.placeForm.placeContactData.forEach((item, index) => {
+                    if(item.userId === userId){
+                        this.contactDelete(item.id);
+                        this.placeForm.placeContactData.splice(index, 1);
+                    }
+                })
+            }
+        },
+
+        //查询下标
+        indexOf(val, arr, key){
+            for(var i = 0; i < arr.length; i++){
+                if(key){
+                    if(arr[i][key] == val) {return i;}
+                }else if(arr[i] == val){return i;}
+            }
+            return -1;
+        },
+
+        isChecked(item){
+            return this.place_contact.includes(item.userId);
+        },
+
+        //删除联系人
+        contactDelete(value){
+            placeContactDelete(value).then(res =>{
+                if(res.code === this.$successCode){
+                    this.$message.success('删除成功~');
+                }
+            })
+        },
+
+        //删除场所图片
+        ShowDelete(id, resolve){
+            placeShowDelete(id).then(res => {
+                if(res.code === this.$successCode){
+                    resolve('success');
+                }
+            })
+        },
+
+        //图片设置为场所默认图
+        showDefault(id){
+            placeShowDefault(id).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('列表封面图片设置成功~');
+                }
+            })
         },
 
         //获取位置的坐标
@@ -329,3 +420,29 @@ export default {
     }
 }
 </script>
+<style lang="scss" scope>
+    .place-add-wrap{
+        .contact-wrap{
+            li{
+                padding-bottom: 10px;
+                .left{
+                    width: 142px;
+                    float: left;
+                    .name{
+                        display: inline-block;
+                        width: 85px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        line-height: 12px;
+                    }
+                }
+                .right{
+                    margin-left: 10px;
+                    width: calc(100% - 152px);
+                    float: left;
+                }
+            }
+        }
+    }
+</style>

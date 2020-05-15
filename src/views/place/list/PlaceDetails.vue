@@ -1,6 +1,6 @@
 <template>
     <el-card class="template-card place-detail" id="app-main-wrap" v-loading="loading">
-        <div class="header-wrap mb30">
+        <div class="header-wrap detail-header-wrap mb30">
             <el-page-header @back="$router.go(-1)">
             </el-page-header>
             <div class="header-right">
@@ -57,6 +57,7 @@
             <div class="place-brand clearfix">
                 <div class="place-logo">
                     <el-image 
+                        v-if="resData.logo"
                         :src="resData.logo" 
                         fit="cover">
                     </el-image>
@@ -87,56 +88,16 @@
         </div>
 
         <h2 class="p-info-title mt20 mb20">屏幕信息</h2>
-        <div class="place-info">
+        <div class="place-info" v-if="resData.placeScreenData && resData.placeScreenData.length">
             <div class="place-content">
                 <div class="place-box">
-                    <div class="place-p" :style="{width: placeW}" v-for="item in 4" :key="item.id">
-                        <el-card 
-                            class="place-list" 
-                            shadow="always"
-                        >
-                            <div class="place-img">
-                                <img src="https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg" class="image">
-                                <!-- 屏幕状态 -->
-                                <el-tag class="status" type="success" effect="dark">在线</el-tag>
-                            </div>
-                            <div style="padding: 14px;">
-                                <div class="place-title">
-                                    <span class="name" @click="$router.push('/screen/details/11')">万达</span>
-                                </div>
-                                <div class="specification">
-                                    <ul>
-                                        <li>
-                                            <el-tooltip class="item" effect="dark" content="点距规格" placement="top">
-                                                <span>P3</span>
-                                            </el-tooltip>
-                                        </li>
-                                        <li>
-                                            <el-tooltip class="item" effect="dark" content="分辨率" placement="top">
-                                                <span>1920 x 1080</span>
-                                            </el-tooltip>
-                                        </li>
-                                        <li>
-                                            <el-tooltip class="item" effect="dark" content="宽高比" placement="top">
-                                                <span>21 : 9</span>
-                                            </el-tooltip>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="bottom clearfix">
-                                    <div class="adress" title="点击查看位置" @click="showMap=true">
-                                        <i class="el-icon-location-information"></i>北京市通州区
-                                    </div>
-                                    <div class="place-logo">
-                                        <img src="https://game.xfengjing.com/app/upload/market/photo/7YmAs4QpmOCRNvD84Imkw8MQq7Ctdt1sr3d5kS8S.png" alt="中粮" title="中粮">
-                                    </div>
-                                </div>
-                            </div>                    
-                        </el-card>
+                    <div class="place-p" :style="{width: placeW}" v-for="item in resData.placeScreenData" :key="item.id">
+                        <screen-list name="place" :item="item" :imageH="imageH" @seeAddress="$refs.mapDialog.showMapDialog(item)"></screen-list>
                     </div>
                 </div>
             </div>
         </div>
+        <div v-else>暂无屏幕信息~</div>
 
         <h2 class="p-info-title mt20 mb20">场管信息</h2>
         <div class="place-info">
@@ -152,26 +113,27 @@
                     <div class="desc">
                         <p class="nickname">
                             {{item.accountName}}
-                            <span class="role">角色介绍</span>
+                            <span class="role">{{item.description}}</span>
                         </p>
                         
                         <p class="place-lx">
                             <label title="电话">
-                                <span class="label"><i class="el-icon-mobile-phone"></i></span>
+                                <span class="label"><font-awesome-icon :icon="['fas', 'mobile-alt']" /></span>
                                 <span>{{item.mobile || '--'}}</span>
                             </label>
                             <el-divider direction="vertical"></el-divider>
                             <label title="微信">
-                                <span class="label"><i class="el-icon-chat-dot-square"></i></span>
+                                <span class="label"><font-awesome-icon :icon="['fab', 'weixin']" /></span>
                                 <span>{{item.wechat || '--'}}</span>
                             </label>
                         </p>
                     </div>
                 </li>
             </ul>
-            <div>暂无信息~</div>
+            <div v-else>暂无场管信息~</div>
         </div>
-
+        <!-- 查看地图位置 -->
+        <map-dialog ref="mapDialog"></map-dialog>
     </el-card>
 </template>
 <script>
@@ -179,6 +141,8 @@ import { placeDelete } from '@/api/place';
 import { screenSizeWatch } from '@/mixins';
 import { placeIsFavorite, placeDetailData } from '@/views/place/mixins';
 import TheMap from '@/components/BaiduMap/index';
+import ScreenList from '@/views/screen/components/ScreenList';
+import MapDialog from '@/components/BaiduMap/MapDialog';
 export default {
     mixins: [screenSizeWatch, placeIsFavorite, placeDetailData],
     data(){
@@ -238,10 +202,10 @@ export default {
         prevNextChange(type){
             if(type){
                 this.imgIndex = type == 'pre' ? this.imgIndex - 1 : this.imgIndex + 1;
-                if(this.imgIndex == 0){
+                if(this.imgIndex < 0){
                     this.imgIndex = this.resData.placeShowData.length-1;
                     this.distance = -162 * (this.resData.placeShowData.length-4) + -10;
-                }else if(this.imgIndex + 1 >= this.resData.placeShowData.length){
+                }else if(this.imgIndex + 1 > this.resData.placeShowData.length){
                     this.imgIndex = 0;
                     this.distance = -10;
                 }
@@ -255,7 +219,9 @@ export default {
         }
     },
     components: {
-        TheMap
+        TheMap,
+        ScreenList,
+        MapDialog
     }
 }
 </script>
@@ -264,16 +230,13 @@ export default {
     @import './style/place-card.scss';
     @import './style/place-detail.scss';
     .place-detail{
-        .place-content .place-box .place-list{
-            height: 265px;
-        }
         .specification{
             overflow: hidden;
             margin-top: 5px;
             li{
                 float: left;
                 margin-right: 15px;
-                font-size: 14px;
+                font-size: 13px;
                 color: #666;
             }
         }
@@ -283,7 +246,7 @@ export default {
                 top: 0;
                 left: 0;
                 border-radius: 0;
-                border-bottom-right-radius: 3px;
+                border-bottom-right-radius: 6px;
             }
         }
     }

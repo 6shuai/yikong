@@ -11,7 +11,7 @@
             </el-input>
             <el-button type="primary" size="small" @click="$parent.$parent.showMap = false">确定</el-button>
         </div>
-        <div id="map-core"></div>
+        <div :id="mapId ? mapId : 'map-core'"></div>
     </div>
 </template>
 
@@ -19,13 +19,13 @@
 import BMap from 'BMap';
 export default {
     name: "theMap",
-    props: ['lng', 'lat', 'showSearch', 'address'],
     props: {
         lng: [String, Number],
         lat: [String, Number],
         showSearch: Boolean,        //是否显示搜索
         address: String,            //地区  省市区
         disableZoom: Boolean,       //是否禁用鼠标滚轮缩放
+        mapId: String
     },
     data() {
         return {
@@ -53,7 +53,7 @@ export default {
         // 初始化地图
         setMap() {
             const _this = this;
-            this.map = new BMap.Map("map-core");
+            this.map = new BMap.Map(this.mapId ? this.mapId : 'map-core');
             // 默认定位北京故宫
             let [lng, lat] = [116.403684,39.920072];
             if(localStorage.lng && localStorage.lat){
@@ -223,13 +223,13 @@ export default {
         left: 10px;
         z-index: 9999;
         .el-input{
-            width: 400px;
+            width: 250px;
         }
         .el-button{
             margin-left: 6px;
         }
     }
-    #map-core {
+    #map-core, #map-main {
         width: 100%;
         height: 100%;
         margin-top: 10px;

@@ -15,6 +15,25 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { 
+    faCamera, faLocationArrow, faDownload, faExternalLinkAlt, faTrashAlt, faCaretDown, faMobileAlt, faFilm, faGamepad,
+    faMapMarkerAlt
+} from '@fortawesome/free-solid-svg-icons'
+import { faWeixin } from "@fortawesome/free-brands-svg-icons"
+import { faBuilding, faWindowMaximize, faClock, faImage } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(
+  faBuilding, faCamera, faLocationArrow, faWindowMaximize, faDownload, faExternalLinkAlt, faTrashAlt, faCaretDown, faImage, 
+  faWeixin, faMobileAlt, faClock, faFilm, faGamepad, faMapMarkerAlt
+)
+ 
+// <font-awesome-icon :icon="['fas', 'download']" />
+// rotation="90"  旋转角度
+// spin 旋转动画
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
