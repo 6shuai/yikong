@@ -169,7 +169,7 @@ export default {
 }
 </script>
 <style lang="scss" scope>
-    .ontent-add-wrap{
+    .content-add-wrap{
         .el-input-group__append{
             width: 55px;
             text-align: center;
