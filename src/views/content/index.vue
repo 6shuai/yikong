@@ -12,10 +12,10 @@
             <div class="sort">
                 <span class="sort-title">排列</span>
                 <el-button-group>
-                    <el-button size="small" :type="sort==1 ? 'info': ''" @click="sort=1">品牌</el-button>
-                    <el-button size="small" :type="sort==2 ? 'info': ''" @click="sort=2">创建时间</el-button>
-                    <el-button size="small" :type="sort==3 ? 'info': ''" @click="sort=3">计划开始</el-button>
-                    <el-button size="small" :type="sort==4 ? 'info': ''" @click="sort=4">计划结束</el-button>
+                    <el-button size="small" :type="params.groupType==0 ? 'info': ''" @click="params.groupType=0;init()">品牌</el-button>
+                    <el-button size="small" :type="params.groupType==1 ? 'info': ''" @click="params.groupType=1;init()">创建时间</el-button>
+                    <el-button size="small" :type="params.groupType==2 ? 'info': ''" @click="params.groupType=2;init()">计划开始</el-button>
+                    <el-button size="small" :type="params.groupType==3 ? 'info': ''" @click="params.groupType=3;init()">计划结束</el-button>
                 </el-button-group>
             </div>
         </div>
@@ -25,14 +25,14 @@
             暂无数据~
         </div>
         <div v-else class="place-content" v-loading="dataLoading">
-            <div class="group-wrap">
-                <div class="group-title text-hover" @click="showList=!showList">
-                    <font-awesome-icon :icon="['fas', 'caret-down']" :rotation="!showList ? '270' : '0'" />
-                    <span>小风景 (2)</span>
+            <div class="group-wrap" v-for="(group, groupIndex) in resData" :key="groupIndex">
+                <div class="group-title text-hover" @click="group.hide=!group.hide; $set(resData, groupIndex, group)">
+                    <font-awesome-icon :icon="['fas', 'caret-down']" :rotation="group.hide ? '270' : '0'" />
+                    <span>{{group.groupName}} ({{group.groupSize}})</span>
                 </div>
-                <div class="place-box" v-show="showList">
-                    <div class="place-p" :style="{width: placeW}" v-for="(item, index) in resData" :key="index">
-                        <content-list :item="item" :imageH="imageH"></content-list>
+                <div class="place-box" v-show="!group.hide">
+                    <div class="place-p" :style="{width: placeW}" v-for="(item, index) in group.groupData" :key="index">
+                        <content-list :item="item" :index="index" :groupIndex="groupIndex" :imageH="imageH"></content-list>
                     </div>
                 </div>
             </div>
@@ -41,8 +41,9 @@
     </div>
 </template>
 <script>
-import ContentList from '@/views/content/components/Content-list';
+import { contentList } from '@/api/content';
 import { screenSizeWatch } from '@/mixins';
+import ContentList from '@/views/content/components/ContentList';
 export default {
     mixins: [screenSizeWatch],
     data(){
@@ -50,7 +51,25 @@ export default {
             sort: 1,
             showList: true,
             dataLoading: false,
-            resData: [{}, {}]
+            resData: [],
+            params: {
+                userId: this.$store.state.user.loginData.id,
+                groupType: 0
+            },
+        }
+    },
+    mounted() {
+        this.init();
+    },
+    methods: {
+        init(){
+            this.dataLoading = true;
+            contentList(this.params).then(res => {
+                this.dataLoading = false;
+                if(res.code === this.$successCode){
+                    this.resData = res.obj;
+                }
+            })
         }
     },
     components: {

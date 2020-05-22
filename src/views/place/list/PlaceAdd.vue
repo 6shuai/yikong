@@ -6,7 +6,7 @@
                     {{$route.params.id ? '编辑场所' : '创建场所'}}
                 </div>
             </el-page-header>
-            <el-row :gutter="10" class="mt30">
+            <el-row :gutter="10" class="mt30" v-loading="$route.params.id && loading">
                 <el-col :xs="24" :sm="24" :md="12">
                     <el-form 
                         label-width="160px"
@@ -52,15 +52,21 @@
                         </el-form-item>
                         <el-form-item label="展示图片" prop="placeShowData">
                             <upload-img 
+                                ref="uploadImg"
                                 :isArray="true" 
                                 :imgList="placeForm.placeShowData"
                                 :showCover="true"
                                 @deleteImg="ShowDelete"
                                 @showDefault="showDefault"
+                                @uploadImgPath="uploadImgSuccess"
                             ></upload-img>
                         </el-form-item>
                         <el-form-item label="场所微信二维码">
-                            <upload-img :isArray="false" imgList=""></upload-img>
+                            <upload-img 
+                                :isArray="false" 
+                                :imgList="placeForm.wechat"
+                                @uploadImgPath="uploadQrcodeSuccess"
+                            ></upload-img>
                         </el-form-item>
                         <el-form-item label="联系人" v-if="userData && userData.length">
                             <ul class="contact-wrap">
@@ -158,15 +164,7 @@ export default {
     data(){
         return {
             placeForm: {
-                wechat: 'wechat.png',
-                placeShowData: [
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                ]
+                placeShowData: []
             },
             place_contact: [],               //联系人 【1,2】
             showMap: false,                  //显示百度地图
@@ -179,7 +177,8 @@ export default {
                 placeType: [{ required: true, trigger: "change", message: '请选择场所类型~' }],
                 owner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
                 placeShowData: [{ required: true, trigger: "change", message: '请至少上传一张展示图片~' }]
-            }
+            },
+            loading: false,                  //编辑时获取详情loading
         }
     },
     mounted() {
@@ -190,8 +189,10 @@ export default {
             this.provincesList();
             if(this.$route.params.id){
                 new Promise((resolve) => {
+                    this.loading = true;
                     this.initDetail(resolve);
                 }).then(res => {
+                    this.loading = false;
                     this.placeForm = this.resData;
                     this.contactList();
                 })
@@ -299,22 +300,57 @@ export default {
             })
         },
 
-        //删除场所图片
-        ShowDelete(id, resolve){
-            placeShowDelete(id).then(res => {
-                if(res.code === this.$successCode){
-                    resolve('success');
-                }
+        //上传图片成功
+        uploadImgSuccess(path){
+            this.placeForm.placeShowData.push({
+                uri: path,
+                isDefault: this.placeForm.placeShowData.length ? 0 : 1
             })
         },
 
+        //删除场所图片
+        ShowDelete(file, resolve){
+            if(file.id){
+                placeShowDelete(file.id).then(res => {
+                    if(res.code === this.$successCode){
+                        this.placeForm.placeShowData.splice(file.index, 1);
+                        resolve('success');
+                    }
+                })
+            }else{
+                this.placeForm.placeShowData.splice(file.index, 1);
+            }
+        },
+
         //图片设置为场所默认图
-        showDefault(id){
-            placeShowDefault(id).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('列表封面图片设置成功~');
+        showDefault(id, index){
+            if(id){
+                placeShowDefault(id).then(res => {
+                    if(res.code === this.$successCode){
+                        this.$message.success('列表封面图片设置成功~');
+                        this.currentImgDefault(index, id);
+                    }
+                })
+            }else{
+                this.currentImgDefault(index);
+            }
+        },
+
+        //设置默认图片 isDefault=1； 图片上显示置顶图标
+        currentImgDefault(index, id){
+            this.placeForm.placeShowData.forEach((item, i) => {
+                item.isDefault = 0;
+                if((item.id && item.id === id) || index === i){
+                    item.isDefault = 1;
                 }
             })
+            console.log(this.placeForm.placeShowData)
+            this.$refs.uploadImg.changeImgUri(this.placeForm.placeShowData);
+        },
+
+        //微信公众号二维码上传成功
+        uploadQrcodeSuccess(path){
+            this.$set(this.placeForm, 'wechat', path);
         },
 
         //获取位置的坐标

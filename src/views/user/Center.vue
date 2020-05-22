@@ -9,15 +9,11 @@
                     label-width="80px"
                 >
                     <el-form-item label="头像：">
-                        <el-upload
-                            class="avatar-uploader"
-                            action=""
-                            :show-file-list="false"
-                            :on-success="handleAvatarSuccess"
-                            :before-upload="beforeAvatarUpload">
-                            <img v-if="userData.avatar" :src="userData.avatar" class="avatar">
-                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                        </el-upload>
+                        <upload-img 
+                            :isArray="false" 
+                            :imgList="userData.avatar"
+                            @uploadImgPath="handleAvatarSuccess"
+                        ></upload-img>
                     </el-form-item>
                     <el-form-item label="昵称：">
                         <el-input  placeholder="昵称" v-model="userData.nickname"></el-input>
@@ -36,8 +32,8 @@
                     </el-form-item>
                     <el-form-item label="性别：">
                         <el-radio-group v-model="userData.gender">
-                            <el-radio :label="1">男</el-radio>
-                            <el-radio :label="0">女</el-radio>
+                            <el-radio :label="true">男</el-radio>
+                            <el-radio :label="false">女</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="通信地址">
@@ -53,6 +49,7 @@
 </template>
 <script>
 import { userUpdate } from '@/api/user';
+import UploadImg from '@/components/Upload/UploadImg';
 export default {
     data() {
         return {
@@ -65,86 +62,51 @@ export default {
     mounted() {
             // 初始化界面
             this.initialize();
-        },
-        methods: {
-            updateUser() {
-                let difference = null;
-                for (let k in this.rawData) {
-                    if (this.rawData[k] !== this.userData[k]) {
-                        if (difference === null) {
-                            difference = {};
-                        }
-                        difference[k] = this.userData[k];
+    },
+    methods: {
+        updateUser() {
+            let difference = null;
+            for (let k in this.rawData) {
+                if (this.rawData[k] !== this.userData[k]) {
+                    if (difference === null) {
+                        difference = {};
                     }
+                    difference[k] = this.userData[k];
                 }
-
-                if (difference === null) {
-                    this.$message.warning('你没有做任何更改~');
-                } else {
-                    difference.id = this.rawData.id;
-
-                    // 暂时这样避免后端的boolean成员不能正确判断null的序列号问题
-                    difference.enabled = this.rawData.enabled;
-                    difference.gender = this.rawData.gender
-                    this.loading = true;
-                    userUpdate(difference).then(resp => {
-                        this.loading = false;
-                        if (resp && resp.obj) {
-                            let d = Object.assign(JSON.parse(localStorage.loginData), difference);
-                            localStorage.loginData = JSON.stringify(d);
-                            this.$message.success("资料更新成功！");
-                            this.$store.commit('user/SET_LOGIN_DATA', d);
-                        }
-                    })
-                }
-            }, 
-            initialize() {              
-                this.userData = JSON.parse(localStorage.loginData);
-                this.rawData = {... this.userData};
-            },
-
-            //上传头像成功
-            handleAvatarSuccess(){
-
-            },
-
-            //上传之前
-            beforeAvatarUpload(){
-
             }
-        }
+
+            if (difference === null) {
+                this.$message.warning('你没有做任何更改~');
+            } else {
+                difference.id = this.rawData.id;
+
+                // 暂时这样避免后端的boolean成员不能正确判断null的序列号问题
+                difference.enabled = this.rawData.enabled;
+                difference.gender = this.rawData.gender
+                this.loading = true;
+                userUpdate(difference).then(resp => {
+                    this.loading = false;
+                    if (resp && resp.obj) {
+                        let d = Object.assign(JSON.parse(localStorage.loginData), difference);
+                        localStorage.loginData = JSON.stringify(d);
+                        this.$message.success("资料更新成功！");
+                        this.$store.commit('user/SET_LOGIN_DATA', d);
+                    }
+                })
+            }
+        }, 
+        initialize() {              
+            this.userData = JSON.parse(localStorage.loginData);
+            this.rawData = {... this.userData};
+        },
+
+        //上传头像成功
+        handleAvatarSuccess(path){
+            this.userData.avatar = path;
+        },
+    },
+    components: {
+        UploadImg
+    }
 }
 </script>
-
-<style lang="scss" scope>
-    .user-center-wrap{
-        .header-img{
-            width: 100%;
-            height: 100%;
-            border: 6px;
-        }
-        .avatar-uploader .el-upload {
-            border: 1px dashed #d9d9d9;
-            border-radius: 6px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .avatar-uploader .el-upload:hover {
-            border-color: #409EFF;
-        }
-        .avatar-uploader-icon {
-            font-size: 28px;
-            color: #8c939d;
-            width: 128px;
-            height: 128px;
-            line-height: 128px;
-            text-align: center;
-        }
-        .avatar {
-            width: 128px;
-            height: 128px;
-            display: block;
-        }
-    }
-</style>

@@ -54,6 +54,7 @@ export const constantRoutes = [
     component: Layout,
     children: [{
       path: '/user',
+      name: 'userCenter',
       component: () => import('@/views/user/Center'),
       meta: { title: '个人中心' }
     }],

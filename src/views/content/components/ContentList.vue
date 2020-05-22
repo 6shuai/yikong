@@ -8,14 +8,13 @@
                 class="place-img"
                 :style="{height: imageH+'px'}" 
                 @click.stop="$router.push(`/content/details/${item.id}`)">
-                <!-- <img :src="item.defaultShow" class="image"> -->
-                <img :style="{height: imageH+'px'}" src="https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg" class="image">
+                <img :src="item.image" :style="{height: imageH+'px'}" class="image">
                 
                 <!-- 资源类型 -->
-                <div class="resource-type" title="图片">
-                    <font-awesome-icon :icon="['far', 'image']" />
-                    <!-- <font-awesome-icon :icon="['fas', 'film']" /> -->
-                    <!-- <font-awesome-icon :icon="['fas', 'gamepad']" /> -->
+                <div class="resource-type" :title="item.contentTypeName">
+                    <font-awesome-icon v-if="item.contentTypeId==1" :icon="['far', 'image']" />
+                    <font-awesome-icon v-if="item.contentTypeId==2" :icon="['fas', 'film']" />
+                    <font-awesome-icon v-if="item.contentTypeId==3" :icon="['fas', 'gamepad']" />
                 </div>
 
                 <!-- 收藏 -->
@@ -26,30 +25,30 @@
                     slot="reference" 
                     :icon="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'" 
                     :title="item.isFavorite ? '取消收藏' : '收藏'"
-                    @click.stop="handleCollect(item, index)"
+                    @click.stop="handleCollect(item)"
                 >
                 </el-button>
             
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name" @click="$router.push(`/content/details/${item.id}`)">{{item.displayName}}哈哈哈</span>
-                    <span class="brand overflow"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.organizationName}}万达</span>
+                    <span class="name" @click="$router.push(`/content/details/${item.id}`)">{{item.displayName}}</span>
+                    <span class="brand overflow"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.contentOwnerName}}</span>
                 </div>
                 <div class="bottom">
                     <ul class="bottom-size overflow clearfix">
                         <li title="分辨率">
                             <font-awesome-icon :icon="['far', 'window-maximize']" />
-                            <span>1920x1080</span>&nbsp;
-                            <span>16:9</span>
+                            <span>{{item.width}} x {{item.height}}</span>&nbsp;
+                            <span>{{item.aspectRatioWidth}} : {{item.aspectRatioHeight}}</span>
                         </li>
                         <li title="大小">
                             <font-awesome-icon :icon="['fas', 'download']" />
-                            <span>1.6MB</span>
+                            <span>{{(item.size / 1024 / 1024).toFixed(2)}}MB</span>
                         </li>
-                        <li title="时长">
+                        <li title="时长" v-if="item.contentTypeId==2">
                             <font-awesome-icon :icon="['far', 'clock']" />
-                            <span>15.0s</span>
+                            <span>{{item.duration}}s</span>
                         </li>
                     </ul>
                 </div>
@@ -59,8 +58,26 @@
 </template>
 
 <script>
+import { contentIsFavorite } from '@/views/content/mixins';
 export default {
-    props: ['item', 'name', 'imageH'],
+    props: ['item', 'name', 'imageH', 'index', 'groupIndex'],
+    mixins: [contentIsFavorite],
+    methods: {
+        //收藏 或 取消收藏
+        handleCollect(data){
+            let p = {
+                isFavorite: data.isFavorite ? 0 : 1,
+                contentId: data.id,
+                userId: this.$store.state.user.loginData.id
+            }
+            let s = `?isFavorite=${p.isFavorite}&contentId=${p.contentId}&userId=${p.userId}`;
+            new Promise((resolve) => {
+                this.handleFavorite(s, resolve);
+            }).then(res => {
+                this.$parent.resData[this.groupIndex].groupData[this.index].isFavorite = p.isFavorite;
+            })
+        },
+    },
 }
 </script>
 <style lang="scss" scope>

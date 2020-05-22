@@ -43,5 +43,5 @@ export function placeShowDelete(data) { return del(`/place/placeShow/${data}`) }
 export function placeContactDelete(data) { return del(`/place/placeContact/${data}`) }
 
 //场所管理  设置图片为列表 封面默认图片
-export function placeShowDefault(data) { return put(`place/placeShow/${data}`) }
+export function placeShowDefault(data) { return put(`/place/placeShow/${data}`) }
 

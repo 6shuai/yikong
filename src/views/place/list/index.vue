@@ -43,7 +43,7 @@
                                     </span>
                                 </div>
                                 <div class="bottom clearfix">
-                                    <div class="adress overflow" :title="addressJoint(item) + item.address" @click="$refs.mapDialog.showMapDialog(item)">
+                                    <div class="adress overflow" :title="addressJoint(item) + item.address" @click="showMapDialog(item)">
                                         <font-awesome-icon :icon="['fas', 'location-arrow']" />{{addressJoint(item)}}  {{item.address}}
                                     </div>
                                     <div class="place-logo" :title="item.organizationName">
@@ -172,6 +172,13 @@ export default {
                         localStorage.lat = r.point.lat;
                     }       
                 });
+            }
+        },
+
+        //点击位置 显示地图信息
+        showMapDialog(data){
+            if(data.longitude && data.latitude){
+                this.$refs.mapDialog.showMapDialog(data);
             }
         }
     },

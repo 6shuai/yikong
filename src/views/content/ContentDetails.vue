@@ -4,12 +4,12 @@
             <el-page-header @back="$router.go(-1)">
             </el-page-header>
             <div class="header-right">
-                <span @click="editScreen"><i class="el-icon-edit" title="编辑"></i>编辑</span>
+                <span @click="editContent"><i class="el-icon-edit" title="编辑"></i>编辑</span>
                 <el-divider direction="vertical"></el-divider>
-                <span @click="collectScreen" v-if="!resData.isFavorite"><i class="el-icon-star-off" title="收藏"></i>收藏</span>
-                <span @click="collectScreen" v-else><i class="el-icon-star-on" title="取消收藏"></i>取消收藏</span>
+                <span @click="collectContent" v-if="!resData.isFavorite"><i class="el-icon-star-off" title="收藏"></i>收藏</span>
+                <span @click="collectContent" v-else><i class="el-icon-star-on" title="取消收藏"></i>取消收藏</span>
                 <el-divider direction="vertical"></el-divider>
-                <span @click="deletePlace"><i class="el-icon-delete" title="删除"></i>删除</span>
+                <span @click="deleteContent"><i class="el-icon-delete" title="删除"></i>删除</span>
             </div>
             <div class="title">
                 <h2>{{resData.displayName}}</h2>
@@ -18,29 +18,30 @@
         <div class="content">
             <div class="resource-wrap clearfix">
                 <div class="left">
-                    <img src="https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg">
+                    <el-image v-if="resData.contentTypeId == 1" :src="resData.contentPath" :preview-src-list="[resData.contentPath]"></el-image>
+                    <video v-if="resData.contentTypeId == 2" :src="resData.contentPath" controls="controls"></video>
                 </div>
                 <div class="right">
                     <el-form 
                         label-width="90px"
                     >
                         <el-form-item label="名称">
-                            <span>名称名称</span>
+                            <span>{{resData.displayName}}</span>
                         </el-form-item>
                         <el-form-item label="创建时间">
-                            <span>2020-05-14 15:55</span>
+                            <span>{{resData.creationTime}}</span>
                         </el-form-item>
                         <el-form-item label="品牌">
-                            <span>万达</span>
+                            <span>{{resData.contentOwnerName}}</span>
                         </el-form-item>
                         <el-form-item label="分辨率">
-                            <span>1920 x 1080</span>
+                            <span>{{resData.width}} x {{resData.height}}</span>
                         </el-form-item>
                         <el-form-item label="比例">
-                            <span>16 : 9</span>
+                            <span>{{resData.aspectRatioWidth}} : {{resData.aspectRatioHeight}}</span>
                         </el-form-item>
                         <el-form-item label="文件大小">
-                            <span>3.0MB</span>
+                            <span>{{fileSize(resData.size)}}MB</span>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -61,11 +62,12 @@
                         <span class="date">时段</span>
                         <span class="type">限制</span>
                     </li>
-                    <li class="clearfix" v-for="item in 4" :key="item">
-                        <span class="week">周一、周五</span>
-                        <span class="date">00:00-23:59</span>
-                        <span class="type">禁止播放</span>
+                    <li class="clearfix" v-for="item in resData.playbackRestrictionData" :key="item.id">
+                        <span class="week">{{selectedDate(item.validDate)}}</span>
+                        <span class="date">{{item.beginTimeFormat}} - {{item.endTimeFormat}}</span>
+                        <span class="type">{{item.rule==1 ? '限制播放' : '禁止播放'}}</span>
                     </li>
+                    <li class="no-data" v-if="resData.playbackRestrictionData && !resData.playbackRestrictionData.length">暂无播放限制~</li>
                 </ul>
             </div>
 
@@ -83,22 +85,22 @@
                     label-width="100px"
                 >
                     <el-form-item label="计划开始">
-                        <span>2019-04-10</span>
+                        <span>{{playPlanData.beginDateFormat || '-'}}</span>
                     </el-form-item>
                     <el-form-item label="计划结束">
-                        <span>2020-05-14</span>
+                        <span>{{playPlanData.endDateFormat || '-'}}</span>
                     </el-form-item>
-                    <el-form-item label="计划时长">
-                        <span>248分32秒</span>
+                    <el-form-item label="计划时长" v-if="playPlanData.planType==2">
+                        <span>{{playPlanData.targetLength}}</span>
                     </el-form-item>
-                    <el-form-item label="已播放时长">
-                        <span>248分32秒</span>
+                    <el-form-item label="已播放时长" v-if="playPlanData.planType==2">
+                        <span>{{playPlanData.currentLength}}</span>
                     </el-form-item>
-                    <el-form-item label="计划曝光次数">
-                        <span>200次</span>
+                    <el-form-item label="计划曝光次数" v-if="playPlanData.planType==1">
+                        <span>{{playPlanData.targetTimes}}次</span>
                     </el-form-item>
-                    <el-form-item label="已曝光次数">
-                        <span>50次</span>
+                    <el-form-item label="已曝光次数" v-if="playPlanData.planType==1">
+                        <span>{{playPlanData.currentTimes}}次</span>
                     </el-form-item>
                 </el-form>
             </div>
@@ -124,132 +126,30 @@
         </div>
 
         <!-- 编辑播放限制 -->
-        <el-dialog
-            width="720px"
-            title="播放限制"
-            class="play-limit-edit"
-            :visible.sync="showPlayLimit"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            @close="showPlayLimit=false"
-            append-to-body>
-            <el-form label-width="80px">
-                <el-form-item label="周期">
-                    <el-checkbox-group size="small" v-model="limitParams.checkboxGroup">
-                        <el-checkbox-button v-for="item in weekData" :label="item.label" :key="item.id">{{item.label}}</el-checkbox-button>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="时段">
-                    <el-time-select
-                        placeholder="起始时间"
-                        v-model="startTime"
-                        :picker-options="{
-                            start: '05:00',
-                            step: '00:15',
-                            end: '23:30'
-                        }">
-                    </el-time-select>
-                    <el-time-select
-                        placeholder="结束时间"
-                        v-model="endTime"
-                        :picker-options="{
-                            start: '05:00',
-                            step: '00:15',
-                            end: '23:30',
-                            minTime: startTime
-                        }">
-                    </el-time-select>
-                </el-form-item>
-                <el-form-item label="规则">
-                    <el-radio-group v-model="radio1">
-                        <el-radio-button label="限制播放"></el-radio-button>
-                        <el-radio-button label="禁止播放"></el-radio-button>
-                    </el-radio-group>
-                </el-form-item>
-                <el-button class="created-btn" type="primary" size="small">添加规则</el-button>
-                <el-form-item label="当前设置">
-                    <ul>
-                        <li class="t-header clearfix">
-                            <span class="week">周期</span>
-                            <span class="date">时段</span>
-                            <span class="type">限制</span>
-                            <span class="del">操作</span>
-                        </li>
-                        <li class="clearfix" v-for="item in 4" :key="item">
-                            <span class="week">周一、周五</span>
-                            <span class="date">00:00-23:59</span>
-                            <span class="type">禁止播放</span>
-                            <span class="del"><font-awesome-icon :icon="['fas', 'trash-alt']" /></span>
-                        </li>
-                    </ul>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="showPlayLimit = false">取 消</el-button>
-                <el-button type="primary" @click="showPlayLimit = false">确 定</el-button>
-            </span>
-        </el-dialog>
+        <play-limit 
+            ref="playLimit" 
+            :weekData="weekData" 
+            :data="resData.playbackRestrictionData"
+            @updateDetail="initDetail"
+        ></play-limit>
 
         <!-- 编辑播放计划 -->
-        <el-dialog
-            width="400px"
-            title="播放计划"
-            :visible.sync="showPlayPlan"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            @close="showPlayPlan=false"
-            append-to-body>
-            <el-form label-width="80px">
-                <el-form-item label="计划开始">
-                    <el-date-picker
-                        v-model="planParams.date"
-                        type="date"
-                        placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="计划结束">
-                    <el-date-picker
-                        v-model="planParams.date"
-                        type="date"
-                        placeholder="选择日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="曝光次数">
-                    <el-input 
-                        style="width: 220px"
-                        v-model="planParams.date" 
-                        type="number">
-                        <template slot="append">次</template>
-                    </el-input>
-                </el-form-item>
-                <el-form-item label="时长">
-                    <el-input 
-                        style="width: 220px"
-                        v-model="planParams.date" 
-                        type="number">
-                        <template slot="append">分钟</template>
-                    </el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="showPlayPlan = false">取 消</el-button>
-                <el-button type="primary" @click="showPlayPlan = false">确 定</el-button>
-            </span>
-        </el-dialog>
-
+        <play-plan 
+            ref="playPlan"
+            @updateDetail="initDetail"
+        ></play-plan>
+        
     </el-card>
 </template>
 <script>
-import { screenDelete } from '@/api/screen';
-import { getScreenDetail, screenIsFavorite } from '@/views/screen/mixins';
+import { contentDelete } from '@/api/content';
+import { contentDetailData, contentIsFavorite } from '@/views/content/mixins';
+import PlayLimit from '@/views/content/components/PlayLimit';
+import PlayPlan from '@/views/content/components/PlayPlan';
 export default {
-    mixins: [getScreenDetail, screenIsFavorite],
+    mixins: [contentDetailData, contentIsFavorite],
     data(){
         return {
-            showPlayLimit: false,               //播放限制 编辑窗口
-            limitParams: {                      //播放限制 编辑参数
-                checkboxGroup: [],
-            },
             weekData: [
                 { id: 1, label: '周一' },
                 { id: 2, label: '周二' },
@@ -259,65 +159,101 @@ export default {
                 { id: 6, label: '周六' },
                 { id: 7, label: '周日' }
             ],
-            showPlayPlan: false,                  //播放计划  编辑窗口
-            planParams: {},                       //播放计划  编辑参数
+        }
+    },
+    computed: {
+        playPlanData(){
+            return this.resData.playPlanData && this.resData.playPlanData.length ? this.resData.playPlanData[0] : {};
         }
     },
     mounted() {
-        // this.initDetail();
+        this.initDetail();
     },
     methods: {
-        //编辑场所
-        editScreen(){
+        //编辑资源
+        editContent(){
             this.$router.push(`/content/edit/${this.$route.params.id}`)
         },
 
-        //删除场所
-        deletePlace(){
-            this.$confirm('此操作将删除该屏幕 是否继续?', '提示', {
+        //删除资源
+        deleteContent(){
+            this.$confirm('此操作将删除该资源 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning',
                 center: true
             }).then(() => {
-                // screenDelete(this.$route.params.id).then(res => {
-                //     if(res.code === this.$successCode){
-                //         this.$message.success({
-                //             message: '删除成功~',
-                //             duration: 1000,
-                //             onClose: () => {
-                //                 this.$router.push('/screen/index');
-                //             }
-                //         });
-                //     }
-                // })
+                contentDelete(this.$route.params.id).then(res => {
+                    if(res.code === this.$successCode){
+                        this.$message.success({
+                            message: '删除成功~',
+                            duration: 1000,
+                            onClose: () => {
+                                this.$router.push('/content/index');
+                            }
+                        });
+                    }
+                })
             })
         },
 
         //收藏
-        collectScreen(){
-            // let p = {
-            //     isFavorite: this.resData.isFavorite ? 0 : 1,
-            //     screenId: this.resData.id,
-            //     userId: this.$store.state.user.loginData.id
-            // }
-            // let s = `?isFavorite=${p.isFavorite}&screenId=${p.screenId}&userId=${p.userId}`;
-            // new Promise((resolve) => {
-            //     this.handleFavorite(s, resolve);
-            // }).then(res => {
-            //     this.$set(this.resData, 'isFavorite', p.isFavorite);
-            // })
+        collectContent(){
+            let p = {
+                isFavorite: this.resData.isFavorite ? 0 : 1,
+                contentId: this.resData.id,
+                userId: this.$store.state.user.loginData.id
+            }
+            let s = `?isFavorite=${p.isFavorite}&contentId=${p.contentId}&userId=${p.userId}`;
+            new Promise((resolve) => {
+                this.handleFavorite(s, resolve);
+            }).then(res => {
+                this.$set(this.resData, 'isFavorite', p.isFavorite);
+            })
         },
 
         //显示编辑播放限制
         editPlayimit(){
-            this.showPlayLimit = true;
+            this.$refs.playLimit.showPlayLimit = true;
         },
 
         //显示编辑播放计划
         editPlan(){
-            this.showPlayPlan = true;
+            this.$refs.playPlan.showPlayPlan = true;
+            if(this.resData.playPlanData.length){
+                let p = JSON.parse(JSON.stringify(this.resData.playPlanData[0]));
+                let data = {
+                    id: p.id,
+                    beginDate: p.beginDateFormat,
+                    endDate: p.endDateFormat,
+                    planType: p.planType,
+                    targetLength: p.targetLength,
+                    targetTimes: p.targetTimes
+                }
+                this.$refs.playPlan.planParams = data;
+            }
+        },
+
+        fileSize(size){
+            return (size / 1024  / 1024).toFixed(2);
+        },
+
+        //播放限制列表 已选中的日期 
+        selectedDate(data){
+            data = String(data);
+            let arr = data.split("");
+            let weekArr = [];
+            for(let i = 0; i< arr.length; i++){
+                if(arr[i] == 2){
+                    weekArr.push(this.weekData[i].label);
+                }
+            }
+            return weekArr.join('、');
         }
+    },
+    components: {
+        PlayLimit,
+        PlayPlan
     }
 }
 </script>

@@ -2,32 +2,6 @@
     min-width: 1000px;
     .header-wrap{
         overflow: hidden;
-        .el-page-header{
-            float: left;
-            width: 100px;
-        }
-        .header-right{
-            float: right;
-            width: 250px;
-            text-align: right;
-            span{
-                cursor: pointer;
-                &:hover{
-                    color: $--color-primary;
-                    & i{
-                        color: $--color-primary;
-                    }
-                }
-                i{
-                    margin-right: 2px;
-                    color: #999;
-                }
-            }
-        }
-        .title{
-            margin: 0 250px 0 100px;
-            text-align: center;
-        }
     }
 
     .p-info-title{

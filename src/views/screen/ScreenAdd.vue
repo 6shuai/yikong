@@ -5,7 +5,7 @@
                 {{$route.params.id ? '编辑大屏' : '创建大屏'}}
             </div>
         </el-page-header>
-        <el-row :gutter="10" class="mt30">
+        <el-row :gutter="10" class="mt30" v-loading="$route.params.id && loading">
             <el-col :xs="24" :sm="24" :md="12">
                 <el-form 
                     label-width="160px"
@@ -126,9 +126,13 @@
                     </el-form-item>
                     <el-form-item label="实景图片" prop="screenShowData">
                         <upload-img 
+                            ref="uploadImg"
                             :isArray="true" 
+                            :showCover="true"
                             :imgList="screenParams.screenShowData"
                             @deleteImg="ShowDelete"
+                            @showDefault="showDefault"
+                            @uploadImgPath="uploadImgSuccess"
                         ></upload-img>
                     </el-form-item>
                     <el-form-item label="联系人"  v-if="userData && userData.length">
@@ -152,7 +156,7 @@
     </el-card>
 </template>
 <script>
-import { screenPlaceList, screenCreated, screenShowDelete, screenContactDelete } from '@/api/screen';
+import { screenPlaceList, screenCreated, screenShowDelete, screenContactDelete, screenShowDefault } from '@/api/screen';
 import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import uploadImg from '@/components/Upload/UploadImg';
@@ -171,11 +175,7 @@ export default {
 		};
         return {
             screenParams: {
-                screenShowData: [
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'},
-                    {uri: 'https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg'}
-                ]
+                screenShowData: []
             },
             screen_contact: [],           //联系人
             btnLoading: false,     
@@ -194,7 +194,8 @@ export default {
                 account: [{ required: true, trigger: "blur", message: '请输入登录用户名~' }],
                 password: [{ required: true, trigger: "blur", message: '请输入登录密码~' },{ validator: validatePass, trigger: "blur" },],
                 screenShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }]
-            }
+            },
+            loading: false,          //编辑时获取详情  loading
         }
     },
     mounted() {
@@ -205,8 +206,10 @@ export default {
             this.getplaceList();
             if(this.$route.params.id){
                 new Promise((resolve) => {
+                    this.loading = true;
                     this.initDetail(resolve);
                 }).then(res => {
+                    this.loading = false;
                     this.screenParams = this.resData;
                     this.screenParams.place = this.resData.placeId;
                     this.contactList();
@@ -278,13 +281,51 @@ export default {
             })
         },
 
+        //图片上传成功
+        uploadImgSuccess(path){
+            this.screenParams.screenShowData.push({
+                uri: path,
+                isDefault: this.screenParams.screenShowData.length ? 0 : 1
+            })
+        },
+
         //删除实景图片
-        ShowDelete(id, resolve){
-            screenShowDelete(id).then(res => {
-                if(res.code === this.$successCode){
-                    resolve('success');
+        ShowDelete(file, resolve){
+            if(file.id){
+                screenShowDelete(file.id).then(res => {
+                    if(res.code === this.$successCode){
+                        this.screenParams.screenShowData.splice(file.index, 1);
+                        resolve('success');
+                    }
+                })
+            }else{
+                this.screenParams.screenShowData.splice(file.index, 1);
+            }
+        },
+
+        //图片设置为列表默认图
+        showDefault(id, index){
+            if(id){
+                screenShowDefault(id).then(res => {
+                    if(res.code === this.$successCode){
+                        this.$message.success('列表封面图片设置成功~');
+                        this.currentImgDefault(index, id);
+                    }
+                })
+            }else{
+                this.currentImgDefault(index);
+            }
+        },
+
+        //设置默认图片 isDefault=1； 图片上显示置顶图标
+        currentImgDefault(index, id){
+            this.screenParams.screenShowData.forEach((item, i) => {
+                item.isDefault = 0;
+                if((item.id && item.id === id) || index === i){
+                    item.isDefault = 1;
                 }
             })
+            this.$refs.uploadImg.changeImgUri(this.screenParams.screenShowData);
         },
 
         //选择联系人

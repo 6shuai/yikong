@@ -29,3 +29,7 @@ export function screenShowDelete(data) { return del(`/screen/screenShow/${data}`
 
 //屏幕管理  删除联系人
 export function screenContactDelete(data) { return del(`/screen/screenContact/${data}`) }
+
+//屏幕管理  设置图片为列表 封面默认图片
+export function screenShowDefault(data) { return put(`/screen/screenShow/${data}`) }
+
