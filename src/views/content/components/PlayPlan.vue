@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        width="400px"
+        width="500px"
         title="播放计划"
         :visible.sync="showPlayPlan"
         :close-on-click-modal="false"
@@ -13,24 +13,36 @@
             :model="planParams"
             :rules="planRules"
         >
-            <el-form-item label="计划开始" prop="beginDate">
-                <el-date-picker
+            <el-form-item label="计划开始" class="is-required">
+                <!-- <el-date-picker
                     v-model="planParams.beginDate"
                     type="date"
                     format="yyyy-MM-dd" 
                     value-format="yyyy-MM-dd" 
+                    :picker-options="pickerOptions"
                     placeholder="选择日期">
+                </el-date-picker> -->
+                <el-date-picker
+                    v-model="dateData"
+                    type="daterange"
+                    format="yyyy-MM-dd" 
+                    value-format="yyyy-MM-dd" 
+                    :picker-options="pickerOptions"
+                    range-separator="至"
+                    start-placeholder="计划开始"
+                    end-placeholder="计划结束">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="计划结束" prop="endDate">
+            <!-- <el-form-item label="计划结束" prop="endDate">
                 <el-date-picker
                     v-model="planParams.endDate"
                     type="date"
                     format="yyyy-MM-dd" 
                     value-format="yyyy-MM-dd" 
+                    :picker-options="endPickerOptions"
                     placeholder="选择日期">
                 </el-date-picker>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="计划类型" prop="planType">
                 <el-radio-group v-model="planParams.planType">
                     <el-radio-button :label="1">曝光次数</el-radio-button>
@@ -72,11 +84,13 @@ export default {
             btnLoading: false,                    //确定按钮 loading
             planRules: {
                 beginDate: [{ required: true, trigger: "change", message: '请选择计划开始日期~' }],
-                endDate: [{ required: true, trigger: "change", message: '请选择计划结束日期~' }],
-                planType: [{ required: true, trigger: "change", message: '请选择计划类型~' }],
                 targetTimes: [{ required: true, trigger: "blur", message: '请输入曝光次数~' }],
                 targetLength: [{ required: true, trigger: "blur", message: '请输入时长~' }],
-            }
+            },
+            pickerOptions: {
+                disabledDate: this.disabledDate
+            },
+            dateData: []
         }
     },
     methods: {
@@ -84,12 +98,16 @@ export default {
         updatePlayPlan(){
             this.$refs.planForm.validate((valid) => {
                 if (valid) {
+                    if(!this.dateData.length) {
+                        this.$message.warning('请选择计划日期~');
+                        return
+                    }
                     this.btnLoading = true;
                     let params = JSON.parse(JSON.stringify(this.planParams));
                     if(params.targetTimes) params.targetTimes = Number(params.targetTimes);
                     if(params.targetLength) params.targetLength = Number(params.targetLength);
-                    params.beginDate = params.beginDate + ' 00:00:00';
-                    params.endDate = params.endDate + ' 00:00:00';
+                    params.beginDate = this.dateData[0] + ' 00:00:00';
+                    params.endDate = this.dateData[1] + ' 00:00:00';
                     params.content = Number(this.$route.params.id);
                     contentPlayPlanCreated(params).then(res => {
                         this.btnLoading = false;
@@ -102,6 +120,9 @@ export default {
                 }
             })
         },
+        disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7  
+        }
     },
 }
 </script>

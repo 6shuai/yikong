@@ -231,6 +231,7 @@ export default {
                     targetTimes: p.targetTimes
                 }
                 this.$refs.playPlan.planParams = data;
+                this.$refs.playPlan.dateData = [data.beginDate, data.endDate];
             }
         },
 

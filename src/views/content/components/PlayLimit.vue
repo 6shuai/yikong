@@ -39,6 +39,7 @@
                             start: '05:00',
                             step: '00:15',
                             end: '23:30',
+                            minTime: limitParams.beginTime
                         }">
                     </el-time-select>
                 </el-form-item>
