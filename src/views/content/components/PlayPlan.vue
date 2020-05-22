@@ -13,7 +13,7 @@
             :model="planParams"
             :rules="planRules"
         >
-            <el-form-item label="计划开始" class="is-required">
+            <el-form-item label="计划日期" class="is-required">
                 <!-- <el-date-picker
                     v-model="planParams.beginDate"
                     type="date"
