@@ -15,7 +15,7 @@
             :rules="limitRules"
         >
             <el-form-item label="周期" prop="validDate">
-                <el-checkbox-group size="small" v-model="checkboxGroup">
+                <el-checkbox-group v-model="checkboxGroup">
                     <el-checkbox-button v-for="item in weekData" :label="item.id" :key="item.id">{{item.label}}</el-checkbox-button>
                 </el-checkbox-group>
             </el-form-item>
@@ -107,7 +107,7 @@ export default {
             limitRules: {
                 validDate: [{ required: true, trigger: "blur", message: '请选择周期~' }],
                 beginTime: [{ required: true, trigger: "change", message: '请选择起始时间~' }],
-                endTime: [{ required: true, trigger: "change", message: '请选择开始时间~' }],
+                endTime: [{ required: true, trigger: "change", message: '请选择结束时间~' }],
                 rule: [{ required: true, trigger: "change", message: '请选择规则~' }],
             },
             addLoading: false,                  //添加规则按钮loading

@@ -108,13 +108,13 @@
             <h2 class="info-title mt20 mb20">时间轴</h2>
             <div class="content-item timeline">
                 <ul>
-                    <li>
+                    <li v-for="item in resData.timelineContainerData" :key="item.id">
                         <div class="t-content">
-                            <div class="title">跳一跳夏季赛</div>
-                            <div class="play-limit">
+                            <div class="title" @click="$router.push(`/timeline/details/${item.id}`)">{{item.displayName}}</div>
+                            <!-- <div class="play-limit">
                                 <span class="limit-item">每日曝光 <span class="highlight">12次</span></span>
                                 <span class="limit-item">每日时长 <span class="highlight">3分40秒</span></span>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="right-icon">
                             <font-awesome-icon :icon="['fas', 'external-link-alt']" />

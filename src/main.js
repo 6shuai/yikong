@@ -43,6 +43,8 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false;
 Vue.prototype.$successCode = 0;    //接口返回code 0 成功
 
+window.eventBus = new Vue();
+
 new Vue({
   el: '#app',
   router,

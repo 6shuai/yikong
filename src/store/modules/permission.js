@@ -10,7 +10,9 @@ const moduleMap = {
 
 	'Screen': 'screen/index',                          	  //屏幕管理  
 
-	'Content': 'content/index',                          	  //内容管理  
+	'Content': 'content/index',                           //内容管理  
+
+	'Timeline': 'timeline/index',                         //时间轴  
 	
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理

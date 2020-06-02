@@ -88,16 +88,16 @@
         </div>
 
         <h2 class="p-info-title mt20 mb20">屏幕信息</h2>
-        <div class="place-info" v-if="resData.placeScreenData && resData.placeScreenData.length">
-            <div class="place-content">
+        <div class="place-info">
+            <div class="place-content" v-if="resData.placeScreenData && resData.placeScreenData.length">
                 <div class="place-box">
                     <div class="place-p" :style="{width: placeW}" v-for="item in resData.placeScreenData" :key="item.id">
                         <screen-list name="place" :item="item" :imageH="imageH" @seeAddress="$refs.mapDialog.showMapDialog(item)"></screen-list>
                     </div>
                 </div>
             </div>
+            <div v-else>暂无屏幕信息~</div>
         </div>
-        <div v-else>暂无屏幕信息~</div>
 
         <h2 class="p-info-title mt20 mb20">场管信息</h2>
         <div class="place-info">

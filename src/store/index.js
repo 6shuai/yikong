@@ -6,6 +6,7 @@ import permission from './modules/permission'
 import settings from './modules/settings'
 import tagsView from './modules/tagsView'
 import user from './modules/user'
+import timeline from './modules/timeline'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     permission,
     settings,
     tagsView,
-    user
+    user,
+    timeline
   },
   getters
 })

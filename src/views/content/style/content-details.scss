@@ -85,6 +85,10 @@
                         line-height: 24px;
                         color: #4c4c4c;
                         padding-top: 6px;
+                        cursor: pointer;
+                        &:hover{
+                            color: $--color-primary;
+                        }
                     }
                     .play-limit{
                         line-height: 24px;
@@ -101,11 +105,11 @@
                     }
                 }
                 .right-icon{
+                    cursor: pointer;
                     display: inline-block;
                     width: 40px;
                     text-align: right;
                     color: $--color-primary;
-                    vertical-align: top;
                     line-height: 66px;
                 }
             }

@@ -19,6 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "axios": "^0.19.2",
+    "better-scroll": "^1.15.2",
     "element-resize-detector": "^1.2.1",
     "element-ui": "^2.13.1",
     "font-awesome": "^4.7.0",
@@ -27,6 +28,7 @@
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
     "vue": "^2.6.11",
+    "vue-draggable-resizable-gorkys": "^2.4.0",
     "vue-router": "^3.0.2",
     "vue-template-compiler": "^2.6.11",
     "vuex": "^3.2.0"
