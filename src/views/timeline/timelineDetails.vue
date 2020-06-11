@@ -31,7 +31,8 @@
                                 width: item.width + 'px', 
                                 height: item.height + 'px',
                                 left: item.x + 'px',
-                                top: item.y + 'px'
+                                top: item.y + 'px',
+                                zIndex: item.layer
                             }"
                         >
                             <!-- v-if="item.contentTypeId==1" -->

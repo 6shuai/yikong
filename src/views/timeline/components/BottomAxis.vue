@@ -14,9 +14,19 @@
             </div>
             <el-button 
                 class="save-btn" 
-                icon="el-icon-folder-checked" 
-                type="success" 
+                icon="el-icon-upload2" 
+                type="info" 
                 size="small"
+                :loading="pubLoading"
+                @click="PubTerminal"
+            >发布到终端
+            </el-button>
+            <el-button 
+                class="save-btn" 
+                icon="el-icon-folder-checked" 
+                type="info" 
+                size="small"
+                :loading="saveLoading"
                 @click="saveTimeline"
             >保存
             </el-button>
@@ -59,49 +69,54 @@
                     </div>
                 </div>
                 
-                <div 
-                    class="screen-item" 
+                <div
+                    class="screen-item-wrap"
                     v-for="(item, sIndex) in screenLayout"
                     :key="sIndex"
-                    @dragover="dragover($event, sIndex)" 
-                    @dragleave="dragleave($event)"
-                    @drop="drop($event, sIndex)"
-                    :class="screenIndex==sIndex ? 'drag-current' : ''"
                 >
-                    <vue-draggable-resizable
-                        v-for="(item, index) in rectangleData[sIndex]"
-                        :key="index"
-                        :title="`【${item.displayName}】`"
-                        :w="item.w"
-                        :h="70"
-                        :x="item.x"
-                        :min-width="10"
-                        :parent="true"
-                        :debug="false"
-                        :isConflictCheck="true"
-                        :snap="true"
-                        :snapTolerance="10"
-                        :handles="['mr','ml']"
-                        @activated="activated(sIndex)"
-                        @deactivated="deactivated"
-                        @dragging="onDrag(arguments, sIndex, index)"
-                        @dragstop="onDrag(arguments, sIndex, index)"
-                        @resizing="onResize(arguments, sIndex, index)"
-                        @resizestop="onResizestop(arguments, sIndex, index)"
-                        :class="item.contentTypeId==1 ? 'image' : (item.contentTypeId == 2 ? 'video' : 'game')"
-                        class="rectangle">
-                        <div class="content" @click="selectedCurrentTimeline(item, sIndex)">
-                            <div class="image-wrap">
-                                <img :src="item.image">
+                    <div 
+                        class="screen-item" 
+                        @dragover="dragover($event, sIndex)" 
+                        @dragleave="dragleave($event)"
+                        @drop="drop($event, sIndex)"
+                        :class="screenIndex==sIndex ? 'drag-current' : ''"
+                    >
+                        <vue-draggable-resizable
+                            v-for="(item, index) in rectangleData[sIndex]"
+                            :key="index"
+                            :title="`【${item.displayName}】`"
+                            :w="item.w"
+                            :h="60"
+                            :x="item.x"
+                            :min-width="10"
+                            :parent="true"
+                            :debug="false"
+                            :isConflictCheck="true"
+                            :handles="['mr','ml']"
+                            @activated="activated(sIndex)"
+                            @deactivated="deactivated"
+                            @dragging="onDrag(arguments, sIndex, index)"
+                            @dragstop="onDrag(arguments, sIndex, index)"
+                            @resizing="onResize(arguments, sIndex, index)"
+                            @resizestop="onResizestop(arguments, sIndex, index)"
+                            :class="item.contentTypeId==1 ? 'image' : (item.contentTypeId == 2 ? 'video' : 'game')"
+                            class="rectangle">
+                            <div class="content" @click="selectedCurrentTimeline(item, sIndex)">
+                                <div class="image-wrap">
+                                    <img :src="item.image">
+                                </div>
+                                <div class="overflow name">
+                                    {{item.displayName}}{{item.x}}
+                                    <time>{{item.beginTime}} - {{item.endTime}}</time>
+                                </div>
+                                <div class="delete" @click="deleteCurrentTimeline(sIndex, index, item.id)">删除</div>
+                                <!-- 在这个时间段播放了多少次 -->
+                                <div class="play-count" v-if="item.contentTypeId == 2">x{{Math.ceil(timeDifference(item.beginTime, item.endTime) * 60 / item.contentDuration)}}</div>
                             </div>
-                            <div class="overflow name">
-                                {{item.displayName}}
-                                <time>{{item.beginTime}} - {{item.endTime}}</time>
-                            </div>
-                            <div class="delete" @click="deleteCurrentTimeline(sIndex, index, item.id)">删除</div>
-                        </div>
-                    </vue-draggable-resizable>
+                        </vue-draggable-resizable>
+                    </div>
                 </div>
+
             </div>
 
         </div>
@@ -114,7 +129,7 @@ import VueDraggableResizable from 'vue-draggable-resizable-gorkys';
 import 'vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css';
 import BScroll from 'better-scroll';
 import { mapState } from 'vuex';
-import { timelineCreated, timelineList, timelineDelete } from '@/api/timeline';
+import { timelineCreated, timelineList, timelineDelete, pubToScreen } from '@/api/timeline';
 export default {
     props: ['startTime', 'endTime'],
     data(){
@@ -144,6 +159,8 @@ export default {
             currentActivate: {},               //当前激活的矩形数据
             totalMinute: 0,                    //开始时间 到 结束时间 总共多少刻度
             lastWidth: 100,                    //最后一个时间刻度的宽度
+            saveLoading: false,                //保存按钮loading
+            pubLoading: false,                 //发布按钮loading
         }
     },
     computed: {
@@ -443,6 +460,8 @@ export default {
                         beginTime: this.rulerStartTime,
                         endTime: this.rulerEndTime,
                         logicRegion: this.screenLayout[sIndex].id, 
+                        contentDuration: this.dragData.duration,
+                        duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
                     })
                 }else{
                     this.rectangleData[sIndex] = [{
@@ -452,6 +471,8 @@ export default {
                         beginTime: this.rulerStartTime,
                         endTime: this.rulerEndTime,
                         logicRegion: this.screenLayout[sIndex].id, 
+                        contentDuration: this.dragData.duration,
+                        duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
                     }]
                 }
             }
@@ -468,7 +489,22 @@ export default {
                     if(_index && index == _index-1) return false;
                     // console.log((item.x <= x && (item.x + item.w) >= x) , (item.x <= xw && (item.x + item.w) >= xw))
                     //x 轴位置在这个矩形里，                                // 矩形右边的点在这个矩形里                  x 位置在矩形里或前面， x右位置在矩形里面或后面
-                    if(handle && (item.x < x && (item.x + item.w) > x) || (item.x < xw && (item.x + item.w) > xw) || (item.x >= x && xw >= item.x +item.w)){
+                    if(handle && (item.x < x && (item.x + item.w) > x) || (item.x < xw && (item.x + item.w) > xw) || (item.x > x && xw > item.x +item.w)){
+                        
+                        // 拖放误差10像素内
+                        if((item.x < x && (item.x + item.w) > x) && item.x + item.w - x < 10){
+                            if(!_index){
+                                this.rulerStartX = x + (item.x + item.w - x);
+                            }else{
+                                let s = this.rectangleData[sIndex][_index-1]; 
+                                s.x = x + (item.x + item.w - x);
+                                this.$set(this.rectangleData[sIndex], _index-1,  s);
+                                //左右标尺位置
+                                this.rulerPosition(s.x, s.x+s.w, sIndex, _index-1);
+                            }
+                            return
+                        }
+
                         handle = false;
                         this.$message.warning('资源不能重叠(..•˘_˘•..)');
                     }
@@ -497,7 +533,9 @@ export default {
                 this.$message.warning('时间轴上还没有内容( ∙̆ .̯ ∙̆ )');
                 return
             }
+            this.saveLoading = true;
             timelineCreated(data).then(res => {
+                this.saveLoading = false;
                 if(res.code == this.$successCode){
                     this.$message.success('保存成功~');
                 }
@@ -515,9 +553,12 @@ export default {
                         res.obj.forEach((item, i) => {
                             var i = item.beginTime.lastIndexOf(":");
                             let sTime = item.beginTime.substring(0, i);
-                            
+                            let eTime = item.endTime.substring(0, i);
+
                             data.push({
                                 ...item,
+                                beginTime: sTime,
+                                endTime: eTime,
                                 displayName: item.contentName,
                                 x: this.findXPosition(sTime),
                                 w: (item.duration / 60) / this.interval * 100
@@ -534,14 +575,14 @@ export default {
         findXPosition(time){
             let h = time.split(':')[0];
             let m = time.split(':')[1];
+            if(m == '00') m = 60;
 
             let s = this.timeArr;
             for(let i = 0; i < s.length; i++){
                 if(
                     h >= s[i].h && 
                     (i+2 <= this.timeArr.length && h <= s[i+1].h) && 
-                    m >= s[i].m && 
-                    (i+2 <= this.timeArr.length && m <= (Number(s[i+1].m) || 60))
+                    m >= s[i].m 
                 ){
                     return s[i].start + this.timeDifference(s[i].h+':'+s[i].m, time) * (100 / this.interval)
                 }
@@ -562,11 +603,13 @@ export default {
                             this.$message.success('删除成功~');
                             this.rectangleData[sIndex].splice(index, 1);
                         }
+                        this.deactivated();
                     })
                 }).catch(() => {     
                 });
             }else{
                 this.rectangleData[sIndex].splice(index, 1);
+                this.deactivated();
             }
         },
 
@@ -636,7 +679,23 @@ export default {
                     })
                 }
             }
-            this.rectangleData = data;
+            this.rectangleData = [];
+            this.$nextTick(() => {
+                this.rectangleData = data;
+            })
+            
+        },
+
+        //发布到终端
+        PubTerminal(){
+            let data = `?containerId=${this.$route.params.id}`;
+            this.pubLoading = true;
+            pubToScreen(data).then(res => {
+                this.pubLoading = false;
+                if(res.code === this.$successCode){
+                    this.$message.success(res.message);
+                }
+            })
         }
         
     },

@@ -46,4 +46,5 @@ export function timelineList(data) { return get(`/timeline/${data}`) }
 //时间轴 删除
 export function timelineDelete(data) { return del(`/timeline/${data}`) }
 
-
+//时间轴 发布到终端
+export function pubToScreen(data) { return get(`/timeline/sendTimelineDataToScreen/${data}`) }

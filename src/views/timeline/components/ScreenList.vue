@@ -15,6 +15,7 @@
                         <div class="delete" @click="deleteScreen(index)"><i class="el-icon-delete"></i>删除</div>
                     </div>
                 </el-card>
+                <div v-if="!resData.length" class="no-data">暂无数据~</div>
             </div>
         </el-scrollbar>
 
@@ -159,6 +160,10 @@ export default {
                     }
                 }
             }
+        }
+        .no-data{
+            line-height: 40px;
+            text-align: center;
         }
     }
 </style>

@@ -106,6 +106,7 @@ export default {
                 endTime: [{ required: true, trigger: "change", message: '请选择结束时间~' }],
             },
             loading: false,          //编辑时获取详情  loading
+            copyTimelineParams: {}
         }
     },
     mounted() {
@@ -121,6 +122,7 @@ export default {
                     this.timelineParams = res.obj;
                     this.timelineParams.beginTime = res.obj.beginTimeFormat.split('1970-01-01 ')[1];
                     this.timelineParams.endTime = res.obj.endTimeFormat.split('1970-01-01 ')[1];
+                    this.copyTimelineParams = JSON.parse(JSON.stringify(this.timelineParams));
                 }
             })
         },
@@ -129,19 +131,57 @@ export default {
         timelineSureBtn(){
             this.$refs.timelineParams.validate((valid) => {
                 if (valid) {
-                    this.btnLoading = true;
-                    let copyData = JSON.parse(JSON.stringify(this.timelineParams));
-                    copyData.beginTime = '1970-01-01 ' + (copyData.beginTime.length > 5 ? copyData.beginTime : copyData.beginTime + ':00' );
-                    copyData.endTime = '1970-01-01 ' + (copyData.endTime.length > 5 ? copyData.endTime : copyData.endTime + ':00' );
-                    timelineContainerCreated(copyData).then(res => {
-                        if(res.code === this.$successCode){
-                            this.$message.success('操作成功~');
-                            this.$router.push('/timeline/index');
-                        }
-                    })
+                    console.log(this.timelineParams.id, this.timeVerify())
+                    if(this.timelineParams.id && !this.timeVerify()) return
+                    this.timelineCreated();
                 }
             })
-        }
+        },
+
+        timelineCreated(){
+            this.btnLoading = true;
+            let copyData = JSON.parse(JSON.stringify(this.timelineParams));
+            copyData.beginTime = '1970-01-01 ' + (copyData.beginTime.length > 5 ? copyData.beginTime : copyData.beginTime + ':00' );
+            copyData.endTime = '1970-01-01 ' + (copyData.endTime.length > 5 ? copyData.endTime : copyData.endTime + ':00' );
+            timelineContainerCreated(copyData).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~');
+                    this.$router.push('/timeline/index');
+                }
+            })
+        },
+
+        //编辑时时间验证
+        timeVerify(){
+            let handle = true;
+            if(this.timeDifference(this.copyTimelineParams.beginTime, this.timelineParams.beginTime) > 0){
+                this.$confirm(`当前时段开始时间超过上次设置的时间，【${this.timelineParams.beginTime}】之前结束的时间轴内容将不再显示, 是否继续?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                }).then(() => {
+                    this.timelineCreated();
+                }).catch(() => {});
+                handle = false;
+            }
+            return handle;
+        },
+
+        //计算时间差（相差分钟）
+        // var beginTime="08:31:00";
+        // var endTime="21:50:00";
+        timeDifference(beginTime, endTime){ 
+            var start1 = beginTime.split(":");
+            var startAll = parseInt(start1[0]*60) + parseInt(start1[1]);
+
+            this.startHour = parseInt(start1[0]);
+            this.startMinute = parseInt(start1[1]);
+            
+            var end1 = endTime.split(":");
+            var endAll = parseInt(end1[0]*60) + parseInt(end1[1]);
+            
+            return endAll - startAll;
+        },
     },
 }
 </script>

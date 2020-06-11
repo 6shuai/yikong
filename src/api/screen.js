@@ -33,3 +33,13 @@ export function screenContactDelete(data) { return del(`/screen/screenContact/${
 //屏幕管理  设置图片为列表 封面默认图片
 export function screenShowDefault(data) { return put(`/screen/screenShow/${data}`) }
 
+//屏幕管理  设置音量
+export function screenSetVolume(data) { return put(`/screen/volume/${data}`) }
+
+//屏幕管理  设置静音
+export function screenSetMute(data) { return put(`/screen/mute/${data}`) }
+
+//屏幕管理  更新截图  
+export function screenshotUpdate(data) { return put(`/screen/screenshot/${data}`) }
+
+

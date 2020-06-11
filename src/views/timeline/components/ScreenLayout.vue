@@ -1,14 +1,15 @@
 <template>
     <div class="screen-layout">
         <el-scrollbar style="height:100%">
-            <el-button type="primary" size="mini" @click="addScreenDialog=true">添加</el-button>
-            <el-button type="primary" size="mini" @click="sureCurrentLayout">保存</el-button>
-            <el-button type="info" size="mini" :disabled="currentScreenIndex==-1" @click="deleteScreen">删除</el-button>
             <div class="toolbar">
-                <span>x：<el-input size="mini" v-model="currentRectangle.x" :min="0" type="number"></el-input></span>
-                <span>y：<el-input size="mini" v-model="currentRectangle.y" :min="0" type="number"></el-input></span>
-                <span>宽：<el-input size="mini" v-model="currentRectangle.width" :min="20" type="number"></el-input></span>
-                <span>高：<el-input size="mini" v-model="currentRectangle.height" :min="20" type="number"></el-input></span>
+                <el-button type="primary" size="mini" @click="addScreenDialog=true">添加</el-button>
+                <el-button type="primary" size="mini" @click="sureCurrentLayout">保存</el-button>
+                <el-button type="info" size="mini" :disabled="currentScreenIndex==-1" @click="deleteScreen">删除</el-button>
+                <span>x：<el-input size="mini" v-model="currentRectangle.x" :min="0" :max="rectangleW" type="number"></el-input></span>
+                <span>y：<el-input size="mini" v-model="currentRectangle.y" :min="0" :max="rectangleH" type="number"></el-input></span>
+                <span>宽：<el-input size="mini" v-model="currentRectangle.width" :min="20" :max="rectangleW" type="number"></el-input></span>
+                <span>高：<el-input size="mini" v-model="currentRectangle.height" :min="20" :max="rectangleH" type="number"></el-input></span>
+                <span>层叠顺序：<el-input size="mini" v-model="currentRectangle.layer" :min="1" :max="99999" type="number"></el-input></span>
                 <span>名称：<el-input size="mini" v-model="currentRectangle.displayName"></el-input></span>
             </div>
             <div ref="rectangleWrap" class="rectangle-wrap" :style="{width: rectangleW+'px', height: rectangleH+'px'}">
@@ -25,6 +26,8 @@
                     :w="item.width"
                     :h="item.height"
                     :x="item.x"
+                    :y="item.y"
+                    :z-index="item.layer"
                     :parent="true"
                     :debug="false"
                     :min-width="20"
@@ -89,6 +92,8 @@ export default {
             currentScreenIndex: -1,       //已激活的屏幕模块 下标
             rectangleW: 480,              //编辑区域的宽
             rectangleH: 270,              //编辑区域的高
+            deleteIdArr: [],              //要删除的屏幕区域id数组
+            ratio: 0,                     //与原始宽高比例
         }
     },
     computed: {
@@ -103,21 +108,22 @@ export default {
         //根据自身屏幕大小  缩小屏幕比例
         let w = this.timeData.width, h = this.timeData.height;
         //创建时间轴填写的宽度  除以 屏幕的宽度的三分之一
-        let bl = parseInt(w / (document.body.clientWidth / 3));
-        this.rectangleW = parseInt(w / bl);
-        this.rectangleH = parseInt(h / bl);
+        this.ratio = parseInt(w / (document.body.clientWidth / 3));
+        this.rectangleW = parseInt(w / this.ratio);
+        this.rectangleH = parseInt(h / this.ratio);
     },
     methods: {
         //查询逻辑区域集合 屏幕布局集合
         init(){
             timelineLayoutList(this.$route.params.id).then(res => {
                 if(res.code === this.$successCode){
-                    this.rectangleData = res.obj;
+                    this.rectangleData = this.ratioShow(res.obj);
                     // this.$store.dispatch('timeline/setScreenLayoutData', this.rectangleData);
                     let data = {
                         data: JSON.parse(JSON.stringify(this.rectangleData)),
                         w: this.rectangleW,
-                        h: this.rectangleH
+                        h: this.rectangleH,
+                        ratio: this.ratio
                     }
                     eventBus.$emit('setScreenLayoutData', data);
                     // if(!res.obj.length){
@@ -135,14 +141,25 @@ export default {
             })
         },
 
+        //真实宽高 除以 比例 = 现在的宽高  
+        ratioShow(data){
+            data.forEach(item => {
+                item.width = item.width / this.ratio;
+                item.height = item.height / this.ratio;
+                item.x = item.x / this.ratio;
+                item.y = item.y / this.ratio;  
+            })
+            return data;
+        },
+
         //添加屏幕模块
         handleAddScreen(){
             this.rectangleData.push({
-                width: 100,
-                height: this.rectangleH,
+                width: this.rectangleH < this.rectangleW ? this.rectangleW : 100,
+                height: this.rectangleH > this.rectangleW ? this.rectangleH : 100,
                 x: 0,
                 y: 0,
-                layer: 1,
+                layer: this.rectangleData.length + 1,
                 containerId: this.$route.params.id,
                 displayName: this.screenName
             })
@@ -189,20 +206,26 @@ export default {
         sureCurrentLayout(){
             let [x1, x2, w] = [false, false, false];
             let totalW = 0;
-            this.rectangleData.forEach((item, index) => {
+            let copyData = JSON.parse(JSON.stringify(this.rectangleData));
+            copyData.forEach((item, index) => {
                 if(item.x == 0) x1 = true;
                 if(item.x+item.width >= this.rectangleW) x2 = true;
                 totalW += item.width;
-                item.layer = index;
-                
+
+                //保存时宽高x，y 要乘以比例， 真实的宽高
+                item.width = this.ratio * item.width;
+                item.height = this.ratio * item.height;
+                item.x = this.ratio * item.x;
+                item.y = this.ratio * item.y;  
             })
             if(totalW >= this.rectangleW) w = true;
             if(x1 && x2 && w){
-                timelineAddlayout(this.rectangleData).then(res => {
+                this.deleteSelectedId();
+                timelineAddlayout(copyData).then(res => {
                     if(res.code === this.$successCode){
                         this.$message.success('保存成功~');
                         let data = {
-                            data: res.obj,
+                            data: this.ratioShow(res.obj),
                             type: 'update'
                         }
                         eventBus.$emit('setScreenLayoutData', data);
@@ -227,19 +250,29 @@ export default {
                 }).then(() => {
                     let id = this.rectangleData[this.currentScreenIndex].id;
                     if(id){
-                        timelineLayoutDelete(id).then(res =>{
-                            if(res.code === this.$successCode){
-                                this.rectangleData.splice(this.currentScreenIndex, 1);
-                                this.currentScreenIndex = 0;
-                                this.currentRectangle = this.rectangleData[0];
-                            }
-                        })
-                    }else{
-                        this.rectangleData.splice(this.currentScreenIndex, 1);
+                        //把要删除的id push到数组，  点击保存时再去删除
+                        this.deleteIdArr.push(id);
                     }
+                    this.rectangleData.splice(this.currentScreenIndex, 1);
+                    this.currentScreenIndex = 0;
+                    this.currentRectangle = this.rectangleData[0];
                 })
             }
+        },
+
+        //保存时 deleteIdArr 要删除的数组是否有值
+        deleteSelectedId(){
+            if(this.deleteIdArr.length){
+                for(let i = 0; i < this.deleteIdArr.length; i++){
+                    timelineLayoutDelete(this.deleteIdArr[i]).then(res =>{
+                        if(res.code === this.$successCode){
+                            
+                        }
+                    })
+                }
+            }
         }
+
     },
     components: {
         VueDraggableResizable
@@ -249,6 +282,7 @@ export default {
 <style lang="scss" scope>
     .screen-layout{
         height: 100%;
+        padding-bottom: 10px;
         .rectangle {
             background-color: rgb(239, 154, 154);
             text-align: center;
@@ -269,10 +303,10 @@ export default {
         }
         .toolbar{
             display: inline-block;
-            margin-bottom: 10px;
             font-size: 14px;
             &>span{
                 display: inline-block;
+                margin-bottom: 10px;
                 margin-left: 10px;
                 .el-input{
                     width: 70px;

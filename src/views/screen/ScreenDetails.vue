@@ -24,6 +24,12 @@
                         <el-tag v-if="resData.state == 1" class="status" type="success" effect="dark">在线</el-tag>
                         <el-tag v-if="resData.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
                     </div>
+                    <div class="tool-wrap">
+                        <el-button type="primary" icon="el-icon-refresh" size="small" @click="updateImg">更新截图</el-button>
+                        <el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number>
+                        <el-button type="primary" icon="el-icon-finished" size="small" @click="setVolume">提交</el-button>
+                        <el-button type="primary" :disabled="!volume" icon="el-icon-close-notification" size="small" @click="setMute">静音</el-button>
+                    </div>
                 </el-col>
                 <el-col :xs="24" :sm="12" :md="8" class="screen-info-right">
                     <el-divider>实景图片<i class="el-icon-caret-bottom"></i></el-divider>
@@ -110,7 +116,7 @@
     </el-card>
 </template>
 <script>
-import { screenDelete } from '@/api/screen';
+import { screenDelete, screenSetVolume, screenSetMute, screenshotUpdate } from '@/api/screen';
 import { getScreenDetail, screenIsFavorite } from '@/views/screen/mixins';
 export default {
     mixins: [getScreenDetail, screenIsFavorite],
@@ -121,6 +127,11 @@ export default {
                 arr.push(item.uri);
             })
             return arr;
+        }
+    },
+    data(){
+        return {
+            volume: 50,                 //音量
         }
     },
     mounted() {
@@ -166,6 +177,36 @@ export default {
                 this.handleFavorite(s, resolve);
             }).then(res => {
                 this.$set(this.resData, 'isFavorite', p.isFavorite);
+            })
+        },
+
+        //设置音量 提交
+        setVolume(){
+            let data = `?screenId=${this.resData.id}&value=${this.volume}`;
+            screenSetVolume(data).then(res => {
+                if(res.code == this.$successCode){
+                    this.$message.success('音量操作成功~');
+                }
+            })
+        },
+
+        //设置静音
+        setMute(){
+            let data = `?screenId=${this.resData.id}`;
+            screenSetMute(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('设置静音操作成功~');
+                }
+            })
+        },
+
+        //更新屏幕截图
+        updateImg(){
+            let data = `?screenId=${this.resData.id}`;
+            screenshotUpdate(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('更新屏幕截图操作成功~');
+                }
             })
         }
     }

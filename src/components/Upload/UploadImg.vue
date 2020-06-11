@@ -166,10 +166,10 @@ export default {
                         this.handleRemoveSuccess(file, index);
                     })
                 }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
+                    // this.$message({
+                    //     type: 'info',
+                    //     message: '已取消删除'
+                    // });
                 });
             }else{
                 this.$emit('deleteImg', data);
