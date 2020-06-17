@@ -42,4 +42,8 @@ export function screenSetMute(data) { return put(`/screen/mute/${data}`) }
 //屏幕管理  更新截图  
 export function screenshotUpdate(data) { return put(`/screen/screenshot/${data}`) }
 
+//屏幕管理  硬件绑定  
+export function bindScreen(data) { return put(`/screen/bindScreen/${data}`) }
 
+//屏幕管理  解除硬件绑定  
+export function unboundScreen(data) { return del(`/screen/bindScreen/${data}`) }

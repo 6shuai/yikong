@@ -14,14 +14,13 @@
                 <el-tag v-if="item.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
                 <!-- 收藏 -->
                 <el-button 
-                    v-if="name == 'screen'"
+                    v-if="item.isFavorite"
                     class="icon-button collect" 
                     size="small" 
-                    :type="item.isFavorite ? 'warning' : 'info'" 
+                    type="info" 
                     slot="reference" 
-                    :icon="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'" 
-                    :title="item.isFavorite ? '取消收藏' : '收藏'"
-                    @click.stop="handleCollect(item, index)"
+                    icon="el-icon-star-off" 
+                    title="已收藏"
                 >
                 </el-button>
             
@@ -57,30 +56,13 @@
 </template>
 
 <script>
-import { screenIsFavorite } from '@/views/screen/mixins';
 export default {
     props: ['item', 'index', 'name', 'imageH'],
-    mixins: [screenIsFavorite],
     methods: {
         //场所地址  省市区 拼接
         addressJoint(row){
             return `${row.proName ? row.proName+'  ' : ''}${row.cityName ? row.cityName+'  ' : ''}${row.areaName ? row.areaName : ''}`;
-        },
-
-        //收藏 或 取消收藏
-        handleCollect(data, index){
-            let p = {
-                isFavorite: data.isFavorite ? 0 : 1,
-                placeId: data.id,
-                userId: this.$store.state.user.loginData.id
-            }
-            let s = `?isFavorite=${p.isFavorite}&screenId=${p.placeId}&userId=${p.userId}`;
-            new Promise((resolve) => {
-                this.handleFavorite(s, resolve);
-            }).then(res => {
-                this.$parent.resData[index].isFavorite = p.isFavorite;
-            })
-        },
+        }
     }
 }
 </script>

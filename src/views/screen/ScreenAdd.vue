@@ -93,7 +93,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <div v-if="!screenParams.id || showUserInput">
+                    <!-- <div v-if="!screenParams.id || showUserInput">
                         <el-form-item label="登录用户名" prop="account">
                             <el-row>
                                 <el-col :span="18">
@@ -114,7 +114,7 @@
                                 </el-col>
                             </el-row>
                         </el-form-item>
-                    </div>
+                    </div> -->
                     <el-form-item v-if="screenParams.id && !showUserInput" label="登录用户名">
                         <span>{{screenParams.account}}</span>
                         <el-button 

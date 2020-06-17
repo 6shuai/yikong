@@ -47,15 +47,16 @@
             :title="previewData.displayName"
             :visible.sync="dialogVisible"
             width="60%">
+            <div v-if="dialogVisible">
+                <!-- 图片 -->
+                <div class="preview" v-if="previewData.contentTypeId == 1">
+                    <el-image fit="cover" :src="previewData.contentPath"></el-image>
+                </div>
 
-            <!-- 图片 -->
-            <div class="preview" v-if="previewData.contentTypeId == 1">
-                <el-image fit="cover" :src="previewData.contentPath"></el-image>
-            </div>
-
-            <!-- 视频 -->
-            <div class="preview" v-if="previewData.contentTypeId == 2">
-                <video :src="previewData.contentPath" controls="controls"></video>
+                <!-- 视频 -->
+                <div class="preview" v-if="previewData.contentTypeId == 2">
+                    <video :src="previewData.contentPath" controls="controls"></video>
+                </div>
             </div>
 
         </el-dialog>

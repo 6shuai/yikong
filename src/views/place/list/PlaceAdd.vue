@@ -40,14 +40,14 @@
                         <el-form-item label="场所描述">
                             <el-input type="textarea" :rows="3" v-model="placeForm.description" placeholder="场所描述"></el-input>
                         </el-form-item>
-                        <el-form-item label="地理位置">
+                        <el-form-item label="地理位置" prop="proName">
                             <el-input 
                                 @focus="showMap=true" 
                                 :value="`${placeForm.proName || ''}${placeForm.cityName ? ' - ' + placeForm.cityName : ''}${placeForm.areaName ? ' - ' + placeForm.areaName : ''}`" 
                                 placeholder="地理位置"
                             ></el-input>
                         </el-form-item>
-                        <el-form-item label="详细地址">
+                        <el-form-item label="详细地址" prop="address">
                             <el-input v-model="placeForm.address" placeholder="详细地址"></el-input>
                         </el-form-item>
                         <el-form-item label="展示图片" prop="placeShowData">
@@ -174,6 +174,8 @@ export default {
             addressJoin: '',
             placeRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入场所名称~' }],
+                proName: [{ required: true, trigger: "blur", message: '请输入地理位置~' }],
+                address: [{ required: true, trigger: "blur", message: '请输入详细地址~' }],
                 placeType: [{ required: true, trigger: "change", message: '请选择场所类型~' }],
                 owner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
                 placeShowData: [{ required: true, trigger: "change", message: '请至少上传一张展示图片~' }]

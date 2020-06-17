@@ -20,13 +20,13 @@
                                 <img :style="{height: imageH+'px'}" :src="item.defaultShow" class="image">
                                 <!-- 收藏 -->
                                 <el-button 
+                                    v-if="item.isFavorite"
                                     class="icon-button collect" 
                                     size="small" 
-                                    :type="item.isFavorite ? 'warning' : 'info'" 
+                                    type="info" 
                                     slot="reference" 
-                                    :icon="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'" 
-                                    :title="item.isFavorite ? '取消收藏' : '收藏'"
-                                    @click.stop="handleCollect(item, index)"
+                                    icon="el-icon-star-off" 
+                                    title="已收藏"
                                 >
                                 </el-button>
                             
@@ -81,10 +81,9 @@ import TheMap from '@/components/BaiduMap/index';
 import BMap from 'BMap'
 import MapDialog from '@/components/BaiduMap/MapDialog';
 import { screenSizeWatch } from '@/mixins';
-import { placeIsFavorite } from '@/views/place/mixins';
 
 export default {
-    mixins: [screenSizeWatch, placeIsFavorite],
+    mixins: [screenSizeWatch],
     data(){
         return {
             params: {
@@ -127,21 +126,6 @@ export default {
                 userId: this.$store.state.user.loginData.id
             }
             this.init();
-        },
-
-        //收藏 或 取消收藏
-        handleCollect(data, index){
-            let p = {
-                isFavorite: data.isFavorite ? 0 : 1,
-                placeId: data.id,
-                userId: this.$store.state.user.loginData.id
-            }
-            let s = `?isFavorite=${p.isFavorite}&placeId=${p.placeId}&userId=${p.userId}`;
-            new Promise((resolve) => {
-                this.handleFavorite(s, resolve);
-            }).then(res => {
-                this.resData[index].isFavorite = p.isFavorite;
-            })
         },
 
         //页码

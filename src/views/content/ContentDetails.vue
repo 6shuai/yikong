@@ -17,34 +17,36 @@
         </div>
         <div class="content">
             <div class="resource-wrap clearfix">
-                <div class="left">
-                    <el-image v-if="resData.contentTypeId == 1" :src="resData.contentPath" :preview-src-list="[resData.contentPath]"></el-image>
-                    <video v-if="resData.contentTypeId == 2" :src="resData.contentPath" controls="controls"></video>
-                </div>
-                <div class="right">
-                    <el-form 
-                        label-width="90px"
-                    >
-                        <el-form-item label="名称">
-                            <span>{{resData.displayName}}</span>
-                        </el-form-item>
-                        <el-form-item label="创建时间">
-                            <span>{{resData.creationTime}}</span>
-                        </el-form-item>
-                        <el-form-item label="品牌">
-                            <span>{{resData.contentOwnerName}}</span>
-                        </el-form-item>
-                        <el-form-item label="分辨率">
-                            <span>{{resData.width}} x {{resData.height}}</span>
-                        </el-form-item>
-                        <el-form-item label="比例">
-                            <span>{{resData.aspectRatioWidth}} : {{resData.aspectRatioHeight}}</span>
-                        </el-form-item>
-                        <el-form-item label="文件大小">
-                            <span>{{fileSize(resData.size)}}MB</span>
-                        </el-form-item>
-                    </el-form>
-                </div>
+                <el-row :gutter="20">
+                    <el-col :xs="24" :md="14"  class="left">
+                        <el-image v-if="resData.contentTypeId == 1" :src="resData.contentPath" :preview-src-list="[resData.contentPath]"></el-image>
+                        <video v-if="resData.contentTypeId == 2" :src="resData.contentPath" controls="controls"></video>
+                    </el-col>
+                    <el-col :xs="24" :md="10"  class="right">
+                        <el-form 
+                            label-width="90px"
+                        >
+                            <el-form-item label="名称">
+                                <span>{{resData.displayName}}</span>
+                            </el-form-item>
+                            <el-form-item label="创建时间">
+                                <span>{{resData.creationTime}}</span>
+                            </el-form-item>
+                            <el-form-item label="品牌">
+                                <span>{{resData.contentOwnerName}}</span>
+                            </el-form-item>
+                            <el-form-item label="分辨率">
+                                <span>{{resData.width}} x {{resData.height}}</span>
+                            </el-form-item>
+                            <el-form-item label="比例">
+                                <span>{{resData.aspectRatioWidth}} : {{resData.aspectRatioHeight}}</span>
+                            </el-form-item>
+                            <el-form-item label="文件大小">
+                                <span>{{fileSize(resData.size)}}MB</span>
+                            </el-form-item>
+                        </el-form>
+                    </el-col>
+                </el-row>
             </div>
             <h2 class="info-title mt20 mb20">播放限制
                 <el-button 
@@ -91,10 +93,10 @@
                         <span>{{playPlanData.endDateFormat || '-'}}</span>
                     </el-form-item>
                     <el-form-item label="计划时长" v-if="playPlanData.planType==2">
-                        <span>{{playPlanData.targetLength}}</span>
+                        <span>{{playPlanData.targetLength}}分钟</span>
                     </el-form-item>
                     <el-form-item label="已播放时长" v-if="playPlanData.planType==2">
-                        <span>{{playPlanData.currentLength}}</span>
+                        <span>{{playPlanData.currentLength}}分钟</span>
                     </el-form-item>
                     <el-form-item label="计划曝光次数" v-if="playPlanData.planType==1">
                         <span>{{playPlanData.targetTimes}}次</span>

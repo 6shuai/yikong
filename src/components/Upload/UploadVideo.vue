@@ -53,13 +53,13 @@ export default {
     },
     methods: {
         beforeUploadVideo(file) {
-            const isLt10M = file.size / 1024 / 1024  < 10;
+            const isLt100M = file.size / 1024 / 1024  < 100;
             if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
                 this.$message.error('请上传正确的视频格式~');
                 return false;
             }
-            if (!isLt10M) {
-                this.$message.error('上传视频大小不能超过10MB哦~');
+            if (!isLt100M) {
+                this.$message.error('上传视频大小不能超过100MB哦~');
                 return false;
             }
         },
@@ -133,6 +133,7 @@ export default {
             width: 500px;
             height: 300px;
             border: 1px solid #e5e5e5;
+            background: #000;
         }
     }
 </style>

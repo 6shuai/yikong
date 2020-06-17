@@ -30,7 +30,7 @@
                         <el-row>
                             <el-col :span="11">
                                 <el-form-item prop='width'>
-                                    <el-input type="number" v-model="timelineParams.width" placeholder="宽"></el-input>
+                                    <el-input type="number" v-model="timelineParams.width" :min="1" placeholder="宽"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="2" style="text-align: center">
@@ -38,7 +38,7 @@
                             </el-col>
                             <el-col :span="11">
                                 <el-form-item prop='height'>
-                                    <el-input type="number" v-model="timelineParams.height" placeholder="高"></el-input>
+                                    <el-input type="number" v-model="timelineParams.height" :min="1" placeholder="高"></el-input>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -78,7 +78,7 @@
                         </el-row>
                     </el-form-item>
                     <el-form-item label="说明">
-                        <el-input type="textarea" :rows="3" v-model="timelineParams.description" placeholder="大屏描述"></el-input>
+                        <el-input type="textarea" :rows="3" v-model="timelineParams.description" placeholder="时间轴描述"></el-input>
                     </el-form-item>
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="timelineSureBtn">提  交</el-button>
@@ -131,7 +131,6 @@ export default {
         timelineSureBtn(){
             this.$refs.timelineParams.validate((valid) => {
                 if (valid) {
-                    console.log(this.timelineParams.id, this.timeVerify())
                     if(this.timelineParams.id && !this.timeVerify()) return
                     this.timelineCreated();
                 }
@@ -154,7 +153,7 @@ export default {
         //编辑时时间验证
         timeVerify(){
             let handle = true;
-            if(this.timeDifference(this.copyTimelineParams.beginTime, this.timelineParams.beginTime) > 0){
+            if(this.copyTimelineParams.beginTime && this.timeDifference(this.copyTimelineParams.beginTime, this.timelineParams.beginTime) > 0){
                 this.$confirm(`当前时段开始时间超过上次设置的时间，【${this.timelineParams.beginTime}】之前结束的时间轴内容将不再显示, 是否继续?`, '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',

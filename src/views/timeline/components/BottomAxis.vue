@@ -39,7 +39,7 @@
 
         <div class="axis-right"  :style="{height: 70 * screenLayout.length + 30 +'px'}">
             <div ref="personWrap" class="right-content">
-                <div ref="timeline" class="timeline-wrap" :style="{width: (totalMinute - 1) * 100 + lastWidth +'px'}">
+                <div ref="timeline" class="timeline-wrap" :style="{width: timelineWidth +'px'}">
                     <div class="time-wrap">
                         <div class="time-item" 
                             v-for="(item, index) in timeArr" 
@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <div class="screen-content-wrap" ref="screenWrap" :style="{width: (totalMinute - 1) * 100 + lastWidth+'px'}">
+            <div class="screen-content-wrap" ref="screenWrap" :style="{width: timelineWidth +'px'}">
 
                 <!-- 标尺 -->
                 <div class="ruler ruler-left" ref="rulerLeft" :style="{height: (70*screenLayout.length+80)+'px'}">
@@ -64,7 +64,7 @@
                 <div class="ruler ruler-right" ref="rulerRight">
                     <div class="time">
                         <span 
-                            :class="Number($refs.rulerRight && $refs.rulerRight.style.left.split('px')[0]) + 50 >= (totalMinute - 1) * 100 + lastWidth ? 'right' : ''" 
+                            :class="Number($refs.rulerRight && $refs.rulerRight.style.left.split('px')[0]) + 50 >= timelineWidth ? 'right' : ''" 
                         >{{rulerEndTime}}</span>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                                     <img :src="item.image">
                                 </div>
                                 <div class="overflow name">
-                                    {{item.displayName}}{{item.x}}
+                                    {{item.displayName}}
                                     <time>{{item.beginTime}} - {{item.endTime}}</time>
                                 </div>
                                 <div class="delete" @click="deleteCurrentTimeline(sIndex, index, item.id)">删除</div>
@@ -138,16 +138,7 @@ export default {
             startMinute: 31,                    //时间轴开始时间  分钟
             screenData: [],
             timeArr: [],
-            rectangleData: [
-                // {
-                //     w: 100,
-                //     x: 0
-                // },
-                // {
-                //     w: 100,
-                //     x: 100
-                // }
-            ],
+            rectangleData: [],                 
             copyRectangleData: [],             //rectangleData 拷贝，矩形激活时赋值， 拖拽重叠时好撤回操作
             rulerStartTime: '',                //标尺左侧显示的时间
             rulerEndTime: '',                  //标尺右侧显示的时间
@@ -155,6 +146,7 @@ export default {
             timelineLeftDistance: 100,         //时间轴距离左边屏幕的距离 px
             screenIndex: -1,                   //拖拽资源 在哪块屏幕上                 
             interval: 20,                      //时间线间隔  默认 20分钟
+            timelineWidth: 0,                  //时间轴的宽度
             screenLayout: [],                  //屏幕布局数据
             currentActivate: {},               //当前激活的矩形数据
             totalMinute: 0,                    //开始时间 到 结束时间 总共多少刻度
@@ -233,6 +225,11 @@ export default {
                     this.startMinute += num;
                 }
             }
+
+            //时间轴的宽度
+            this.$nextTick(() => {
+                this.timelineWidth = (this.totalMinute - 1) * 100 + this.lastWidth;
+            })
             
         },
 
@@ -360,6 +357,12 @@ export default {
 
         //标尺上显示的时间  timeLineIndex时间刻度的下标，  index在这个刻度里的百分比位置
         rulerShowTime(timeLineIndex, index){
+            if(timeLineIndex == undefined) {
+                return{
+                    h: this.endTime.split(':')[0],
+                    m: this.endTime.split(':')[1],
+                }
+            }
             let obj = this.timeArr[timeLineIndex];
             let m = '';
             let h = obj.h;
@@ -452,28 +455,21 @@ export default {
                 this.dragData.contentId = this.dragData.id;
                 delete this.dragData.id;
                 this.selectedCurrentTimeline(this.dragData, sIndex);
+                let obj = {
+                    ...this.dragData,
+                    x: this.rulerStartX,
+                    // this.timelineWidth 总宽度， 最后一个的宽度小于100 时 => 总宽度 - x轴位置
+                    w: this.timelineWidth - this.rulerStartX >= 100 ? 100 : this.timelineWidth - this.rulerStartX,
+                    beginTime: this.rulerStartTime,
+                    endTime: this.rulerEndTime,
+                    logicRegion: this.screenLayout[sIndex].id, 
+                    contentDuration: this.dragData.duration,
+                    duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
+                }
                 if(this.rectangleData[sIndex] && this.rectangleData[sIndex].length){
-                    this.rectangleData[sIndex].push({
-                        ...this.dragData,
-                        x: this.rulerStartX,
-                        w: 100,
-                        beginTime: this.rulerStartTime,
-                        endTime: this.rulerEndTime,
-                        logicRegion: this.screenLayout[sIndex].id, 
-                        contentDuration: this.dragData.duration,
-                        duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
-                    })
+                    this.rectangleData[sIndex].push(obj);
                 }else{
-                    this.rectangleData[sIndex] = [{
-                        ...this.dragData,
-                        x: this.rulerStartX,
-                        w: 100,
-                        beginTime: this.rulerStartTime,
-                        endTime: this.rulerEndTime,
-                        logicRegion: this.screenLayout[sIndex].id, 
-                        contentDuration: this.dragData.duration,
-                        duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
-                    }]
+                    this.rectangleData[sIndex] = [obj];
                 }
             }
             this.deactivated();
@@ -538,6 +534,10 @@ export default {
                 this.saveLoading = false;
                 if(res.code == this.$successCode){
                     this.$message.success('保存成功~');
+                    this.$nextTick(() => {
+                        this.rectangleData = [];
+                        this.initTimelineList();
+                    })
                 }
             })
         },

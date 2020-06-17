@@ -1,5 +1,5 @@
 <template>
-    <el-card class="template-card screen-details">
+    <el-card class="template-card screen-details" v-loading="loading">
         <div class="header-wrap detail-header-wrap mb30">
             <el-page-header @back="$router.go(-1)">
             </el-page-header>
@@ -17,21 +17,23 @@
         </div>
         <div class="content">
             <el-row :gutter="20">
-                <el-col :xs="24" :sm="12" :md="16"  class="screen-info-left">
+                <el-col :xs="24" :md="14"  class="screen-info-left">
                     <div class="screen-img">
-                        <img src="https://game.xfengjing.com/app/upload/market/photo/SNeDQguJTPQdWASQB0FuGF3xk5sjkooJZaAPxmAB.jpeg">
+                        <img v-if="resData.screenShowData && resData.screenShowData[0]" :src="resData.screenShowData[0].uri">
                         <el-tag v-if="!resData.state" class="status ing" type="info" effect="dark">建设中</el-tag>
                         <el-tag v-if="resData.state == 1" class="status" type="success" effect="dark">在线</el-tag>
                         <el-tag v-if="resData.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
                     </div>
                     <div class="tool-wrap">
-                        <el-button type="primary" icon="el-icon-refresh" size="small" @click="updateImg">更新截图</el-button>
-                        <el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number>
-                        <el-button type="primary" icon="el-icon-finished" size="small" @click="setVolume">提交</el-button>
-                        <el-button type="primary" :disabled="!volume" icon="el-icon-close-notification" size="small" @click="setMute">静音</el-button>
+                        <el-button type="primary" icon="el-icon-refresh" size="small" :loading="screenshotLoading" @click="updateImg">更新截图</el-button>
+                        音量:<el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number>
+                        <el-button type="primary" icon="el-icon-finished" size="small" :loading="setVolumeLoading" @click="setVolume">提交</el-button>
+                        <el-button type="primary" icon="el-icon-close-notification" size="small" :loading="setMuteLoading" @click="setMute">静音</el-button>
+                        <el-button type="primary" icon="el-icon-lock" size="small" :loading="bindLoading" @click="macBind">硬件绑定</el-button>
+                        <el-button type="primary" icon="el-icon-unlock" size="small" :loading="unboundLoading" @click="macUnbound">解除绑定</el-button>
                     </div>
                 </el-col>
-                <el-col :xs="24" :sm="12" :md="8" class="screen-info-right">
+                <el-col :xs="24" :md="10" class="screen-info-right">
                     <el-divider>实景图片<i class="el-icon-caret-bottom"></i></el-divider>
                     <div class="info-item photo">
                         <el-image 
@@ -46,7 +48,10 @@
 
                     <el-divider>屏幕规格<i class="el-icon-caret-bottom"></i></el-divider>
                     <div class="info-item">
-                        <el-form label-width="80px">
+                        <el-form label-width="85px">
+                             <el-form-item label="屏幕序列号">
+                                <span>{{resData.serialNumber}}</span>
+                            </el-form-item>
                             <el-form-item label="点距规格">
                                 <span>{{resData.dotPitchName}}</span>
                             </el-form-item>
@@ -64,7 +69,7 @@
 
                     <el-divider>详细信息<i class="el-icon-caret-bottom"></i></el-divider>
                     <div class="info-item">
-                        <el-form label-width="80px">
+                        <el-form label-width="85px">
                             <el-form-item label="所属场所">
                                 <el-link type="primary" @click="$router.push(`/place/details/${resData.placeId}`)"><i class="el-icon-link"></i>{{resData.placeName}}</el-link>
                             </el-form-item>
@@ -116,7 +121,7 @@
     </el-card>
 </template>
 <script>
-import { screenDelete, screenSetVolume, screenSetMute, screenshotUpdate } from '@/api/screen';
+import { screenDelete, screenSetVolume, screenSetMute, screenshotUpdate, bindScreen, unboundScreen } from '@/api/screen';
 import { getScreenDetail, screenIsFavorite } from '@/views/screen/mixins';
 export default {
     mixins: [getScreenDetail, screenIsFavorite],
@@ -131,6 +136,12 @@ export default {
     },
     data(){
         return {
+            loading: false,
+            screenshotLoading: false,   //更新截图按钮loading
+            setVolumeLoading: false,    //设置音量按钮loading
+            setMuteLoading: false,      //设置静音按钮loading
+            bindLoading: false,         //绑定硬件loading
+            unboundLoading: false,      //解除绑定loading
             volume: 50,                 //音量
         }
     },
@@ -183,7 +194,9 @@ export default {
         //设置音量 提交
         setVolume(){
             let data = `?screenId=${this.resData.id}&value=${this.volume}`;
+            this.setVolumeLoading = true;
             screenSetVolume(data).then(res => {
+                this.setVolumeLoading = false;
                 if(res.code == this.$successCode){
                     this.$message.success('音量操作成功~');
                 }
@@ -193,7 +206,9 @@ export default {
         //设置静音
         setMute(){
             let data = `?screenId=${this.resData.id}`;
+            this.setMuteLoading = true;
             screenSetMute(data).then(res => {
+                this.setMuteLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('设置静音操作成功~');
                 }
@@ -203,9 +218,35 @@ export default {
         //更新屏幕截图
         updateImg(){
             let data = `?screenId=${this.resData.id}`;
+            this.screenshotLoading = true;
             screenshotUpdate(data).then(res => {
+                this.screenshotLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('更新屏幕截图操作成功~');
+                }
+            })
+        },
+
+        //硬件绑定
+        macBind(){
+            let data = `?screenId=${this.resData.id}`;
+            this.bindLoading = true;
+            bindScreen(data).then(res => {
+                this.bindLoading = false;
+                if(res.code === this.$successCode){
+                    this.$message.success('硬件绑定成功~');
+                }
+            })
+        },
+
+        //解除硬件绑定
+        macUnbound(){
+            let data = `?screenId=${this.resData.id}`;
+            this.unboundLoading = true;
+            unboundScreen(data).then(res => {
+                this.unboundLoading = false;
+                if(res.code === this.$successCode){
+                    this.$message.success('解除硬件绑定成功~');
                 }
             })
         }

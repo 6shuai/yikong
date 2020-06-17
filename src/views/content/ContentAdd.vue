@@ -66,7 +66,7 @@
                             <el-row>
                                 <el-col :span="11">
                                     <el-form-item prop='width'>
-                                        <el-input type="number" v-model="contentParams.width" placeholder="宽"></el-input>
+                                        <el-input type="number" :min="1" v-model="contentParams.width" placeholder="宽"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span="2" style="text-align: center">
@@ -74,7 +74,7 @@
                                 </el-col>
                                 <el-col :span="11">
                                     <el-form-item prop='height'>
-                                        <el-input type="number" v-model="contentParams.height" placeholder="高"></el-input>
+                                        <el-input type="number" :min="1" v-model="contentParams.height" placeholder="高"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>

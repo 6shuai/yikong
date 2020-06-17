@@ -17,59 +17,61 @@
         </div>
 
         <div class="place-info">
-            <div class="place-photo">
-                <div class="carousel">
-                    <el-carousel 
-                        ref="carouse"
-                        indicator-position="none" 
-                        :autoplay="false" 
-                        height="470px"
-                        :initial-index="imgIndex"
-                        @change="imgIndex=$event;prevNextChange()"
-                    >
-                        <el-carousel-item v-for="item in resData.placeShowData" :key="item.id">
-                            <img :src="item.uri">
-                        </el-carousel-item>
-                    </el-carousel>
-                </div>
-                <div class="thumb-wrap mt10">
-                    <div class="arrow left" @click="prevNextChange('pre')"><i class="el-icon-arrow-left"></i></div>
-                    <div class="arrow right" @click="prevNextChange('next')"><i class="el-icon-arrow-right"></i></div>
-                    <ul class="thumb"
-                        v-if="resData.placeShowData && resData.placeShowData.length>1"
-                        :style="{width: 162*resData.placeShowData.length + 'px', marginLeft: distance + 'px'}"
-                    >
-                        <li class="ml10" 
-                            v-for="(item, index) in resData.placeShowData" 
-                            :key="item.id"
-                            :class="{active: imgIndex == index}"
-                            @click="imgIndex=index; $refs.carouse.setActiveItem(index);"
-                        >   
-                            <el-image 
-                                :src="item.uri" 
-                                fit="cover">
-                            </el-image>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="place-brand clearfix">
-                <div class="place-logo">
-                    <el-image 
-                        v-if="resData.logo"
-                        :src="resData.logo" 
-                        fit="cover">
-                    </el-image>
-                </div>
-                <div class="place-info-r">
-                    <div class="place-name mt20 mb20">{{resData.organizationName}}</div>
-                    <div class="place-desc">
-                        <span v-if="resData.description">{{resData.description}}</span>
-                        <span v-else>还没有介绍~</span>
+            <el-row :gutter="20">
+                <el-col :xs="24" :md="14"  class="place-photo">
+                    <div class="carousel">
+                        <el-carousel 
+                            ref="carouse"
+                            indicator-position="none" 
+                            :autoplay="false" 
+                            height="470px"
+                            :initial-index="imgIndex"
+                            @change="imgIndex=$event;prevNextChange()"
+                        >
+                            <el-carousel-item v-for="item in resData.placeShowData" :key="item.id">
+                                <img :src="item.uri">
+                            </el-carousel-item>
+                        </el-carousel>
                     </div>
-                </div>
-            </div>
+                    <div class="thumb-wrap mt10">
+                        <div class="arrow left" @click="prevNextChange('pre')"><i class="el-icon-arrow-left"></i></div>
+                        <div class="arrow right" @click="prevNextChange('next')"><i class="el-icon-arrow-right"></i></div>
+                        <ul class="thumb"
+                            v-if="resData.placeShowData && resData.placeShowData.length>1"
+                            :style="{width: 162*resData.placeShowData.length + 'px', marginLeft: distance + 'px'}"
+                        >
+                            <li class="ml10" 
+                                v-for="(item, index) in resData.placeShowData" 
+                                :key="item.id"
+                                :class="{active: imgIndex == index}"
+                                @click="imgIndex=index; $refs.carouse.setActiveItem(index);"
+                            >   
+                                <el-image 
+                                    :src="item.uri" 
+                                    fit="cover">
+                                </el-image>
+                            </li>
+                        </ul>
+                    </div>
+                </el-col>
+                <el-col :xs="24" :md="10"  class="place-brand clearfix">
+                    <div class="place-logo">
+                        <el-image 
+                            v-if="resData.logo"
+                            :src="resData.logo" 
+                            fit="cover">
+                        </el-image>
+                    </div>
+                    <div class="place-info-r">
+                        <div class="place-name mt20 mb20">{{resData.organizationName}}</div>
+                        <div class="place-desc">
+                            <span v-if="resData.description">{{resData.description}}</span>
+                            <span v-else>还没有介绍~</span>
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
+
         </div>
 
         <h2 class="p-info-title mt20 mb20">地址信息</h2>
@@ -78,12 +80,16 @@
                 <span>{{resData.address}}</span>
             </div>
             <div class="map" v-if="resData.longitude">
-                <the-map 
-                    :disableZoom="true"
-                    :lng="resData.longitude"
-                    :lat="resData.latitude"
-                    :visible="true"
-                ></the-map>
+                <el-row :gutter="20">
+                    <el-col :xs="24" :md="14"  class="place-photo">
+                        <the-map 
+                            :disableZoom="true"
+                            :lng="resData.longitude"
+                            :lat="resData.latitude"
+                            :visible="true"
+                        ></the-map>
+                    </el-col>
+                </el-row>
             </div>
         </div>
 

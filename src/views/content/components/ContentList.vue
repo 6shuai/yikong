@@ -19,13 +19,13 @@
 
                 <!-- 收藏 -->
                 <el-button 
+                    v-if="item.isFavorite"
                     class="icon-button collect" 
                     size="small" 
-                    :type="item.isFavorite ? 'warning' : 'info'" 
+                    type="info" 
                     slot="reference" 
-                    :icon="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'" 
-                    :title="item.isFavorite ? '取消收藏' : '收藏'"
-                    @click.stop="handleCollect(item)"
+                    icon="el-icon-star-off" 
+                    title="已收藏"
                 >
                 </el-button>
             
@@ -58,26 +58,8 @@
 </template>
 
 <script>
-import { contentIsFavorite } from '@/views/content/mixins';
 export default {
-    props: ['item', 'name', 'imageH', 'index', 'groupIndex'],
-    mixins: [contentIsFavorite],
-    methods: {
-        //收藏 或 取消收藏
-        handleCollect(data){
-            let p = {
-                isFavorite: data.isFavorite ? 0 : 1,
-                contentId: data.id,
-                userId: this.$store.state.user.loginData.id
-            }
-            let s = `?isFavorite=${p.isFavorite}&contentId=${p.contentId}&userId=${p.userId}`;
-            new Promise((resolve) => {
-                this.handleFavorite(s, resolve);
-            }).then(res => {
-                this.$parent.resData[this.groupIndex].groupData[this.index].isFavorite = p.isFavorite;
-            })
-        },
-    },
+    props: ['item', 'name', 'imageH', 'index', 'groupIndex']
 }
 </script>
 <style lang="scss" scope>

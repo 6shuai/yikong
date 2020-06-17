@@ -11,6 +11,13 @@
                 <span>高：<el-input size="mini" v-model="currentRectangle.height" :min="20" :max="rectangleH" type="number"></el-input></span>
                 <span>层叠顺序：<el-input size="mini" v-model="currentRectangle.layer" :min="1" :max="99999" type="number"></el-input></span>
                 <span>名称：<el-input size="mini" v-model="currentRectangle.displayName"></el-input></span>
+                <span>是否轮播：
+                    <el-switch
+                        :active-value="1"
+                        :inactive-value="0"
+                        v-model="currentRectangle.isRotation">
+                    </el-switch>
+                </span>
             </div>
             <div ref="rectangleWrap" class="rectangle-wrap" :style="{width: rectangleW+'px', height: rectangleH+'px'}">
                 <!-- 
@@ -34,7 +41,7 @@
                     :min-height="20"
                     :snap="true"
                     :snapTolerance="10"
-                    @activated="currentRectangle=item; currentScreenIndex=index"
+                    @activated="item.isRotation ? 1 : 0; currentRectangle=item;currentScreenIndex=index"
                     @refLineParams="getRefLineParams"
                     @dragging="onDrag(arguments, index)"
                     @dragstop="onDrag(arguments, index)"
@@ -66,8 +73,9 @@
             width="300px"
             title="添加屏幕模块"
             :visible.sync="addScreenDialog"
+            @open="customerDialogOpen"
             append-to-body>
-            <el-input v-model="screenName" placeholder="屏幕模块名称"></el-input>
+            <el-input v-model="screenName" ref="input" placeholder="屏幕模块名称"></el-input>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addScreenDialog = false">取 消</el-button>
                 <el-button type="primary" @click="handleAddScreen">确 定</el-button>
@@ -144,10 +152,10 @@ export default {
         //真实宽高 除以 比例 = 现在的宽高  
         ratioShow(data){
             data.forEach(item => {
-                item.width = item.width / this.ratio;
-                item.height = item.height / this.ratio;
-                item.x = item.x / this.ratio;
-                item.y = item.y / this.ratio;  
+                item.width = Math.floor(item.width / this.ratio);
+                item.height = Math.floor(item.height / this.ratio);
+                item.x = Math.floor(item.x / this.ratio);
+                item.y = Math.floor(item.y / this.ratio);  
             })
             return data;
         },
@@ -155,8 +163,8 @@ export default {
         //添加屏幕模块
         handleAddScreen(){
             this.rectangleData.push({
-                width: this.rectangleH < this.rectangleW ? this.rectangleW : 100,
-                height: this.rectangleH > this.rectangleW ? this.rectangleH : 100,
+                width: this.rectangleH > this.rectangleW ? this.rectangleW : 100,
+                height: this.rectangleH < this.rectangleW ? this.rectangleH : 100,
                 x: 0,
                 y: 0,
                 layer: this.rectangleData.length + 1,
@@ -224,6 +232,7 @@ export default {
                 timelineAddlayout(copyData).then(res => {
                     if(res.code === this.$successCode){
                         this.$message.success('保存成功~');
+                        this.rectangleData = res.obj;
                         let data = {
                             data: this.ratioShow(res.obj),
                             type: 'update'
@@ -266,12 +275,20 @@ export default {
                 for(let i = 0; i < this.deleteIdArr.length; i++){
                     timelineLayoutDelete(this.deleteIdArr[i]).then(res =>{
                         if(res.code === this.$successCode){
-                            
+                            this.deleteIdArr.splice(i, 1);
                         }
                     })
                 }
             }
-        }
+        },
+
+        //显示添加窗口时  input获取焦点
+        customerDialogOpen() {
+            this.addScreenDialog = true
+            this.$nextTick(function () {
+                this.$refs.input.focus();
+            });
+        },
 
     },
     components: {
