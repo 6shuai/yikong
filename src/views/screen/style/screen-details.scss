@@ -29,10 +29,14 @@
                 }
             }
             .tool-wrap{
-                padding-top: 10px;
                 font-size: 14px;
                 .el-input-number {
-                    margin: 0 10px;
+                    margin-left: 10px;
+                }
+                li{
+                    float: left;
+                    padding-top: 10px;
+                    margin-right: 10px;
                 }
             }
         }

@@ -19,19 +19,20 @@
             <el-row :gutter="20">
                 <el-col :xs="24" :md="14"  class="screen-info-left">
                     <div class="screen-img">
-                        <img v-if="resData.screenShowData && resData.screenShowData[0]" :src="resData.screenShowData[0].uri">
+                        <img v-if="resData.screenshotUri" :src="resData.screenshotUri">
+                        <img v-else-if="resData.screenShowData && resData.screenShowData[0]" :src="resData.screenShowData[0].uri">
                         <el-tag v-if="!resData.state" class="status ing" type="info" effect="dark">建设中</el-tag>
                         <el-tag v-if="resData.state == 1" class="status" type="success" effect="dark">在线</el-tag>
                         <el-tag v-if="resData.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
                     </div>
-                    <div class="tool-wrap">
-                        <el-button type="primary" icon="el-icon-refresh" size="small" :loading="screenshotLoading" @click="updateImg">更新截图</el-button>
-                        音量:<el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number>
-                        <el-button type="primary" icon="el-icon-finished" size="small" :loading="setVolumeLoading" @click="setVolume">提交</el-button>
-                        <el-button type="primary" icon="el-icon-close-notification" size="small" :loading="setMuteLoading" @click="setMute">静音</el-button>
-                        <el-button type="primary" icon="el-icon-lock" size="small" :loading="bindLoading" @click="macBind">硬件绑定</el-button>
-                        <el-button type="primary" icon="el-icon-unlock" size="small" :loading="unboundLoading" @click="macUnbound">解除绑定</el-button>
-                    </div>
+                    <ul class="tool-wrap clearfix" v-if="resData.state == 1">
+                        <li><el-button type="primary" icon="el-icon-refresh" size="small" :loading="screenshotLoading" @click="updateImg">更新截图</el-button></li>
+                        <li>音量:<el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number></li>
+                        <li><el-button type="primary" icon="el-icon-finished" size="small" :loading="setVolumeLoading" @click="setVolume">提交</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-close-notification" size="small" :loading="setMuteLoading" @click="setMute">静音</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-lock" size="small" :loading="bindLoading" @click="macBind">硬件绑定</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-unlock" size="small" :loading="unboundLoading" @click="macUnbound">解除绑定</el-button></li>
+                    </ul>
                 </el-col>
                 <el-col :xs="24" :md="10" class="screen-info-right">
                     <el-divider>实景图片<i class="el-icon-caret-bottom"></i></el-divider>
@@ -222,7 +223,13 @@ export default {
             screenshotUpdate(data).then(res => {
                 this.screenshotLoading = false;
                 if(res.code === this.$successCode){
-                    this.$message.success('更新屏幕截图操作成功~');
+                    this.$message.success({
+                        message: '更新屏幕截图操作成功~',
+                        duration: 2000,
+                        onClose: () => {
+                            this.initDetail();
+                        }
+                    });
                 }
             })
         },

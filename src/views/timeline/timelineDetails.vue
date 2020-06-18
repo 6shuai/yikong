@@ -36,7 +36,7 @@
                             }"
                         >
                             <!-- v-if="item.contentTypeId==1" -->
-                            <img :src="item.image">
+                            <img v-if="item.image" :src="item.image">
                         </div>
                     </div>
                 </el-scrollbar>
@@ -146,6 +146,7 @@ export default {
                 this.screenLayout = data;
             }else{
                 data = data ? data : {};
+                console.log(data, index)
                 let obj = {
                     ...this.screenLayout[index],
                     image: data.image,

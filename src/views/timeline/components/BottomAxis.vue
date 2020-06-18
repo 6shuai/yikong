@@ -27,6 +27,7 @@
                 type="info" 
                 size="small"
                 :loading="saveLoading"
+                :disabled="!timelineIsUpdate"
                 @click="saveTimeline"
             >保存
             </el-button>
@@ -153,6 +154,7 @@ export default {
             lastWidth: 100,                    //最后一个时间刻度的宽度
             saveLoading: false,                //保存按钮loading
             pubLoading: false,                 //发布按钮loading
+            timelineIsUpdate: false            //是否更新过时间轴  修改过就可以点击保存  
         }
     },
     computed: {
@@ -256,6 +258,7 @@ export default {
             let rulerRight = data[0] + this.rectangleData[sIndex][index].w;
             this.rulerPosition(data[0], rulerRight, sIndex, index);
             this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[sIndex]));
+            this.timelineIsUpdate = true;
         },
 
         //调整组件大小时触发  data[x, y, width, height]
@@ -276,6 +279,7 @@ export default {
         onResizestop(data, sIndex, index){
             let p = this.rectangleData[sIndex][index];
             let copyData = this.copyRectangleData;
+            this.timelineIsUpdate = true;
             console.log('调整大小结束时触发')
             // 调整大小时不能覆盖其他的 内容矩形,  发生覆盖时 会把激活时的拷贝数据覆盖在rectangleData
             if(!this.searchOverlap(p.x, parseInt(p.x) + parseInt(p.w), sIndex, index+1)){
@@ -446,15 +450,11 @@ export default {
         drop(data, sIndex){
             //放置资源时  防止重叠   
             //rulerStartX x轴距离   x+100 拖拽时矩形默认宽度 100px
-            let l = parseInt(this.rulerStartX / 5);
-            let beginTime = '';//this.timeArr[l].h + ':' + this.timeArr[l].m;
-            let r = parseInt((this.rulerStartX + 100) / 5);
-            let endTime = '';//this.timeArr[r].h + ':' + this.timeArr[r].m;
-
             if(this.searchOverlap(this.rulerStartX, this.rulerStartX+100, sIndex)){
                 this.dragData.contentId = this.dragData.id;
                 delete this.dragData.id;
                 this.selectedCurrentTimeline(this.dragData, sIndex);
+                this.timelineIsUpdate = true;
                 let obj = {
                     ...this.dragData,
                     x: this.rulerStartX,
@@ -537,6 +537,7 @@ export default {
                     this.$nextTick(() => {
                         this.rectangleData = [];
                         this.initTimelineList();
+                        this.timelineIsUpdate = false;
                     })
                 }
             })
@@ -592,25 +593,32 @@ export default {
 
         //删除时间轴  资源
         deleteCurrentTimeline(sIndex, index, id){
-            if(id){
-                this.$confirm(`此操将删除资源【${this.rectangleData[sIndex][index].displayName}】, 是否继续?`, '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
+            
+            this.$confirm(`此操将删除资源【${this.rectangleData[sIndex][index].displayName}】, 是否继续?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                if(id){
                     timelineDelete(id).then(res => {
                         if(res.code === this.$successCode){
                             this.$message.success('删除成功~');
                             this.rectangleData[sIndex].splice(index, 1);
+                            this.$nextTick(() => {
+                                this.selectedCurrentTimeline(this.rectangleData[sIndex][0] ? this.rectangleData[sIndex][0] : {}, sIndex);
+                            })
                         }
                         this.deactivated();
                     })
-                }).catch(() => {     
-                });
-            }else{
-                this.rectangleData[sIndex].splice(index, 1);
-                this.deactivated();
-            }
+                }else{
+                    this.rectangleData[sIndex].splice(index, 1);
+                    this.deactivated();
+                    this.$nextTick(() => {
+                        this.selectedCurrentTimeline(this.rectangleData[sIndex][0] ? this.rectangleData[sIndex][0] : {}, sIndex);
+                    })
+                }
+            }).catch(() => {     
+            });
         },
 
         //更新屏幕布局 模块

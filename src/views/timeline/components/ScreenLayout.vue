@@ -3,7 +3,7 @@
         <el-scrollbar style="height:100%">
             <div class="toolbar">
                 <el-button type="primary" size="mini" @click="addScreenDialog=true">添加</el-button>
-                <el-button type="primary" size="mini" @click="sureCurrentLayout">保存</el-button>
+                <el-button type="primary" size="mini" :disabled="!isUpdate" @click="sureCurrentLayout">保存</el-button>
                 <el-button type="info" size="mini" :disabled="currentScreenIndex==-1" @click="deleteScreen">删除</el-button>
                 <span>x：<el-input size="mini" v-model="currentRectangle.x" :min="0" :max="rectangleW" type="number"></el-input></span>
                 <span>y：<el-input size="mini" v-model="currentRectangle.y" :min="0" :max="rectangleH" type="number"></el-input></span>
@@ -102,6 +102,7 @@ export default {
             rectangleH: 270,              //编辑区域的高
             deleteIdArr: [],              //要删除的屏幕区域id数组
             ratio: 0,                     //与原始宽高比例
+            isUpdate: false,              //是否修改过屏幕布局  修改过可以点击保存按钮
         }
     },
     computed: {
@@ -175,6 +176,7 @@ export default {
             this.addScreenDialog = false;
             this.currentScreenIndex = this.rectangleData.length-1;
             this.currentRectangle = this.rectangleData[this.rectangleData.length-1];
+            this.isUpdate = true;
         },
 
         // 辅助线回调事件
@@ -195,6 +197,7 @@ export default {
                 y: data[1]
             }
             this.currentRectangle = this.rectangleData[index];
+            this.isUpdate = true;
         },
 
         //调整组件大小时触发  data[x, y, width, height]
@@ -208,6 +211,7 @@ export default {
             }
             this.$set(this.rectangleData, index, p);
             this.currentRectangle = p;
+            this.isUpdate = true;
         },
 
         //保存当前的布局
@@ -238,6 +242,7 @@ export default {
                             type: 'update'
                         }
                         eventBus.$emit('setScreenLayoutData', data);
+                        this.isUpdate = false;
                     }
                 })
             }else{
