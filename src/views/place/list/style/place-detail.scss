@@ -10,13 +10,16 @@
     }   
     
     .place-info{
-        padding: 10px 24px;
+        padding: 10px 0;
         overflow: hidden;
     
         .place-brand{
+            float: left;
+            margin-left: 40px;
+            width: calc(100% - 680px);
             .place-logo{
                 border-radius: 6px;
-                width: 200px;
+                width: 150px;
                 border: solid 1px #fff4f4;
                 display: block;
                 margin: 0 auto;
@@ -62,10 +65,13 @@
             border-radius: 8px;
             overflow: hidden;
             margin-top: 5px;
+            width: 640px;
             height: 500px;
         }
 
         .place-photo{
+            width: 640px;
+            float: left;
             .carousel{
                 .el-carousel__arrow{
                     height: 80px;

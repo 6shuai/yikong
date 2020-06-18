@@ -2,7 +2,7 @@
     <div class="place-list-wrap" id="app-main-wrap">
         <div class="app-main-wrap">
             <!-- 筛选 -->
-            <search @searchResult="search"></search>
+            <search @searchResult="search" ref="search"></search>
 
             <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">暂无数据~</div>
             <div v-else class="place-content">
@@ -60,6 +60,7 @@
                     background
                     layout="total, prev, pager, next, sizes"
                     :page-sizes="[20, 30, 40, 50]"
+                    :current-page="Number(params.pageNo)"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :total="totalCount">
@@ -98,11 +99,13 @@ export default {
             tLoading: true,
         }
     },
-    created() {
-        this.init();
-    },
     mounted() {
         this.getLocation();
+        if(this.$route.query.pageNo) {
+            this.params = this.$route.query;
+            this.$refs.search.searchParams = this.params;
+        }
+        this.init();
     },
     methods: {
         //场所列表
@@ -110,6 +113,11 @@ export default {
             this.tLoading = true;
             placeList(this.params).then(res => {
                 this.tLoading = false;
+                this.$router.push({
+                    query: {
+                        ...this.params
+                    }
+                })
                 if(res.code === this.$successCode){
                     this.resData = res.obj.list;
                     this.totalCount = res.obj.totalRecords;

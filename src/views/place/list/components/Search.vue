@@ -15,6 +15,7 @@
                 <el-col :md="22" :sm="24">
                     <el-input 
                         size="small" 
+                        clearable
                         class="dispaly-name"
                         v-model="searchParams.displayName" 
                         placeholder="场所名"

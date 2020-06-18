@@ -168,9 +168,10 @@ export default {
             this.deactivated();
         })
         eventBus.$on('setScreenLayoutData', (data) => {
-            this.screenLayout = data.data;
+            let copyData = JSON.parse(JSON.stringify(data.data));
+            this.screenLayout = copyData;
             if(data.type === 'update'){
-                this.updateScreen(data.data);
+                this.updateScreen(copyData);
             }else{
                 this.initTimelineList();
             }

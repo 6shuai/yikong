@@ -17,7 +17,7 @@
         </div>
         <div class="content">
             <el-row :gutter="20">
-                <el-col :xs="24" :md="14"  class="screen-info-left">
+                <el-col :xs="24" :sm="12" :md="16" class="screen-info-left">
                     <div class="screen-img">
                         <img v-if="resData.screenshotUri" :src="resData.screenshotUri">
                         <img v-else-if="resData.screenShowData && resData.screenShowData[0]" :src="resData.screenShowData[0].uri">
@@ -25,16 +25,16 @@
                         <el-tag v-if="resData.state == 1" class="status" type="success" effect="dark">在线</el-tag>
                         <el-tag v-if="resData.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
                     </div>
-                    <ul class="tool-wrap clearfix" v-if="resData.state == 1">
-                        <li><el-button type="primary" icon="el-icon-refresh" size="small" :loading="screenshotLoading" @click="updateImg">更新截图</el-button></li>
+                    <ul class="tool-wrap clearfix">
+                        <li><el-button type="primary" icon="el-icon-refresh" size="small" :disabled="resData.state !== 1" :loading="screenshotLoading" @click="updateImg">更新截图</el-button></li>
                         <li>音量:<el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number></li>
-                        <li><el-button type="primary" icon="el-icon-finished" size="small" :loading="setVolumeLoading" @click="setVolume">提交</el-button></li>
-                        <li><el-button type="primary" icon="el-icon-close-notification" size="small" :loading="setMuteLoading" @click="setMute">静音</el-button></li>
-                        <li><el-button type="primary" icon="el-icon-lock" size="small" :loading="bindLoading" @click="macBind">硬件绑定</el-button></li>
-                        <li><el-button type="primary" icon="el-icon-unlock" size="small" :loading="unboundLoading" @click="macUnbound">解除绑定</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-finished" size="small" :disabled="resData.state !== 1" :loading="setVolumeLoading" @click="setVolume">提交</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-close-notification" size="small" :disabled="resData.state !== 1" :loading="setMuteLoading" @click="setMute">静音</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-lock" size="small" :disabled="resData.state !== 1" :loading="bindLoading" @click="macBind">硬件绑定</el-button></li>
+                        <li><el-button type="primary" icon="el-icon-unlock" size="small" :disabled="resData.state !== 1" :loading="unboundLoading" @click="macUnbound">解除绑定</el-button></li>
                     </ul>
                 </el-col>
-                <el-col :xs="24" :md="10" class="screen-info-right">
+                <el-col xs="24" :sm="12" :md="8" class="screen-info-right">
                     <el-divider>实景图片<i class="el-icon-caret-bottom"></i></el-divider>
                     <div class="info-item photo">
                         <el-image 

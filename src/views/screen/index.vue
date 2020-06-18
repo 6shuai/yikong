@@ -1,6 +1,6 @@
 <template>
     <div class="app-main-wrap screen-list-wrap" id="app-main-wrap">
-        <search @searchResult="search"></search>
+        <search @searchResult="search" ref="search"></search>
         <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">
             暂无数据~
         </div>
@@ -22,6 +22,7 @@
                 background
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[20, 30, 40, 50]"
+                :current-page="Number(params.pageNo)"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :total="totalCount">
@@ -53,6 +54,10 @@ export default {
         }
     },
     mounted() {
+        if(this.$route.query.pageNo) {
+            this.params = this.$route.query;
+            this.$refs.search.searchParams = this.params;
+        }
         this.init();
     },
     methods: {
@@ -60,6 +65,11 @@ export default {
             this.tLoading = true;
             screenList(this.params).then(res => {
                 this.tLoading = false;
+                this.$router.push({
+                    query: {
+                        ...this.params
+                    }
+                })
                 if(res.code === this.$successCode){
                     this.resData = res.obj.list;
                     this.totalCount = res.obj.totalRecords;

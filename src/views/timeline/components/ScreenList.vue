@@ -28,14 +28,23 @@
             :close-on-press-escape="false"
             @close="updateTimelineScreen"
             append-to-body>
-            <div class="clearfix screen-wrap">
+            <div class="clearfix screen-wrap"  v-loading="dataLoading">
+                <el-input size="small" placeholder="屏幕名称" clearable v-model="params.displayName" @input="getScreenList"></el-input>
                 <el-card class="box-card screen-list" :body-style="{ padding: '0px' }" v-for="(item, index) in screenData" :key="item.id">
                     <div class="screen-info">
                         <div class="title">{{item.displayName}}</div>
                         <div class="delete add-btn" v-if="!item.hide" @click="addScreen(index)"><i class="el-icon-plus"></i>添加</div>
                     </div>
                 </el-card>
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="Number(params.pageNo)"
+                    @current-change="handleCurrentChange"
+                    :total="totalCount">
+                </el-pagination>
             </div>
+
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="updateTimelineScreen">确 定</el-button>
             </span>
@@ -44,7 +53,8 @@
     </div>
 </template>
 <script>
-import { timelineScreenList, timelinePutScreenList, timelineAddScreen, timelineDeleteScreen } from '@/api/timeline';
+import { timelinePutScreenList, timelineAddScreen, timelineDeleteScreen } from '@/api/timeline';
+import { screenList } from '@/api/screen';
 export default {
     data(){
         return {
@@ -52,6 +62,12 @@ export default {
             showAddScreen: false,              //添加屏幕 弹框
             haveAdd: false,                    //是否点击了添加屏幕  如果点击了， 关闭弹框时会重新调init()
             screenData: [],                    //所有的屏幕列表
+            totalCount: 0,                     //总条数
+            dataLoading: false,
+            params: {
+                pageNo: 1,
+                pageSize: 10,
+            },
         }
     },
     mounted() {
@@ -67,10 +83,13 @@ export default {
             })
         },
 
-        //所有的屏幕列表
+        //点击添加  显示所有的屏幕列表
         getScreenList(){
-            timelineScreenList().then(res => {
-                this.screenData = res.obj;
+            this.dataLoading = true;
+            screenList(this.params).then(res => {
+                this.dataLoading = false;
+                this.screenData = res.obj.list;
+                this.totalCount = res.obj.totalRecords;
                 this.resData.forEach((item, index) => {
                     for(let i = 0; i< this.screenData.length; i++){
                         if(item.id == this.screenData[i].id){
@@ -79,6 +98,12 @@ export default {
                     }
                 })
             })
+        },
+
+        //页码
+        handleCurrentChange(page){
+            this.params.pageNo = page;
+            this.getScreenList();
         },
 
         //删除

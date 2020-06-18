@@ -153,8 +153,16 @@ export default {
         //编辑时时间验证
         timeVerify(){
             let handle = true;
+            let msg = '';
             if(this.copyTimelineParams.beginTime && this.timeDifference(this.copyTimelineParams.beginTime, this.timelineParams.beginTime) > 0){
-                this.$confirm(`当前时段开始时间超过上次设置的时间，【${this.timelineParams.beginTime}】之前结束的时间轴内容将不再显示, 是否继续?`, '提示', {
+                msg = `当前时段开始时间超过上次设置的时间，【${this.timelineParams.beginTime}】之前结束的时间轴内容将不再显示。`;
+            }
+            if(this.copyTimelineParams.endTime && this.timeDifference(this.copyTimelineParams.endTime, this.timelineParams.endTime) < 0){
+                msg += `当前时段结束时间早于上次设置的时间，【${this.timelineParams.endTime}】之后开始的时间轴内容将不再显示。`;
+            }
+
+            if(msg){
+                this.$confirm(`${msg} 是否继续?`, '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'

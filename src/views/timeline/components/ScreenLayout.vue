@@ -28,7 +28,7 @@
                     resizing   改变大小时
                     -->
                 <vue-draggable-resizable
-                    v-for="(item, index) in rectangleData"
+                    v-for="(item, index) in timelineBox"
                     :key="index"
                     :w="item.width"
                     :h="item.height"
@@ -93,7 +93,7 @@ export default {
         return{
             vLine: [],
             hLine: [],
-            rectangleData: [],
+            timelineBox: [],
             currentRectangle: {},         //选中的矩形 xy 宽高信息
             addScreenDialog: false,       //添加屏幕模块  填写名称 弹出框
             screenName: '',               //添加屏幕模块的名称
@@ -126,17 +126,17 @@ export default {
         init(){
             timelineLayoutList(this.$route.params.id).then(res => {
                 if(res.code === this.$successCode){
-                    this.rectangleData = this.ratioShow(res.obj);
-                    // this.$store.dispatch('timeline/setScreenLayoutData', this.rectangleData);
+                    this.timelineBox = this.ratioShow(res.obj);
+                    // this.$store.dispatch('timeline/setScreenLayoutData', this.timelineBox);
                     let data = {
-                        data: JSON.parse(JSON.stringify(this.rectangleData)),
+                        data: JSON.parse(JSON.stringify(this.timelineBox)),
                         w: this.rectangleW,
                         h: this.rectangleH,
                         ratio: this.ratio
                     }
                     eventBus.$emit('setScreenLayoutData', data);
                     // if(!res.obj.length){
-                    //     this.rectangleData.push({
+                    //     this.timelineBox.push({
                     //         height: this.rectangleH,
                     //         width: this.rectangleW,
                     //         x: 0,
@@ -163,19 +163,19 @@ export default {
 
         //添加屏幕模块
         handleAddScreen(){
-            this.rectangleData.push({
+            this.timelineBox.push({
                 width: this.rectangleH > this.rectangleW ? this.rectangleW : 100,
                 height: this.rectangleH < this.rectangleW ? this.rectangleH : 100,
                 x: 0,
                 y: 0,
-                layer: this.rectangleData.length + 1,
+                layer: this.timelineBox.length + 1,
                 containerId: this.$route.params.id,
                 displayName: this.screenName
             })
             this.screenName = '';
             this.addScreenDialog = false;
-            this.currentScreenIndex = this.rectangleData.length-1;
-            this.currentRectangle = this.rectangleData[this.rectangleData.length-1];
+            this.currentScreenIndex = this.timelineBox.length-1;
+            this.currentRectangle = this.timelineBox[this.timelineBox.length-1];
             this.isUpdate = true;
         },
 
@@ -191,25 +191,25 @@ export default {
 
         //改变位置时触发 data【0】x轴距离，  data【1】 y轴距离
         onDrag(data, index){
-            this.rectangleData[index] = {
-                ...this.rectangleData[index],
+            this.timelineBox[index] = {
+                ...this.timelineBox[index],
                 x: data[0],
                 y: data[1]
             }
-            this.currentRectangle = this.rectangleData[index];
+            this.currentRectangle = this.timelineBox[index];
             this.isUpdate = true;
         },
 
         //调整组件大小时触发  data[x, y, width, height]
         onResize(data, index){
             let p = {
-                ...this.rectangleData[index],
+                ...this.timelineBox[index],
                 x: data[0],
                 y: data[1],
                 width: data[2],
                 height: data[3]
             }
-            this.$set(this.rectangleData, index, p);
+            this.$set(this.timelineBox, index, p);
             this.currentRectangle = p;
             this.isUpdate = true;
         },
@@ -218,7 +218,7 @@ export default {
         sureCurrentLayout(){
             let [x1, x2, w] = [false, false, false];
             let totalW = 0;
-            let copyData = JSON.parse(JSON.stringify(this.rectangleData));
+            let copyData = JSON.parse(JSON.stringify(this.timelineBox));
             copyData.forEach((item, index) => {
                 if(item.x == 0) x1 = true;
                 if(item.x+item.width >= this.rectangleW) x2 = true;
@@ -236,7 +236,7 @@ export default {
                 timelineAddlayout(copyData).then(res => {
                     if(res.code === this.$successCode){
                         this.$message.success('保存成功~');
-                        this.rectangleData = res.obj;
+                        this.timelineBox = res.obj;
                         let data = {
                             data: this.ratioShow(res.obj),
                             type: 'update'
@@ -254,22 +254,22 @@ export default {
         deleteScreen(){
             if(this.currentScreenIndex < 0){
                 this.$message.warning('请先选中要删除的屏幕(#`O′)');
-            } else if(this.rectangleData.length <= 1){
+            } else if(this.timelineBox.length <= 1){
                 this.$message.warning('至少保留一个屏幕~');
             }else{
-                this.$confirm(`此操将删除选中的屏幕【${this.rectangleData[this.currentScreenIndex].displayName}】, 是否继续?`, '提示', {
+                this.$confirm(`此操将删除选中的屏幕【${this.timelineBox[this.currentScreenIndex].displayName}】, 是否继续?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let id = this.rectangleData[this.currentScreenIndex].id;
+                    let id = this.timelineBox[this.currentScreenIndex].id;
                     if(id){
                         //把要删除的id push到数组，  点击保存时再去删除
                         this.deleteIdArr.push(id);
                     }
-                    this.rectangleData.splice(this.currentScreenIndex, 1);
+                    this.timelineBox.splice(this.currentScreenIndex, 1);
                     this.currentScreenIndex = 0;
-                    this.currentRectangle = this.rectangleData[0];
+                    this.currentRectangle = this.timelineBox[0];
                 })
             }
         },

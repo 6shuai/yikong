@@ -33,6 +33,7 @@
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[20, 30, 40, 50]"
                 @size-change="handleSizeChange"
+                :current-page="Number(params.pageNo)"
                 @current-change="handleCurrentChange"
                 :total="totalCount">
             </el-pagination>
@@ -59,6 +60,7 @@ export default {
         }
     },
     mounted() {
+        if(this.$route.query.pageNo) this.params = this.$route.query;
         this.init();
     },
     methods: {
@@ -66,6 +68,11 @@ export default {
             this.dataLoading = true;
             timelineContainerList(this.params).then(res => {
                 this.dataLoading = false;
+                this.$router.push({
+                    query: {
+                        ...this.params
+                    }
+                })
                 if(res.code === this.$successCode){
                     this.resData = res.obj.list;
                     this.totalCount = res.obj.totalRecords;

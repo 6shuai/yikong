@@ -146,7 +146,6 @@ export default {
                 this.screenLayout = data;
             }else{
                 data = data ? data : {};
-                console.log(data, index)
                 let obj = {
                     ...this.screenLayout[index],
                     image: data.image,
