@@ -1,14 +1,12 @@
 'use strict'
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
-const fs = require('fs')
 
 function resolve(dir) {
 	return path.join(__dirname, dir)
 }
 
 const name = defaultSettings.title || '易控' // page title
-const time = new Date().getTime();
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -16,9 +14,6 @@ const time = new Date().getTime();
 // You can change the port by the following methods:
 // port = 9528 npm run dev OR npm run dev --port = 9528
 const port = process.env.port || process.env.npm_config_port || 8080 // dev port
-const BASE_URL = process.env.NODE_ENV === 'production'
-	? `/${time}`
-	: './'
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -29,9 +24,8 @@ module.exports = {
 	 * In most cases please use '/' !!!
 	 * Detail: https://cli.vuejs.org/config/#publicpath
 	 */
-	publicPath: BASE_URL,
-	outputDir: `dist/${time}`,
-	indexPath: '../index.html',
+	publicPath: './',
+	outputDir: 'dist',
 	assetsDir: 'static',
 	// lintOnSave: process.env.NODE_ENV === 'development',
 	lintOnSave: false,
@@ -133,49 +127,3 @@ module.exports = {
 			)
 	}
 }
-
-
-// 删除目录
-function deleteFolder(path) {
-	let files = [];
-	if (fs.existsSync(path)) {
-		files = fs.readdirSync(path);
-		files.forEach(function (file, index) {
-			let curPath = path + "/" + file;
-			if (fs.statSync(curPath).isDirectory()) { // recurse
-				deleteFolder(curPath);
-			} else { // delete file
-				fs.unlinkSync(curPath);
-			}
-		});
-		fs.rmdirSync(path);
-	}
-}
-
-
-// 删除 num run build 编译出来的目录
-function deleteOtherDir() {
-	// 只保留最近的x个版本
-	const RetainVersionNum = 4;
-	try {
-		let webapp_paths = fs.readdirSync(path.join(process.cwd(), 'dist'));
-		webapp_paths = webapp_paths.filter(item => {
-			if (item !== 'index.html') {
-				return parseInt(item);
-			}
-		});
-
-		webapp_paths = webapp_paths.sort();
-		if (webapp_paths.length >= RetainVersionNum) {
-			let delete_webapp_paths = webapp_paths.slice(0, webapp_paths.length - RetainVersionNum);
-			delete_webapp_paths.forEach(delete_webapp_path => {
-				let delete_webapp_abs_path = path.join(process.cwd(), 'dist', delete_webapp_path);
-				console.log('delete_webapp_abs_path -->', delete_webapp_abs_path);
-				deleteFolder(delete_webapp_abs_path)
-			})
-		}
-	} catch (error) {
-
-	}
-}
-deleteOtherDir();
