@@ -34,7 +34,8 @@
                     :h="item.height"
                     :x="item.x"
                     :y="item.y"
-                    :z-index="item.layer"
+                    :z-index="Number(item.layer)"
+                    :style="{'z-index': item.layer}"
                     :parent="true"
                     :debug="false"
                     :min-width="20"
@@ -48,7 +49,7 @@
                     @resizing="onResize(arguments, index)"
                     :class="currentScreenIndex==index ? 'new-rectangle' : ''"
                     class="rectangle">
-                    <span>{{item.displayName}}</span>
+                    <span>{{item.displayName}}{{item.layer}}</span>
                 </vue-draggable-resizable>
                 
                 <!--辅助线-->
@@ -242,6 +243,9 @@ export default {
                             type: 'update'
                         }
                         eventBus.$emit('setScreenLayoutData', data);
+                        //清空当前选中状态
+                        this.currentScreenIndex = -1;
+                        this.currentRectangle = {};
                         this.isUpdate = false;
                     }
                 })

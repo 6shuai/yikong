@@ -52,7 +52,6 @@ export default {
             dataLoading: false,
             resData: [],
             params: {
-                userId: this.$store.state.user.loginData.id,
                 pageNo: 1,
                 pageSize: 20
             },
