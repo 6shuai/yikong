@@ -29,7 +29,7 @@
             @close="updateTimelineScreen"
             append-to-body>
             <div class="clearfix screen-wrap"  v-loading="dataLoading">
-                <el-input size="small" placeholder="屏幕名称" clearable v-model="params.displayName" @input="getScreenList"></el-input>
+                <el-input size="small" placeholder="屏幕名称" clearable v-model="params.displayName" @input="params.pageNo=1;getScreenList()"></el-input>
                 <el-card class="box-card screen-list" :body-style="{ padding: '0px' }" v-for="(item, index) in screenData" :key="item.id">
                     <div class="screen-info">
                         <div class="title">{{item.displayName}}</div>
