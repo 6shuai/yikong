@@ -23,6 +23,7 @@ import {
 import { faWeixin } from "@fortawesome/free-brands-svg-icons"
 import { faBuilding, faWindowMaximize, faClock, faImage } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import VueDND from 'awe-dnd'
 
 library.add(
   faBuilding, faCamera, faLocationArrow, faWindowMaximize, faDownload, faExternalLinkAlt, faTrashAlt, faCaretDown, faImage, 
@@ -39,6 +40,8 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
+
+Vue.use(VueDND)
 
 Vue.config.productionTip = false;
 Vue.prototype.$successCode = 0;    //接口返回code 0 成功

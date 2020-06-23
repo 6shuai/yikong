@@ -91,10 +91,10 @@
                         <span>{{playPlanData.endDateFormat || '-'}}</span>
                     </el-form-item>
                     <el-form-item label="计划时长" v-if="playPlanData.planType==2">
-                        <span>{{playPlanData.targetLength}}分钟</span>
+                        <span>{{playPlanData.targetLength}}秒</span>
                     </el-form-item>
                     <el-form-item label="已播放时长" v-if="playPlanData.planType==2">
-                        <span>{{playPlanData.currentLength}}分钟</span>
+                        <span>{{playPlanData.currentLength}}秒</span>
                     </el-form-item>
                     <el-form-item label="计划曝光次数" v-if="playPlanData.planType==1">
                         <span>{{playPlanData.targetTimes}}次</span>

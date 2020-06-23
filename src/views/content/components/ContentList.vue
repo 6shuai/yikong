@@ -8,13 +8,14 @@
                 class="place-img"
                 :style="{height: imageH+'px'}" 
                 @click.stop="$router.push(`/content/details/${item.id}`)">
-                <img :src="item.image" :style="{height: imageH+'px'}" class="image">
+                <el-image fit="cover" :src="item.image" :style="{height: imageH+'px'}" class="image"></el-image>
                 
                 <!-- 资源类型 -->
-                <div class="resource-type" :title="item.contentTypeName">
+                <div class="resource-type" title="点击预览" @click.stop="currentContent=item;showPreview=true;">
                     <font-awesome-icon v-if="item.contentTypeId==1" :icon="['far', 'image']" />
                     <font-awesome-icon v-if="item.contentTypeId==2" :icon="['fas', 'film']" />
                     <font-awesome-icon v-if="item.contentTypeId==3" :icon="['fas', 'gamepad']" />
+                    <span class="type">{{item.contentTypeName}}</span>
                 </div>
 
                 <!-- 收藏 -->
@@ -54,12 +55,32 @@
                 </div>
             </div>                    
         </el-card>
+
+        <!-- 预览资源 -->
+        <el-dialog
+            width="1000px"
+            :title="currentContent.displayName"
+            :visible.sync="showPreview"
+            append-to-body>
+            <content-preview :data="currentContent" v-if="showPreview"></content-preview>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
+import ContentPreview from '@/views/content/components/ContentPreview';
 export default {
-    props: ['item', 'name', 'imageH', 'index', 'groupIndex']
+    props: ['item', 'name', 'imageH', 'index', 'groupIndex'],
+    data(){
+        return{
+            currentContent: {},            //查看选中的预览资源内容
+            showPreview: false,            //显示预览资源
+        }
+    },
+    components: {
+        ContentPreview
+    }
 }
 </script>
 <style lang="scss" scope>
@@ -88,7 +109,7 @@ export default {
             position: absolute;
             top: 0;
             left: 0;
-            width: 44px;
+            padding: 0 10px;
             height: 32px;
             border-bottom-right-radius: 6px;
             background: #39a1e6;
@@ -96,6 +117,10 @@ export default {
             line-height: 32px;
             text-align: center;
             color: #fff;
+            .type{
+                font-size: 14px;
+                vertical-align: top;
+            }
         }
     }
 </style>

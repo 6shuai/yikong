@@ -17,7 +17,7 @@
                                 :style="{height: imageH+'px'}"
                                 @click.stop="$router.push(`/place/details/${item.id}`)"
                             >
-                                <img :style="{height: imageH+'px'}" :src="item.defaultShow" class="image">
+                                <el-image fit="cover" :style="{height: imageH+'px'}" :src="item.defaultShow" class="image"></el-image>
                                 <!-- 收藏 -->
                                 <el-button 
                                     v-if="item.isFavorite"

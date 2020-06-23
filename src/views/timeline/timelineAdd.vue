@@ -90,7 +90,7 @@
 </template>
 <script>
 import { getOrganizationList } from '@/mixins';
-import { timelineContainerCreated, timelineContainerDetail } from '@/api/timeline';
+import { timelineContainerCreated, timelineContainerDetail, timelineAddlayout } from '@/api/timeline';
 export default {
     mixins: [getOrganizationList],
     data(){
@@ -144,7 +144,31 @@ export default {
             copyData.endTime = '1970-01-01 ' + (copyData.endTime.length > 5 ? copyData.endTime : copyData.endTime + ':00' );
             timelineContainerCreated(copyData).then(res => {
                 if(res.code === this.$successCode){
-                    this.$message.success('操作成功~');
+                    if(this.timelineParams.id){
+                        this.$message.success('保存成功~');
+                        this.$router.push('/timeline/index');
+                    }else{
+                        this.createdTongPing(res.obj.id);
+                    }
+                }
+            })
+        },
+
+        //创建成功后 创建一个通屏， 并充满整个空间的逻辑区域
+        createdTongPing(id){
+            let data = [{
+                containerId: id,
+                x: 0,
+                y: 0,
+                width: this.timelineParams.width,
+                height: this.timelineParams.height,
+                layer: 0,
+                displayName: '通屏',
+                isRotation: 0
+            }]
+            timelineAddlayout(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('保存成功~');
                     this.$router.push('/timeline/index');
                 }
             })

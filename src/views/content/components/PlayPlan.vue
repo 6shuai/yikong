@@ -62,7 +62,7 @@
                     style="width: 220px"
                     v-model="planParams.targetLength" 
                     type="number">
-                    <template slot="append">分钟</template>
+                    <template slot="append">秒</template>
                 </el-input>
             </el-form-item>
         </el-form>

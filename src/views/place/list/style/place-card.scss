@@ -11,7 +11,7 @@
         .place-list{
             margin: 0 0 20px 20px;
             &:hover .place-img{
-                img{
+                .image{
                     transform: scale(1.05);
                 }
             }
@@ -56,7 +56,7 @@
                 position: relative;
                 background: #f5f5f5;
                 cursor: pointer;
-                img.image{
+                .image{
                     width: 100%;
                     height: 100%;
                     transition: all .5s ease-in-out;

@@ -9,6 +9,13 @@
                 size="small">
                 创建时间轴
             </el-button>
+            <el-input 
+                prefix-icon="el-icon-search" 
+                clearable
+                v-model="params.name" 
+                placeholder="资源名称" size="small"
+                @input="params.pageNo=1;init()"
+            ></el-input>
         </div>
 
         <!-- 资源列表 -->
@@ -103,6 +110,11 @@ export default {
             padding-bottom: 20px;
             .created-btn{
                 margin-right: 20px;
+            }
+            .el-input{
+                display: inline-block;
+                width: 200px;
+                margin-left: 10px;
             }
         }
         .place-content{

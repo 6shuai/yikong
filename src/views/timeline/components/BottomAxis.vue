@@ -72,19 +72,20 @@
                 
                 <div
                     class="screen-item-wrap"
-                    v-for="(item, sIndex) in screenLayout"
-                    :key="sIndex"
+                    v-for="(item, Pindex) in screenLayout"
+                    :key="Pindex"
                 >
                     <div 
                         class="screen-item" 
-                        @dragover="dragover($event, sIndex)" 
+                        @dragover="dragover($event, Pindex)" 
                         @dragleave="dragleave($event)"
-                        @drop="drop($event, sIndex)"
-                        :class="screenIndex==sIndex ? 'drag-current' : ''"
+                        @drop="drop($event, Pindex)"
+                        :class="screenIndex==Pindex ? 'drag-current' : ''"
                     >
                         <vue-draggable-resizable
-                            v-for="(item, index) in rectangleData[sIndex]"
+                            v-for="(item, index) in rectangleData[Pindex]"
                             :key="index"
+                            :ref="`${Pindex}content${index}`"
                             :title="`【${item.displayName}】`"
                             :w="item.w"
                             :h="60"
@@ -92,35 +93,76 @@
                             :min-width="10"
                             :parent="true"
                             :debug="false"
-                            :isConflictCheck="true"
                             :handles="['mr','ml']"
-                            @activated="activated(sIndex)"
+                            @activated="activated(item, Pindex, index)"
                             @deactivated="deactivated"
-                            @dragging="onDrag(arguments, sIndex, index)"
-                            @dragstop="onDrag(arguments, sIndex, index)"
-                            @resizing="onResize(arguments, sIndex, index)"
-                            @resizestop="onResizestop(arguments, sIndex, index)"
+                            @dragging="onDrag(arguments, Pindex, index)"
+                            @dragstop="onDragStop(arguments, Pindex, index)"
+                            @resizing="onResize(arguments, Pindex, index)"
+                            @resizestop="onResizestop(arguments, Pindex, index)"
                             :class="item.contentTypeId==1 ? 'image' : (item.contentTypeId == 2 ? 'video' : 'game')"
                             class="rectangle">
-                            <div class="content" @click="selectedCurrentTimeline(item, sIndex)">
-                                <div class="image-wrap">
-                                    <img :src="item.image">
+                            <el-popover
+                                popper-class="screen-tool-popover"
+                                placement="top-start"
+                                width="150"
+                                trigger="hover">
+                                <div class="content-tool">
+                                    <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
+                                    <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                 </div>
-                                <div class="overflow name">
-                                    {{item.displayName}}
-                                    <time>{{item.beginTime}} - {{item.endTime}}</time>
+
+                                <div class="content" slot="reference" @click="selectedCurrentTimeline(item, Pindex)">
+                                    <div class="image-wrap">
+                                        <img :src="item.image">
+                                    </div>
+                                    <div class="overflow name">
+                                        {{item.displayName}}
+                                        <time>{{item.beginTime}} - {{item.endTime}}</time>
+                                    </div>
+
+                                    <!-- 在这个时间段播放了多少次 -->
+                                    <div class="play-count" v-if="item.contentTypeId == 2">x{{Math.ceil(timeDifference(item.beginTime, item.endTime) * 60 / item.contentDuration)}}</div>
                                 </div>
-                                <div class="delete" @click="deleteCurrentTimeline(sIndex, index, item.id)">删除</div>
-                                <!-- 在这个时间段播放了多少次 -->
-                                <div class="play-count" v-if="item.contentTypeId == 2">x{{Math.ceil(timeDifference(item.beginTime, item.endTime) * 60 / item.contentDuration)}}</div>
-                            </div>
+                            </el-popover>
                         </vue-draggable-resizable>
                     </div>
                 </div>
 
             </div>
-
         </div>
+
+        <!-- 时间轴内容 编辑时段 -->
+        <el-dialog
+            width="500px"
+            title="编辑时段"
+            :visible.sync="showEditTime"
+            append-to-body>
+            <el-form 
+                label-width="80px"
+            >
+                <el-form-item label="开始时间" class="is-required">
+                    <el-time-picker
+                        v-model="editTime.beginTime"
+                        format="HH:mm"
+                        value-format="HH:mm"
+                        placeholder="选择开始时间">
+                    </el-time-picker>
+                </el-form-item>
+                <el-form-item label="时长" class="is-required">
+                    <el-input 
+                        style="width: 220px"
+                        v-model="editTime.duration" 
+                        type="number">
+                        <template slot="append">秒</template>
+                    </el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="showEditTime = false">取 消</el-button>
+                <el-button type="primary" @click="updateContentTime">确 定</el-button>
+            </span>
+        </el-dialog>
 
     </el-scrollbar>
 </template>
@@ -154,7 +196,9 @@ export default {
             lastWidth: 100,                    //最后一个时间刻度的宽度
             saveLoading: false,                //保存按钮loading
             pubLoading: false,                 //发布按钮loading
-            timelineIsUpdate: false            //是否更新过时间轴  修改过就可以点击保存  
+            timelineIsUpdate: false,           //是否更新过时间轴  修改过就可以点击保存  
+            showEditTime: false,               //显示内容编辑时段
+            editTime: {},                      //编辑内容时段 参数
         }
     },
     computed: {
@@ -237,10 +281,11 @@ export default {
         },
 
         //点击时间轴 矩形  激活时  显示标尺线
-        activated(sIndex){
-            this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[sIndex]));
+        activated(data, Pindex, index){
+            this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
             if(this.$refs.rulerLeft) this.$refs.rulerLeft.style.display = 'block';
             if(this.$refs.rulerRight) this.$refs.rulerRight.style.display = 'block';
+            this.rulerPosition(data.x, data.x + data.w, Pindex, index);
         },
 
         //时间轴矩形停用时  隐藏标尺线
@@ -250,52 +295,57 @@ export default {
         },
 
         //改变位置时触发 data【0】x轴距离，  data【1】 y轴距离
-        onDrag(data, sIndex, index){
-            this.rectangleData[sIndex][index] = {
-                ...this.rectangleData[sIndex][index],
+        onDrag(data, Pindex, index){
+            this.rectangleData[Pindex][index] = {
+                ...this.rectangleData[Pindex][index],
                 x: data[0],
                 y: data[1]
             }
-            let rulerRight = data[0] + this.rectangleData[sIndex][index].w;
-            this.rulerPosition(data[0], rulerRight, sIndex, index);
-            this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[sIndex]));
+            let rulerRight = data[0] + this.rectangleData[Pindex][index].w;
+            this.rulerPosition(data[0], rulerRight, Pindex, index);
+            // this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
             this.timelineIsUpdate = true;
         },
 
+        //改变位置结束时  触发
+        onDragStop(data, Pindex, index){
+            this.onResizestop(data, Pindex, index);
+        },
+
         //调整组件大小时触发  data[x, y, width, height]
-        onResize(data, sIndex, index){
+        onResize(data, Pindex, index){
             let p = {
-                ...this.rectangleData[sIndex][index],
+                ...this.rectangleData[Pindex][index],
                 x: data[0],
                 y: data[1],
                 w: data[2],
                 h: data[3]
             }
-            this.$set(this.rectangleData[sIndex], index, p);
-            let rulerRight = data[0] + this.rectangleData[sIndex][index].w;
-            this.rulerPosition(data[0], rulerRight, sIndex, index);
+            this.$set(this.rectangleData[Pindex], index, p);
+            let rulerRight = data[0] + this.rectangleData[Pindex][index].w;
+            this.rulerPosition(data[0], rulerRight, Pindex, index);
         },
 
         //调整大小结束时触发
-        onResizestop(data, sIndex, index){
-            let p = this.rectangleData[sIndex][index];
+        onResizestop(data, Pindex, index){
+            let p = this.rectangleData[Pindex][index];
             let copyData = this.copyRectangleData;
             this.timelineIsUpdate = true;
             console.log('调整大小结束时触发')
             // 调整大小时不能覆盖其他的 内容矩形,  发生覆盖时 会把激活时的拷贝数据覆盖在rectangleData
-            if(!this.searchOverlap(p.x, parseInt(p.x) + parseInt(p.w), sIndex, index+1)){
-                this.$set(this.rectangleData, sIndex, copyData);
+            if(!this.searchOverlap(p.x, parseInt(p.x) + parseInt(p.w), Pindex, index+1)){
+                this.$set(this.rectangleData, Pindex, copyData);
                 this.$nextTick(() => {
-                    this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[sIndex]));
-                    this.rulerPosition(copyData[index].x, copyData[index].x+copyData[index].w, sIndex, index);
+                    this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
+                    this.rulerPosition(copyData[index].x, copyData[index].x+copyData[index].w, Pindex, index);
                 })
             }else{
-                this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[sIndex]));
+                this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
             }
         },
 
         //标尺位置
-        rulerPosition(left, right, sIndex, index){
+        rulerPosition(left, right, Pindex, index){
 
             // 第几个刻度的位置上 index
             let lTimeIndex = left <=0 ? 0 : this.scalePositionIndex(left);
@@ -331,8 +381,8 @@ export default {
             this.rulerEndTime = rightTime.h + ':' + rightTime.m;
 
             if(right){
-                this.rectangleData[sIndex][index] = {
-                    ...this.rectangleData[sIndex][index],
+                this.rectangleData[Pindex][index] = {
+                    ...this.rectangleData[Pindex][index],
                     beginTime: this.rulerStartTime,
                     endTime: this.rulerEndTime,
                     duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime)
@@ -448,13 +498,13 @@ export default {
         },
 
         //放置被拖数据时
-        drop(data, sIndex){
+        drop(data, Pindex){
             //放置资源时  防止重叠   
             //rulerStartX x轴距离   x+100 拖拽时矩形默认宽度 100px
-            if(this.searchOverlap(this.rulerStartX, this.rulerStartX+100, sIndex)){
+            if(this.searchOverlap(this.rulerStartX, this.rulerStartX+100, Pindex)){
                 this.dragData.contentId = this.dragData.id;
                 delete this.dragData.id;
-                this.selectedCurrentTimeline(this.dragData, sIndex);
+                this.selectedCurrentTimeline(this.dragData, Pindex);
                 this.timelineIsUpdate = true;
                 let obj = {
                     ...this.dragData,
@@ -463,14 +513,14 @@ export default {
                     w: this.timelineWidth - this.rulerStartX >= 100 ? 100 : this.timelineWidth - this.rulerStartX,
                     beginTime: this.rulerStartTime,
                     endTime: this.rulerEndTime,
-                    logicRegion: this.screenLayout[sIndex].id, 
+                    logicRegion: this.screenLayout[Pindex].id, 
                     contentDuration: this.dragData.duration,
                     duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
                 }
-                if(this.rectangleData[sIndex] && this.rectangleData[sIndex].length){
-                    this.rectangleData[sIndex].push(obj);
+                if(this.rectangleData[Pindex] && this.rectangleData[Pindex].length){
+                    this.rectangleData[Pindex].push(obj);
                 }else{
-                    this.rectangleData[sIndex] = [obj];
+                    this.rectangleData[Pindex] = [obj];
                 }
             }
             this.deactivated();
@@ -479,29 +529,34 @@ export default {
 
         //查询是否有重叠
         //_index 是已添加到时间轴  拖拽宽度时不能重叠， 循环时过滤自己
-        searchOverlap(x, xw, sIndex, _index){
+        searchOverlap(x, xw, Pindex, _index){
             let handle = true;
-            if(this.rectangleData[sIndex] && this.rectangleData[sIndex].length){
-                this.rectangleData[sIndex].forEach((item, index) => {
+            if(this.rectangleData[Pindex] && this.rectangleData[Pindex].length){
+                this.rectangleData[Pindex].forEach((item, index) => {
                     if(_index && index == _index-1) return false;
                     // console.log((item.x <= x && (item.x + item.w) >= x) , (item.x <= xw && (item.x + item.w) >= xw))
                     //x 轴位置在这个矩形里，                                // 矩形右边的点在这个矩形里                  x 位置在矩形里或前面， x右位置在矩形里面或后面
-                    if(handle && (item.x < x && (item.x + item.w) > x) || (item.x < xw && (item.x + item.w) > xw) || (item.x > x && xw > item.x +item.w)){
-                        
-                        // 拖放误差10像素内
-                        if((item.x < x && (item.x + item.w) > x) && item.x + item.w - x < 10){
+
+                    if(handle && ((item.x < x && (item.x + item.w) > x) || (item.x < xw && (item.x + item.w) > xw) || (item.x > x && xw > item.x +item.w))){
+                        // 拖放误差20像素内
+                        if((item.x < x && (item.x + item.w) > x) && item.x + item.w - x < 20){
                             if(!_index){
                                 this.rulerStartX = x + (item.x + item.w - x);
                             }else{
-                                let s = this.rectangleData[sIndex][_index-1]; 
-                                s.x = x + (item.x + item.w - x);
-                                this.$set(this.rectangleData[sIndex], _index-1,  s);
+                                let s = this.rectangleData[Pindex][_index-1]; 
+                                
+                                //x先加一  再减一， 要不然数据不变化 ==
+                                s.x = x + (item.x + item.w - x) + 1;
+                                this.$set(this.rectangleData[Pindex], _index-1, s);
+                                this.$nextTick(() =>{
+                                    s.x = x + (item.x + item.w - x);
+                                    this.$set(this.rectangleData[Pindex], _index-1, s);
+                                })
                                 //左右标尺位置
-                                this.rulerPosition(s.x, s.x+s.w, sIndex, _index-1);
+                                this.rulerPosition(s.x, s.x+s.w, Pindex, _index-1);
                             }
                             return
                         }
-
                         handle = false;
                         this.$message.warning('资源不能重叠(..•˘_˘•..)');
                     }
@@ -593,9 +648,9 @@ export default {
         },
 
         //删除时间轴  资源
-        deleteCurrentTimeline(sIndex, index, id){
+        deleteCurrentTimeline(Pindex, index, id){
             
-            this.$confirm(`此操将删除资源【${this.rectangleData[sIndex][index].displayName}】, 是否继续?`, '提示', {
+            this.$confirm(`此操将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -604,18 +659,18 @@ export default {
                     timelineDelete(id).then(res => {
                         if(res.code === this.$successCode){
                             this.$message.success('删除成功~');
-                            this.rectangleData[sIndex].splice(index, 1);
+                            this.rectangleData[Pindex].splice(index, 1);
                             this.$nextTick(() => {
-                                this.selectedCurrentTimeline(this.rectangleData[sIndex][0] ? this.rectangleData[sIndex][0] : {}, sIndex);
+                                this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
                             })
                         }
                         this.deactivated();
                     })
                 }else{
-                    this.rectangleData[sIndex].splice(index, 1);
+                    this.rectangleData[Pindex].splice(index, 1);
                     this.deactivated();
                     this.$nextTick(() => {
-                        this.selectedCurrentTimeline(this.rectangleData[sIndex][0] ? this.rectangleData[sIndex][0] : {}, sIndex);
+                        this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
                     })
                 }
             }).catch(() => {     
@@ -646,19 +701,19 @@ export default {
         },
 
         //选中时间轴里的 资源
-        selectedCurrentTimeline(data, sIndex){
+        selectedCurrentTimeline(data, Pindex){
             let copyData = JSON.parse(JSON.stringify(data));
             delete copyData.x;
             delete copyData.displayName;
-            this.$emit('updateScreen', copyData, sIndex);
-            this.setCurrentActivate(data, sIndex);
+            this.$emit('updateScreen', copyData, Pindex);
+            this.setCurrentActivate(data, Pindex);
         },
 
         //设置当前激活的矩形数据
-        setCurrentActivate(data, sIndex){
+        setCurrentActivate(data, Pindex){
             this.currentActivate = {
                 ...data,
-                sIndex
+                Pindex
             }
         },
 
@@ -703,6 +758,35 @@ export default {
                 this.pubLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success(res.message);
+                }
+            })
+        },
+
+        //点击编辑时段  显示弹窗
+        editTimeBtn(Pindex, index){
+            this.editTime = {
+                Pindex,
+                index,
+                ...this.rectangleData[Pindex][index]
+            }
+            this.showEditTime = true;
+        },
+
+        //编辑内容时段
+        updateContentTime(){
+            let data = this.editTime;
+            let obj = JSON.parse(JSON.stringify(this.rectangleData[data.Pindex][data.index]));
+            obj.beginTime = data.beginTime;
+            obj.x = this.findXPosition(data.beginTime);
+            obj.w = (data.duration / 60) / this.interval * 100;
+            obj.duration = data.duration;
+            this.rulerPosition(obj.x, obj.x + obj.w, data.Pindex, data.index);
+            this.$nextTick(() => {
+                if(this.searchOverlap(obj.x, obj.x + obj.w, data.Pindex, data.index+1)){
+                    obj.endTime = this.rulerEndTime;
+                    this.$set(this.rectangleData[data.Pindex], data.index, obj);
+                    this.showEditTime = false;
+                    this.timelineIsUpdate = true;
                 }
             })
         }

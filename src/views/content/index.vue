@@ -18,6 +18,13 @@
                     <el-button size="small" :type="params.groupType==3 ? 'info': ''" @click="params.groupType=3;init()">计划结束</el-button>
                 </el-button-group>
             </div>
+            <el-input 
+                prefix-icon="el-icon-search" 
+                clearable
+                v-model="params.name" 
+                placeholder="资源名称" size="small"
+                @input="init"
+            ></el-input>
         </div>
 
         <!-- 资源列表 -->
@@ -91,6 +98,11 @@ export default {
                     margin-right: 5px;
                     font-size: 14px;
                 }
+            }
+            .el-input{
+                display: inline-block;
+                width: 200px;
+                margin-left: 10px;
             }
         }
         .group-title{
