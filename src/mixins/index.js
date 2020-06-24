@@ -20,6 +20,11 @@ export const screenSizeWatch = {
         //监听id为test的元素 大小变化
         erd.listenTo(document.getElementById("app-main-wrap"), function(element) {
             let width = element.offsetWidth;
+            
+            //获取浏览器滚动条宽度  浏览器可用宽度 -  body的宽度
+            let scrollWidth = window.innerWidth - document.body.clientWidth;
+            width = width + scrollWidth;
+
             if(width >= 1600){
                 _this.placeW = '20%';
                 _this.imageH = parseInt((width / 5) / 1.7);
