@@ -5,10 +5,10 @@
                 <el-button type="primary" size="mini" @click="addScreenDialog=true">添加</el-button>
                 <el-button type="primary" size="mini" :disabled="!isUpdate" @click="sureCurrentLayout">保存</el-button>
                 <el-button type="info" size="mini" :disabled="currentScreenIndex==-1" @click="deleteScreen">删除</el-button>
-                <span>x：<el-input size="mini" :value="currentRectangle.x * ratio" @input="inputChange($event, 'x')" :min="0" :max="timeData.width" type="number"></el-input></span>
-                <span>y：<el-input size="mini" :value="currentRectangle.y * ratio" @input="inputChange($event, 'y')" :min="0" :max="timeData.height" type="number"></el-input></span>
-                <span>宽：<el-input size="mini" :value="currentRectangle.width * ratio" @input="inputChange($event, 'width')" :min="20" :max="timeData.width" type="number"></el-input></span>
-                <span>高：<el-input size="mini" :value="currentRectangle.height * ratio" @input="inputChange($event, 'height')" :min="20" :max="timeData.height" type="number"></el-input></span>
+                <span>x：<el-input size="mini" :value="Math.ceil(currentRectangle.x * ratio)" @input="inputChange($event, 'x')" :min="0" :max="timeData.width" type="number"></el-input></span>
+                <span>y：<el-input size="mini" :value="Math.ceil(currentRectangle.y * ratio)" @input="inputChange($event, 'y')" :min="0" :max="timeData.height" type="number"></el-input></span>
+                <span>宽：<el-input size="mini" :value="Math.ceil(currentRectangle.width * ratio)" @input="inputChange($event, 'width')" :min="20" :max="timeData.width" type="number"></el-input></span>
+                <span>高：<el-input size="mini" :value="Math.ceil(currentRectangle.height * ratio)" @input="inputChange($event, 'height')" :min="20" :max="timeData.height" type="number"></el-input></span>
                 <!-- <span>层叠顺序：<el-input size="mini" v-model="currentRectangle.layer" :min="1" :max="99999" type="number"></el-input></span> -->
                 <span>名称：<el-input size="mini" v-model="currentRectangle.displayName"></el-input></span>
                 <span>是否轮播：
@@ -136,7 +136,7 @@ export default {
         //根据自身屏幕大小  缩小屏幕比例
         let w = this.timeData.width, h = this.timeData.height;
         //创建时间轴填写的宽度  除以 屏幕的宽度的三分之一
-        this.ratio = parseInt(w / (document.body.clientWidth / 3));
+        this.ratio = (w / (document.body.clientWidth / 3)).toFixed(3);
         this.rectangleW = parseInt(w / this.ratio);
         this.rectangleH = parseInt(h / this.ratio);
 
