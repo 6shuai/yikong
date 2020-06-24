@@ -146,7 +146,7 @@ export default {
             })
             this.timelineBox = [];
             this.$nextTick(() => {
-                this.timelineBox = this.copyData;
+                this.timelineBox = JSON.parse(JSON.stringify(this.copyData));
                 this.currentScreenIndex = -1;
                 this.currentRectangle = {};
                 this.isUpdate = true;
@@ -264,11 +264,11 @@ export default {
                     if(res.code === this.$successCode){
                         this.$message.success('保存成功~');
                         this.timelineBox = res.obj;
-                        this.copyData = JSON.parse(JSON.stringify(res.obj));
                         let data = {
                             data: this.ratioShow(res.obj),
                             type: 'update'
                         }
+                        this.copyData = JSON.parse(JSON.stringify(data.data));
                         eventBus.$emit('setScreenLayoutData', data);
                         //清空当前选中状态
                         this.currentScreenIndex = -1;
