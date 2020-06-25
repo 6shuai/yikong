@@ -125,3 +125,24 @@ export const getOrganizationUserList = {
         }
     },
 }
+
+
+//上传图片获取图片信息 宽高 大小
+export const getUploadImgInfo = {
+    methods: {
+        imageInfo(file, path, resolve){
+            // 创建对象
+            var img = new Image();
+            img.src = path;
+            img.onload = () => {
+                let imgInfo = {
+                    width: img.width,
+                    height: img.height,
+                    size: file.size,
+                    contentPath: path
+                }
+                resolve(imgInfo);
+            };
+        },
+    },
+}

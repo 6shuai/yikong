@@ -69,7 +69,10 @@
                         :on-success="uploadSuccess"
                         :on-error="uploadError"
                         list-type="picture-card">
-                        <i slot="default" class="el-icon-plus"></i>
+                        <div slot="default">
+                            <i class=""></i>
+                            <span>上传图片</span>
+                        </div>
                     </el-upload>
                 </li>
             </ul>
@@ -81,9 +84,11 @@
     </div>
 </template>
 <script>
+import { getUploadImgInfo } from '@/mixins/index';
 export default {
     // 是否多图，  图片列表  ,   是否显示设置默认图 ,  是否需要图片信息 宽高 大小
     props: ['isArray', 'imgList', 'showCover', 'haveImgInfo'],
+    mixins: [getUploadImgInfo],
     data(){
         return {
             dialogVisible: false,            //大图 modal
@@ -105,7 +110,11 @@ export default {
             this.uploadLoading = false;
             //需要返回图片的信息
             if(this.haveImgInfo){
-                this.imageInfo(file, res.obj.path);
+                new Promise((resolve) => {
+                    this.imageInfo(file, res.obj.path, resolve);
+                }).then(res => {
+                    this.$emit('uploadImgPath', res);
+                })
             }else{
                 this.$emit('uploadImgPath', res.obj.path);
             }
@@ -117,23 +126,6 @@ export default {
             }else{
                 this.fileList = res.obj.path;
             }
-        },
-
-        //上传图片获取图片信息 宽高 大小
-        imageInfo(file, path){
-            // 创建对象
-            var img = new Image();
-            img.src = path;
-            img.onload = () => {
-                let imgInfo = {
-                    width: img.width,
-                    height: img.height,
-                    originalSize: file.size,
-                    size: (file.size / 1024 / 1024).toFixed(2),
-                    contentPath: path
-                }
-                this.$emit('uploadImgPath', imgInfo);
-            };
         },
 
         //上传失败

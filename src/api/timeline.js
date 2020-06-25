@@ -15,6 +15,10 @@ export function timelineContainerDelete(data) { return del(`/timeline/timelineCo
 //时间轴 详情页 - 资源选择 - 获取所有资源
 export function timelineContentList(data) { return get('/timeline/content', data) }
 
+//时间轴 详情页 - 资源选择 - 获取所有图集资源
+export function timelineAtlasContentList(data) { return get('/timeline/atlasContent', data) }
+
+
 //时间轴 详情页 - 投放屏幕 - 获取所有的屏幕列表
 export function timelineScreenList(data) { return get('/timeline/screen', data) }
 

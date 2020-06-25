@@ -5,6 +5,7 @@
                 <el-radio-group size="small" @change="filtration" v-model="params.radio">
                     <el-radio-button :label="1">图片</el-radio-button>
                     <el-radio-button :label="2">视频</el-radio-button>
+                    <el-radio-button :label="4">图集</el-radio-button>
                 </el-radio-group>
                 <el-input 
                     clearable
@@ -20,22 +21,36 @@
                     ref="contentList"
                     v-for="(item, index) in contentData" 
                     :key="item.id"
-                    @click="previewData=item;dialogVisible=true;"
+                    @click="handlePreview(item)"
                     @dragstart="drag($event, item, index)"
                     @dragend="dragend"
                     @dragenter="dragEnter($event, item)"
                     draggable="true"
                 >
+                    <div class="cover"></div>
+                    <div 
+                        v-if="item.subContentsData && item.contentTypeId == 4"
+                        class="atlas"
+                        :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`"
+                    >
+                        <el-image 
+                            fit="cover" 
+                            class="img" 
+                            v-for="(img, index) in filterVideo(item.subContentsData)"
+                            v-if="img.contentType==1 && index <=3"
+                            :key="index"
+                            :src="img.contentPath"
+                        ></el-image>
+                    </div>
                     <el-image 
-                        v-if="item.image" 
+                        v-else
                         fit="cover" 
                         class="img" 
                         :src="item.image"
                     ></el-image>
-                    <image v-else class="img" :src="item.image"></image>
                     <div class="desc">
-                        <p class="duration" v-if="item.contentTypeId==2"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</p>
                         <p class="title overflow" :title="item.displayName">{{item.displayName}}</p>
+                        <p class="duration" v-if="item.duration"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</p>
                     </div>
                 </div>
             </div>
@@ -57,6 +72,9 @@
                 <div class="preview" v-if="previewData.contentTypeId == 2">
                     <video :src="previewData.contentPath" controls="controls"></video>
                 </div>
+
+                <!-- 图集 -->
+                <content-preview ref="contentPreview"></content-preview>
             </div>
 
         </el-dialog>
@@ -64,7 +82,8 @@
     </div>
 </template>
 <script>
-import { timelineContentList } from '@/api/timeline';
+import { timelineContentList, timelineAtlasContentList } from '@/api/timeline';
+import ContentPreview from '@/views/content/components/ContentPreview';
 export default {
     data(){
         return {
@@ -95,8 +114,21 @@ export default {
 
         //筛选
         filtration(){
+            if(this.params.radio === 4){
+                this.atlasContentList();
+                return
+            }
             this.contentData = this.resData.filter(item => {
                 return item.contentTypeId == this.params.radio && (this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true)
+            })
+        },
+
+        //获取所有图集资源
+        atlasContentList(){
+            timelineAtlasContentList().then(res => {
+                if(res.code === this.$successCode){
+                    this.contentData = res.obj;
+                }
             })
         },
 
@@ -117,7 +149,27 @@ export default {
         //当拖拽元素进入目标元素时
         dragEnter(event, data){
             // console.log(event, data)
+        },
+
+        //预览
+        handlePreview(data){
+            this.previewData = data;
+            let msg = this.previewData.contentTypeId == 4 ? this.previewData.subContentsData : this.previewData;
+            this.dialogVisible = true;
+            this.$nextTick(() => {
+                this.$refs.contentPreview.contentPreviewData(msg);
+            })
+        },
+
+        //过滤视频
+        filterVideo(data){
+            return data.filter(item => {
+                return item.contentType==1
+            })
         }
+    },
+    components: {
+        ContentPreview
     }
 }
 </script>
@@ -132,6 +184,7 @@ export default {
         }
         .content-list{
             width: 100px;
+            height: 100px;
             margin: 0 0 10px 10px;
             float: left;
             cursor: pointer;
@@ -139,11 +192,42 @@ export default {
             border-radius: 3px;
             box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
             background: #fff;
+            position: relative;
+            .cover{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                z-index: 10;
+            }
             img{
                 width: 100px;
                 height: 60px;
                 z-index: 99;
             }
+
+            .atlas{
+                width: 100px;
+                height: 60px;
+                background: #000;
+                &-2 .img{
+                    display: inline-block;
+                    width: 50px;
+                    height: 60px;
+                }
+                &-3, &-4{
+                    display: flex;
+                    flex-wrap: wrap;
+                    .img{
+                        width: 50px;
+                        height: 30px;
+                        img{
+                            width: 50px;
+                            height: 30px;
+                        }
+                    }
+                }
+            }
+
             .desc{
                 width: 100px;
                 background: #fff;

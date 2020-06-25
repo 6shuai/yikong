@@ -26,3 +26,9 @@ export function contentPlayLimitDelete(data) { return del(`/content/playbackRest
 
 //资源管理  添加或修改播放计划
 export function contentPlayPlanCreated(data) { return post('/content/playPlan', data) }
+
+//资源管理 添加图集 分页查询所有资源
+export function contentListPage(data) { return get('/content/queryForPage', data) }
+
+//资源管理 删除图集 资源引用
+export function atlasDeleteContent(data) { return del(`/content/atlas/${data}`) }

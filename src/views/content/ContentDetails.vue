@@ -18,8 +18,7 @@
         <div class="content">
             <div class="resource-wrap clearfix">
                 <div class="left">
-                    <el-image v-if="resData.contentTypeId == 1" :src="resData.contentPath" :preview-src-list="[resData.contentPath]"></el-image>
-                    <video v-if="resData.contentTypeId == 2" :src="resData.contentPath" controls="controls"></video>
+                    <content-preview ref="contentPreview"></content-preview>
                 </div>
                 <div class="right">
                     <el-form 
@@ -35,13 +34,15 @@
                             <span>{{resData.contentOwnerName}}</span>
                         </el-form-item>
                         <el-form-item label="分辨率">
-                            <span>{{resData.width}} x {{resData.height}}</span>
+                            <span v-if="resData.width">{{resData.width}} x {{resData.height}}</span>
+                            <span v-else> - </span>
                         </el-form-item>
                         <el-form-item label="比例">
-                            <span>{{resData.aspectRatioWidth}} : {{resData.aspectRatioHeight}}</span>
+                            <span v-if="resData.aspectRatioWidth">{{resData.aspectRatioWidth}} : {{resData.aspectRatioHeight}}</span>
+                            <span v-else> - </span>
                         </el-form-item>
                         <el-form-item label="文件大小">
-                            <span>{{fileSize(resData.size)}}MB</span>
+                            <span>{{resData.size ? fileSize(resData.size) : ' - '}}MB</span>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -146,6 +147,7 @@ import { contentDelete } from '@/api/content';
 import { contentDetailData, contentIsFavorite } from '@/views/content/mixins';
 import PlayLimit from '@/views/content/components/PlayLimit';
 import PlayPlan from '@/views/content/components/PlayPlan';
+import ContentPreview from '@/views/content/components/ContentPreview';
 export default {
     mixins: [contentDetailData, contentIsFavorite],
     data(){
@@ -167,7 +169,11 @@ export default {
         }
     },
     mounted() {
-        this.initDetail();
+        new Promise((resolve) => {
+            this.initDetail(resolve);
+        }).then(res => {
+            this.$refs.contentPreview.contentPreviewData(this.resData.oldContents ? this.resData.oldContents : this.resData);
+        })
     },
     methods: {
         //编辑资源
@@ -254,7 +260,8 @@ export default {
     },
     components: {
         PlayLimit,
-        PlayPlan
+        PlayPlan,
+        ContentPreview
     }
 }
 </script>

@@ -56,7 +56,7 @@
                     :min-width="20"
                     :min-height="20"
                     :snap="true"
-                    :snapTolerance="10"
+                    :snapTolerance="0"
                     @activated="item.isRotation ? 1 : 0; currentRectangle=item;currentScreenIndex=index"
                     @refLineParams="getRefLineParams"
                     @dragging="onDrag(arguments, index)"
@@ -136,9 +136,9 @@ export default {
         //根据自身屏幕大小  缩小屏幕比例
         let w = this.timeData.width, h = this.timeData.height;
         //创建时间轴填写的宽度  除以 屏幕的宽度的三分之一
-        this.ratio = (w / (document.body.clientWidth / 3)).toFixed(3);
-        this.rectangleW = parseInt(w / this.ratio);
-        this.rectangleH = parseInt(h / this.ratio);
+        this.ratio = (w / (document.body.clientWidth / 3));
+        this.rectangleW = w / this.ratio;
+        this.rectangleH = h / this.ratio;
 
         this.$dragging.$on('dragend', ({value}) => {
             this.copyData.forEach((item, index) => {
@@ -178,10 +178,10 @@ export default {
                 return b.layer - a.layer
             });
             data.forEach(item => {
-                item.width = Math.floor(item.width / this.ratio);
-                item.height = Math.floor(item.height / this.ratio);
-                item.x = Math.floor(item.x / this.ratio);
-                item.y = Math.floor(item.y / this.ratio);  
+                item.width = item.width / this.ratio;
+                item.height = item.height / this.ratio;
+                item.x = item.x / this.ratio;
+                item.y = item.y / this.ratio;  
             })
             return data;
         },
@@ -220,10 +220,11 @@ export default {
         onDrag(data, index){
             this.timelineBox[index] = {
                 ...this.timelineBox[index],
-                x: data[0],
-                y: data[1]
+                x: data[0] < 0 ? 0 : data[0],
+                y: data[1] < 0 ? 0 : data[1]
             }
             this.currentRectangle = this.timelineBox[index];
+            this.copyData = JSON.parse(JSON.stringify(this.timelineBox));
             this.isUpdate = true;
         },
 
@@ -231,13 +232,21 @@ export default {
         onResize(data, index){
             let p = {
                 ...this.timelineBox[index],
-                x: data[0],
-                y: data[1],
+                x: data[0] < 0 ? 0 : data[0],
+                y: data[1] < 0 ? 0 : data[1],
                 width: data[2],
                 height: data[3]
             }
+            let s = this.rectangleH * this.ratio;
+            if(this.rectangleH * this.ratio - p.height * this.ratio < this.ratio){
+                p.height = this.rectangleH;
+            }
+            if(this.rectangleW * this.ratio - p.width * this.ratio < this.ratio){
+                p.width = this.rectangleW;
+            }
             this.$set(this.timelineBox, index, p);
             this.currentRectangle = p;
+            this.copyData = JSON.parse(JSON.stringify(this.timelineBox));
             this.isUpdate = true;
         },
 
@@ -247,17 +256,20 @@ export default {
             let totalW = 0;
             let copyData = JSON.parse(JSON.stringify(this.timelineBox));
             copyData.forEach((item, index) => {
-                if(item.x == 0) x1 = true;
-                if(item.x+item.width >= this.rectangleW) x2 = true;
-                totalW += item.width;
-
+                
                 //保存时宽高x，y 要乘以比例， 真实的宽高
                 item.width = this.ratio * item.width;
                 item.height = this.ratio * item.height;
                 item.x = this.ratio * item.x;
                 item.y = this.ratio * item.y;  
+                
+                if(item.x == 0) x1 = true;
+                if(item.x+item.width >= this.timeData.width) x2 = true;
+                totalW += item.width;
+
             })
-            if(totalW >= this.rectangleW) w = true;
+            
+            if(totalW >= this.timeData.width) w = true;
             if(x1 && x2 && w){
                 this.deleteSelectedId();
                 timelineAddlayout(copyData).then(res => {
@@ -330,6 +342,12 @@ export default {
         //输入框双向绑定
         inputChange(value, label){
             this.currentRectangle[label] = value / this.ratio;
+            let obj = this.timelineBox;
+            obj[this.currentScreenIndex][label] = value / this.ratio;
+            this.timelineBox = [];
+            this.$nextTick(() => {
+                this.timelineBox = obj;
+            })
         },
 
     },
@@ -366,6 +384,7 @@ export default {
         }
         .rectangle-wrap{
             border: 1px solid red;
+            box-sizing: initial;
             display: inline-block;
             vertical-align: top;
             position: relative;

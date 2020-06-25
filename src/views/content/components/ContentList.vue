@@ -11,8 +11,8 @@
                 <el-image fit="cover" :src="item.image" :style="{height: imageH+'px'}" class="image"></el-image>
                 
                 <!-- 资源类型 -->
-                <div class="resource-type" title="点击预览" @click.stop="currentContent=item;showPreview=true;">
-                    <font-awesome-icon v-if="item.contentTypeId==1" :icon="['far', 'image']" />
+                <div class="resource-type" title="点击预览" @click.stop="handlePreview(item)">
+                    <font-awesome-icon v-if="item.contentTypeId==1 || item.contentTypeId==4" :icon="['far', 'image']" />
                     <font-awesome-icon v-if="item.contentTypeId==2" :icon="['fas', 'film']" />
                     <font-awesome-icon v-if="item.contentTypeId==3" :icon="['fas', 'gamepad']" />
                     <span class="type">{{item.contentTypeName}}</span>
@@ -38,16 +38,16 @@
                 </div>
                 <div class="bottom">
                     <ul class="bottom-size overflow clearfix">
-                        <li title="分辨率">
+                        <li title="分辨率" v-if="item.width && item.height">
                             <font-awesome-icon :icon="['far', 'window-maximize']" />
                             <span>{{item.width}} x {{item.height}}</span>&nbsp;
                             <span>{{item.aspectRatioWidth}} : {{item.aspectRatioHeight}}</span>
                         </li>
-                        <li title="大小">
+                        <li title="大小" v-if="item.size">
                             <font-awesome-icon :icon="['fas', 'download']" />
                             <span>{{(item.size / 1024 / 1024).toFixed(2)}}MB</span>
                         </li>
-                        <li title="时长" v-if="item.contentTypeId==2">
+                        <li title="时长" v-if="item.duration">
                             <font-awesome-icon :icon="['far', 'clock']" />
                             <span>{{item.duration}}s</span>
                         </li>
@@ -62,7 +62,7 @@
             :title="currentContent.displayName"
             :visible.sync="showPreview"
             append-to-body>
-            <content-preview :data="currentContent" v-if="showPreview"></content-preview>
+            <content-preview ref="contentPreview" v-if="showPreview"></content-preview>
         </el-dialog>
 
     </div>
@@ -76,6 +76,17 @@ export default {
         return{
             currentContent: {},            //查看选中的预览资源内容
             showPreview: false,            //显示预览资源
+        }
+    },
+    methods: {
+        //预览
+        handlePreview(data){
+            this.currentContent = data;
+            let msg = this.currentContent.contentTypeId == 4 ? this.currentContent.subContentsData : this.currentContent;
+            this.showPreview = true;
+            this.$nextTick(() => {
+                this.$refs.contentPreview.contentPreviewData(msg);
+            })
         }
     },
     components: {

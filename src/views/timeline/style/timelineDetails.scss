@@ -167,16 +167,19 @@
                 color: red;
                 display: none;
                 z-index: 99;
+                &.ruler-left .time span{
+                    top: -10px;
+                }
                 .time{
                     position: relative;
                     span{
                         position: absolute;
-                        top: 0;
                         &.left{
-                            left: -40px;
+                            left: -60px;
+                            top: 0px;
                         }
                         &.right{
-                            left: -40px;
+                            left: -60px;
                         }
                     }
                 }
@@ -211,14 +214,19 @@
                         position: relative;
                         overflow: hidden;
                         .image-wrap{
-                            height: 40px;
+                            height: 60px;
                             img{
                                 width: 100%;
                                 max-width: 100px;
-                                max-height: 40px;
+                                max-height: 58px;
+                                vertical-align: top;
                             }
                         }
                         .name{
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            background: rgba(0,0,0,0.6);
                             line-height: 20px;
                         }
                         .play-count{
@@ -258,16 +266,19 @@
 
 .screen-tool-popover{
     padding: 0 !important;
+    width: 100px;
+    min-width: 100px;
 }
 .content-tool{
-    display: flex;
     div{
-        flex: 1;
         text-align: center;
-        line-height: 36px;
+        line-height: 26px;
         cursor: pointer;
         &:hover{
             color: $--color-danger;
+        }
+        &.time-frame{
+            font-size: 12px;
         }
     }
 }

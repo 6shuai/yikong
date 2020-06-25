@@ -7,9 +7,8 @@
                     v-model="interval"
                     @change="changeInterval"
                     :step="5"
-                    :min="5"
-                    :max="30"
-                    show-stops>
+                    :min="1"
+                    :max="30">
                 </el-slider>
             </div>
             <el-button 
@@ -58,7 +57,7 @@
                 <div class="ruler ruler-left" ref="rulerLeft" :style="{height: (70*screenLayout.length+80)+'px'}">
                     <div class="time">
                         <span 
-                            :class="$refs.rulerLeft && $refs.rulerLeft.style.left.split('px')[0] <= 40 ? '' : 'left'" 
+                            :class="$refs.rulerLeft && $refs.rulerLeft.style.left.split('px')[0] <= 60 ? '' : 'left'" 
                         >{{rulerStartTime}}</span>
                     </div>
                 </div>
@@ -90,7 +89,7 @@
                             :w="item.w"
                             :h="60"
                             :x="item.x"
-                            :min-width="10"
+                            :min-width="3"
                             :parent="true"
                             :debug="false"
                             :handles="['mr','ml']"
@@ -104,17 +103,26 @@
                             class="rectangle">
                             <el-popover
                                 popper-class="screen-tool-popover"
-                                placement="top-start"
-                                width="150"
+                                placement="right"
                                 trigger="hover">
                                 <div class="content-tool">
+                                    <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                     <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
                                     <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                 </div>
 
                                 <div class="content" slot="reference" @click="selectedCurrentTimeline(item, Pindex)">
-                                    <div class="image-wrap">
+                                    <div class="image-wrap" v-if="item.contentTypeId != 4">
                                         <img :src="item.image">
+                                    </div>
+                                    <!-- 图集 -->
+                                    <div class="image-wrap atlas" v-if="item.contentTypeId == 4">
+                                        <img 
+                                            v-for="img in item.subContentsData" 
+                                            v-if="img.contentType==1" 
+                                            :key="img.contentPath" 
+                                            :src="img.contentPath"
+                                        >
                                     </div>
                                     <div class="overflow name">
                                         {{item.displayName}}
@@ -122,7 +130,9 @@
                                     </div>
 
                                     <!-- 在这个时间段播放了多少次 -->
-                                    <div class="play-count" v-if="item.contentTypeId == 2">x{{Math.ceil(timeDifference(item.beginTime, item.endTime) * 60 / item.contentDuration)}}</div>
+                                    <div class="play-count" v-if="item.contentTypeId == 2 || item.contentTypeId == 4">
+                                        x{{Math.ceil(timeDifference(item.beginTime, item.endTime, 'second') / item.contentDuration)}}
+                                    </div>
                                 </div>
                             </el-popover>
                         </vue-draggable-resizable>
@@ -144,8 +154,8 @@
                 <el-form-item label="开始时间" class="is-required">
                     <el-time-picker
                         v-model="editTime.beginTime"
-                        format="HH:mm"
-                        value-format="HH:mm"
+                        format="HH:mm:ss"
+                        value-format="HH:mm:ss"
                         placeholder="选择开始时间">
                     </el-time-picker>
                 </el-form-item>
@@ -188,7 +198,7 @@ export default {
             rulerStartX: null,                 //标尺左侧 x轴的距离 
             timelineLeftDistance: 100,         //时间轴距离左边屏幕的距离 px
             screenIndex: -1,                   //拖拽资源 在哪块屏幕上                 
-            interval: 20,                      //时间线间隔  默认 20分钟
+            interval: 5,                      //时间线间隔  默认 20分钟
             timelineWidth: 0,                  //时间轴的宽度
             screenLayout: [],                  //屏幕布局数据
             currentActivate: {},               //当前激活的矩形数据
@@ -223,13 +233,12 @@ export default {
 
         // 加载时间线  10  
         this.computedTime(this.interval, this.timeDifference(this.startTime, this.endTime));
-
     },
     methods: {
         //计算时间差（相差分钟）
         // var beginTime="08:31:00";
         // var endTime="21:50:00";
-        timeDifference(beginTime, endTime){ 
+        timeDifference(beginTime, endTime, type){ 
             var start1 = beginTime.split(":");
             var startAll = parseInt(start1[0]*60) + parseInt(start1[1]);
 
@@ -239,7 +248,12 @@ export default {
             var end1 = endTime.split(":");
             var endAll = parseInt(end1[0]*60) + parseInt(end1[1]);
             
-            return endAll - startAll;
+            let minute = endAll - startAll;
+            if(!type){
+                return minute;
+            }else{
+                return minute * 60 - (parseInt(start1[2]) -  parseInt(end1[2]))
+            }
         },
 
 
@@ -285,7 +299,7 @@ export default {
             this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
             if(this.$refs.rulerLeft) this.$refs.rulerLeft.style.display = 'block';
             if(this.$refs.rulerRight) this.$refs.rulerRight.style.display = 'block';
-            this.rulerPosition(data.x, data.x + data.w, Pindex, index);
+            this.rulerPosition(data.x, data.x + data.w, Pindex, index, data.beginTime, data.endTime);
         },
 
         //时间轴矩形停用时  隐藏标尺线
@@ -296,12 +310,13 @@ export default {
 
         //改变位置时触发 data【0】x轴距离，  data【1】 y轴距离
         onDrag(data, Pindex, index){
+            let obj = this.rectangleData[Pindex][index];
             this.rectangleData[Pindex][index] = {
-                ...this.rectangleData[Pindex][index],
+                ...obj,
                 x: data[0],
                 y: data[1]
             }
-            let rulerRight = data[0] + this.rectangleData[Pindex][index].w;
+            let rulerRight = data[0] + obj.w;
             this.rulerPosition(data[0], rulerRight, Pindex, index);
             // this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
             this.timelineIsUpdate = true;
@@ -314,15 +329,16 @@ export default {
 
         //调整组件大小时触发  data[x, y, width, height]
         onResize(data, Pindex, index){
+            let obj = this.rectangleData[Pindex][index];
             let p = {
-                ...this.rectangleData[Pindex][index],
+                ...obj,
                 x: data[0],
                 y: data[1],
                 w: data[2],
                 h: data[3]
             }
             this.$set(this.rectangleData[Pindex], index, p);
-            let rulerRight = data[0] + this.rectangleData[Pindex][index].w;
+            let rulerRight = data[0] + obj.w;
             this.rulerPosition(data[0], rulerRight, Pindex, index);
         },
 
@@ -337,7 +353,7 @@ export default {
                 this.$set(this.rectangleData, Pindex, copyData);
                 this.$nextTick(() => {
                     this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
-                    this.rulerPosition(copyData[index].x, copyData[index].x+copyData[index].w, Pindex, index);
+                    this.rulerPosition(copyData[index].x, copyData[index].x+copyData[index].w, Pindex, index, copyData.beginTime, copyData.endTime);
                 })
             }else{
                 this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
@@ -345,47 +361,57 @@ export default {
         },
 
         //标尺位置
-        rulerPosition(left, right, Pindex, index){
+        rulerPosition(left, right, Pindex, index, beginTime, endTime){
 
-            // 第几个刻度的位置上 index
-            let lTimeIndex = left <=0 ? 0 : this.scalePositionIndex(left);
-
-            // left 划过的位置 百分比
-            let percentL = left - lTimeIndex * 100;
-
-            //left 显示的时间  开始时间 小时 + 分钟
-            let startTime = this.rulerShowTime(lTimeIndex, percentL <= 0 ? 0 : this.percentIndex(percentL) || 0);
-
-
-            // console.log(this.timeArr[timeIndex].h, this.timeArr[timeIndex].m)
+            //标尺左右的位置
             this.$refs.rulerLeft.style.left = left + 'px';
             if(right) this.$refs.rulerRight.style.left = right + 'px';
 
-            this.rulerStartX = left;
-            this.rulerStartTime = startTime.h + ':' + startTime.m;
-
-            //right 没有值时，是拖拽时只显示左侧开始时间   宽度默认100 ， left + 100 = right 结束的位置
-            let rightX = '';
-            if(!right){
-                rightX = left + 100;
+            //有开始时间和结束时间  就不用按位置去计算
+            if(beginTime && endTime){
+                this.rulerStartTime = beginTime;
+                this.rulerEndTime = endTime;
+            }else{
+                // 第几个刻度的位置上 index
+                let lTimeIndex = left <=0 ? 0 : this.scalePositionIndex(left);
+    
+                // left 划过的位置 百分比
+                let percentL = left - lTimeIndex * 100;
+    
+                //秒
+                let startS = this.addPreZero(parseInt(left / (100 / this.interval / 60) % 60));
+                //left 显示的时间  开始时间 小时 + 分钟
+                let startTime = this.rulerShowTime(lTimeIndex, percentL <= 0 ? 0 : this.percentIndex(percentL) || 0, startS);
+    
+                this.rulerStartX = left;
+                this.rulerStartTime = startTime.h + ':' + startTime.m + ':' + startS;
+    
+                //right 没有值时，是拖拽时  只显示左侧开始时间   宽度默认资源的时长 ， 没有时长 默认60秒
+                let rightX = '';
+                if(!right){
+                    rightX = left + ((this.dragData.duration ? this.dragData.duration : 60) / 60) / this.interval * 100;
+                }
+    
+                // 第几个刻度的位置上 index
+                let rTimeIndex = this.scalePositionIndex(right || rightX);
+    
+                // right 划过的位置 百分比
+                let percentR = (right || rightX) - rTimeIndex * 100;
+    
+                //right 显示的时间  开始时间 小时 + 分钟
+                let rightTime = this.rulerShowTime(rTimeIndex, this.percentIndex(percentR));
+                //秒
+                let endS = this.addPreZero(parseInt((right ? right : rightX) / (100 / this.interval / 60) % 60));
+                this.rulerEndTime = rightTime.h + ':' + rightTime.m + ':' + endS;
             }
 
-            // 第几个刻度的位置上 index
-            let rTimeIndex = this.scalePositionIndex(right || rightX);
-
-            // right 划过的位置 百分比
-            let percentR = (right || rightX) - rTimeIndex * 100;
-
-            //right 显示的时间  开始时间 小时 + 分钟
-            let rightTime = this.rulerShowTime(rTimeIndex, this.percentIndex(percentR));
-            this.rulerEndTime = rightTime.h + ':' + rightTime.m;
 
             if(right){
                 this.rectangleData[Pindex][index] = {
                     ...this.rectangleData[Pindex][index],
                     beginTime: this.rulerStartTime,
                     endTime: this.rulerEndTime,
-                    duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime)
+                    duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime, 'second')
                 }
             }
         },
@@ -393,7 +419,7 @@ export default {
         //获取刻度位置下标
         scalePositionIndex(num){
             for(let j = 0; j < this.totalMinute; j++){
-                if(num >= j * 100 && num <= j * 100 +100){
+                if(num >= j * 100 && num < j * 100 +100){
                     return j;
                 }
             }
@@ -404,8 +430,8 @@ export default {
         percentIndex(num){
             var n = Number((100 / this.interval).toFixed(2));
             for(let i = 0; i < this.interval; i++){
-                if(num >= i * n  && num <= Math.ceil(i * n + n)){
-                    return i + 1;
+                if(num >= i * n - 1  && num <= Math.ceil(i * n - 1 + n)){
+                    return i;
                 }
             }
         },
@@ -421,13 +447,12 @@ export default {
             let obj = this.timeArr[timeLineIndex];
             let m = '';
             let h = obj.h;
-            if(obj.m + index >= 60){
-                m = this.addPreZero(obj.m + index - 60);
+            if(Number(obj.m) + index >= 60){
+                m = this.addPreZero(Number(obj.m) + index - 60);
                 h = this.addPreZero(Number(obj.h) + 1);
             }else{
                 m = this.addPreZero(Number(obj.m) + index)
             }
-    
             return {
                 h,
                 m
@@ -436,6 +461,7 @@ export default {
 
         //小于10 前面补个0
         addPreZero(number){
+            number = number < 0 ? number=0 : number;
             return number < 10 ? '0' + number : number;
         },
 
@@ -488,7 +514,7 @@ export default {
             this.screenIndex = value;
             //显示开始时间标尺
             this.$refs.rulerLeft.style.display = 'block';  
-            this.rulerPosition(parseInt(event.clientX) - this.timelineLeftDistance -10);
+            this.rulerPosition(parseInt(event.clientX) - this.timelineLeftDistance -10 < 0 ? 0: parseInt(event.clientX) - this.timelineLeftDistance -10);
             
         },
 
@@ -503,6 +529,7 @@ export default {
             //rulerStartX x轴距离   x+100 拖拽时矩形默认宽度 100px
             if(this.searchOverlap(this.rulerStartX, this.rulerStartX+100, Pindex)){
                 this.dragData.contentId = this.dragData.id;
+                this.dragData.duration = this.dragData.duration ? this.dragData.duration : 60;
                 delete this.dragData.id;
                 this.selectedCurrentTimeline(this.dragData, Pindex);
                 this.timelineIsUpdate = true;
@@ -510,12 +537,12 @@ export default {
                     ...this.dragData,
                     x: this.rulerStartX,
                     // this.timelineWidth 总宽度， 最后一个的宽度小于100 时 => 总宽度 - x轴位置
-                    w: this.timelineWidth - this.rulerStartX >= 100 ? 100 : this.timelineWidth - this.rulerStartX,
+                    w: (this.dragData.duration / 60) / this.interval * 100,
                     beginTime: this.rulerStartTime,
                     endTime: this.rulerEndTime,
                     logicRegion: this.screenLayout[Pindex].id, 
                     contentDuration: this.dragData.duration,
-                    duration: this.timeDifference(this.rulerStartTime, this.rulerEndTime) * 60
+                    duration: this.dragData.duration //this.timeDifference(this.rulerStartTime, this.rulerEndTime, 'second')
                 }
                 if(this.rectangleData[Pindex] && this.rectangleData[Pindex].length){
                     this.rectangleData[Pindex].push(obj);
@@ -551,9 +578,9 @@ export default {
                                 this.$nextTick(() =>{
                                     s.x = x + (item.x + item.w - x);
                                     this.$set(this.rectangleData[Pindex], _index-1, s);
+                                    //左右标尺位置
+                                    this.rulerPosition(s.x, s.x+s.w, Pindex, _index-1);
                                 })
-                                //左右标尺位置
-                                this.rulerPosition(s.x, s.x+s.w, Pindex, _index-1);
                             }
                             return
                         }
@@ -575,8 +602,8 @@ export default {
                         id: item[i].id ? item[i].id : null,
                         logicRegion: this.screenLayout[index].id,
                         contentId: item[i].contentId,
-                        beginTime: '1970-01-01 ' + (item[i].beginTime.length > 5 ? item[i].beginTime : item[i].beginTime + ':00' ),
-                        duration: this.timeDifference(item[i].beginTime, item[i].endTime) * 60
+                        beginTime: '1970-01-01 ' + item[i].beginTime,
+                        duration: item[i].duration
                     })
                 }
             })
@@ -608,16 +635,13 @@ export default {
                     let data = [];
                     if(res.obj && res.obj.length){
                         res.obj.forEach((item, i) => {
-                            var i = item.beginTime.lastIndexOf(":");
-                            let sTime = item.beginTime.substring(0, i);
-                            let eTime = item.endTime.substring(0, i);
 
                             data.push({
                                 ...item,
-                                beginTime: sTime,
-                                endTime: eTime,
+                                beginTime: item.beginTime,
+                                endTime: item.endTime,
                                 displayName: item.contentName,
-                                x: this.findXPosition(sTime),
+                                x: this.findXPosition(item.beginTime),
                                 w: (item.duration / 60) / this.interval * 100
                             })
                         })
@@ -632,6 +656,7 @@ export default {
         findXPosition(time){
             let h = time.split(':')[0];
             let m = time.split(':')[1];
+            let start1 = time.split(":");
             if(m == '00') m = 60;
 
             let s = this.timeArr;
@@ -641,10 +666,9 @@ export default {
                     (i+2 <= this.timeArr.length && h <= s[i+1].h) && 
                     m >= s[i].m 
                 ){
-                    return s[i].start + this.timeDifference(s[i].h+':'+s[i].m, time) * (100 / this.interval)
+                    return s[i].start + this.timeDifference(s[i].h+':'+s[i].m, time) * (100 / this.interval) + (100 / 60 / this.interval) * parseInt(start1[2])
                 }
             }
-
         },
 
         //删除时间轴  资源
@@ -726,20 +750,18 @@ export default {
                 data.push([]);
                 for(var j = 0; j < this.rectangleData[i].length; j++){
                     var obj = this.rectangleData[i][j];
-                    var index = obj.beginTime.lastIndexOf(":");
-                    let sTime = obj.beginTime.substring(0, index);
+                    let sTime = obj.beginTime;
                     let m = 0;      //开始到结束的 间隔 分钟
                     if(obj.duration && !obj.endTime){
-                        m = obj.duration / 60;
+                        m = obj.duration;
                     }else{
-                        m = this.timeDifference(obj.beginTime, obj.endTime);
-                        sTime = obj.beginTime;
+                        m = this.timeDifference(obj.beginTime, obj.endTime, 'second');
                     }
 
                     data[i].push({
                         ...this.rectangleData[i][j],
-                        x: this.findXPosition(sTime),
-                        w: m / this.interval * 100
+                        x: this.findXPosition(obj.beginTime),
+                        w: (m / 60) / this.interval * 100
                     })
                 }
             }

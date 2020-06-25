@@ -78,7 +78,7 @@ export default {
             }
 
             let videoElement = document.createElement('video')
-             videoElement.src = res.obj.path
+            videoElement.src = res.obj.path
             // 当指定的音频/视频的元数据已加载时，会发生 loadedmetadata 事件。 元数据包括：时长、尺寸（仅视频）以及文本轨道。
             let _this = this;
             videoElement.addEventListener("loadedmetadata", function (_event) {
@@ -87,8 +87,8 @@ export default {
                 let duration = videoElement.duration; // 视频时长
                 _this.fileInfo = {
                     duration: parseInt(duration),
-                    originalSize: file.size,
-                    size: (file.size / 1024 / 1024).toFixed(2),
+                    // originalSize: file.size,
+                    size: file.size,
                     width: width,
                     height: height,
                     contentPath: _this.videoUrl
