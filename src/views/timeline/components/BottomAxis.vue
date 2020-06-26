@@ -55,6 +55,7 @@
 
                 <!-- 标尺 -->
                 <div class="ruler ruler-left" ref="rulerLeft" :style="{height: (70*screenLayout.length+80)+'px'}">
+                    <div class="triangleDiv"></div>
                     <div class="time">
                         <span 
                             :class="$refs.rulerLeft && $refs.rulerLeft.style.left.split('px')[0] <= 60 ? '' : 'left'" 
@@ -62,6 +63,7 @@
                     </div>
                 </div>
                 <div class="ruler ruler-right" ref="rulerRight">
+                    <div class="triangleDiv"></div>
                     <div class="time">
                         <span 
                             :class="Number($refs.rulerRight && $refs.rulerRight.style.left.split('px')[0]) + 50 >= timelineWidth ? 'right' : ''" 
@@ -89,7 +91,7 @@
                             :w="item.w"
                             :h="60"
                             :x="item.x"
-                            :min-width="3"
+                            :min-width="2"
                             :parent="true"
                             :debug="false"
                             :handles="['mr','ml']"
@@ -347,7 +349,6 @@ export default {
             let p = this.rectangleData[Pindex][index];
             let copyData = this.copyRectangleData;
             this.timelineIsUpdate = true;
-            console.log('调整大小结束时触发')
             // 调整大小时不能覆盖其他的 内容矩形,  发生覆盖时 会把激活时的拷贝数据覆盖在rectangleData
             if(!this.searchOverlap(p.x, parseInt(p.x) + parseInt(p.w), Pindex, index+1)){
                 this.$set(this.rectangleData, Pindex, copyData);
@@ -549,6 +550,9 @@ export default {
                 }else{
                     this.rectangleData[Pindex] = [obj];
                 }
+                this.$nextTick(() => {
+                    this.rulerPosition(obj.x, obj.x + obj.w, Pindex, this.rectangleData[Pindex].length-1);
+                })
             }
             this.deactivated();
             this.screenIndex = -1;
@@ -692,6 +696,9 @@ export default {
                     })
                 }else{
                     this.rectangleData[Pindex].splice(index, 1);
+                    let obj = this.rectangleData;
+                    this.rectangleData = [];
+                    this.rectangleData = obj;
                     this.deactivated();
                     this.$nextTick(() => {
                         this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);

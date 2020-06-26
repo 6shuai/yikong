@@ -162,13 +162,24 @@
                 top: -20px;
                 height: calc(100% + 20px);
                 width: 2px;
-                background: #f2aa3d;
+                background: #8484FF;
                 font-weight: bold;
-                color: red;
+                color: #FF4066;
                 display: none;
                 z-index: 99;
                 &.ruler-left .time span{
                     top: -10px;
+                }
+                .triangleDiv{
+                    position: absolute;
+                    top: -18px;
+                    left: -14px;
+                    border-color: rgba(0,0,0,0);
+                    border-top-color: #8484FF;
+                    border-style: solid;
+                    border-width: 20px 15px 0 15px;
+                    height: 0;
+                    width: 0;
                 }
                 .time{
                     position: relative;

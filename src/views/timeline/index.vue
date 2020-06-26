@@ -66,7 +66,9 @@ export default {
         }
     },
     mounted() {
-        if(this.$route.query.pageNo) this.params = this.$route.query;
+        if(this.$route.query.pageNo){
+            this.params = JSON.parse(JSON.stringify(this.$route.query));
+        }
         this.init();
     },
     methods: {

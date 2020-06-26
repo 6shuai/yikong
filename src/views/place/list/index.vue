@@ -55,8 +55,8 @@
                     </div>
 
                 </div>
-
                 <el-pagination
+                    v-if="pageshow"
                     background
                     layout="total, prev, pager, next, sizes"
                     :page-sizes="[20, 30, 40, 50]"
@@ -97,12 +97,13 @@ export default {
             resData: [],
             totalCount: 0,                //总条数
             tLoading: true,
+            pageshow: false
         }
     },
     mounted() {
         this.getLocation();
         if(this.$route.query.pageNo) {
-            this.params = this.$route.query;
+            this.params = JSON.parse(JSON.stringify(this.$route.query));
             this.$refs.search.searchParams = this.params;
         }
         this.init();
@@ -113,10 +114,13 @@ export default {
             this.tLoading = true;
             placeList(this.params).then(res => {
                 this.tLoading = false;
-                this.$router.push({
-                    query: {
-                        ...this.params
-                    }
+                this.pageshow = true;
+                this.$nextTick(() => {
+                    this.$router.push({
+                        query: {
+                            ...this.params,
+                        }
+                    })
                 })
                 if(res.code === this.$successCode){
                     this.resData = res.obj.list;

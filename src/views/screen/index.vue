@@ -55,7 +55,7 @@ export default {
     },
     mounted() {
         if(this.$route.query.pageNo) {
-            this.params = this.$route.query;
+            this.params = JSON.parse(JSON.stringify(this.$route.query));
             this.$refs.search.searchParams = this.params;
         }
         this.init();
