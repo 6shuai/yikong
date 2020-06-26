@@ -5,10 +5,10 @@
                 <el-button type="primary" size="mini" @click="addScreenDialog=true">添加</el-button>
                 <el-button type="primary" size="mini" :disabled="!isUpdate" @click="sureCurrentLayout">保存</el-button>
                 <el-button type="info" size="mini" :disabled="currentScreenIndex==-1" @click="deleteScreen">删除</el-button>
-                <span>x：<el-input size="mini" :value="Math.ceil(currentRectangle.x * ratio)" @input="inputChange($event, 'x')" :min="0" :max="timeData.width" type="number"></el-input></span>
-                <span>y：<el-input size="mini" :value="Math.ceil(currentRectangle.y * ratio)" @input="inputChange($event, 'y')" :min="0" :max="timeData.height" type="number"></el-input></span>
-                <span>宽：<el-input size="mini" :value="Math.ceil(currentRectangle.width * ratio)" @input="inputChange($event, 'width')" :min="20" :max="timeData.width" type="number"></el-input></span>
-                <span>高：<el-input size="mini" :value="Math.ceil(currentRectangle.height * ratio)" @input="inputChange($event, 'height')" :min="20" :max="timeData.height" type="number"></el-input></span>
+                <span>x：<el-input size="mini" :value="getNum(currentRectangle.x)" @input="inputChange($event, 'x')" :min="0" :max="timeData.width" type="number"></el-input></span>
+                <span>y：<el-input size="mini" :value="getNum(currentRectangle.y)" @input="inputChange($event, 'y')" :min="0" :max="timeData.height" type="number"></el-input></span>
+                <span>宽：<el-input size="mini" :value="getNum(currentRectangle.width)" @input="inputChange($event, 'width')" :min="20" :max="timeData.width" type="number"></el-input></span>
+                <span>高：<el-input size="mini" :value="getNum(currentRectangle.height)" @input="inputChange($event, 'height')" :min="20" :max="timeData.height" type="number"></el-input></span>
                 <!-- <span>层叠顺序：<el-input size="mini" v-model="currentRectangle.layer" :min="1" :max="99999" type="number"></el-input></span> -->
                 <span>名称：<el-input size="mini" v-model="currentRectangle.displayName"></el-input></span>
                 <span>是否轮播：
@@ -201,8 +201,8 @@ export default {
             this.copyData.unshift(obj);
             this.screenName = '';
             this.addScreenDialog = false;
-            this.currentScreenIndex = this.timelineBox.length-1;
-            this.currentRectangle = this.timelineBox[this.timelineBox.length-1];
+            this.currentScreenIndex = 0;
+            this.currentRectangle = this.timelineBox[0];
             this.isUpdate = true;
         },
 
@@ -341,7 +341,7 @@ export default {
 
         //输入框双向绑定
         inputChange(value, label){
-            this.currentRectangle[label] = value / this.ratio;
+            this.$set(this.currentRectangle, label, value / this.ratio);
             let obj = this.timelineBox;
             obj[this.currentScreenIndex][label] = value / this.ratio;
             this.timelineBox = [];
@@ -349,6 +349,11 @@ export default {
                 this.timelineBox = obj;
             })
         },
+
+        //乘以比例后的数值
+        getNum(num){
+            return Math.ceil((num * this.ratio).toFixed(6));
+        }
 
     },
     components: {
