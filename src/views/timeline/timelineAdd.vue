@@ -77,6 +77,14 @@
                             </el-col>
                         </el-row>
                     </el-form-item>
+                    <!-- 此处要是为true 屏幕逻辑区域设置的是否轮播无效， 都将为轮播 -->
+                    <el-form-item label="是否轮播">
+                        <el-switch
+                            :active-value="1"
+                            :inactive-value="0"
+                            v-model="timelineParams.isRotation">
+                        </el-switch>
+                    </el-form-item>
                     <el-form-item label="说明">
                         <el-input type="textarea" :rows="3" v-model="timelineParams.description" placeholder="时间轴描述"></el-input>
                     </el-form-item>
@@ -95,7 +103,9 @@ export default {
     mixins: [getOrganizationList],
     data(){
         return {
-            timelineParams: {},
+            timelineParams: {
+                isRotation: 0
+            },
             btnLoading: false,     
             timelineRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入名称~' }],

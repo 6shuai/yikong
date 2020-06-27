@@ -26,7 +26,6 @@
                 type="info" 
                 size="small"
                 :loading="saveLoading"
-                :disabled="!timelineIsUpdate"
                 @click="saveTimeline"
             >保存
             </el-button>
@@ -208,7 +207,6 @@ export default {
             lastWidth: 100,                    //最后一个时间刻度的宽度
             saveLoading: false,                //保存按钮loading
             pubLoading: false,                 //发布按钮loading
-            timelineIsUpdate: false,           //是否更新过时间轴  修改过就可以点击保存  
             showEditTime: false,               //显示内容编辑时段
             editTime: {},                      //编辑内容时段 参数
         }
@@ -321,7 +319,6 @@ export default {
             let rulerRight = data[0] + obj.w;
             this.rulerPosition(data[0], rulerRight, Pindex, index);
             // this.copyRectangleData = JSON.parse(JSON.stringify(this.rectangleData[Pindex]));
-            this.timelineIsUpdate = true;
         },
 
         //改变位置结束时  触发
@@ -348,7 +345,6 @@ export default {
         onResizestop(data, Pindex, index){
             let p = this.rectangleData[Pindex][index];
             let copyData = this.copyRectangleData;
-            this.timelineIsUpdate = true;
             // 调整大小时不能覆盖其他的 内容矩形,  发生覆盖时 会把激活时的拷贝数据覆盖在rectangleData
             if(!this.searchOverlap(p.x, parseInt(p.x) + parseInt(p.w), Pindex, index+1)){
                 this.$set(this.rectangleData, Pindex, copyData);
@@ -533,7 +529,6 @@ export default {
                 this.dragData.duration = this.dragData.duration ? this.dragData.duration : 60;
                 delete this.dragData.id;
                 this.selectedCurrentTimeline(this.dragData, Pindex);
-                this.timelineIsUpdate = true;
                 let obj = {
                     ...this.dragData,
                     x: this.rulerStartX,
@@ -624,7 +619,6 @@ export default {
                     this.$nextTick(() => {
                         this.rectangleData = [];
                         this.initTimelineList();
-                        this.timelineIsUpdate = false;
                     })
                 }
             })
@@ -815,7 +809,6 @@ export default {
                     obj.endTime = this.rulerEndTime;
                     this.$set(this.rectangleData[data.Pindex], data.index, obj);
                     this.showEditTime = false;
-                    this.timelineIsUpdate = true;
                 }
             })
         }
