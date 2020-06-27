@@ -74,7 +74,7 @@
                 </div>
 
                 <!-- 图集 -->
-                <content-preview ref="contentPreview"></content-preview>
+                <content-preview v-if="previewData.contentTypeId == 4" ref="contentPreview"></content-preview>
             </div>
 
         </el-dialog>
