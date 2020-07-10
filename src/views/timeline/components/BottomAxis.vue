@@ -29,6 +29,15 @@
                 @click="saveTimeline"
             >保存
             </el-button>
+            <el-button 
+                class="save-btn" 
+                icon="el-icon-delete" 
+                type="warning" 
+                size="small"
+                :loading="emptypLoading"
+                @click="emptyTimeLine"
+            >清空时间轴
+            </el-button>
         </div>
 
         <div class="axis-left">
@@ -104,7 +113,7 @@
                             class="rectangle">
                             <el-popover
                                 popper-class="screen-tool-popover"
-                                placement="right"
+                                placement="top-start"
                                 trigger="hover">
                                 <div class="content-tool">
                                     <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
@@ -146,7 +155,7 @@
         <!-- 时间轴内容 编辑时段 -->
         <el-dialog
             width="500px"
-            title="编辑时段"
+            :title="editTime.displayName"
             :visible.sync="showEditTime"
             append-to-body>
             <el-form 
@@ -192,6 +201,7 @@ export default {
             startMinute: 31,                    //时间轴开始时间  分钟
             screenData: [],
             timeArr: [],
+            timelineIds: [],                   //时间轴所有内容的id 集合
             rectangleData: [],                 
             copyRectangleData: [],             //rectangleData 拷贝，矩形激活时赋值， 拖拽重叠时好撤回操作
             rulerStartTime: '',                //标尺左侧显示的时间
@@ -207,6 +217,7 @@ export default {
             lastWidth: 100,                    //最后一个时间刻度的宽度
             saveLoading: false,                //保存按钮loading
             pubLoading: false,                 //发布按钮loading
+            emptypLoading: false,              //清空时间轴按钮loading
             showEditTime: false,               //显示内容编辑时段
             editTime: {},                      //编辑内容时段 参数
         }
@@ -607,10 +618,6 @@ export default {
                 }
             })
 
-            if(!data.length){
-                this.$message.warning('时间轴上还没有内容( ∙̆ .̯ ∙̆ )');
-                return
-            }
             this.saveLoading = true;
             timelineCreated(data).then(res => {
                 this.saveLoading = false;
@@ -626,9 +633,10 @@ export default {
 
         //根据逻辑区域ID查询时间轴集合
         initTimelineList(){
+            this.timelineIds = [];
             for(let i = 0; i < this.screenLayout.length; i++){
-                var item = this.screenLayout[i];
-                timelineList(item.id).then(res => {
+                var data = this.screenLayout[i];
+                timelineList(data.id).then(res => {
                     this.$emit('updateScreen', res.obj[0], i);
                     let data = [];
                     if(res.obj && res.obj.length){
@@ -642,6 +650,8 @@ export default {
                                 x: this.findXPosition(item.beginTime),
                                 w: (item.duration / 60) / this.interval * 100
                             })
+
+                            this.timelineIds.push(item.id);
                         })
                     }
                     this.$set(this.rectangleData, i, data);
@@ -678,16 +688,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 if(id){
-                    timelineDelete(id).then(res => {
-                        if(res.code === this.$successCode){
-                            this.$message.success('删除成功~');
-                            this.rectangleData[Pindex].splice(index, 1);
-                            this.$nextTick(() => {
-                                this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
-                            })
-                        }
-                        this.deactivated();
-                    })
+                    this.deleteTimelineContent(id, Pindex, index);
                 }else{
                     this.rectangleData[Pindex].splice(index, 1);
                     let obj = this.rectangleData;
@@ -700,6 +701,25 @@ export default {
                 }
             }).catch(() => {     
             });
+        },
+
+        //删除时间轴 资源 接口
+        deleteTimelineContent(data, Pindex, index){
+            timelineDelete(data).then(res => {
+                this.emptypLoading = false;
+                if(res.code === this.$successCode){
+                    this.$message.success('删除成功~');
+                    if(Pindex){
+                        this.rectangleData[Pindex].splice(index, 1);
+                        this.$nextTick(() => {
+                            this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
+                        })
+                    }else{
+                        this.rectangleData = [];
+                    }
+                }
+                this.deactivated();
+            })
         },
 
         //更新屏幕布局 模块
@@ -773,18 +793,6 @@ export default {
             
         },
 
-        //发布到终端
-        PubTerminal(){
-            let data = `?containerId=${this.$route.params.id}`;
-            this.pubLoading = true;
-            pubToScreen(data).then(res => {
-                this.pubLoading = false;
-                if(res.code === this.$successCode){
-                    this.$message.success(res.message);
-                }
-            })
-        },
-
         //点击编辑时段  显示弹窗
         editTimeBtn(Pindex, index){
             this.editTime = {
@@ -811,7 +819,33 @@ export default {
                     this.showEditTime = false;
                 }
             })
-        }
+        },
+
+        //发布到终端
+        PubTerminal(){
+            let data = `?containerId=${this.$route.params.id}`;
+            this.pubLoading = true;
+            pubToScreen(data).then(res => {
+                this.pubLoading = false;
+                if(res.code === this.$successCode){
+                    this.$message.success(res.message);
+                }
+            })
+        },
+
+        //清空时间轴
+        emptyTimeLine(){
+            this.$confirm(`此操作将清空此时间轴全部资源, 是否继续?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let ids = this.timelineIds.join(',');
+                this.emptypLoading = true;
+                this.deleteTimelineContent(ids);
+            }).catch(() => {})
+            
+        },
         
     },
     components: {

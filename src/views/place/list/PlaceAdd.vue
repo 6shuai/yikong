@@ -62,6 +62,7 @@
                             ></upload-img>
                         </el-form-item>
                         <el-form-item label="场所微信二维码">
+                            <el-button v-if="placeForm.wechat" type="primary" size="small" @click="placeForm.wechat=''">删除二维码</el-button>
                             <upload-img 
                                 :isArray="false" 
                                 :imgList="placeForm.wechat"

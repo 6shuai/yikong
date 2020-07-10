@@ -4,9 +4,11 @@
             <el-page-header @back="$router.go(-1)">
             </el-page-header>
             <div class="header-right">
+                <span @click="handleImportTimelinBtn"><i class="el-icon-download" title="导入时间轴"></i>导入时间轴</span>
+                <el-divider direction="vertical"></el-divider>
                 <span @click="$router.push(`/timeline/edit/${$route.params.id}`)"><i class="el-icon-edit" title="编辑"></i>编辑</span>
                 <el-divider direction="vertical"></el-divider>
-                <span @click="deleteTimeline"><i class="el-icon-delete" title="删除"></i>删除</span>
+                <span @click="handelDeleteTimelineBtn"><i class="el-icon-delete" title="删除"></i>删除</span>
             </div>
             <div class="title">
                 <h2>{{resData.displayName}}</h2>
@@ -17,6 +19,7 @@
             :style="{bottom: (screenLayout.length * 70 + 62) <= 290 ? 290 : screenLayout.length * 70 + 62 + 'px'}"
             v-if="resData.id">
             <div class="left-tabs">
+                <!-- 左侧tab栏 -->
                 <left-tabs :timeData="resData"></left-tabs>
             </div>
             <div class="right-screen">
@@ -50,6 +53,7 @@
             :style="{height: (screenLayout.length * 70) + 62 + 'px'}"
             v-if="resData.id"
         >
+            <!-- 底部时间轴 -->
             <bottom-axis 
                 @updateScreen="updateScreen"
                 :startTime="startTime"
@@ -76,11 +80,16 @@
             </div>
 
         </el-dialog>
+
+        <!-- 导入时间轴 列表 -->
+        <import-timeline ref="importTimeline"></import-timeline>
+
     </div>
 </template>
 <script>
 import LeftTabs from '@/views/timeline/components/DetailTabs';
 import BottomAxis from '@/views/timeline/components/BottomAxis';
+import ImportTimeline from '@/views/timeline/components/ImportTimeline';
 import { timelineContainerDelete, timelineContainerDetail } from '@/api/timeline';
 export default {
     data(){
@@ -122,7 +131,7 @@ export default {
         },
         
         //删除
-        deleteTimeline(){
+        handelDeleteTimelineBtn(){
             this.$confirm(`此操将删除时间轴【${this.resData.displayName}】, 是否继续?`, '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -136,6 +145,11 @@ export default {
                     })
                 }).catch(() => {     
                 });
+        },
+
+        //点击导入时间轴， 打开选择要导入的时间轴列表
+        handleImportTimelinBtn(){
+            this.$refs.importTimeline.init();
         },
 
         
@@ -159,7 +173,8 @@ export default {
     },
     components: {
         LeftTabs,
-        BottomAxis
+        BottomAxis,
+        ImportTimeline
     }
 }
 </script>

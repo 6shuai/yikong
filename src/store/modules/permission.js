@@ -17,7 +17,7 @@ const moduleMap = {
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理
 	'Member': 'system/member/index',				      //成员管理
-	'Organizations': 'system/organizations/index',		  
+	'Organization': 'system/organizations/index',		  //品牌列表
 	'User': 'user/Center'								  //个人中心
 }
 

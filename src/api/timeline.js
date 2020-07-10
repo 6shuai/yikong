@@ -52,3 +52,6 @@ export function timelineDelete(data) { return del(`/timeline/${data}`) }
 
 //时间轴 发布到终端
 export function pubToScreen(data) { return get(`/timeline/sendTimelineDataToScreen/${data}`) }
+
+//时间轴 复制时间轴  导入时间轴
+export function copyTimelineContainer(data) { return post(`/timeline/copyTimelineContainer${data}`) }

@@ -6,11 +6,11 @@
                 <div class="card-header-right" v-if="groupData.id">
                     <span>【{{groupData.displayName}}】</span>
                     <!-- 只有创建者才能解散 -->
-                    <el-link type="danger" @click="deleteGroup" v-if="isCreator">解散组织</el-link>
+                    <el-link type="danger" @click="deleteGroup" v-if="isCreator">解散品牌组织</el-link>
                 </div>
             </div>
             <div v-if="!groupData.id && pageLoad">
-                <p>还没有组织，<el-link type="primary" @click="$refs.createdGroup.showDialog()">创建组织</el-link></p>
+                <p>还没有品牌组织，<el-link type="primary" @click="$refs.createdGroup.showDialog()">创建品牌组织</el-link></p>
             </div>
             <!-- 只有创建者才能添加成员 -->
             <div class="top-operation-wrap" v-if="isCreator">
@@ -152,7 +152,10 @@
 
         </el-card>
         <!-- 创建组织 -->
-        <created-group ref="createdGroup"></created-group>
+        <created-group 
+            ref="createdGroup"
+            @createdSuccess="searchGroupInfo"
+        ></created-group>
 
         <!-- 添加成员 -->
         <add-member ref="addMember" :groupId="this.groupData.id"></add-member>
@@ -161,7 +164,7 @@
 
 <script>
 import { groupMemberList, getAllRoleList, memberDelete, memberRoleUpdate, organizationSearchId, organizationDelete } from '@/api/user';
-import CreatedGroup from './CreatedGroup';
+import CreatedGroup from '@/views/system/organizations/components/CreatedOrganizations';
 import AddMember from './AddMember';
 export default {
     data(){

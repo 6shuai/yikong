@@ -90,7 +90,7 @@ export const objsDifferMethod = {
 
 
 // 获取所有品牌(组织)列表 
-import { organizationList } from '@/api/user';
+import { organizationList, organizationType } from '@/api/user';
 export const getOrganizationList = {
     data(){
         return {
@@ -145,4 +145,27 @@ export const getUploadImgInfo = {
             };
         },
     },
+}
+
+
+//组织类型 列表
+//获取组织类型   新建组织 commonType： 0
+export const getOrganizationTypeList = {
+    data(){
+        return{
+            groupTypeList: []
+        }
+    },
+    methods: {
+        getGroupType(){
+            organizationType(0).then(res => {
+                if(res.code === this.$successCode){
+                    // 新建组织的时候，前端列出的可选组织类型，不包含组织外类型，就是说组织类型数据的commonType: true的数据不列出。
+                    this.groupTypeList = res.obj.filter(item => {
+                        return !item.commonType
+                    })
+                }
+            })
+        }
+    }
 }

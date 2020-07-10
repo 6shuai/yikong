@@ -22,8 +22,7 @@ const actions = {
 	// user login
 	login({ commit }, userInfo) {
 		return new Promise((resolve, reject) => {
-		userLogin(userInfo)
-			.then((response) => {
+			userLogin(userInfo).then((response) => {
 				commit("SET_TOKEN", response.obj.username);
 				commit("SET_LOGIN_DATA", response.obj);
 				setToken(response.obj.username);
@@ -32,8 +31,8 @@ const actions = {
 			.catch((error) => {
 				reject(error);
 			});
-	});
-},
+		});
+	},
 
   	// user logout
 	logout({ commit, state }) {

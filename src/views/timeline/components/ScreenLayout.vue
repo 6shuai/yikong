@@ -7,8 +7,8 @@
                 <el-button type="info" size="mini" :disabled="currentScreenIndex==-1" @click="deleteScreen">删除</el-button>
                 <span>x：<el-input size="mini" :value="getNum(currentRectangle.x)" @input="inputChange($event, 'x')" :min="0" :max="timeData.width" type="number"></el-input></span>
                 <span>y：<el-input size="mini" :value="getNum(currentRectangle.y)" @input="inputChange($event, 'y')" :min="0" :max="timeData.height" type="number"></el-input></span>
-                <span>宽：<el-input size="mini" :value="getNum(currentRectangle.width)" @input="inputChange($event, 'width')" :min="20" :max="timeData.width" type="number"></el-input></span>
-                <span>高：<el-input size="mini" :value="getNum(currentRectangle.height)" @input="inputChange($event, 'height')" :min="20" :max="timeData.height" type="number"></el-input></span>
+                <span>宽：<el-input size="mini" :value="getNum(currentRectangle.width, 'width')" @input="inputChange($event, 'width')" :min="20" :max="timeData.width" type="number"></el-input></span>
+                <span>高：<el-input size="mini" :value="getNum(currentRectangle.height, 'height')" @input="inputChange($event, 'height')" :min="20" :max="timeData.height" type="number"></el-input></span>
                 <!-- <span>层叠顺序：<el-input size="mini" v-model="currentRectangle.layer" :min="1" :max="99999" type="number"></el-input></span> -->
                 <span>名称：<el-input size="mini" v-model="currentRectangle.displayName"></el-input></span>
                 <span>是否轮播：
@@ -137,8 +137,8 @@ export default {
         let w = this.timeData.width, h = this.timeData.height;
         //创建时间轴填写的宽度  除以 屏幕的宽度的三分之一
         this.ratio = (w / (document.body.clientWidth / 3));
-        this.rectangleW = w / this.ratio;
-        this.rectangleH = h / this.ratio;
+        this.rectangleW = Math.ceil((w / this.ratio).toFixed(6));
+        this.rectangleH = Math.ceil((h / this.ratio).toFixed(6));
 
         this.$dragging.$on('dragend', ({value}) => {
             this.copyData.forEach((item, index) => {
@@ -351,8 +351,15 @@ export default {
         },
 
         //乘以比例后的数值
-        getNum(num){
-            return Math.ceil((num * this.ratio).toFixed(6));
+        getNum(num, type){
+            let result = Math.ceil((num * this.ratio).toFixed(6));
+            if(type == 'width' && result > this.timeData.width){
+                result = this.timeData.width;
+            }
+            if(type == 'height' && result > this.timeData.height){
+                result = this.timeData.height;
+            }
+            return result;
         }
 
     },

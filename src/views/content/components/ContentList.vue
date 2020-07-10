@@ -8,14 +8,20 @@
                 class="place-img"
                 :style="{height: imageH+'px'}" 
                 @click.stop="$router.push(`/content/details/${item.id}`)">
-                <el-image fit="cover" :src="item.image" :style="{height: imageH+'px'}" class="image"></el-image>
+                <el-image fit="contain" :src="item.image" :style="{height: imageH+'px'}" class="image"></el-image>
                 
                 <!-- 资源类型 -->
                 <div class="resource-type" title="点击预览" @click.stop="handlePreview(item)">
-                    <font-awesome-icon v-if="item.contentTypeId==1 || item.contentTypeId==4" :icon="['far', 'image']" />
-                    <font-awesome-icon v-if="item.contentTypeId==2" :icon="['fas', 'film']" />
-                    <font-awesome-icon v-if="item.contentTypeId==3" :icon="['fas', 'gamepad']" />
-                    <span class="type">{{item.contentTypeName}}</span>
+                    <div class="type-btn">
+                        <font-awesome-icon v-if="item.contentTypeId==1 || item.contentTypeId==4" :icon="['far', 'image']" />
+                        <font-awesome-icon v-if="item.contentTypeId==2" :icon="['fas', 'film']" />
+                        <font-awesome-icon v-if="item.contentTypeId==3" :icon="['fas', 'gamepad']" />
+                        <span class="type">{{item.contentTypeName}}</span>
+                    </div>
+                    <div class="preview-btn">
+                        <i class="el-icon-video-play"></i>
+                        <span class="type">预览</span>
+                    </div>
                 </div>
 
                 <!-- 收藏 -->
@@ -33,8 +39,8 @@
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name" @click="$router.push(`/content/details/${item.id}`)">{{item.displayName}}</span>
-                    <span class="brand overflow"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.contentOwnerName}}</span>
+                    <span class="name content-name" @click="$router.push(`/content/details/${item.id}`)" :title="item.displayName">{{item.displayName}}</span>
+                    <span class="brand overflow" :title="item.contentOwnerName"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.contentOwnerName}}</span>
                 </div>
                 <div class="bottom">
                     <ul class="bottom-size overflow clearfix">
@@ -97,9 +103,20 @@ export default {
 <style lang="scss" scope>
     @import '../../place/list/style/place-card.scss';
     .content-list{
+        .preview-btn{
+            display: none;
+        }
+        .place-list:hover{
+            .type-btn{
+                display: none;
+            }
+            .preview-btn{
+                display: block;
+            }
+        }
         .brand{
             display: inline-block;
-            width: 96px;
+            width: 86px;
             line-height: 20px;
             text-align: right;
             vertical-align: bottom;

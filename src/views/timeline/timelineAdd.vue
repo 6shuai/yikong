@@ -47,15 +47,12 @@
                         <el-row>
                             <el-col :span="11">
                                 <el-form-item class="limit-time limit-star-time" prop="beginTime">
-                                    <el-time-select
-                                        placeholder="起始时间"
+                                    <el-time-picker
                                         v-model="timelineParams.beginTime"
-                                        :picker-options="{
-                                            start: '05:00',
-                                            step: '00:15',
-                                            end: '23:30'
-                                        }">
-                                    </el-time-select>
+                                        value-format="HH:mm"
+                                        format="HH:mm"
+                                        placeholder="起始时间">
+                                    </el-time-picker>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="2" style="text-align: center">
@@ -63,16 +60,12 @@
                             </el-col>
                             <el-col :span="11">
                                 <el-form-item class="limit-time" prop="endTime">
-                                    <el-time-select
-                                        placeholder="结束时间"
+                                    <el-time-picker
                                         v-model="timelineParams.endTime"
-                                        :picker-options="{
-                                            start: '05:00',
-                                            step: '00:15',
-                                            end: '23:30',
-                                            minTime: timelineParams.beginTime
-                                        }">
-                                    </el-time-select>
+                                        value-format="HH:mm"
+                                        format="HH:mm"
+                                        placeholder="结束时间">
+                                    </el-time-picker>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -104,6 +97,8 @@ export default {
     data(){
         return {
             timelineParams: {
+                beginTime: '10:00',
+                endTime: '22:00',
                 isRotation: 0
             },
             btnLoading: false,     

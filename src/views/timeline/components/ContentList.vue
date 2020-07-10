@@ -26,6 +26,7 @@
                     @dragend="dragend"
                     @dragenter="dragEnter($event, item)"
                     draggable="true"
+                    :title="item.displayName"
                 >
                     <div class="cover"></div>
                     <div 

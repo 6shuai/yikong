@@ -15,6 +15,9 @@
 						class="icon user-avatar"
 						:src="user.avatar"
 						fit="cover">
+            <div slot="error" class="image-slot">
+                <svg-icon icon-class="defalut-header-img"></svg-icon>
+            </div>
 					</el-image>
 					<span class="nickname">{{ user.nickname }}</span>
 					<i class="el-icon-arrow-down" />
@@ -131,6 +134,10 @@ export default {
           height: 48px;
           border-radius: 50%;
           vertical-align: middle;
+          .image-slot .svg-icon{
+            width: 48px;
+            height: 48px;
+          }
         }
 
         .nickname {

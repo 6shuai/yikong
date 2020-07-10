@@ -84,3 +84,12 @@ export function organizationDelete(data) { return del(`/system/member/organizati
 //查询所有的组织  品牌
 export function organizationList(data) { return get('/system/member/organization/', data); }
 
+
+//品牌管理  列表
+export function brandOrganizationList(data) { return get('/system/member/organizationForPage', data); }
+
+//品牌管理  查看品牌详情
+export function brandOrganizationDetail(data) { return get('/system/member/organizationDetail', data); }
+
+//品牌管理  编辑修改品牌
+export function brandOrganizationEdit(data) { return put('system/member/organization/', data); }

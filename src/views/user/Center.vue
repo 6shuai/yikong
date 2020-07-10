@@ -82,7 +82,6 @@ export default {
 
                 // 暂时这样避免后端的boolean成员不能正确判断null的序列号问题
                 difference.enabled = this.rawData.enabled;
-                difference.gender = this.rawData.gender
                 this.loading = true;
                 userUpdate(difference).then(resp => {
                     this.loading = false;

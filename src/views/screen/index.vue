@@ -21,7 +21,7 @@
             <el-pagination
                 background
                 layout="total, prev, pager, next, sizes"
-                :page-sizes="[20, 30, 40, 50]"
+                :page-sizes="[48, 80, 100]"
                 :current-page="Number(params.pageNo)"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
@@ -48,7 +48,7 @@ export default {
             resData: [],
             params: {
                 pageNo: 1,
-                pageSize: 20,
+                pageSize: 48,
             },
             totalCount: 0             
         }
