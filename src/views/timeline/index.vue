@@ -106,7 +106,7 @@ export default {
 }
 </script>
 <style lang="scss" scope>
-     @import '../place/list/style/place-card.scss';
+    @import '../place/list/style/place-card.scss';
     .content-list-wrap{
         .content-top{
             padding-bottom: 20px;

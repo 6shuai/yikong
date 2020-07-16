@@ -93,3 +93,5 @@ export function brandOrganizationDetail(data) { return get('/system/member/organ
 
 //品牌管理  编辑修改品牌
 export function brandOrganizationEdit(data) { return put('system/member/organization/', data); }
+
+

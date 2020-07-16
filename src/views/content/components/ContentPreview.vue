@@ -1,8 +1,8 @@
 <template>
     <div class="content-preview">
         <div class="play-index" v-if="data && isArray">{{currentDataIndex+1}} / {{data.length}}</div>
-        <img v-if="currentData.contentTypeId==1" :src="currentData.contentPath">
-        <video v-if="currentData.contentTypeId == 2" :src="currentData.contentPath" controls="controls"></video>
+        <video v-if="currentData.contentTypeId == 2" :src="currentData.contentPath || currentData.image" controls="controls"></video>
+        <img v-else :src="currentData.contentPath || currentData.image">
     </div>
 </template>
 <script>

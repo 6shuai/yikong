@@ -16,44 +16,51 @@
                 ></el-input>
             </div>
             <div v-if="contentData.length">
-                <div
-                    class="box-card content-list" 
-                    ref="contentList"
-                    v-for="(item, index) in contentData" 
-                    :key="item.id"
-                    @click="handlePreview(item)"
-                    @dragstart="drag($event, item, index)"
-                    @dragend="dragend"
-                    @dragenter="dragEnter($event, item)"
-                    draggable="true"
-                    :title="item.displayName"
+                
+                <draggable
+                    :options="dragOption" 
+                    :list="contentData"
+                    :clone="onClone"
+                    :group="{ name: 'componentLibrary', pull: 'clone', put: false }"
+                    ghostClass="ghost"
+                    dragClass="drag-module"
                 >
-                    <div class="cover"></div>
-                    <div 
-                        v-if="item.subContentsData && item.contentTypeId == 4"
-                        class="atlas"
-                        :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`"
+                    <div
+                        class="box-card content-list" 
+                        ref="contentList"
+                        v-for="(item, index) in contentData" 
+                        :key="item.id"
+                        @click="handlePreview(item)"
+                        :title="item.displayName"
                     >
+                        <div class="cover"></div>
+                        <div 
+                            v-if="item.subContentsData && item.contentTypeId == 4"
+                            class="atlas"
+                            :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`"
+                        >
+                            <el-image 
+                                fit="cover" 
+                                class="img" 
+                                v-for="(img, index) in filterVideo(item.subContentsData)"
+                                v-if="img.contentType==1 && index <=3"
+                                :key="index"
+                                :src="img.contentPath"
+                            ></el-image>
+                        </div>
                         <el-image 
+                            v-else
                             fit="cover" 
                             class="img" 
-                            v-for="(img, index) in filterVideo(item.subContentsData)"
-                            v-if="img.contentType==1 && index <=3"
-                            :key="index"
-                            :src="img.contentPath"
+                            :src="item.image"
                         ></el-image>
+                        <div class="desc">
+                            <p class="title" :title="item.displayName">{{item.displayName}}</p>
+                            <p class="duration" v-if="item.duration"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</p>
+                        </div>
                     </div>
-                    <el-image 
-                        v-else
-                        fit="cover" 
-                        class="img" 
-                        :src="item.image"
-                    ></el-image>
-                    <div class="desc">
-                        <p class="title overflow" :title="item.displayName">{{item.displayName}}</p>
-                        <p class="duration" v-if="item.duration"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</p>
-                    </div>
-                </div>
+                </draggable>
+
             </div>
             <div v-else class="no-data">暂无数据~</div>
         </el-scrollbar>
@@ -85,6 +92,7 @@
 <script>
 import { timelineContentList, timelineAtlasContentList } from '@/api/timeline';
 import ContentPreview from '@/views/content/components/ContentPreview';
+import Draggable from "vuedraggable";
 export default {
     data(){
         return {
@@ -95,7 +103,12 @@ export default {
             params: {
                 radio: 1,            //资源类型
             },
-            loading: false
+            loading: false,
+            dragOption: {
+                fallbackOnBody: false,
+                sort: false,
+                scrollSpeed: 20
+            },
         }
     },
     mounted() {
@@ -133,25 +146,6 @@ export default {
             })
         },
 
-        // 拖拽开始
-        drag(res, item, index){
-            let data = {
-                ...item,
-                offsetX: res.layerX
-            }
-            this.$store.dispatch('timeline/setDragData', data);
-        },    
-
-        //拖拽结束
-        dragend(){
-            eventBus.$emit('contentDragend');
-        },
-
-        //当拖拽元素进入目标元素时
-        dragEnter(event, data){
-            // console.log(event, data)
-        },
-
         //预览
         handlePreview(data){
             this.previewData = data;
@@ -167,10 +161,16 @@ export default {
             return data.filter(item => {
                 return item.contentType==1
             })
-        }
+        },
+
+        onClone(item){
+            const data = { ...item }
+            return data
+        },
     },
     components: {
-        ContentPreview
+        ContentPreview,
+        Draggable
     }
 }
 </script>
@@ -244,6 +244,8 @@ export default {
                     line-height: 20px;
                     font-size: 12px;
                     padding: 0 3px;
+                    overflow: hidden;
+                    white-space: nowrap;
                 }
             }
         }

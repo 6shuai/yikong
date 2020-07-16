@@ -28,10 +28,12 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "sortablejs": "^1.10.2",
     "vue": "^2.6.11",
     "vue-draggable-resizable-gorkys": "^2.4.0",
     "vue-router": "^2.8.0",
     "vue-template-compiler": "^2.6.11",
+    "vuedraggable": "^2.24.0",
     "vuex": "^3.2.0"
   },
   "devDependencies": {
