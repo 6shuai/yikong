@@ -1,5 +1,5 @@
 <template>
-    <div class="height: 100%">
+    <div class="screen-list-wrap">
         <el-card 
             class="place-list" 
             shadow="always"
@@ -27,7 +27,7 @@
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name" @click="$router.push(`/screen/details/${item.id}`)">{{item.displayName}}</span>
+                    <span class="name" @click="$router.push(`/screen/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
                 </div>
                 <div class="specification">
                     <ul>
@@ -67,26 +67,28 @@ export default {
 }
 </script>
 <style lang="scss">
-    .specification{
-        overflow: hidden;
-        margin-top: 5px;
-        li{
-            float: left;
-            margin-right: 15px;
-            font-size: 13px;
-            color: #666;
+    .screen-list-wrap{
+        .specification{
+            overflow: hidden;
+            margin-top: 8px;
+            li{
+                float: left;
+                margin-right: 15px;
+                font-size: 12px;
+                color: #666;
+            }
         }
-    }
-    .place-img{
-        .status{
-            position: absolute;
-            top: 0;
-            left: 0;
-            border-radius: 0;
-            border-bottom-right-radius: 6px;
-            &.ing{
-                background-color: #adadad;
-                border-color: #adadad;
+        .place-img{
+            .status{
+                position: absolute;
+                top: 0;
+                left: 0;
+                border-radius: 0;
+                border-bottom-right-radius: 6px;
+                &.ing{
+                    background-color: #adadad;
+                    border-color: #adadad;
+                }
             }
         }
     }

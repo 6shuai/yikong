@@ -25,6 +25,21 @@
                 placeholder="资源名称" size="small"
                 @input="init"
             ></el-input>
+            <el-select 
+                v-model="params.contentOwner" 
+                size="small" 
+                clearable 
+                filterable 
+                @change="init" 
+                placeholder="请选择品牌"
+            >
+                <el-option 
+                    v-for="item in groupData" 
+                    :key="item.id"
+                    :label="item.displayName" 
+                    :value="item.id">
+                </el-option>
+            </el-select>
         </div>
 
         <!-- 资源列表 -->
@@ -49,10 +64,10 @@
 </template>
 <script>
 import { contentList } from '@/api/content';
-import { screenSizeWatch } from '@/mixins';
+import { screenSizeWatch, getOrganizationList } from '@/mixins';
 import ContentList from '@/views/content/components/ContentList';
 export default {
-    mixins: [screenSizeWatch],
+    mixins: [screenSizeWatch, getOrganizationList],
     data(){
         return {
             sort: 1,

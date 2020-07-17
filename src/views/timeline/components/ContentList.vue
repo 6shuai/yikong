@@ -14,6 +14,21 @@
                     v-model="params.keyword"
                     @input="filtration"
                 ></el-input>
+                <el-select 
+                    v-model="contentOwner" 
+                    size="small" 
+                    clearable 
+                    filterable 
+                    @change="init" 
+                    placeholder="请选择品牌"
+                >
+                    <el-option 
+                        v-for="item in groupData" 
+                        :key="item.id"
+                        :label="item.displayName" 
+                        :value="item.id">
+                    </el-option>
+                </el-select>
             </div>
             <div v-if="contentData.length">
                 
@@ -92,8 +107,10 @@
 <script>
 import { timelineContentList, timelineAtlasContentList } from '@/api/timeline';
 import ContentPreview from '@/views/content/components/ContentPreview';
+import { getOrganizationList } from '@/mixins';
 import Draggable from "vuedraggable";
 export default {
+    mixins: [getOrganizationList],
     data(){
         return {
             resData: [],
@@ -103,6 +120,7 @@ export default {
             params: {
                 radio: 1,            //资源类型
             },
+            contentOwner: null,      //品牌id  筛选
             loading: false,
             dragOption: {
                 fallbackOnBody: false,
@@ -117,7 +135,10 @@ export default {
     methods: {
         init(){
             this.loading = true;
-            timelineContentList().then(res => {
+            let data = {
+                contentOwner: this.contentOwner
+            }
+            timelineContentList(data).then(res => {
                 this.loading = false;
                 if(res.code === this.$successCode){
                     this.resData = res.obj;
@@ -139,7 +160,10 @@ export default {
 
         //获取所有图集资源
         atlasContentList(){
-            timelineAtlasContentList().then(res => {
+            let data = {
+                contentOwner: this.contentOwner
+            }
+            timelineAtlasContentList(data).then(res => {
                 if(res.code === this.$successCode){
                     this.contentData = res.obj;
                 }
@@ -179,8 +203,8 @@ export default {
         margin-left: -10px;
         height: 100%;
         .search-wrap{
-            .el-input{
-                width: 300px;
+            .el-input,.el-select{
+                width: 200px;
             }
         }
         .content-list{
@@ -199,6 +223,9 @@ export default {
                 width: 100%;
                 height: 100%;
                 z-index: 10;
+            }
+            .el-image{
+                height: 60px;
             }
             img{
                 width: 100px;

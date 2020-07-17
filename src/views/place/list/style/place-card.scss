@@ -27,7 +27,6 @@
                 position: relative;
                 .name{
                     cursor: pointer;
-                    text-overflow: ellipsis;
                     white-space: nowrap;
                     width: calc(100% - 90px);
                     overflow: hidden;
@@ -37,16 +36,6 @@
                     &:hover{
                         color: #409EFF;
                     }
-
-                    &.content-name{
-                        &:hover{
-                            width: 100%;
-                            + .brand {
-                                display: none;
-                            }
-                        }
-                    }
-
                 }
                 .place-type{
                     float: right;

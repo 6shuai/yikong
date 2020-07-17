@@ -14,8 +14,24 @@
                 clearable
                 v-model="params.name" 
                 placeholder="资源名称" size="small"
-                @input="params.pageNo=1;init()"
+                @input="search"
             ></el-input>
+
+            <el-select 
+                v-model="params.owner" 
+                size="small" 
+                clearable 
+                filterable 
+                @change="search" 
+                placeholder="请选择品牌"
+            >
+                <el-option 
+                    v-for="item in groupData" 
+                    :key="item.id"
+                    :label="item.displayName" 
+                    :value="item.id">
+                </el-option>
+            </el-select>
         </div>
 
         <!-- 资源列表 -->
@@ -50,10 +66,10 @@
 </template>
 <script>
 import { timelineContainerList } from '@/api/timeline';
-import { screenSizeWatch } from '@/mixins';
+import { screenSizeWatch, getOrganizationList } from '@/mixins';
 import TimelineList from '@/views/timeline/components/TimelineList';
 export default {
-    mixins: [screenSizeWatch],
+    mixins: [screenSizeWatch, getOrganizationList],
     data(){
         return {
             dataLoading: false,
@@ -68,6 +84,7 @@ export default {
     mounted() {
         if(this.$route.query.pageNo){
             this.params = JSON.parse(JSON.stringify(this.$route.query));
+            if(this.params.owner) this.params.owner = Number(this.params.owner);
         }
         this.init();
     },
@@ -98,6 +115,12 @@ export default {
         handleSizeChange(num){
             this.params.pageSize = num;
             this.init();
+        },
+
+        //搜索 筛选
+        search(){
+            this.params.pageNo = 1;
+            this.init()
         }
     },
     components: {

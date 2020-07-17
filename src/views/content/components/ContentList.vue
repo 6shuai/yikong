@@ -39,26 +39,39 @@
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name content-name" @click="$router.push(`/content/details/${item.id}`)" :title="item.displayName">{{item.displayName}}</span>
-                    <span class="brand overflow" :title="item.contentOwnerName"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.contentOwnerName}}</span>
+                    <span class="content-name" @click="$router.push(`/content/details/${item.id}`)" :title="item.displayName">({{item.id}}){{item.displayName}}</span>
                 </div>
-                <div class="bottom">
-                    <ul class="bottom-size overflow clearfix">
-                        <li title="分辨率" v-if="item.width && item.height">
-                            <font-awesome-icon :icon="['far', 'window-maximize']" />
-                            <span>{{item.width}} x {{item.height}}</span>&nbsp;
-                            <span>{{item.aspectRatioWidth}} : {{item.aspectRatioHeight}}</span>
-                        </li>
+
+                <div class="specification">
+                    <ul>
                         <li title="大小" v-if="item.size">
                             <font-awesome-icon :icon="['fas', 'download']" />
                             <span>{{(item.size / 1024 / 1024).toFixed(2)}}MB</span>
                         </li>
-                        <li title="时长" v-if="item.duration">
-                            <font-awesome-icon :icon="['far', 'clock']" />
-                            <span>{{item.duration}}s</span>
+                        <li class="adress" title="分辨率" v-if="item.width && item.height">
+                            <font-awesome-icon :icon="['far', 'window-maximize']" />
+                            <span>{{item.width}} x {{item.height}}</span>&nbsp;
+                            <span>{{item.aspectRatioWidth}} : {{item.aspectRatioHeight}}</span>
                         </li>
                     </ul>
                 </div>
+                <div class="bottom clearfix">
+                    <ul class="duration">
+                        <li title="时长">
+                            <font-awesome-icon :icon="['far', 'clock']" />
+                            <span>{{item.duration}}s</span>
+                        </li>
+                        <li title="播放次数">
+                            <font-awesome-icon :icon="['fas', 'play']" />
+                            <span> {{item.currentTimes}}</span>
+                        </li>
+                    </ul>
+                    <div class="place-logo">
+                        <span :title="item.contentOwnerName"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.contentOwnerName}}</span>
+                    </div>
+                    
+                </div>
+
             </div>                    
         </el-card>
 
@@ -114,25 +127,45 @@ export default {
                 display: block;
             }
         }
-        .brand{
+        .place-title .content-name{
+            cursor: pointer;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
             display: inline-block;
-            width: 86px;
-            line-height: 20px;
-            text-align: right;
-            vertical-align: bottom;
-            font-size: 12px;
-            color: #888;
-            svg{
-                margin-right: 5px;
+            margin: 0;
+            font-size: 16px;
+            &:hover{
+                color: #409EFF;
             }
         }
-        .bottom-size{
-            margin-left: -10px;
+
+        .specification{
+            overflow: hidden;
+            margin-top: 8px;
+            height: 15px;
             li{
                 float: left;
-                margin-left: 10px;
+                margin-right: 15px;
+                font-size: 12px;
+                color: #666;
             }
         }
+
+        .bottom {
+            padding-top: 8px;
+            .duration{
+                display: inline-block;
+                width: calc(100% - 110px);
+                li{
+                    float: left;
+                    &:first-child{
+                        margin-right: 15px;
+                    }
+                }
+            }
+        }
+
         .resource-type{
             position: absolute;
             top: 0;

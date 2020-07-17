@@ -33,7 +33,7 @@
                             </div>
                             <div style="padding: 14px;">
                                 <div class="place-title">
-                                    <span class="name" @click="$router.push(`/place/details/${item.id}`)">{{item.displayName}}</span>
+                                    <span class="name" @click="$router.push(`/place/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
                                     <span class="place-type">
                                         <el-tag
                                             size="mini"

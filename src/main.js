@@ -18,7 +18,7 @@ import '@/permission' // permission control
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { 
     faCamera, faLocationArrow, faDownload, faExternalLinkAlt, faTrashAlt, faCaretDown, faMobileAlt, faFilm, faGamepad,
-    faMapMarkerAlt
+    faMapMarkerAlt, faPlay
 } from '@fortawesome/free-solid-svg-icons'
 import { faWeixin } from "@fortawesome/free-brands-svg-icons"
 import { faBuilding, faWindowMaximize, faClock, faImage } from '@fortawesome/free-regular-svg-icons'
@@ -27,7 +27,7 @@ import VueDND from 'awe-dnd'
 
 library.add(
   faBuilding, faCamera, faLocationArrow, faWindowMaximize, faDownload, faExternalLinkAlt, faTrashAlt, faCaretDown, faImage, 
-  faWeixin, faMobileAlt, faClock, faFilm, faGamepad, faMapMarkerAlt
+  faWeixin, faMobileAlt, faClock, faFilm, faGamepad, faMapMarkerAlt, faPlay
 )
  
 // <font-awesome-icon :icon="['fas', 'download']" />

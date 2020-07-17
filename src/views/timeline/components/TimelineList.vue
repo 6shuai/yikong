@@ -12,7 +12,7 @@
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name" @click="$router.push(`/timeline/details/${item.id}`)">{{item.displayName}}</span>
+                    <span class="name" @click="$router.push(`/timeline/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
                 </div>
             </div>                    
         </el-card>
