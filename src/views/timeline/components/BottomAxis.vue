@@ -396,11 +396,18 @@ export default {
                     this.$message.success('删除成功~');
                     if(Pindex){
                         this.rectangleData[Pindex].splice(index, 1);
+                        if(!this.rectangleData[Pindex].length){
+                            this.rectangleData[Pindex] = [];
+                        }
                         this.$nextTick(() => {
                             this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
                         })
                     }else{
+                        this.screenLayout
                         this.rectangleData = [];
+                        for(let i = 0;i < this.screenLayout.length; i++){
+                            this.rectangleData.push([]);
+                        }
                     }
                 }
             })
