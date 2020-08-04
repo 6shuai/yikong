@@ -74,6 +74,9 @@
                             <el-form-item label="所属场所">
                                 <el-link type="primary" @click="$router.push(`/place/details/${resData.placeId}`)"><i class="el-icon-link"></i>{{resData.placeName}}</el-link>
                             </el-form-item>
+                            <el-form-item label="时间轴">
+                                <el-link type="primary" v-if="resData.timelineContainer" @click="$router.push(`/timeline/details/${resData.timelineContainer.id}`)"><i class="el-icon-link"></i>{{resData.timelineContainer.displayName}}</el-link>
+                            </el-form-item>
                             <el-form-item label="描述">
                                 <span>{{resData.description}}</span>
                             </el-form-item>
