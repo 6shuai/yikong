@@ -122,9 +122,8 @@ export default {
             timelineContainerDetail(this.$route.params.id).then(res => {
                 this.loading = false;
                 this.resData = res.obj;
-                var i = res.obj.beginTimeFormat.lastIndexOf(":");
-                let sTime = res.obj.beginTimeFormat.substring(0, i).split('1970-01-01 ')[1];
-                let eTime = res.obj.endTimeFormat.substring(0, i).split('1970-01-01 ')[1];
+                let sTime = res.obj.beginTimeFormat.split('1970-01-01 ')[1];
+                let eTime = res.obj.endTimeFormat.split('1970-01-01 ')[1];
                 this.startTime = sTime;
                 this.endTime = eTime;
             })

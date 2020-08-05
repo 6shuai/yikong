@@ -205,6 +205,7 @@ export default {
         // var beginTime="08:31:00";
         // var endTime="21:50:00";
         timeDifference(beginTime, endTime){ 
+            if(!beginTime) return;
             var start1 = beginTime.split(":");
             var startAll = parseInt(start1[0]*60) + parseInt(start1[1]);
             
@@ -297,7 +298,6 @@ export default {
             let nextStarTime = index === obj.length - 1 ? ' ' : obj[index+1].beginTime;
             //上一个资源的结束时间
             let prevEndTime = index==0 ? ' ' : this.findEndTime(obj[index-1].beginTime, obj[index-1].duration);
-
             if((nextStarTime && this.timeDifference(newEndTime, nextStarTime) < 0) || (prevEndTime && this.timeDifference(prevEndTime, newStarTime) < 0)){
                 handle = false;
                 this.$message.warning('资源时间不允许重叠(..•˘_˘•..)')
@@ -389,25 +389,24 @@ export default {
         },
 
         //删除时间轴 资源 接口
-        deleteTimelineContent(data, Pindex, index){
+        deleteTimelineContent(data, Pindex, index, type){
             timelineDelete(data).then(res => {
                 this.emptypLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('删除成功~');
-                    if(Pindex){
+                    if(type=="empty"){
+                        this.rectangleData = [];
+                        for(let i = 0;i < this.screenLayout.length; i++){
+                            this.rectangleData.push([]);
+                        }
+                    }else{
                         this.rectangleData[Pindex].splice(index, 1);
                         if(!this.rectangleData[Pindex].length){
                             this.rectangleData[Pindex] = [];
                         }
                         this.$nextTick(() => {
                             this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
-                        })
-                    }else{
-                        this.screenLayout
-                        this.rectangleData = [];
-                        for(let i = 0;i < this.screenLayout.length; i++){
-                            this.rectangleData.push([]);
-                        }
+                        }) 
                     }
                 }
             })
@@ -508,7 +507,7 @@ export default {
             }).then(() => {
                 let ids = this.timelineIds.join(',');
                 this.emptypLoading = true;
-                this.deleteTimelineContent(ids);
+                this.deleteTimelineContent(ids, null, null, 'empty');
             }).catch(() => {})
             
         }
