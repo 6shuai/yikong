@@ -115,8 +115,9 @@ export default {
     mixins: [getOrganizationList],
     data(){
         return {
-            resData: [],
+            resData: [],             //图片 视频资源
             contentData: [],
+            otherData: [],
             dialogVisible: false,    //显示预览弹框
             previewData: {},         //点击资源  预览的数据
             params: {
@@ -171,7 +172,7 @@ export default {
                     return item.contentTypeId == this.params.radio && (this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true)
                 })
             }else{
-                this.contentData = this.contentData.filter(item => {
+                this.contentData = this.otherData.filter(item => {
                     return this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true
                 })
             }
@@ -186,7 +187,8 @@ export default {
             timelineAtlasContentList(data).then(res => {
                 this.loading = false;
                 if(res.code === this.$successCode){
-                    this.contentData = res.obj;
+                    this.otherData = res.obj;
+                    this.filtration();
                 }
             })
         },
@@ -197,7 +199,8 @@ export default {
             timelineGameList().then(res => {
                 this.loading = false;
                 if(res.code === this.$successCode){
-                    this.contentData = res.obj;
+                    this.otherData = res.obj;
+                    this.filtration();
                 }
             })
         },
