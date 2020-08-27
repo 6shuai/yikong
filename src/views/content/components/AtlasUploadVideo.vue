@@ -13,11 +13,12 @@
 
 <script>
 import { getUploadImgInfo } from '@/mixins/index';
+import { uploadUrl } from '@/utils';
 export default {
     mixins: [getUploadImgInfo],
     data(){
         return {
-            action: '/common/upload/',
+            action: uploadUrl,
             uploadLoading: false,
             fileInfo: {},
             uploadData: {                    //上传时附带的额外参数

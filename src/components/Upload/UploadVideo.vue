@@ -35,11 +35,12 @@
     </div>
 </template>
 <script>
+import { uploadUrl } from '@/utils';
 export default {
     props: ['url'],
     data(){
         return{
-            action: '/common/upload/',
+            action: uploadUrl,
             uploadData: {                    //上传时附带的额外参数
                 fileType: 'video'
             },

@@ -32,7 +32,7 @@
                             
                             </div>
                             <div style="padding: 14px;">
-                                <div class="place-title">
+                                <div class="place-title" :title="item.displayName">
                                     <span class="name" @click="$router.push(`/place/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
                                     <span class="place-type">
                                         <el-tag

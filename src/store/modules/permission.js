@@ -12,6 +12,8 @@ const moduleMap = {
 
 	'Content': 'content/index',                           //内容管理  
 
+	'Games': 'games/index',                               //游戏管理
+
 	'Timeline': 'timeline/index',                         //时间轴  
 	
 	'Authority': 'system/authority/index',                //权限管理

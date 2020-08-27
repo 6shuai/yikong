@@ -18,6 +18,8 @@ export function timelineContentList(data) { return get('/timeline/content', data
 //时间轴 详情页 - 资源选择 - 获取所有图集资源
 export function timelineAtlasContentList(data) { return get('/timeline/atlasContent', data) }
 
+//时间轴 详情页 - 资源选择 - 获取所有游戏 列表
+export function timelineGameList(data) { return get('/timeline/applicationContent', data) }
 
 //时间轴 详情页 - 投放屏幕 - 获取所有的屏幕列表
 export function timelineScreenList(data) { return get('/timeline/screen', data) }
@@ -55,3 +57,8 @@ export function pubToScreen(data) { return get(`/timeline/sendTimelineDataToScre
 
 //时间轴 复制时间轴  导入时间轴
 export function copyTimelineContainer(data) { return post(`/timeline/copyTimelineContainer${data}`) }
+
+
+//保存游戏配置
+export function timelineSaveGameConfig(data) { return post('/timeline/assembly', data) }
+

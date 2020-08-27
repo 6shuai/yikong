@@ -27,7 +27,7 @@
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name" @click="$router.push(`/screen/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
+                    <span class="name full" @click="$router.push(`/screen/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
                 </div>
                 <div class="specification">
                     <ul>
@@ -91,5 +91,6 @@ export default {
                 }
             }
         }
+
     }
 </style>

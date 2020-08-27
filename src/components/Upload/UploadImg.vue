@@ -38,6 +38,7 @@
                                 <i class="el-icon-zoom-in"></i>
                             </span>
                             <span
+                                v-if="showCover"
                                 title="设为列表封面图"
                                 class="el-upload-list__item-delete"
                                 @click="setCover(file, index)"
@@ -70,8 +71,7 @@
                         :on-error="uploadError"
                         list-type="picture-card">
                         <div slot="default">
-                            <i class=""></i>
-                            <span>上传图片</span>
+                            <i class="el-icon-plus avatar-uploader-icon"></i>
                         </div>
                     </el-upload>
                 </li>
@@ -85,6 +85,7 @@
 </template>
 <script>
 import { getUploadImgInfo } from '@/mixins/index';
+import { uploadUrl } from '@/utils';
 export default {
     // 是否多图，  图片列表  ,   是否显示设置默认图 ,  是否需要图片信息 宽高 大小
     props: ['isArray', 'imgList', 'showCover', 'haveImgInfo'],
@@ -94,7 +95,7 @@ export default {
             dialogVisible: false,            //大图 modal
             dialogImageUrl: '',              //大图url
             fileList: undefined,
-            action: '/common/upload/',
+            action: uploadUrl,
             uploadLoading: false,
             uploadData: {                    //上传时附带的额外参数
                 fileType: 'picture'
@@ -191,7 +192,7 @@ export default {
             if(this.imgList && this.imgList instanceof Array){
                 let s = JSON.parse(JSON.stringify(this.imgList));
                 s.forEach(item => {
-                    item.url = item.uri;
+                    item.url = item.uri || item.url;
                     delete item.uri;
                 })
                 this.fileList = s;

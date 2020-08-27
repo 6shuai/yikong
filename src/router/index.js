@@ -213,13 +213,55 @@ export const constantRoutes = [
     hidden: true
   },
 
-   //时间轴  详情
-   {
+  //时间轴  详情
+  {
       path: '/timeline/details/:id',
       name: 'Timeline--details',
       component: () => import('@/views/timeline/timelineDetails'),
       meta: { title: '时间轴详情' },
       hidden: true
+  },
+
+  //游戏管理  创建
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '游戏管理' },
+    children: [{
+      path: '/games/add',
+      name: 'games--add',
+      component: () => import('@/views/games/gameAdd'),
+      meta: { title: '创建游戏' },
+    }],
+    hidden: true
+  },
+
+  //游戏管理  编辑
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '游戏管理' },
+    children: [{
+      path: '/games/edit/:id',
+      name: 'games--edit',
+      component: () => import('@/views/games/gameAdd'),
+      meta: { title: '编辑游戏' },
+    }],
+    hidden: true
+  },
+
+  //游戏管理  详情
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '游戏管理' },
+    children: [{
+      path: '/games/details/:id',
+      name: 'games--details',
+      component: () => import('@/views/games/gamesDetails'),
+      meta: { title: '游戏信息' },
+    }],
+    hidden: true
   },
   
 ]

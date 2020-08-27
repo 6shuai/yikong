@@ -105,3 +105,10 @@ export function param2Obj(url) {
       '"}'
   )
 }
+
+
+//上传路径
+export const uploadUrl = '/common/upload/';
+
+//上传游戏包路径 
+export const uploadGamePackage = '/common/uploadApplicationPackage';

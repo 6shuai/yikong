@@ -2,10 +2,11 @@
     <div class="content-wrap clearfix">
         <el-scrollbar style="height:100%" v-loading="loading">
             <div class="search-wrap mb10 ml10">
-                <el-radio-group size="small" @change="filtration" v-model="params.radio">
+                <el-radio-group size="small" @change="handleClickTab" v-model="params.radio">
                     <el-radio-button :label="1">图片</el-radio-button>
                     <el-radio-button :label="2">视频</el-radio-button>
                     <el-radio-button :label="4">图集</el-radio-button>
+                    <el-radio-button :label="3">游戏</el-radio-button>
                 </el-radio-group>
                 <el-input 
                     clearable
@@ -15,6 +16,7 @@
                     @input="filtration"
                 ></el-input>
                 <el-select 
+                    v-if="params.radio!=3"
                     v-model="contentOwner" 
                     size="small" 
                     clearable 
@@ -105,7 +107,7 @@
     </div>
 </template>
 <script>
-import { timelineContentList, timelineAtlasContentList } from '@/api/timeline';
+import { timelineContentList, timelineAtlasContentList, timelineGameList } from '@/api/timeline';
 import ContentPreview from '@/views/content/components/ContentPreview';
 import { getOrganizationList } from '@/mixins';
 import Draggable from "vuedraggable";
@@ -147,15 +149,32 @@ export default {
             })
         },
 
+        //选择资源类型
+        handleClickTab(){
+            switch (this.params.radio) {
+                case 3:
+                    this.gameList();
+                    break;
+                case 4:
+                    this.atlasContentList();
+                    break;
+                default:
+                    this.filtration();
+                    break;
+            }
+        },
+
         //筛选
         filtration(){
-            if(this.params.radio === 4){
-                this.atlasContentList();
-                return
+            if(this.params.radio === 1 || this.params.radio === 2){
+                this.contentData = this.resData.filter(item => {
+                    return item.contentTypeId == this.params.radio && (this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true)
+                })
+            }else{
+                this.contentData = this.contentData.filter(item => {
+                    return this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true
+                })
             }
-            this.contentData = this.resData.filter(item => {
-                return item.contentTypeId == this.params.radio && (this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true)
-            })
         },
 
         //获取所有图集资源
@@ -163,7 +182,20 @@ export default {
             let data = {
                 contentOwner: this.contentOwner
             }
+            this.loading = true;
             timelineAtlasContentList(data).then(res => {
+                this.loading = false;
+                if(res.code === this.$successCode){
+                    this.contentData = res.obj;
+                }
+            })
+        },
+
+        //获取所有游戏列表
+        gameList(){
+            this.loading = true;
+            timelineGameList().then(res => {
+                this.loading = false;
                 if(res.code === this.$successCode){
                     this.contentData = res.obj;
                 }

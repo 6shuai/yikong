@@ -63,7 +63,7 @@
                                 :key="index"
                                 :title="`【${item.displayName}】`"
                                 class="rectangle"
-                                :class="item.contentTypeId==1 ? 'image' : (item.contentTypeId == 2 ? 'video' : 'game')"
+                                :class="item.contentTypeId==contentTypeId.image ? 'image' : (item.contentTypeId == contentTypeId.video ? 'video' : 'game')"
                             >
                                 <el-popover
                                     popper-class="screen-tool-popover"
@@ -72,18 +72,19 @@
                                     <div class="content-tool">
                                         <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                         <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
+                                        <div @click="gameSetting(item)" v-if="item.logicRegion && item.contentTypeId==3">游戏设置</div>
                                         <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                     </div>
 
                                     <div class="content" slot="reference" @click="selectedCurrentTimeline(item, Pindex)">
-                                        <div class="image-wrap" v-if="item.contentTypeId != 4">
+                                        <div class="image-wrap" v-if="item.contentTypeId != contentTypeId.atlas">
                                             <el-image :src="item.image" fit="cover"></el-image>
                                         </div>
                                         <!-- 图集 -->
                                         <div 
                                             class="image-wrap atlas" 
                                             :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`"
-                                            v-if="item.contentTypeId == 4">
+                                            v-if="item.contentTypeId == contentTypeId.atlas">
                                             <el-image 
                                                 v-for="img in item.subContentsData" 
                                                 v-if="img.contentType==1" 
@@ -99,7 +100,7 @@
                                         </div>
 
                                         <!-- 在这个时间段播放了多少次 -->
-                                        <div class="play-count" v-if="item.contentTypeId == 2 || item.contentTypeId == 4">
+                                        <div class="play-count" v-if="item.contentTypeId == contentTypeId.video || item.contentTypeId == contentTypeId.atlas">
                                             x{{Math.ceil(timeDifference(item.beginTime, item.endTime) / item.contentDuration)}}
                                         </div>
                                     </div>
@@ -150,6 +151,9 @@
             </span>
         </el-dialog>
 
+        <!-- 游戏设置 -->
+        <game-setting ref="gameSetting"></game-setting>
+
     </el-scrollbar>
 </template>
 
@@ -157,6 +161,8 @@
 import Draggable from "vuedraggable";
 import { mapState } from 'vuex';
 import { timelineCreated, timelineList, timelineDelete, pubToScreen } from '@/api/timeline';
+import GameSetting from './GameSetting';
+
 export default {
     props: ['startTime', 'endTime'],
     data(){
@@ -171,6 +177,12 @@ export default {
             emptypLoading: false,              //清空时间轴按钮loading
             showEditTime: false,               //显示内容编辑时段
             editTime: {},                      //编辑内容时段 参数
+            contentTypeId: {
+                image: 1,
+                video: 2,
+                game: 3,
+                atlas: 4
+            },
             sortOption: {
                 fallbackOnBody: false,
                 filter: '.rectangle',
@@ -327,6 +339,8 @@ export default {
                     this.$message.success('保存成功~');
                     this.$nextTick(() => {
                         this.rectangleData = [];
+
+                        //保存成功要 刷新一下时间轴。  （刚放置到时间轴的资源是没有时间轴id的）。
                         this.initTimelineList();
                     })
                 }
@@ -474,6 +488,11 @@ export default {
                 delete this.editTime.type;
                 this.showEditTime = false;
                 this.$set(this.rectangleData[data.Pindex], data.index, obj);
+
+                //游戏放置到时间轴后 立即保存
+                if(obj.contentTypeId === this.contentTypeId.game){
+                    this.saveTimeline();
+                }
             }
         },
 
@@ -510,11 +529,21 @@ export default {
                 this.deleteTimelineContent(ids, null, null, 'empty');
             }).catch(() => {})
             
-        }
+        },
+
+        //显示游戏设置
+        gameSetting(data){
+            let obj = {
+                configList: data.configList,
+                timelineId: data.id
+            }
+            this.$refs.gameSetting.showGameSetting(obj);
+        },
         
     },
     components: {
-        Draggable
+        Draggable,
+        GameSetting
     },
     beforeDestroy () {
         eventBus.$off('setScreenLayoutData');

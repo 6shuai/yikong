@@ -1,0 +1,102 @@
+<template>
+    <div class="app-main-wrap games-list-wrap" id="app-main-wrap">
+        <div class="content-top mb20">
+            <el-button 
+                class="created-btn"
+                type="primary" 
+                icon="el-icon-plus" 
+                @click="$router.push('/games/add')"
+                size="small">
+                创建游戏
+            </el-button>
+        </div>
+
+        <!-- 游戏列表 -->
+        <div v-if="!dataLoading && !resData.length" style="margin: 20px;text-align:center">
+            暂无数据~
+        </div>
+        <div v-else class="place-content" v-loading="dataLoading">
+            <div class="place-box">
+                <div class="place-p" 
+                    :style="{width: placeW}" 
+                    v-for="(item, index) in resData" 
+                    :key="index">
+                    <game-list 
+                        :item="item" 
+                        :index="index" 
+                        :imageH="imageH"
+                    ></game-list>
+                </div>
+            </div>
+        </div>
+
+        <el-pagination
+            v-if="resData.length"
+            background
+            layout="total, prev, pager, next, sizes"
+            :page-sizes="[48, 80, 100]"
+            :current-page="Number(params.pageNo)"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :total="totalCount">
+        </el-pagination>
+
+    </div>
+</template>
+<script>
+import { gameList } from '@/api/game';
+import { screenSizeWatch } from '@/mixins';
+import GameList from '@/views/games/components/GameList';
+export default {
+    mixins: [screenSizeWatch],
+    data(){
+        return {
+            dataLoading: false,
+            params: {
+                pageNo: 1,
+                pageSize: 48
+            },
+            totalCount: 0,
+            resData: []
+        }
+    },
+    mounted() {
+        this.init();
+    },
+    methods: {
+        init(){
+            this.dataLoading = false;
+            gameList(this.params).then(res => {
+                this.dataLoading = false;
+                if(res.code === this.$successCode){
+                    this.resData = res.obj.list;
+                    this.totalCount = res.obj.totalRecords;
+                }
+            })
+        },
+
+        //分页
+        handleCurrentChange(page){
+            this.params.pageNo = page;
+            this.init();
+        },
+
+        //每页多少条
+        handleSizeChange(size){
+            this.params.pageSize = size;
+            this.init();
+        },
+
+    },
+    components: {
+        GameList
+    }
+}
+</script>
+<style lang="scss" scope>
+    .games-list-wrap{
+        .place-content{
+            min-height: 100px;
+        }
+    }
+</style>
