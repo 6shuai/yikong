@@ -204,6 +204,7 @@ export default {
 
         //预览
         handlePreview(data){
+            if(data.contentTypeId == 3) return;
             this.previewData = data;
             let msg = this.previewData.contentTypeId == 4 ? this.previewData.subContentsData : this.previewData;
             this.dialogVisible = true;
