@@ -3,7 +3,7 @@
         <el-card class="template-card" shadow="never">
             <div slot="header" class="clearfix">
                 <span>成员管理</span>
-                <div class="card-header-right" v-if="groupData.id">
+                <div class="card-header-right" v-if="groupData && groupData.id">
                     <span>【{{groupData.displayName}}】</span>
                     <!-- 只有创建者才能解散 -->
                     <el-link type="danger" @click="deleteGroup" v-if="isCreator">解散品牌组织</el-link>
@@ -255,6 +255,8 @@ export default {
             organizationSearchId(Number(this.$store.state.user.loginData.id)).then(res => {
                 this.pageLoad = true;
                 if(!res.obj && typeof(res.obj)!='undefined' && res.obj!=0){
+                    this.groupData = {};
+                }else if(!res.obj){
                     this.groupData = {};
                 }else{
                     this.groupData = res.obj;
