@@ -77,6 +77,7 @@
                                     </div>
 
                                     <div class="content" slot="reference" @click="selectedCurrentTimeline(item, Pindex)">
+                                        <div class="no-setting-game" v-if="noSettingGame.includes(item.id)">未配置游戏</div>
                                         <div class="image-wrap" v-if="item.contentTypeId != contentTypeId.atlas">
                                             <el-image :src="item.image" fit="cover"></el-image>
                                         </div>
@@ -152,7 +153,10 @@
         </el-dialog>
 
         <!-- 游戏设置 -->
-        <game-setting ref="gameSetting"></game-setting>
+        <game-setting 
+            @gameSettingSuccess="gameSettingSuccess"
+            ref="gameSetting"
+        ></game-setting>
 
     </el-scrollbar>
 </template>
@@ -177,6 +181,7 @@ export default {
             emptypLoading: false,              //清空时间轴按钮loading
             showEditTime: false,               //显示内容编辑时段
             editTime: {},                      //编辑内容时段 参数
+            noSettingGame: [],                 //时间轴内的游戏 没有配置。时间轴id数组
             contentTypeId: {
                 image: 1,
                 video: 2,
@@ -513,6 +518,8 @@ export default {
                 this.pubLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success(res.message);
+                }else if(res.obj){
+                    this.noSettingGame = res.obj;
                 }
             })
         },
@@ -539,6 +546,12 @@ export default {
             }
             this.$refs.gameSetting.showGameSetting(obj);
         },
+
+        //游戏配置成功
+        gameSettingSuccess(id){
+            let index = this.noSettingGame.indexOf(id);
+            this.noSettingGame.splice(index, 1);
+        }
         
     },
     components: {

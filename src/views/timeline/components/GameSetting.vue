@@ -105,11 +105,20 @@ export default {
         //保存游戏配置
         handleSaveConfig(){
             this.saveLoading = true;
+            if(!this.params.packageId){
+                this.$message.warning('请选择游戏包版本~');
+                return
+            }
+            if(!this.params.configId){
+                this.$message.warning('请选择游戏配置~');
+                return
+            }
             timelineSaveGameConfig(this.params).then(res => {
                 this.saveLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('操作成功~');
                     this.gameSettingDialog = false;
+                    this.$emit('gameSettingSuccess', this.params.timelineId);
                 }
             })
         }
