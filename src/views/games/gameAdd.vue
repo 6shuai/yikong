@@ -40,6 +40,9 @@
                     <el-form-item label="游戏配置">
                         <el-input v-model="gameParams.configList" placeholder="游戏配置url"></el-input>
                     </el-form-item>
+                    <el-form-item label="游戏配置保存地址">
+                        <el-input v-model="gameParams.gameTimeline" placeholder="游戏配置保存地址"></el-input>
+                    </el-form-item>
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="gameSureBtn">提  交</el-button>
                     </el-form-item>
