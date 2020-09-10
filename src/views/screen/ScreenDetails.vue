@@ -27,14 +27,14 @@
                     </div>
                     <ul class="tool-wrap clearfix">
                         <li><el-button type="primary" icon="el-icon-refresh" size="small" :disabled="resData.state !== 1" :loading="screenshotLoading" @click="updateImg">更新截图</el-button></li>
-                        <li>音量:<el-input-number size="small" v-model="volume" controls-position="right" :min="0" :max="100"></el-input-number></li>
+                        <li>音量:<el-input-number size="small" v-model="resData.volume" controls-position="right" :min="0" :max="100"></el-input-number></li>
                         <li><el-button type="primary" icon="el-icon-finished" size="small" :disabled="resData.state !== 1" :loading="setVolumeLoading" @click="setVolume">提交</el-button></li>
                         <li><el-button type="primary" icon="el-icon-close-notification" size="small" :disabled="resData.state !== 1" :loading="setMuteLoading" @click="setMute">静音</el-button></li>
                         <li><el-button type="primary" icon="el-icon-lock" size="small" :disabled="resData.state !== 1" :loading="bindLoading" @click="macBind">硬件绑定</el-button></li>
                         <li><el-button type="primary" icon="el-icon-unlock" size="small" :disabled="resData.state !== 1" :loading="unboundLoading" @click="macUnbound">解除绑定</el-button></li>
                     </ul>
                 </el-col>
-                <el-col xs="24" :sm="12" :md="8" class="screen-info-right">
+                <el-col :xs="24" :sm="12" :md="8" class="screen-info-right">
                     <el-divider>实景图片<i class="el-icon-caret-bottom"></i></el-divider>
                     <div class="info-item photo">
                         <el-image 
@@ -146,7 +146,6 @@ export default {
             setMuteLoading: false,      //设置静音按钮loading
             bindLoading: false,         //绑定硬件loading
             unboundLoading: false,      //解除绑定loading
-            volume: 50,                 //音量
         }
     },
     mounted() {
@@ -197,7 +196,7 @@ export default {
 
         //设置音量 提交
         setVolume(){
-            let data = `?screenId=${this.resData.id}&value=${this.volume}`;
+            let data = `?screenId=${this.resData.id}&value=${this.resData.volume}`;
             this.setVolumeLoading = true;
             screenSetVolume(data).then(res => {
                 this.setVolumeLoading = false;
