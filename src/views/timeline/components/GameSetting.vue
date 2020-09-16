@@ -70,13 +70,13 @@ export default {
             this.gameSettingDialog = true;
             this.params.timelineId = data.timelineId;
             this.gameConfigData = data.configList;
-            this.gamePackageVersionList();
+            this.gamePackageVersionList(data.applicationId);
         },
 
         //游戏包版本列表
-        gamePackageVersionList(){
+        gamePackageVersionList(applicationId){
             let data = {
-                applicationId: 2,
+                applicationId: applicationId,
                 versionType: 2
             }
             this.dataLoading = true;

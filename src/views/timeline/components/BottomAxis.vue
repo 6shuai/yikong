@@ -542,7 +542,8 @@ export default {
         gameSetting(data){
             let obj = {
                 configList: data.configList,
-                timelineId: data.id
+                timelineId: data.id,
+                applicationId: data.applicationId
             }
             this.$refs.gameSetting.showGameSetting(obj);
         },
