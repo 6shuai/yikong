@@ -109,10 +109,6 @@ export default {
                 this.$message.warning('请选择游戏包版本~');
                 return
             }
-            if(!this.params.configId){
-                this.$message.warning('请选择游戏配置~');
-                return
-            }
             timelineSaveGameConfig(this.params).then(res => {
                 this.saveLoading = false;
                 if(res.code === this.$successCode){
