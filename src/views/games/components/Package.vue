@@ -173,6 +173,7 @@ export default {
 
         //显示上传游戏包 窗口
         showUploadDialog(){
+            this.packageParams = {};
             this.uploadDialog = true;
         },
 

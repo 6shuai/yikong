@@ -1,129 +1,87 @@
 <template>
-    <div class="content-wrap clearfix">
-        <el-scrollbar style="height:100%" v-loading="loading">
-            <div class="search-wrap mb10 ml10">
-                <el-radio-group size="small" @change="handleClickTab" v-model="params.radio">
-                    <el-radio-button :label="1">图片</el-radio-button>
-                    <el-radio-button :label="2">视频</el-radio-button>
-                    <el-radio-button :label="4">图集</el-radio-button>
-                    <el-radio-button :label="3">游戏</el-radio-button>
-                </el-radio-group>
-                <el-input 
-                    clearable
-                    size="small" 
-                    placeholder="资源名称"
-                    v-model="params.keyword"
-                    @input="filtration"
-                ></el-input>
-                <el-select 
-                    v-if="params.radio!=3"
-                    v-model="contentOwner" 
-                    size="small" 
-                    clearable 
-                    filterable 
-                    @change="init" 
-                    placeholder="请选择品牌"
-                >
-                    <el-option 
-                        v-for="item in groupData" 
-                        :key="item.id"
-                        :label="item.displayName" 
-                        :value="item.id">
-                    </el-option>
-                </el-select>
-            </div>
-            <div v-if="contentData.length">
-                
-                <draggable
-                    :options="dragOption" 
-                    :list="contentData"
-                    :clone="onClone"
-                    :group="{ name: 'componentLibrary', pull: 'clone', put: false }"
-                    ghostClass="ghost"
-                    dragClass="drag-module"
-                >
-                    <div
-                        class="box-card content-list" 
-                        ref="contentList"
-                        v-for="(item, index) in contentData" 
-                        :key="item.id"
-                        @click="handlePreview(item)"
-                        :title="item.displayName"
-                    >
-                        <div class="cover"></div>
-                        <div 
-                            v-if="item.subContentsData && item.contentTypeId == 4"
-                            class="atlas"
-                            :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`"
-                        >
-                            <el-image 
-                                fit="cover" 
-                                class="img" 
-                                v-for="(img, index) in filterVideo(item.subContentsData)"
-                                v-if="img.contentType==1 && index <=3"
-                                :key="index"
-                                :src="img.contentPath"
-                            ></el-image>
-                        </div>
-                        <el-image 
-                            v-else
-                            fit="cover" 
-                            class="img" 
-                            :src="item.image"
-                        ></el-image>
-                        <div class="desc">
-                            <p class="title" :title="item.displayName">{{item.displayName}}</p>
-                            <p class="duration" v-if="item.duration"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</p>
-                        </div>
+<div class="content-wrap clearfix">
+    <el-scrollbar style="height:100%" v-loading="loading">
+        <div class="search-wrap mb10 ml10">
+            <el-radio-group size="small" @change="handleClickTab" v-model="params.radio">
+                <el-radio-button :label="1">图片</el-radio-button>
+                <el-radio-button :label="2">视频</el-radio-button>
+                <el-radio-button :label="4">图集</el-radio-button>
+                <el-radio-button :label="3">游戏</el-radio-button>
+            </el-radio-group>
+            <el-input clearable size="small" placeholder="资源名称" v-model="params.keyword" @input="filtration"></el-input>
+            <el-select v-if="params.radio!=3" v-model="contentOwner" size="small" clearable filterable @change="init" placeholder="请选择品牌">
+                <el-option v-for="item in groupData" :key="item.id" :label="item.displayName" :value="item.id">
+                </el-option>
+            </el-select>
+        </div>
+        <div v-if="contentData.length">
+
+            <draggable :options="dragOption" :list="contentData" :clone="onClone" :group="{ name: 'componentLibrary', pull: 'clone', put: false }" ghostClass="ghost" dragClass="drag-module">
+                <div class="box-card content-list" ref="contentList" v-for="(item, index) in contentData" :key="item.id" @click="handlePreview(item)" :title="item.displayName">
+                    <div class="cover"></div>
+                    <div v-if="item.subContentsData && item.contentTypeId == 4" class="atlas" :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`">
+                        <el-image fit="cover" class="img" v-for="(img, index) in filterVideo(item.subContentsData)" v-if="img.contentType==1 && index <=3" :key="index" :src="img.contentPath"></el-image>
                     </div>
-                </draggable>
-
-            </div>
-            <div v-else class="no-data">暂无数据~</div>
-        </el-scrollbar>
-
-        <!-- 预览 -->
-        <el-dialog
-            :title="previewData.displayName"
-            :visible.sync="dialogVisible"
-            width="60%">
-            <div v-if="dialogVisible">
-                <!-- 图片 -->
-                <div class="preview" v-if="previewData.contentTypeId == 1">
-                    <el-image fit="cover" :src="previewData.contentPath"></el-image>
+                    <el-image v-else fit="cover" class="img" :src="item.image"></el-image>
+                    <div class="desc">
+                        <p class="title" :title="item.displayName">{{item.displayName}}</p>
+                        <p class="duration" v-if="item.duration">
+                            <font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒
+                        </p>
+                    </div>
                 </div>
+            </draggable>
 
-                <!-- 视频 -->
-                <div class="preview" v-if="previewData.contentTypeId == 2">
-                    <video :src="previewData.contentPath" controls="controls"></video>
-                </div>
+        </div>
+        <div v-else class="no-data">暂无数据~</div>
+    </el-scrollbar>
 
-                <!-- 图集 -->
-                <content-preview v-if="previewData.contentTypeId == 4" ref="contentPreview"></content-preview>
+    <!-- 预览 -->
+    <el-dialog :title="previewData.displayName" :visible.sync="dialogVisible" width="60%">
+        <div v-if="dialogVisible">
+            <!-- 图片 -->
+            <div class="preview" v-if="previewData.contentTypeId == 1">
+                <el-image fit="cover" :src="previewData.contentPath"></el-image>
             </div>
 
-        </el-dialog>
+            <!-- 视频 -->
+            <div class="preview" v-if="previewData.contentTypeId == 2">
+                <video :src="previewData.contentPath" controls="controls"></video>
+            </div>
 
-    </div>
+            <!-- 图集 -->
+            <content-preview v-if="previewData.contentTypeId == 4" ref="contentPreview"></content-preview>
+        </div>
+
+    </el-dialog>
+
+</div>
 </template>
+
 <script>
-import { timelineContentList, timelineAtlasContentList, timelineGameList } from '@/api/timeline';
+import {
+    timelineContentList,
+    timelineAtlasContentList,
+    timelineGameList
+} from '@/api/timeline';
 import ContentPreview from '@/views/content/components/ContentPreview';
-import { getOrganizationList } from '@/mixins';
+import {
+    getOrganizationList
+} from '@/mixins';
 import Draggable from "vuedraggable";
 export default {
     mixins: [getOrganizationList],
-    data(){
+    data() {
         return {
-            resData: [],             //图片 视频资源
+            resData: [], //图片 视频资源
             contentData: [],
             otherData: [],
-            dialogVisible: false,    //显示预览弹框
-            previewData: {},         //点击资源  预览的数据
+            dialogVisible: false, //显示预览弹框
+            previewData: {}, //点击资源  预览的数据
             params: {
-                radio: 1,            //资源类型
+                radio: 1, //资源类型
             },
-            contentOwner: null,      //品牌id  筛选
+            contentOwner: null, //品牌id  筛选
             loading: false,
             dragOption: {
                 fallbackOnBody: false,
@@ -136,14 +94,14 @@ export default {
         this.init();
     },
     methods: {
-        init(){
+        init() {
             this.loading = true;
             let data = {
                 contentOwner: this.contentOwner
             }
             timelineContentList(data).then(res => {
                 this.loading = false;
-                if(res.code === this.$successCode){
+                if (res.code === this.$successCode) {
                     this.resData = res.obj;
                     this.filtration();
                 }
@@ -151,7 +109,7 @@ export default {
         },
 
         //选择资源类型
-        handleClickTab(){
+        handleClickTab() {
             switch (this.params.radio) {
                 case 3:
                     this.gameList();
@@ -166,12 +124,12 @@ export default {
         },
 
         //筛选
-        filtration(){
-            if(this.params.radio === 1 || this.params.radio === 2){
+        filtration() {
+            if (this.params.radio === 1 || this.params.radio === 2) {
                 this.contentData = this.resData.filter(item => {
                     return item.contentTypeId == this.params.radio && (this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true)
                 })
-            }else{
+            } else {
                 this.contentData = this.otherData.filter(item => {
                     return this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true
                 })
@@ -179,14 +137,14 @@ export default {
         },
 
         //获取所有图集资源
-        atlasContentList(){
+        atlasContentList() {
             let data = {
                 contentOwner: this.contentOwner
             }
             this.loading = true;
             timelineAtlasContentList(data).then(res => {
                 this.loading = false;
-                if(res.code === this.$successCode){
+                if (res.code === this.$successCode) {
                     this.otherData = res.obj;
                     this.filtration();
                 }
@@ -194,11 +152,11 @@ export default {
         },
 
         //获取所有游戏列表
-        gameList(){
+        gameList() {
             this.loading = true;
             timelineGameList().then(res => {
                 this.loading = false;
-                if(res.code === this.$successCode){
+                if (res.code === this.$successCode) {
                     this.otherData = res.obj;
                     this.filtration();
                 }
@@ -206,8 +164,8 @@ export default {
         },
 
         //预览
-        handlePreview(data){
-            if(data.contentTypeId == 3) return;
+        handlePreview(data) {
+            if (data.contentTypeId == 3) return;
             this.previewData = data;
             let msg = this.previewData.contentTypeId == 4 ? this.previewData.subContentsData : this.previewData;
             this.dialogVisible = true;
@@ -217,14 +175,16 @@ export default {
         },
 
         //过滤视频
-        filterVideo(data){
+        filterVideo(data) {
             return data.filter(item => {
-                return item.contentType==1
+                return item.contentType == 1
             })
         },
 
-        onClone(item){
-            const data = { ...item }
+        onClone(item) {
+            const data = {
+                ...item
+            }
             return data
         },
     },
@@ -234,87 +194,105 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
-    .content-wrap{
-        margin-left: -10px;
-        height: 100%;
-        .search-wrap{
-            .el-input,.el-select{
-                width: 200px;
-            }
-        }
-        .content-list{
-            width: 100px;
-            height: 100px;
-            margin: 0 0 10px 10px;
-            float: left;
-            cursor: pointer;
-            border: 1px solid #eee;
-            border-radius: 3px;
-            box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
-            background: #fff;
-            position: relative;
-            .cover{
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                z-index: 10;
-            }
-            .el-image{
-                height: 60px;
-            }
-            img{
-                width: 100px;
-                height: 60px;
-                z-index: 99;
-            }
 
-            .atlas{
-                width: 100px;
-                height: 60px;
-                background: #000;
-                &-2 .img{
-                    display: inline-block;
-                    width: 50px;
-                    height: 60px;
-                }
-                &-3, &-4{
-                    display: flex;
-                    flex-wrap: wrap;
-                    .img{
-                        width: 50px;
-                        height: 30px;
-                        img{
-                            width: 50px;
-                            height: 30px;
-                        }
-                    }
-                }
-            }
+<style lang="scss">
+.content-wrap {
+    margin-left: -10px;
+    height: 100%;
 
-            .desc{
-                width: 100px;
-                background: #fff;
-                .duration{
-                    font-size: 12px;
-                    color: #999;
-                    padding: 0 3px;
-                    svg{
-                        margin-right: 3px;
-                    }
-                }
-                .title{
-                    line-height: 20px;
-                    font-size: 12px;
-                    padding: 0 3px;
-                    overflow: hidden;
-                    white-space: nowrap;
-                }
-            }
-        }
-        .no-data{
-            text-align: center;
-            line-height: 100px;
+    .search-wrap {
+
+        .el-input,
+        .el-select {
+            width: 200px;
         }
     }
+
+    .content-list {
+        width: 100px;
+        height: 100px;
+        margin: 0 0 10px 10px;
+        float: left;
+        cursor: pointer;
+        border: 1px solid #eee;
+        border-radius: 3px;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+        background: #fff;
+        position: relative;
+
+        .cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .el-image {
+            height: 60px;
+            background: #000;
+        }
+
+        img {
+            width: 100px;
+            height: 60px;
+            z-index: 99;
+        }
+
+        .atlas {
+            width: 100px;
+            height: 60px;
+            background: #000;
+
+            &-2 .img {
+                display: inline-block;
+                width: 50px;
+                height: 60px;
+            }
+
+            &-3,
+            &-4 {
+                display: flex;
+                flex-wrap: wrap;
+
+                .img {
+                    width: 50px;
+                    height: 30px;
+
+                    img {
+                        width: 50px;
+                        height: 30px;
+                    }
+                }
+            }
+        }
+
+        .desc {
+            width: 100px;
+            background: #fff;
+
+            .duration {
+                font-size: 12px;
+                color: #999;
+                padding: 0 3px;
+
+                svg {
+                    margin-right: 3px;
+                }
+            }
+
+            .title {
+                line-height: 20px;
+                font-size: 12px;
+                padding: 0 3px;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    .no-data {
+        text-align: center;
+        line-height: 100px;
+    }
+}
 </style>
