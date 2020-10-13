@@ -89,6 +89,7 @@ export default {
 
         //保存游戏配置
         handleSaveConfig() {
+
             if (!this.params.packageId) {
                 this.$message.warning('请选择游戏包版本~');
                 return
