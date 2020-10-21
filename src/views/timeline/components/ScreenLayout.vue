@@ -405,7 +405,6 @@ export default {
             height: 100%;
         }
         .toolbar{
-            display: inline-block;
             font-size: 14px;
             &>span{
                 display: inline-block;

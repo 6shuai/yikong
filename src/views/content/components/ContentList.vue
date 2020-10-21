@@ -90,7 +90,7 @@
 <script>
 import ContentPreview from '@/views/content/components/ContentPreview';
 export default {
-    props: ['item', 'name', 'imageH', 'index', 'groupIndex'],
+    props: ['item', 'name', 'imageH', 'index'],
     data(){
         return{
             currentContent: {},            //查看选中的预览资源内容

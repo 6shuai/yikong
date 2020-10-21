@@ -55,7 +55,10 @@ export default {
     },
     mounted() {
         if(this.$route.query.pageNo) {
-            this.params = JSON.parse(JSON.stringify(this.$route.query));
+            this.params = {
+                ...this.params,
+                ...JSON.parse(JSON.stringify(this.$route.query))
+            }
             this.$refs.search.searchParams = this.params;
         }
         this.init();
@@ -65,9 +68,11 @@ export default {
             this.tLoading = true;
             screenList(this.params).then(res => {
                 this.tLoading = false;
+                let data = JSON.parse(JSON.stringify(this.params));
+                delete data.userId;
                 this.$router.push({
                     query: {
-                        ...this.params
+                        ...data
                     }
                 })
                 if(res.code === this.$successCode){

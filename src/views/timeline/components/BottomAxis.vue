@@ -4,7 +4,7 @@
         <div class="tool-warp clearfix">
             <div class="title time">{{startTime}} - {{endTime}}</div>
             <el-button 
-                class="save-btn" 
+                class="tool-btn" 
                 icon="el-icon-upload2" 
                 type="info" 
                 size="small"
@@ -12,30 +12,71 @@
                 @click="PubTerminal"
             >发布到终端
             </el-button>
-            <el-button 
-                class="save-btn" 
+            <!-- 改为自动保存 -->
+            <!-- <el-button 
+                class="tool-btn" 
                 icon="el-icon-folder-checked" 
                 type="info" 
                 size="small"
                 :loading="saveLoading"
                 @click="saveTimeline"
-            >保存
+            >保存 -->
             </el-button>
             <el-button 
-                class="save-btn" 
+                v-if="!showDelete"
+                class="tool-btn" 
                 icon="el-icon-delete" 
                 type="warning" 
                 size="small"
-                :loading="emptypLoading"
-                @click="emptyTimeLine"
-            >清空时间轴
+                :loading="deleteLoading"
+                @click="showDelete=!showDelete;isDeleteAll=false;deleteIds=[];deleteBtnIsDisabled=true"
+            >删除时间轴
             </el-button>
+            <el-button 
+                v-if="showDelete"
+                class="tool-btn" 
+                type="warning" 
+                size="small"
+                :loading="deleteLoading"
+                @click="showDelete=!showDelete"
+            >取消
+            </el-button>
+            <el-button 
+                v-if="showDelete"
+                :disabled="deleteBtnIsDisabled"
+                class="tool-btn" 
+                icon="el-icon-delete" 
+                type="warning" 
+                size="small"
+                :loading="deleteLoading"
+                @click="deleteTimeline"
+            >确定删除
+            </el-button>
+            <div class="tool-btn checkbox-delete-all" v-if="showDelete">
+                <el-checkbox label="全选" v-model="isDeleteAll" @change="changeDeleteAll"></el-checkbox>
+            </div>
         </div>
 
+        <!-- 屏幕名称 -->
         <div class="axis-left">
-            <div class="title" v-for="(item, index) in screenLayout" :key="index">{{item.displayName}}</div>
+            <div class="title" v-for="(item, index) in screenLayout" :key="index">
+                {{item.displayName}}
+            </div>
         </div>
 
+        <!-- 删除时间轴 -->
+        <div class="delete-checkbox" v-if="screenLayout.length && showDelete">
+            <el-checkbox-group v-model="deleteIds" @change="changeDelte">
+                <el-checkbox 
+                    v-for="(item, index) in screenLayout" 
+                    :key="index"
+                    :label="item.id" border>
+                    {{item.displayName}}
+                </el-checkbox>
+            </el-checkbox-group>
+        </div>
+
+        <!-- 屏幕时间轴数据 -->
         <div class="axis-right">
             <div class="right-content">
 
@@ -72,7 +113,7 @@
                                     <div class="content-tool">
                                         <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                         <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
-                                        <div @click="gameSetting(item)" v-if="item.logicRegion && item.contentTypeId==3">游戏设置</div>
+                                        <div @click="gameSetting(item, Pindex, index)" v-if="item.logicRegion && item.contentTypeId==3">游戏设置</div>
                                         <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                     </div>
 
@@ -96,7 +137,6 @@
                                         </div>
                                         <div class="duration" v-if="item.duration"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</div>
                                         <div class="name">
-                                            <div>{{item.beginTime}}-{{item.endTime}}</div>
                                             <div class="display-name">{{item.displayName}}</div>
                                         </div>
 
@@ -178,7 +218,7 @@ export default {
             currentActivate: {},               //当前激活的矩形数据
             saveLoading: false,                //保存按钮loading
             pubLoading: false,                 //发布按钮loading
-            emptypLoading: false,              //清空时间轴按钮loading
+            deleteLoading: false,              //清空时间轴按钮loading
             showEditTime: false,               //显示内容编辑时段
             editTime: {},                      //编辑内容时段 参数
             noSettingGame: [],                 //时间轴内的游戏 没有配置。时间轴id数组
@@ -199,6 +239,11 @@ export default {
                 swapThreshold: "0.8",
                 animation: 300              
             }, 
+            showDelete: false,               //点击删除时间轴 显示选择框
+            isDeleteAll: false,              //删除  全选
+            deleteBtnIsDisabled: true,       //删除按钮是否禁用
+            screenIds: [],                   //屏幕列表id
+            deleteIds: []
         }
     },
     computed: {
@@ -210,6 +255,9 @@ export default {
         eventBus.$on('setScreenLayoutData', (data) => {
             let copyData = JSON.parse(JSON.stringify(data.data));
             this.screenLayout = copyData;
+            this.screenLayout.forEach((item, index) => {
+                this.screenIds.push(item.id);
+            })
             if(data.type === 'update'){
                 this.updateScreen(copyData);
             }else{
@@ -324,40 +372,59 @@ export default {
 
         //保存时间轴
         saveTimeline(){
-            let data = [];
-            this.rectangleData.forEach((item, index) => {
-                for(let i = 0; i < item.length; i++){
-                    data.push({
-                        id: item[i].id ? item[i].id : null,
-                        logicRegion: this.screenLayout[index].id,
-                        contentId: item[i].contentId,
-                        beginTime: '1970-01-01 ' + item[i].beginTime,
-                        duration: item[i].duration
-                    })
+            // this.rectangleData.forEach((item, index) => {
+            //     for(let i = 0; i < item.length; i++){
+            //         data.push({
+            //             id: item[i].id ? item[i].id : null,
+            //             logicRegion: this.screenLayout[index].id,
+            //             contentId: item[i].contentId,
+            //             beginTime: '1970-01-01 ' + item[i].beginTime,
+            //             duration: item[i].duration
+            //         })
+            //     }
+            // })
+
+            let parentIndex = this.editTime.Pindex;
+            let childrenIndex = this.editTime.index;
+            let data = this.rectangleData[parentIndex][childrenIndex];
+
+            let params = [
+                {
+                    id: data.id ? data.id : null,
+                    logicRegion: this.screenLayout[parentIndex].id,
+                    contentId: data.contentId,
+                    beginTime: '1970-01-01 ' + data.beginTime,
+                    duration: data.duration
                 }
-            })
+            ]
 
             this.saveLoading = true;
-            timelineCreated(data).then(res => {
+            timelineCreated(params).then(res => {
                 this.saveLoading = false;
                 if(res.code == this.$successCode){
                     this.$message.success('保存成功~');
-                    this.$nextTick(() => {
-                        this.rectangleData = [];
-
-                        //保存成功要 刷新一下时间轴。  （刚放置到时间轴的资源是没有时间轴id的）。
-                        this.initTimelineList();
-                    })
+                    let msg = res.obj[0];
+                    this.rectangleData[parentIndex][childrenIndex] = {
+                        ...data,
+                        id: msg.id,
+                        logicRegion: msg.logicRegion,
+                        duration: msg.duration,
+                        contentId: msg.contentId
+                    }
                 }
             })
         },
 
         //根据逻辑区域ID查询时间轴集合
         initTimelineList(){
-            this.timelineIds = [];
+            this.timelineIds = {};
             for(let i = 0; i < this.screenLayout.length; i++){
-                var data = this.screenLayout[i];
-                timelineList(data.id).then(res => {
+                var screenParams = this.screenLayout[i];
+                this.timelineIds[screenParams.id] = {
+                    index: i,
+                    ids: []
+                };
+                timelineList(screenParams.id).then(res => {
                     this.$emit('updateScreen', res.obj[0], i);
                     let data = [];
                     if(res.obj && res.obj.length){
@@ -369,8 +436,7 @@ export default {
                                 endTime: item.endTime,
                                 displayName: item.contentName,
                             })
-
-                            this.timelineIds.push(item.id);
+                            this.timelineIds[item.logicRegion].ids.push(item.id);
                         })
                     }
                     this.$nextTick(() => {
@@ -386,7 +452,6 @@ export default {
 
         //删除时间轴  资源
         deleteCurrentTimeline(Pindex, index, id){
-            
             this.$confirm(`此操将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`, '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -410,14 +475,16 @@ export default {
         //删除时间轴 资源 接口
         deleteTimelineContent(data, Pindex, index, type){
             timelineDelete(data).then(res => {
-                this.emptypLoading = false;
+                this.deleteLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('删除成功~');
-                    if(type=="empty"){
-                        this.rectangleData = [];
-                        for(let i = 0;i < this.screenLayout.length; i++){
-                            this.rectangleData.push([]);
+                    if(type=="checkbox"){
+                        for (const key in this.timelineIds) {
+                            this.rectangleData[this.timelineIds[key].index] = [];
                         }
+
+                        this.showDelete = false;
+
                     }else{
                         this.rectangleData[Pindex].splice(index, 1);
                         if(!this.rectangleData[Pindex].length){
@@ -488,16 +555,22 @@ export default {
             let obj = JSON.parse(JSON.stringify(this.rectangleData[data.Pindex][data.index]));
             obj.duration = data.duration;
             obj.beginTime = data.beginTime;
+            
+            if(!obj.beginTime){
+                this.$message.warning('请选择开始时间~');
+                return
+            }else if(!obj.duration){
+                this.$message.warning('请填写时长~');
+                return
+            }
             obj.endTime = this.findEndTime(obj.beginTime, obj.duration);
+
             if(this.searchOverlap(data.Pindex, data.index)){
                 delete this.editTime.type;
                 this.showEditTime = false;
                 this.$set(this.rectangleData[data.Pindex], data.index, obj);
 
-                //游戏放置到时间轴后 立即保存
-                if(obj.contentTypeId === this.contentTypeId.game){
-                    this.saveTimeline();
-                }
+                this.saveTimeline();
             }
         },
 
@@ -524,27 +597,20 @@ export default {
             })
         },
 
-        //清空时间轴
-        emptyTimeLine(){
-            this.$confirm(`此操作将清空此时间轴全部资源, 是否继续?`, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                let ids = this.timelineIds.join(',');
-                this.emptypLoading = true;
-                this.deleteTimelineContent(ids, null, null, 'empty');
-            }).catch(() => {})
-            
-        },
-
         //显示游戏设置
-        gameSetting(data){
+        gameSetting(data, Pindex, index){
             let obj = {
                 configList: data.configList,
                 timelineId: data.id,
                 applicationId: data.applicationId
             }
+            
+            this.editTime = {
+                Pindex,
+                index,
+                ...this.rectangleData[Pindex][index],
+            }
+
             this.$refs.gameSetting.showGameSetting(obj);
         },
 
@@ -552,7 +618,55 @@ export default {
         gameSettingSuccess(id){
             let index = this.noSettingGame.indexOf(id);
             this.noSettingGame.splice(index, 1);
-        }
+            this.saveTimeline();
+        },
+
+        //删除时间轴 - 全选按钮
+        changeDeleteAll(){
+            if(this.isDeleteAll){
+                this.deleteIds = this.screenIds;
+                this.deleteBtnIsDisabled = false;
+            }else{
+                this.deleteIds = [];
+                this.deleteBtnIsDisabled = true;
+            }
+        },
+
+        //删除时间轴 - 选择多选框
+        changeDelte(){
+            if(this.deleteIds.length != this.screenIds.length){
+                this.isDeleteAll = false;
+            }else{
+                this.isDeleteAll = true;
+            }
+
+            if(this.deleteIds.length){
+                this.deleteBtnIsDisabled = false;
+            }else{
+                this.deleteBtnIsDisabled = true;
+            }
+        },
+
+        //删除时间轴 - 点击确定按钮
+        deleteTimeline(){
+            let ids = [];
+            this.deleteIds.forEach((item, index) => {
+                ids = ids.concat(this.timelineIds[item].ids);
+            })
+            if(!ids.length){
+                this.$message.warning('当前没有可删除的时间轴~')
+                return
+            }
+            this.$confirm(`此操作将删除已选时间轴的全部资源, 是否继续?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+
+                this.deleteLoading = true;
+                this.deleteTimelineContent(ids.join(','), null, null, 'checkbox');
+            }).catch(() => {})
+        },
         
     },
     components: {

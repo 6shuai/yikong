@@ -1,7 +1,18 @@
 <template>
     <div class="content-preview">
-        <div class="play-index" v-if="data && isArray">{{currentDataIndex+1}} / {{data.length}}</div>
-        <video v-if="currentData.contentTypeId == 2" :src="currentData.contentPath || currentData.image" controls="controls"></video>
+        <div 
+            class="play-index" 
+            v-if="data && isArray"
+        >
+            {{currentDataIndex+1}} / {{data.length}}
+        </div>
+        <video
+            v-if="currentData.contentTypeId == 2" 
+            :src="currentData.contentPath || currentData.image" 
+            controls="controls"
+            :autoplay="true" 
+        >
+        </video>
         <img v-else :src="currentData.contentPath || currentData.image">
     </div>
 </template>
@@ -24,16 +35,17 @@ export default {
             if(this.timer) clearTimeout(this.timer);
             this.timer = setTimeout(() => {
                 if(this.currentDataIndex == this.data.length-1){
-                    clearTimeout(this.timer);
-                    return
+                    this.currentDataIndex = 0;
+                }else{
+                    this.currentDataIndex += 1;
                 }
-                this.currentDataIndex += 1;
                 this.init();
             }, this.currentData.duration * 1000);
         },
 
         contentPreviewData(data){
             this.data = data;
+            //图集资源
             if(Array.isArray(this.data)){
                 this.init();
                 this.isArray = true;

@@ -103,7 +103,10 @@ export default {
     mounted() {
         this.getLocation();
         if(this.$route.query.pageNo) {
-            this.params = JSON.parse(JSON.stringify(this.$route.query));
+            this.params = {
+                ...this.params,
+                ...JSON.parse(JSON.stringify(this.$route.query))
+            };
             this.$refs.search.searchParams = this.params;
         }
         this.init();
@@ -116,9 +119,11 @@ export default {
                 this.tLoading = false;
                 this.pageshow = true;
                 this.$nextTick(() => {
+                    let data = JSON.parse(JSON.stringify(this.params));
+                    delete data.userId;
                     this.$router.push({
                         query: {
-                            ...this.params,
+                            ...data,
                         }
                     })
                 })

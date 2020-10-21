@@ -26,6 +26,12 @@
                     min-width="180">
                 </el-table-column>
                 <el-table-column
+                    prop="organizationTypeName"
+                    label="组织名称"
+                    min-width="180">
+                </el-table-column>
+                
+                <el-table-column
                     label="操作"
                     min-width="220">
                     <template slot-scope="scope">

@@ -181,3 +181,26 @@ li{
 .mr30{
   margin-right: 30px;
 }
+
+.search-list-wrap{
+  .search-list{
+      padding-bottom: 10px;
+      .title{
+          font-size: 14px;
+          color: #515a6e;
+          line-height: 30px;
+      }
+      .region-select{
+          width: 128px;
+          margin-right: 10px;
+      }
+      .focus{
+          color: #8484FF;
+          border-color: #dadaff;
+          background-color: #f3f3ff;
+      }
+      .el-button{
+          margin: 0 10px 10px 0;
+      }
+  }
+}
