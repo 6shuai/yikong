@@ -113,7 +113,7 @@
                                     <div class="content-tool">
                                         <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                         <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
-                                        <div @click="gameSetting(item, Pindex, index)" v-if="item.logicRegion && item.contentTypeId==3">游戏设置</div>
+                                        <div @click="gameSetting(item, Pindex, index)" v-if="item.logicRegion && item.contentTypeId == contentTypeId.game">游戏设置</div>
                                         <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                     </div>
 
@@ -160,7 +160,8 @@
         <!-- 时间轴内容 编辑时段 -->
         <el-dialog
             width="500px"
-            :title="editTime.displayName"
+            v-if="editTime.length"
+            :title="editTime[0].displayName"
             :visible.sync="showEditTime"
             :close-on-click-modal="false"
             :close-on-press-escape="false"
@@ -171,16 +172,19 @@
             >
                 <el-form-item label="开始时间" class="is-required">
                     <el-time-picker
-                        v-model="editTime.beginTime"
+                        v-model="editTime[0].beginTime"
                         format="HH:mm:ss"
                         value-format="HH:mm:ss"
+                        :picker-options="{
+                            selectableRange: `${editTime[0].startTime} - 23:59:59`
+                        }"
                         placeholder="选择开始时间">
                     </el-time-picker>
                 </el-form-item>
                 <el-form-item label="时长" class="is-required">
                     <el-input 
                         style="width: 220px"
-                        v-model="editTime.duration" 
+                        v-model="editTime[0].duration" 
                         type="number">
                         <template slot="append">秒</template>
                     </el-input>
@@ -220,7 +224,7 @@ export default {
             pubLoading: false,                 //发布按钮loading
             deleteLoading: false,              //清空时间轴按钮loading
             showEditTime: false,               //显示内容编辑时段
-            editTime: {},                      //编辑内容时段 参数
+            editTime: [],                      //编辑内容时段 参数
             noSettingGame: [],                 //时间轴内的游戏 没有配置。时间轴id数组
             contentTypeId: {
                 image: 1,
@@ -301,7 +305,9 @@ export default {
         onAdd(data, Pindex){
             //拖拽到当前位置的下标
             let index = data.newIndex;
+
             let obj = this.rectangleData[Pindex];
+
             let time = data.newIndex==0 ? this.startTime : obj[index-1].beginTime;
             let duration = data.newIndex==0 ? 0 : obj[index-1].duration;
             obj[index].beginTime = this.findEndTime(time, duration);
@@ -350,69 +356,183 @@ export default {
         },
 
         //查询是否有重叠
-        searchOverlap(Pindex, index){
-            let handle = true;
-            let obj = this.rectangleData[Pindex];
-            let newContent = this.editTime;
+        searchOverlap(Pindex){
+            return new Promise((resolve) => {
+                let obj = this.rectangleData[Pindex];
 
-            //新添加的资源开始时间
-            let newStarTime = newContent.beginTime;
-            //新添加的资源结束时间
-            let newEndTime = this.findEndTime(newContent.beginTime, newContent.duration);
-            //下一个资源的开始时间
-            let nextStarTime = index === obj.length - 1 ? ' ' : obj[index+1].beginTime;
-            //上一个资源的结束时间
-            let prevEndTime = index==0 ? ' ' : this.findEndTime(obj[index-1].beginTime, obj[index-1].duration);
-            if((nextStarTime && this.timeDifference(newEndTime, nextStarTime) < 0) || (prevEndTime && this.timeDifference(prevEndTime, newStarTime) < 0)){
-                handle = false;
-                this.$message.warning('资源时间不允许重叠(..•˘_˘•..)')
-            }
-            return handle;
+                obj.sort((a, b) => {
+                    return this.timeDifference(a.beginTime) - this.timeDifference(b.beginTime)
+                })
+
+
+                obj.forEach((item, index) => {
+                    if(index > 0){
+                        //当前资源的开始时间
+                        let currentStartTime = item.beginTime;
+    
+                        //当前资源的结束时间
+                        let currentEndTime = item.endTime;
+                        
+                        //下一个资源
+                        let nextData = obj[index+1];
+                        
+                        //下一个资源的开始时间
+                        let nextStarTime = index === obj.length - 1 ? ' ' : nextData.beginTime;
+    
+                        //上一个资源
+                        let prevData = obj[index-1];
+    
+                        //上一个资源的开始时间
+                        let prevStartTime = index == 0 ? ' ' : prevData.beginTime;
+    
+                        //上一个资源的结束时间
+                        let prevEndTime = index == 0 ? ' ' : this.findEndTime(prevData.beginTime, prevData.duration);
+    
+                        //相差时间 秒
+                        let diffNum = 0;
+                        
+                        //当前资源 开始时间 和 上一个资源时间重叠
+                        if(this.timeDifference(prevEndTime, currentStartTime) < 0){
+                            
+                            diffNum = this.timeDifference(currentStartTime, prevEndTime);
+                        }
+    
+                        //当前资源 结束时间 和 下一个资源时间重叠
+                        // if(this.timeDifference(nextStarTime, currentEndTime) > 0){
+                        //     diffNum = this.timeDifference(nextStarTime, currentEndTime);
+                        //     console.log('当前资源 结束时间 和 下一个资源时间重叠---------->', diffNum)
+                        // }
+                        
+                        //当前资源 开始时间 未紧跟上一个结束时间
+                        if(this.timeDifference(prevEndTime, currentStartTime) > 0){
+                            diffNum = this.timeDifference(currentStartTime, prevEndTime);
+                        }
+    
+                        //游戏资源
+                        if(item.contentTypeId == this.contentTypeId.game){
+                            //游戏资源的开始时间 和 上一个资源重叠
+                            if(diffNum > 0){
+                                //把上一个资源的 结束时间改成 到当前游戏的开始时间
+                                obj[index-1] = {
+                                    ...prevData,
+                                    endTime: currentStartTime,
+                                    duration: prevData.duration - diffNum
+                                }
+    
+                                //把上一个资源剩余的 时间 放到游戏的后面
+                                obj.splice(index+1, 0, {
+                                    ...prevData,
+                                    beginTime: currentEndTime,
+                                    endTime: this.findEndTime(currentEndTime, diffNum),
+                                    duration: diffNum
+                                })
+                            }
+    
+                            if(diffNum < 0){
+                                //把下一个资源挪到 游戏资源的前面
+                                obj[index] = obj.splice(index+1, 1, obj[index])[0];
+                                nextData = obj[index];
+                                currentStartTime = obj[index+1].beginTime;
+                                currentEndTime = obj[index+1].endTime
+
+                                obj[index] = {
+                                    ...nextData,
+                                    beginTime: prevEndTime,
+                                    endTime: this.findEndTime(prevEndTime, nextData.duration)
+                                }
+                                
+
+                                console.log(prevEndTime, nextData.duration, nextData);
+
+
+    
+                                //挪到前面后 和 当前游戏资源重叠
+                                // if(this.timeDifference(nextData.endTime, currentStartTime) < 0){
+                                //     diffNum = this.timeDifference(nextData.endTime, prevEndTime);
+                                //     console.log(nextData.endTime, currentStartTime)
+                                //     console.log('挪到前面后 和 当前游戏资源重叠 差值------------->', diffNum)
+                                //     item = {
+                                //         ...nextData,
+                                //         endTime: this.findEndTime(nextData.endTime, diffNum),
+                                //         duration: nextData.duration - diffNum
+                                //     }
+    
+                                //     //剩余的 时间 放到游戏的后面
+                                //     obj.splice(index+1, 0, {
+                                //         ...prevData,
+                                //         beginTime: currentEndTime,
+                                //         endTime: this.findEndTime(currentEndTime, diffNum),
+                                //         duration: diffNum
+                                //     })
+    
+                                // }
+                        
+                            }
+    
+                        }else{
+                            item = {
+                                ...item,
+                                beginTime: this.updateStartTime(currentStartTime, diffNum),
+                                endTime: this.updateStartTime(currentEndTime, diffNum),
+                            }
+    
+                        }
+    
+                        this.$set(obj, index, item);
+
+                    }
+                    
+                })
+                this.$set(this.rectangleData, Pindex, obj); 
+                resolve(obj);
+            })
         },
 
         //保存时间轴
-        saveTimeline(){
-            // this.rectangleData.forEach((item, index) => {
-            //     for(let i = 0; i < item.length; i++){
-            //         data.push({
-            //             id: item[i].id ? item[i].id : null,
-            //             logicRegion: this.screenLayout[index].id,
-            //             contentId: item[i].contentId,
-            //             beginTime: '1970-01-01 ' + item[i].beginTime,
-            //             duration: item[i].duration
+        saveTimeline(Pindex, contentIndex){
+            let data = [];
+            //contentIndex  保存单个资源
+            if(contentIndex){
+                data = [this.rectangleData[Pindex][contentIndex]];
+            }else{
+                this.rectangleData[Pindex].forEach((item, index) => {
+                    data.push({
+                        id: item.id ? item.id : null,
+                        logicRegion: this.screenLayout[Pindex].id,
+                        contentId: item.contentId,
+                        beginTime: '1970-01-01 ' + item.beginTime,
+                        duration: item.duration
+                    })
+                })
+            }
+
+            console.log('保存时间轴------------------->', data)
+
+            // this.saveLoading = true;
+            // timelineCreated(data).then(res => {
+            //     this.saveLoading = false;
+            //     if(res.code == this.$successCode){
+            //         this.$message.success('保存成功~');
+
+            //         if(contentIndex) return;
+            //         let obj = this.rectangleData[Pindex];
+            //         obj.forEach((item, i) => {
+            //             let msg = res.obj[i];
+            //             item = {
+            //                 ...item,
+            //                 id: msg.id,
+            //                 logicRegion: msg.logicRegion,
+            //                 duration: msg.duration,
+            //                 contentId: msg.contentId
+            //             }
+            //             this.$set(obj, i, item);
             //         })
+
+            //         this.$set(this.rectangleData, Pindex, obj);
+
+            //         console.log(this.rectangleData[Pindex])
             //     }
             // })
-
-            let parentIndex = this.editTime.Pindex;
-            let childrenIndex = this.editTime.index;
-            let data = this.rectangleData[parentIndex][childrenIndex];
-
-            let params = [
-                {
-                    id: data.id ? data.id : null,
-                    logicRegion: this.screenLayout[parentIndex].id,
-                    contentId: data.contentId,
-                    beginTime: '1970-01-01 ' + data.beginTime,
-                    duration: data.duration
-                }
-            ]
-
-            this.saveLoading = true;
-            timelineCreated(params).then(res => {
-                this.saveLoading = false;
-                if(res.code == this.$successCode){
-                    this.$message.success('保存成功~');
-                    let msg = res.obj[0];
-                    this.rectangleData[parentIndex][childrenIndex] = {
-                        ...data,
-                        id: msg.id,
-                        logicRegion: msg.logicRegion,
-                        duration: msg.duration,
-                        contentId: msg.contentId
-                    }
-                }
-            })
         },
 
         //根据逻辑区域ID查询时间轴集合
@@ -474,6 +594,20 @@ export default {
 
         //删除时间轴 资源 接口
         deleteTimelineContent(data, Pindex, index, type){
+            this.deleteLoading = false;
+            let currentData = JSON.parse(JSON.stringify(this.rectangleData[Pindex][index]));
+            this.rectangleData[Pindex].splice(index, 1);
+            
+            if(this.rectangleData[Pindex].length > index){
+                console.log(this.rectangleData[Pindex])
+                this.searchOverlap(Pindex).then(res => {
+                    this.saveTimeline(Pindex);
+                })
+                
+            }
+
+            return;
+            
             timelineDelete(data).then(res => {
                 this.deleteLoading = false;
                 if(res.code === this.$successCode){
@@ -486,17 +620,28 @@ export default {
                         this.showDelete = false;
 
                     }else{
+                        let currentData = JSON.parse(JSON.stringify(this.rectangleData[Pindex][index]));
                         this.rectangleData[Pindex].splice(index, 1);
-                        if(!this.rectangleData[Pindex].length){
-                            this.rectangleData[Pindex] = [];
+                        
+                        if(this.rectangleData[Pindex].length > index){
+                            this.searchOverlap(Pindex).then(res => {
+                                this.saveTimeline(Pindex);
+                            })
+                            
                         }
-                        this.$nextTick(() => {
-                            this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
-                        }) 
+
+
+                        // if(!this.rectangleData[Pindex].length){
+                        //     this.rectangleData[Pindex] = [];
+                        // }
+                        // this.$nextTick(() => {
+                        //     this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
+                        // }) 
                     }
                 }
             })
         },
+
 
         //更新屏幕布局 模块
         updateScreen(data){
@@ -540,18 +685,19 @@ export default {
 
         //点击编辑时段  显示弹窗
         editTimeBtn(Pindex, index, type){
-            this.editTime = {
+            this.editTime = [{
+                startTime: this.rectangleData[Pindex][index].beginTime,
                 Pindex,
                 index,
                 ...this.rectangleData[Pindex][index],
                 type
-            }
+            }]
             this.showEditTime = true;
         },
 
         //编辑内容时段
         updateContentTime(){
-            let data = this.editTime;
+            let data = this.editTime[0];
             let obj = JSON.parse(JSON.stringify(this.rectangleData[data.Pindex][data.index]));
             obj.duration = data.duration;
             obj.beginTime = data.beginTime;
@@ -564,20 +710,22 @@ export default {
                 return
             }
             obj.endTime = this.findEndTime(obj.beginTime, obj.duration);
+            this.$set(this.rectangleData[data.Pindex], data.index, obj);
 
-            if(this.searchOverlap(data.Pindex, data.index)){
-                delete this.editTime.type;
+            this.searchOverlap(data.Pindex, data.index).then(res => {
                 this.showEditTime = false;
                 this.$set(this.rectangleData[data.Pindex], data.index, obj);
+                delete this.editTime[0].type;
 
-                this.saveTimeline();
-            }
+                this.saveTimeline(data.Pindex);
+            })
+            
         },
 
         //关闭编辑时段
         closeEditTime(){
-            let { Pindex, index } = this.editTime;
-            if(this.editTime.type == 'new'){
+            let { Pindex, index } = this.editTime[0];
+            if(this.editTime[0].type == 'new'){
                 this.rectangleData[Pindex].splice(index, 1);
             }
             this.showEditTime = false;
@@ -618,7 +766,7 @@ export default {
         gameSettingSuccess(id){
             let index = this.noSettingGame.indexOf(id);
             this.noSettingGame.splice(index, 1);
-            this.saveTimeline();
+            this.saveTimeline(this.editTime.Pindex, this.editTime.index);
         },
 
         //删除时间轴 - 全选按钮
@@ -666,6 +814,47 @@ export default {
                 this.deleteLoading = true;
                 this.deleteTimelineContent(ids.join(','), null, null, 'checkbox');
             }).catch(() => {})
+        },
+
+        //
+        updateStartTime(time, duration){
+            let t = time.split(":");
+            //小时
+            let h = Number(t[0]);
+            //分钟
+            let m = Number(t[1]);
+            //秒
+            let s = Number(t[2]);
+
+            //秒转换成分钟  余出来的秒数
+            let remainderS = duration % 60;
+
+            //秒数转为 分钟
+            let d = (duration - remainderS) / 60;
+            if(s + remainderS >= 60){
+                s = s + remainderS - 60;
+                m = m + 1;
+            }else if(s + remainderS < 0){
+                s = 60 - Math.abs(s+remainderS);
+                m = m - 1;
+            }else{
+                s = s + remainderS;
+            }
+            if(m + d >= 60){
+                m =  m + d - 60;
+                h = h + 1;
+            }else if(m + d < 0){
+                m =  60 - Math.abs(m+d);
+                h = h - 1;
+            }else {
+                m = m + d;
+            }
+            return this.addPreZero(h) + ":" + this.addPreZero(m) + ':' + this.addPreZero(s);
+        },
+
+        //小于10 前面补个0
+        addPreZero(number){
+            return number < 10 ? '0' + number : number;
         },
         
     },
