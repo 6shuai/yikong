@@ -15,6 +15,8 @@ const moduleMap = {
 	'Games': 'games/index',                               //游戏管理
 
 	'Timeline': 'timeline/index',                         //时间轴  
+
+	'Log': 'log/index',									  //操作日志
 	
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理
