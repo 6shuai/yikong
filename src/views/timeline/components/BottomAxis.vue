@@ -114,7 +114,7 @@
                                         <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                         <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
                                         <div @click="gameSetting(item, Pindex, index)" v-if="item.logicRegion && item.contentTypeId == contentTypeId.game">游戏设置</div>
-                                        <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
+                                        <div class="delete" @click="deleteCurrentTimeline(Pindex, index, 3)">删除</div>
                                     </div>
 
                                     <div class="content" slot="reference" @click="selectedCurrentTimeline(item, Pindex)">
@@ -366,145 +366,186 @@ export default {
 
 
                 obj.forEach((item, index) => {
-                    if(index > 0){
-                        //当前资源的开始时间
-                        let currentStartTime = item.beginTime;
-    
-                        //当前资源的结束时间
-                        let currentEndTime = item.endTime;
+                     //当前资源的开始时间
+                    let currentStartTime = item.beginTime;
+
+                    //当前资源的结束时间
+                    let currentEndTime = item.endTime;
+                    
+                    //下一个资源
+                    let nextData = obj[index+1];
+                    
+                    //下一个资源的开始时间
+                    let nextStarTime = index === obj.length - 1 ? ' ' : nextData.beginTime;
+
+                    //上一个资源
+                    let prevData = obj[index-1];
+
+                    //上一个资源的开始时间
+                    let prevStartTime = index == 0 ? ' ' : prevData.beginTime;
+
+                    //上一个资源的结束时间
+                    let prevEndTime = index == 0 ? ' ' : this.findEndTime(prevData.beginTime, prevData.duration);
+
+                    if(index == 0){
+                        prevStartTime = this.startTime;
+                        prevEndTime = this.startTime;
+                    }
+
+
+                    //相差时间 秒
+                    let diffNum = 0;
+                    
+                    //当前资源 开始时间 和 上一个资源时间重叠
+                    if(this.timeDifference(prevEndTime, currentStartTime) < 0){
                         
-                        //下一个资源
-                        let nextData = obj[index+1];
-                        
-                        //下一个资源的开始时间
-                        let nextStarTime = index === obj.length - 1 ? ' ' : nextData.beginTime;
-    
-                        //上一个资源
-                        let prevData = obj[index-1];
-    
-                        //上一个资源的开始时间
-                        let prevStartTime = index == 0 ? ' ' : prevData.beginTime;
-    
-                        //上一个资源的结束时间
-                        let prevEndTime = index == 0 ? ' ' : this.findEndTime(prevData.beginTime, prevData.duration);
-    
-                        //相差时间 秒
-                        let diffNum = 0;
-                        
-                        //当前资源 开始时间 和 上一个资源时间重叠
-                        if(this.timeDifference(prevEndTime, currentStartTime) < 0){
+                        diffNum = this.timeDifference(currentStartTime, prevEndTime);
+                        console.log('重叠---------,', diffNum)
+                    }
+
+                    //当前资源 结束时间 和 下一个资源时间重叠
+                    // if(this.timeDifference(nextStarTime, currentEndTime) > 0){
+                    //     diffNum = this.timeDifference(nextStarTime, currentEndTime);
+                    //     console.log('当前资源 结束时间 和 下一个资源时间重叠---------->', diffNum)
+                    // }
+                    
+                    //当前资源 开始时间 未紧跟上一个结束时间
+                    if(this.timeDifference(prevEndTime, currentStartTime) > 0){
+                        diffNum = this.timeDifference(currentStartTime, prevEndTime);
+                    }
+
+                    //游戏资源
+                    console.log(item.contentTypeId, 'youxiziyuan---------------', this.contentTypeId.game, item.contentTypeId == this.contentTypeId.game)
+                    if(item.contentTypeId == this.contentTypeId.game){
+                        //游戏资源的开始时间 和 上一个资源重叠
+                        if(diffNum > 0){
+                            //把上一个资源的 结束时间改成 到当前游戏的开始时间
+                            obj[index-1] = {
+                                ...prevData,
+                                endTime: currentStartTime,
+                                contentDuration: prevData.duration - diffNum,
+                                duration: prevData.duration - diffNum
+                            }
+
+                            //把上一个资源剩余的 时间 放到游戏的后面
+                            let obj1 = obj;
+                            let j  = index + 1;
+                            for(let i = 0; i< obj1.length; i++){
+                                if(i > index && obj1[i].contentId == this.contentTypeId.game){
+                                    j += 1;
+                                }else{
+                                    break;
+                                }
+                            }
+                            obj.splice(j, 0, {
+                                ...prevData,
+                                beginTime: currentEndTime,
+                                endTime: this.findEndTime(currentEndTime, diffNum),
+                                duration: diffNum,
+                                contentDuration: diffNum    
+                            })
+
+                            if(prevData.duration - diffNum <= 0) obj.splice(index-1, 1);
+                        }   
+
+                        // console.log('把下一个资源挪到 游戏资源的前面---------->', diffNum);
+                        if(diffNum < 0  && index != obj.length-1){
+                            //把下一个资源挪到 游戏资源的前面
+                            let obj1 = obj;
+                            let j = index;
+                            for(let i = 0; i< obj1.length; i++){
+                                if(obj1[index+i] && obj1[index+i].contentTypeId == this.contentTypeId.game){
+                                    j += 1;
+                                }else{
+                                    break;
+                                }
+                            }
+
+                            if(!obj[j]) return;
+                            let temp = obj[index];
+                            obj[index] = obj[j];
+                            obj[j] = temp;
+                            nextData = obj[index];
+                            console.log(obj, index, obj[index], j, obj[j])
+                            // currentStartTime = obj[index].beginTime;
+                            // currentEndTime = obj[index].endTime
+
+
+                            obj[index] = {
+                                ...nextData,
+                                beginTime: prevEndTime,
+                                endTime: this.findEndTime(prevEndTime, nextData.duration)
+                            }
                             
-                            diffNum = this.timeDifference(currentStartTime, prevEndTime);
+
+
+
+
+                            //挪到前面后 和 当前游戏资源重叠
+                            // if(this.timeDifference(nextData.endTime, currentStartTime) < 0){
+                            //     diffNum = this.timeDifference(nextData.endTime, prevEndTime);
+                            //     console.log(nextData.endTime, currentStartTime)
+                            //     console.log('挪到前面后 和 当前游戏资源重叠 差值------------->', diffNum)
+                            //     item = {
+                            //         ...nextData,
+                            //         endTime: this.findEndTime(nextData.endTime, diffNum),
+                            //         duration: nextData.duration - diffNum
+                            //     }
+
+                            //     //剩余的 时间 放到游戏的后面
+                            //     obj.splice(index+1, 0, {
+                            //         ...prevData,
+                            //         beginTime: currentEndTime,
+                            //         endTime: this.findEndTime(currentEndTime, diffNum),
+                            //         duration: diffNum
+                            //     })
+
+                            // }
+                    
                         }
-    
-                        //当前资源 结束时间 和 下一个资源时间重叠
-                        // if(this.timeDifference(nextStarTime, currentEndTime) > 0){
-                        //     diffNum = this.timeDifference(nextStarTime, currentEndTime);
-                        //     console.log('当前资源 结束时间 和 下一个资源时间重叠---------->', diffNum)
-                        // }
-                        
-                        //当前资源 开始时间 未紧跟上一个结束时间
-                        if(this.timeDifference(prevEndTime, currentStartTime) > 0){
-                            diffNum = this.timeDifference(currentStartTime, prevEndTime);
+
+                    }else{
+                        obj[index] = {
+                            ...item,
+                            beginTime: this.updateStartTime(currentStartTime, diffNum),
+                            endTime: this.updateStartTime(currentEndTime, diffNum),
                         }
-    
-                        //游戏资源
-                        if(item.contentTypeId == this.contentTypeId.game){
-                            //游戏资源的开始时间 和 上一个资源重叠
-                            if(diffNum > 0){
-                                //把上一个资源的 结束时间改成 到当前游戏的开始时间
-                                obj[index-1] = {
-                                    ...prevData,
-                                    endTime: currentStartTime,
-                                    duration: prevData.duration - diffNum
-                                }
-    
-                                //把上一个资源剩余的 时间 放到游戏的后面
-                                obj.splice(index+1, 0, {
-                                    ...prevData,
-                                    beginTime: currentEndTime,
-                                    endTime: this.findEndTime(currentEndTime, diffNum),
-                                    duration: diffNum
-                                })
-                            }
-    
-                            if(diffNum < 0){
-                                //把下一个资源挪到 游戏资源的前面
-                                obj[index] = obj.splice(index+1, 1, obj[index])[0];
-                                nextData = obj[index];
-                                currentStartTime = obj[index+1].beginTime;
-                                currentEndTime = obj[index+1].endTime
-
-                                obj[index] = {
-                                    ...nextData,
-                                    beginTime: prevEndTime,
-                                    endTime: this.findEndTime(prevEndTime, nextData.duration)
-                                }
-                                
-
-                                console.log(prevEndTime, nextData.duration, nextData);
-
-
-    
-                                //挪到前面后 和 当前游戏资源重叠
-                                // if(this.timeDifference(nextData.endTime, currentStartTime) < 0){
-                                //     diffNum = this.timeDifference(nextData.endTime, prevEndTime);
-                                //     console.log(nextData.endTime, currentStartTime)
-                                //     console.log('挪到前面后 和 当前游戏资源重叠 差值------------->', diffNum)
-                                //     item = {
-                                //         ...nextData,
-                                //         endTime: this.findEndTime(nextData.endTime, diffNum),
-                                //         duration: nextData.duration - diffNum
-                                //     }
-    
-                                //     //剩余的 时间 放到游戏的后面
-                                //     obj.splice(index+1, 0, {
-                                //         ...prevData,
-                                //         beginTime: currentEndTime,
-                                //         endTime: this.findEndTime(currentEndTime, diffNum),
-                                //         duration: diffNum
-                                //     })
-    
-                                // }
-                        
-                            }
-    
-                        }else{
-                            item = {
-                                ...item,
-                                beginTime: this.updateStartTime(currentStartTime, diffNum),
-                                endTime: this.updateStartTime(currentEndTime, diffNum),
-                            }
-    
-                        }
-    
-                        this.$set(obj, index, item);
 
                     }
+
+                    // this.$set(obj, index, item);
+
+                    console.log(obj[1])
                     
                 })
-                this.$set(this.rectangleData, Pindex, obj); 
+                obj.sort((a, b) => {
+                    return this.timeDifference(a.beginTime) - this.timeDifference(b.beginTime)
+                })
+                // this.$set(this.rectangleData, Pindex, obj);  
                 resolve(obj);
+                
             })
         },
+
+        //插入的资源
 
         //保存时间轴
         saveTimeline(Pindex, contentIndex){
             let data = [];
             //contentIndex  保存单个资源
-            if(contentIndex){
-                data = [this.rectangleData[Pindex][contentIndex]];
-            }else{
-                this.rectangleData[Pindex].forEach((item, index) => {
-                    data.push({
-                        id: item.id ? item.id : null,
-                        logicRegion: this.screenLayout[Pindex].id,
-                        contentId: item.contentId,
-                        beginTime: '1970-01-01 ' + item.beginTime,
-                        duration: item.duration
-                    })
-                })
-            }
+            // if(contentIndex){
+            //     data = [this.rectangleData[Pindex][contentIndex]];
+            // }else{
+            //     this.rectangleData[Pindex].forEach((item, index) => {
+            //         data.push({
+            //             id: item.id ? item.id : null,
+            //             logicRegion: this.screenLayout[Pindex].id,
+            //             contentId: item.contentId,
+            //             beginTime: '1970-01-01 ' + item.beginTime,
+            //             duration: item.duration
+            //         })
+            //     })
+            // }
 
             console.log('保存时间轴------------------->', data)
 
@@ -594,17 +635,18 @@ export default {
 
         //删除时间轴 资源 接口
         deleteTimelineContent(data, Pindex, index, type){
+            console.log('删除时间轴 资源 接口---------', data, Pindex, index, type)
             this.deleteLoading = false;
             let currentData = JSON.parse(JSON.stringify(this.rectangleData[Pindex][index]));
             this.rectangleData[Pindex].splice(index, 1);
             
-            if(this.rectangleData[Pindex].length > index){
+            // if(this.rectangleData[Pindex].length > index){
                 console.log(this.rectangleData[Pindex])
                 this.searchOverlap(Pindex).then(res => {
                     this.saveTimeline(Pindex);
                 })
                 
-            }
+            // }
 
             return;
             
@@ -714,7 +756,7 @@ export default {
 
             this.searchOverlap(data.Pindex, data.index).then(res => {
                 this.showEditTime = false;
-                this.$set(this.rectangleData[data.Pindex], data.index, obj);
+                this.$set(this.rectangleData, data.Pindex, res);
                 delete this.editTime[0].type;
 
                 this.saveTimeline(data.Pindex);

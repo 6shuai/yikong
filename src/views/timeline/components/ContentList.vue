@@ -170,7 +170,11 @@ export default {
             let msg = this.previewData.contentTypeId == 4 ? this.previewData.subContentsData : this.previewData;
             this.dialogVisible = true;
             this.$nextTick(() => {
-                this.$refs.contentPreview.contentPreviewData(msg);
+                try {
+                    this.$refs.contentPreview.contentPreviewData(msg);
+                } catch (error) {
+                    
+                }
             })
         },
 
