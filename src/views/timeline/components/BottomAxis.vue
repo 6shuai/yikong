@@ -23,7 +23,7 @@
             >保存 -->
             </el-button>
             <el-button 
-                v-if="!showDelete"
+                v-if="!showDelete && !showCheckbox"
                 class="tool-btn" 
                 icon="el-icon-delete" 
                 type="warning" 
@@ -33,12 +33,12 @@
             >删除时间轴
             </el-button>
             <el-button 
-                v-if="showDelete"
+                v-if="showDelete || showCheckbox"
                 class="tool-btn" 
                 type="warning" 
                 size="small"
                 :loading="deleteLoading"
-                @click="showDelete=!showDelete"
+                @click="showDelete=false;showCheckbox=false"
             >取消
             </el-button>
             <el-button 
@@ -55,6 +55,28 @@
             <div class="tool-btn checkbox-delete-all" v-if="showDelete">
                 <el-checkbox label="全选" v-model="isDeleteAll" @change="changeDeleteAll"></el-checkbox>
             </div>
+
+
+            <el-button 
+                v-if="!showCheckbox && !showDelete"
+                class="tool-btn" 
+                type="warning" 
+                size="small"
+                :loading="deleteLoading"
+                @click="showCheckbox=!showCheckbox; copyData={}"
+            >选择
+            </el-button>
+
+            <el-button 
+                v-if="showCheckbox"
+                class="tool-btn" 
+                type="warning" 
+                size="small"
+                :loading="deleteLoading"
+                @click="handleSaveCopyData"
+            >复制
+            </el-button>
+
         </div>
 
         <!-- 屏幕名称 -->
@@ -106,6 +128,9 @@
                                 class="rectangle"
                                 :class="item.contentTypeId==contentTypeId.image ? 'image' : (item.contentTypeId == contentTypeId.video ? 'video' : 'game')"
                             >
+                                <!-- 复制功能 点击选择  显示多选框 -->
+                                <copy-content v-if="showCheckbox" :data="item" @setCopyData="setCopyData"></copy-content>
+
                                 <el-popover
                                     popper-class="screen-tool-popover"
                                     placement="top-start"
@@ -114,14 +139,19 @@
                                         <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                         <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
                                         <div @click="gameSetting(item, Pindex, index)" v-if="item.logicRegion && item.contentTypeId == contentTypeId.game">游戏设置</div>
-                                        <div class="delete" @click="deleteCurrentTimeline(Pindex, index, 3)">删除</div>
+                                        <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                     </div>
 
                                     <div class="content" slot="reference" @click="selectedCurrentTimeline(item, Pindex)">
+                                        <!-- 发布时间轴时 未配置游戏提示 -->
                                         <div class="no-setting-game" v-if="noSettingGame.includes(item.id)">未配置游戏</div>
+
+                                        <!-- 封面图片 -->
                                         <div class="image-wrap" v-if="item.contentTypeId != contentTypeId.atlas">
-                                            <el-image :src="item.image" fit="cover"></el-image>
+                                            <el-image v-if="item.image" :src="item.image" fit="cover"></el-image>
                                         </div>
+
+
                                         <!-- 图集 -->
                                         <div 
                                             class="image-wrap atlas" 
@@ -135,7 +165,11 @@
                                                 fit="cover">
                                             </el-image>
                                         </div>
+
+                                        <!-- 时长 -->
                                         <div class="duration" v-if="item.duration"><font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒</div>
+
+                                        <!--title-->
                                         <div class="name">
                                             <div class="display-name">{{item.displayName}}</div>
                                         </div>
@@ -207,126 +241,161 @@
 
 <script>
 import Draggable from "vuedraggable";
-import { mapState } from 'vuex';
-import { timelineCreated, timelineList, timelineDelete, pubToScreen } from '@/api/timeline';
-import GameSetting from './GameSetting';
+import { mapState } from "vuex";
+import {
+    timelineCreated,
+    timelineList,
+    timelineDelete,
+    pubToScreen,
+} from "@/api/timeline";
+import GameSetting from "./GameSetting";
+import CopyContent  from './CopyContent';
 
 export default {
-    props: ['startTime', 'endTime'],
-    data(){
-        return{
+    props: ["startTime", "endTime"],
+    data() {
+        return {
             screenData: [],
-            timelineIds: [],                   //时间轴所有内容的id 集合
-            rectangleData: [],                    
-            screenLayout: [],                  //屏幕布局数据
-            currentActivate: {},               //当前激活的矩形数据
-            saveLoading: false,                //保存按钮loading
-            pubLoading: false,                 //发布按钮loading
-            deleteLoading: false,              //清空时间轴按钮loading
-            showEditTime: false,               //显示内容编辑时段
-            editTime: [],                      //编辑内容时段 参数
-            noSettingGame: [],                 //时间轴内的游戏 没有配置。时间轴id数组
+            timelineIds: [], //时间轴所有内容的id 集合
+            rectangleData: [],
+            screenLayout: [], //屏幕布局数据
+            currentActivate: {}, //当前激活的矩形数据
+            saveLoading: false, //保存按钮loading
+            pubLoading: false, //发布按钮loading
+            deleteLoading: false, //清空时间轴按钮loading
+            showEditTime: false, //显示内容编辑时段
+            editTime: [], //编辑内容时段 参数
+            noSettingGame: [], //时间轴内的游戏 没有配置。时间轴id数组
             contentTypeId: {
                 image: 1,
                 video: 2,
                 game: 3,
-                atlas: 4
+                atlas: 4,
             },
             sortOption: {
                 fallbackOnBody: false,
-                filter: '.rectangle',
+                filter: ".rectangle",
                 sort: false,
                 group: {
-                    name: 'componentLibrary',
-                    put: true
+                    name: "componentLibrary",
+                    put: true,
                 },
                 swapThreshold: "0.8",
-                animation: 300              
-            }, 
-            showDelete: false,               //点击删除时间轴 显示选择框
-            isDeleteAll: false,              //删除  全选
-            deleteBtnIsDisabled: true,       //删除按钮是否禁用
-            screenIds: [],                   //屏幕列表id
-            deleteIds: []
-        }
+                animation: 300,
+            },
+            showDelete: false, //点击删除时间轴 显示选择框
+            isDeleteAll: false, //删除  全选
+            deleteBtnIsDisabled: true, //删除按钮是否禁用
+            screenIds: [], //屏幕列表id
+            deleteIds: [],
+
+            showCheckbox: false, //是否显示 多选框   点击选择按钮显示
+            copyData: {}
+        };
     },
     computed: {
         ...mapState({
-            dragData: state => state.timeline.dragData
-        })
+            dragData: (state) => state.timeline.dragData,
+        }),
     },
     mounted() {
-        eventBus.$on('setScreenLayoutData', (data) => {
+        eventBus.$on("setScreenLayoutData", (data) => {
             let copyData = JSON.parse(JSON.stringify(data.data));
             this.screenLayout = copyData;
             this.screenLayout.forEach((item, index) => {
                 this.screenIds.push(item.id);
-            })
-            if(data.type === 'update'){
+            });
+            if (data.type === "update") {
                 this.updateScreen(copyData);
-            }else{
+            } else {
                 this.initTimelineList();
             }
-        })
+        });
     },
     methods: {
         //计算时间差（相差分钟）
         // var beginTime="08:31:00";
         // var endTime="21:50:00";
-        timeDifference(beginTime, endTime){ 
-            if(!beginTime) return;
-            var start1 = beginTime.split(":");
-            var startAll = parseInt(start1[0]*60) + parseInt(start1[1]);
-            
-            if(!endTime){
+        timeDifference(beginTime, endTime) {
+            if (!beginTime) return;
+            var start1 = beginTime.split(":");
+            var startAll = parseInt(start1[0] * 60) + parseInt(start1[1]);
+            if (!endTime) {
                 return startAll * 60 + parseInt(start1[2]);
             }
 
-            var end1 = endTime.split(":");
-            var endAll = parseInt(end1[0]*60) + parseInt(end1[1]);
-            
-            let minute = endAll - startAll;
+            var end1 = endTime.split(":");
+            var endAll = parseInt(end1[0] * 60) + parseInt(end1[1]);
+            let minute = endAll - startAll;
 
-            return minute * 60 - (parseInt(start1[2]) -  parseInt(end1[2]))
+            return minute * 60 - (parseInt(start1[2]) - parseInt(end1[2]));
         },
-
 
         //小于10 前面补个0
-        addPreZero(number){
-            number = number < 0 ? number=0 : number;
-            return number < 10 ? '0' + number : number;
+        addPreZero(number) {
+            number = number < 0 ? (number = 0) : number;
+            return number < 10 ? "0" + number : number;
         },
 
-        onSort(data){
+        onSort(data) {
             // console.log(data)
         },
-        
+
         //放置被拖数据时
-        onAdd(data, Pindex){
+        onAdd(data, Pindex) {
             //拖拽到当前位置的下标
             let index = data.newIndex;
 
             let obj = this.rectangleData[Pindex];
+            let currentData = obj[index];
 
-            let time = data.newIndex==0 ? this.startTime : obj[index-1].beginTime;
-            let duration = data.newIndex==0 ? 0 : obj[index-1].duration;
-            obj[index].beginTime = this.findEndTime(time, duration);
-            obj[index].endTime = this.findEndTime(obj[index].beginTime, obj[index].duration);
-            obj[index].contentDuration = obj[index].duration;
-            obj[index] = {
-                ...obj[index],
-                contentId: obj[index].id,
-                beginTime: this.findEndTime(time, duration),
-                endTime: this.findEndTime(obj[index].beginTime, obj[index].duration),
-                contentDuration: obj[index].duration
+            // 剪贴板内容
+            if(currentData.type === 'copy'){
+                this.$delete(this.rectangleData[Pindex], index);
+                currentData.list.forEach((item, i) => {              
+                    this.rectangleData[Pindex].splice(index+i , 0, item);
+                    this.onAddSetDataStarTime(item, Pindex, index+i, obj).then(res =>{
+                        if(i === currentData.list.length-1){
+
+                            this.searchOverlap(Pindex).then((res) => {
+                                this.saveTimeline(Pindex);
+                            });
+
+                        }
+                    });
+
+                })
+            }else{
+                this.onAddSetDataStarTime(currentData, Pindex, index, obj).then(res => {
+                    this.editTimeBtn(Pindex, index, "new");
+                })
             }
-            delete obj[index].id;
-            this.$set(obj, index, obj[index]);
-            this.editTimeBtn(Pindex, index, 'new');
+
+        },
+        
+        //设置拖放数据的开始时间 
+        onAddSetDataStarTime(data, Pindex, index, obj){
+            return new Promise((resolve) => {
+                let time =
+                    index == 0 ? this.startTime : obj[index - 1].beginTime;
+                let duration = index == 0 ? 0 : obj[index - 1].duration;
+
+                data.beginTime = this.findEndTime(time, duration);
+                data.endTime = this.findEndTime(data.beginTime, data.duration);
+                data = {
+                    ...data,
+                    contentId: data.id || data.contentId,
+                    contentDuration: data.duration
+                };
+                delete data.id;
+                this.$set(obj, index, data);
+                resolve(obj);
+            })
         },
 
+
         //拖拽新添加的资源 开始时间默认为前面的资源的结束时间
-        findEndTime(time, duration){
+        findEndTime(time, duration) {
             let t = time.split(":");
             //小时
             let h = Number(t[0]);
@@ -340,526 +409,550 @@ export default {
 
             //秒数转为 分钟
             let d = (duration - remainderS) / 60;
-            if(s + remainderS >= 60){
+            if (s + remainderS >= 60) {
                 s = s + remainderS - 60;
                 m = m + 1;
-            }else{
+            } else {
                 s = s + remainderS;
             }
-            if(m + d >= 60){
-                m =  m + d - 60;
+            if (m + d >= 60) {
+                m = m + d - 60;
                 h = h + 1;
-            }else {
+            } else {
                 m = m + d;
             }
-            return this.addPreZero(h) + ":" + this.addPreZero(m) + ':' + this.addPreZero(s);
+            return (
+                this.addPreZero(h) +
+                ":" +
+                this.addPreZero(m) +
+                ":" +
+                this.addPreZero(s)
+            );
         },
 
         //查询是否有重叠
-        searchOverlap(Pindex){
+        searchOverlap(Pindex) {
             return new Promise((resolve) => {
                 let obj = this.rectangleData[Pindex];
 
-                obj.sort((a, b) => {
-                    return this.timeDifference(a.beginTime) - this.timeDifference(b.beginTime)
-                })
-
-
                 obj.forEach((item, index) => {
-                     //当前资源的开始时间
+                    //当前资源的开始时间
                     let currentStartTime = item.beginTime;
 
                     //当前资源的结束时间
                     let currentEndTime = item.endTime;
-                    
+
                     //下一个资源
-                    let nextData = obj[index+1];
-                    
+                    let nextData = obj[index + 1];
+
                     //下一个资源的开始时间
-                    let nextStarTime = index === obj.length - 1 ? ' ' : nextData.beginTime;
+                    let nextStarTime =
+                        index === obj.length - 1 ? " " : nextData.beginTime;
 
                     //上一个资源
-                    let prevData = obj[index-1];
+                    let prevData = obj[index - 1];
 
                     //上一个资源的开始时间
-                    let prevStartTime = index == 0 ? ' ' : prevData.beginTime;
+                    let prevStartTime =
+                        index == 0 ? this.startTime : prevData.beginTime;
 
                     //上一个资源的结束时间
-                    let prevEndTime = index == 0 ? ' ' : this.findEndTime(prevData.beginTime, prevData.duration);
-
-                    if(index == 0){
-                        prevStartTime = this.startTime;
-                        prevEndTime = this.startTime;
-                    }
-
+                    let prevEndTime =
+                        index == 0
+                            ? this.startTime
+                            : this.findEndTime(
+                                  prevData.beginTime,
+                                  prevData.duration
+                              );
 
                     //相差时间 秒
                     let diffNum = 0;
-                    
+
                     //当前资源 开始时间 和 上一个资源时间重叠
-                    if(this.timeDifference(prevEndTime, currentStartTime) < 0){
-                        
-                        diffNum = this.timeDifference(currentStartTime, prevEndTime);
-                        console.log('重叠---------,', diffNum)
+                    if (
+                        this.timeDifference(prevEndTime, currentStartTime) < 0
+                    ) {
+                        diffNum = this.timeDifference(
+                            currentStartTime,
+                            prevEndTime
+                        );
+                        console.log("重叠---------,", diffNum);
                     }
 
-                    //当前资源 结束时间 和 下一个资源时间重叠
-                    // if(this.timeDifference(nextStarTime, currentEndTime) > 0){
-                    //     diffNum = this.timeDifference(nextStarTime, currentEndTime);
-                    //     console.log('当前资源 结束时间 和 下一个资源时间重叠---------->', diffNum)
-                    // }
-                    
                     //当前资源 开始时间 未紧跟上一个结束时间
-                    if(this.timeDifference(prevEndTime, currentStartTime) > 0){
-                        diffNum = this.timeDifference(currentStartTime, prevEndTime);
+                    if (
+                        this.timeDifference(prevEndTime, currentStartTime) > 0
+                    ) {
+                        diffNum = this.timeDifference(
+                            currentStartTime,
+                            prevEndTime
+                        );
                     }
 
                     //游戏资源
-                    console.log(item.contentTypeId, 'youxiziyuan---------------', this.contentTypeId.game, item.contentTypeId == this.contentTypeId.game)
-                    if(item.contentTypeId == this.contentTypeId.game){
+                    if (item.contentTypeId == this.contentTypeId.game) {
                         //游戏资源的开始时间 和 上一个资源重叠
-                        if(diffNum > 0){
+                        if (diffNum > 0) {
                             //把上一个资源的 结束时间改成 到当前游戏的开始时间
-                            obj[index-1] = {
+                            obj[index - 1] = {
                                 ...prevData,
                                 endTime: currentStartTime,
                                 contentDuration: prevData.duration - diffNum,
-                                duration: prevData.duration - diffNum
-                            }
+                                duration: prevData.duration - diffNum,
+                            };
 
                             //把上一个资源剩余的 时间 放到游戏的后面
                             let obj1 = obj;
-                            let j  = index + 1;
-                            for(let i = 0; i< obj1.length; i++){
-                                if(i > index && obj1[i].contentId == this.contentTypeId.game){
+                            let j = index + 1;
+                            for (let i = 0; i < obj1.length; i++) {
+                                if (
+                                    i > index &&
+                                    obj1[i].contentId == this.contentTypeId.game
+                                ) {
                                     j += 1;
-                                }else{
+                                } else {
                                     break;
                                 }
                             }
                             obj.splice(j, 0, {
                                 ...prevData,
                                 beginTime: currentEndTime,
-                                endTime: this.findEndTime(currentEndTime, diffNum),
+                                endTime: this.findEndTime(
+                                    currentEndTime,
+                                    diffNum
+                                ),
                                 duration: diffNum,
-                                contentDuration: diffNum    
-                            })
+                                contentDuration: diffNum,
+                            });
 
-                            if(prevData.duration - diffNum <= 0) obj.splice(index-1, 1);
-                        }   
+                            if (prevData.duration - diffNum <= 0)
+                                obj.splice(index - 1, 1);
+                        }
 
-                        // console.log('把下一个资源挪到 游戏资源的前面---------->', diffNum);
-                        if(diffNum < 0  && index != obj.length-1){
+                        if (diffNum < 0 && index != obj.length - 1) {
                             //把下一个资源挪到 游戏资源的前面
                             let obj1 = obj;
                             let j = index;
-                            for(let i = 0; i< obj1.length; i++){
-                                if(obj1[index+i] && obj1[index+i].contentTypeId == this.contentTypeId.game){
+                            for (let i = 0; i < obj1.length; i++) {
+                                if (
+                                    obj1[index + i] &&
+                                    obj1[index + i].contentTypeId ==
+                                        this.contentTypeId.game
+                                ) {
                                     j += 1;
-                                }else{
+                                } else {
                                     break;
                                 }
                             }
 
-                            if(!obj[j]) return;
+                            if (!obj[j]) return;
                             let temp = obj[index];
                             obj[index] = obj[j];
                             obj[j] = temp;
                             nextData = obj[index];
-                            console.log(obj, index, obj[index], j, obj[j])
-                            // currentStartTime = obj[index].beginTime;
-                            // currentEndTime = obj[index].endTime
-
+                            console.log(obj, index, obj[index], j, obj[j]);
 
                             obj[index] = {
                                 ...nextData,
                                 beginTime: prevEndTime,
-                                endTime: this.findEndTime(prevEndTime, nextData.duration)
-                            }
-                            
-
-
-
-
-                            //挪到前面后 和 当前游戏资源重叠
-                            // if(this.timeDifference(nextData.endTime, currentStartTime) < 0){
-                            //     diffNum = this.timeDifference(nextData.endTime, prevEndTime);
-                            //     console.log(nextData.endTime, currentStartTime)
-                            //     console.log('挪到前面后 和 当前游戏资源重叠 差值------------->', diffNum)
-                            //     item = {
-                            //         ...nextData,
-                            //         endTime: this.findEndTime(nextData.endTime, diffNum),
-                            //         duration: nextData.duration - diffNum
-                            //     }
-
-                            //     //剩余的 时间 放到游戏的后面
-                            //     obj.splice(index+1, 0, {
-                            //         ...prevData,
-                            //         beginTime: currentEndTime,
-                            //         endTime: this.findEndTime(currentEndTime, diffNum),
-                            //         duration: diffNum
-                            //     })
-
-                            // }
-                    
+                                endTime: this.findEndTime(
+                                    prevEndTime,
+                                    nextData.duration
+                                ),
+                            };
                         }
-
-                    }else{
+                    } else {
                         obj[index] = {
                             ...item,
-                            beginTime: this.updateStartTime(currentStartTime, diffNum),
-                            endTime: this.updateStartTime(currentEndTime, diffNum),
-                        }
-
+                            beginTime: this.updateStartTime(
+                                currentStartTime,
+                                diffNum
+                            ),
+                            endTime: this.updateStartTime(
+                                currentEndTime,
+                                diffNum
+                            ),
+                        };
                     }
-
-                    // this.$set(obj, index, item);
-
-                    console.log(obj[1])
-                    
-                })
+                });
                 obj.sort((a, b) => {
-                    return this.timeDifference(a.beginTime) - this.timeDifference(b.beginTime)
-                })
-                // this.$set(this.rectangleData, Pindex, obj);  
+                    return (
+                        this.timeDifference(a.beginTime) -
+                        this.timeDifference(b.beginTime)
+                    );
+                });
+                // this.$set(this.rectangleData, Pindex, obj);
                 resolve(obj);
-                
-            })
+            });
         },
 
-        //插入的资源
-
         //保存时间轴
-        saveTimeline(Pindex, contentIndex){
+        saveTimeline(Pindex, contentIndex) {
             let data = [];
             //contentIndex  保存单个资源
-            // if(contentIndex){
-            //     data = [this.rectangleData[Pindex][contentIndex]];
-            // }else{
-            //     this.rectangleData[Pindex].forEach((item, index) => {
-            //         data.push({
-            //             id: item.id ? item.id : null,
-            //             logicRegion: this.screenLayout[Pindex].id,
-            //             contentId: item.contentId,
-            //             beginTime: '1970-01-01 ' + item.beginTime,
-            //             duration: item.duration
-            //         })
-            //     })
-            // }
+            if (contentIndex) {
+                let obj = this.rectangleData[Pindex][contentIndex];
+                data = [
+                    {
+                        id: obj.id ? obj.id : null,
+                        logicRegion: this.screenLayout[Pindex].id,
+                        contentId: obj.contentId,
+                        beginTime: "1970-01-01 " + obj.beginTime,
+                        duration: obj.duration,
+                    },
+                ];
+            } else {
+                this.rectangleData[Pindex].forEach((item, index) => {
+                    data.push({
+                        id: item.id ? item.id : null,
+                        logicRegion: this.screenLayout[Pindex].id,
+                        contentId: item.contentId,
+                        beginTime: "1970-01-01 " + item.beginTime,
+                        duration: item.duration,
+                    });
+                });
+            }
 
-            console.log('保存时间轴------------------->', data)
+            this.saveLoading = true;
+            timelineCreated(data).then((res) => {
+                this.saveLoading = false;
+                if (res.code == this.$successCode) {
+                    this.$message.success("保存成功~");
 
-            // this.saveLoading = true;
-            // timelineCreated(data).then(res => {
-            //     this.saveLoading = false;
-            //     if(res.code == this.$successCode){
-            //         this.$message.success('保存成功~');
+                    if (contentIndex) return;
+                    let obj = this.rectangleData[Pindex];
+                    obj.forEach((item, i) => {
+                        let msg = res.obj[i];
+                        item = {
+                            ...item,
+                            id: msg.id,
+                            logicRegion: msg.logicRegion,
+                            duration: msg.duration,
+                            contentId: msg.contentId,
+                        };
+                        this.$set(obj, i, item);
+                        this.$set(
+                            this.timelineIds[item.logicRegion].ids,
+                            item.id,
+                            item.id
+                        );
+                    });
 
-            //         if(contentIndex) return;
-            //         let obj = this.rectangleData[Pindex];
-            //         obj.forEach((item, i) => {
-            //             let msg = res.obj[i];
-            //             item = {
-            //                 ...item,
-            //                 id: msg.id,
-            //                 logicRegion: msg.logicRegion,
-            //                 duration: msg.duration,
-            //                 contentId: msg.contentId
-            //             }
-            //             this.$set(obj, i, item);
-            //         })
-
-            //         this.$set(this.rectangleData, Pindex, obj);
-
-            //         console.log(this.rectangleData[Pindex])
-            //     }
-            // })
+                    this.$set(this.rectangleData, Pindex, obj);
+                }
+            });
         },
 
         //根据逻辑区域ID查询时间轴集合
-        initTimelineList(){
+        initTimelineList() {
             this.timelineIds = {};
-            for(let i = 0; i < this.screenLayout.length; i++){
+            let lastContentTime = [];
+
+            for (let i = 0; i < this.screenLayout.length; i++) {
                 var screenParams = this.screenLayout[i];
                 this.timelineIds[screenParams.id] = {
                     index: i,
-                    ids: []
+                    ids: {},
                 };
-                timelineList(screenParams.id).then(res => {
-                    this.$emit('updateScreen', res.obj[0], i);
+                timelineList(screenParams.id).then((res) => {
+                    this.$emit("updateScreen", res.obj[0], i);
                     let data = [];
-                    if(res.obj && res.obj.length){
+                    if (res.obj && res.obj.length) {
                         res.obj.forEach((item, i) => {
-
                             data.push({
                                 ...item,
                                 beginTime: item.beginTime,
                                 endTime: item.endTime,
                                 displayName: item.contentName,
-                            })
-                            this.timelineIds[item.logicRegion].ids.push(item.id);
-                        })
+                            });
+                            this.timelineIds[item.logicRegion].ids[item.id] =
+                                item.id;
+                        });
                     }
                     this.$nextTick(() => {
                         data.sort((a, b) => {
-                            return this.timeDifference(a.beginTime) - this.timeDifference(b.beginTime)
-                        })
-                        this.$set(this.rectangleData, i, data);
+                            return (
+                                this.timeDifference(a.beginTime) -
+                                this.timeDifference(b.beginTime)
+                            );
+                        });
+                        if(data.length) lastContentTime.push(data[data.length-1]);
 
-                    })
-                })
+                        if(i == this.screenLayout.length-1){
+                            this.findLastContentEndTime(lastContentTime);
+                        }
+                        this.$set(this.rectangleData, i, data);
+                    });
+                });
             }
         },
 
         //删除时间轴  资源
-        deleteCurrentTimeline(Pindex, index, id){
-            this.$confirm(`此操将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                if(id){
-                    this.deleteTimelineContent(id, Pindex, index);
-                }else{
-                    this.rectangleData[Pindex].splice(index, 1);
-                    let obj = this.rectangleData;
-                    this.rectangleData = [];
-                    this.rectangleData = obj;
-                    this.$nextTick(() => {
-                        this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
-                    })
+        deleteCurrentTimeline(Pindex, index, id) {
+            this.$confirm(
+                `此操将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning",
                 }
-            }).catch(() => {     
-            });
+            )
+                .then(() => {
+                    if (id) {
+                        this.deleteTimelineContent(id, Pindex, index);
+                    } else {
+                        this.rectangleData[Pindex].splice(index, 1);
+                        let obj = this.rectangleData;
+                        this.rectangleData = [];
+                        this.rectangleData = obj;
+                        this.$nextTick(() => {
+                            this.selectedCurrentTimeline(
+                                this.rectangleData[Pindex][0]
+                                    ? this.rectangleData[Pindex][0]
+                                    : {},
+                                Pindex
+                            );
+                        });
+                    }
+                })
+                .catch(() => {});
         },
 
         //删除时间轴 资源 接口
-        deleteTimelineContent(data, Pindex, index, type){
-            console.log('删除时间轴 资源 接口---------', data, Pindex, index, type)
-            this.deleteLoading = false;
-            let currentData = JSON.parse(JSON.stringify(this.rectangleData[Pindex][index]));
-            this.rectangleData[Pindex].splice(index, 1);
-            
-            // if(this.rectangleData[Pindex].length > index){
-                console.log(this.rectangleData[Pindex])
-                this.searchOverlap(Pindex).then(res => {
-                    this.saveTimeline(Pindex);
-                })
-                
-            // }
-
-            return;
-            
-            timelineDelete(data).then(res => {
+        deleteTimelineContent(data, Pindex, index, type) {
+            timelineDelete(data).then((res) => {
                 this.deleteLoading = false;
-                if(res.code === this.$successCode){
-                    this.$message.success('删除成功~');
-                    if(type=="checkbox"){
+                if (res.code === this.$successCode) {
+                    this.$message.success("删除成功~");
+                    if (type == "checkbox") {
+
                         for (const key in this.timelineIds) {
-                            this.rectangleData[this.timelineIds[key].index] = [];
+                            this.$set(this.rectangleData, this.timelineIds[key].index, []);
+                            this.timelineIds[key].ids = {};
                         }
-
                         this.showDelete = false;
-
-                    }else{
-                        let currentData = JSON.parse(JSON.stringify(this.rectangleData[Pindex][index]));
+                    } else {
+                        let currentData = JSON.parse(
+                            JSON.stringify(this.rectangleData[Pindex][index])
+                        );
                         this.rectangleData[Pindex].splice(index, 1);
-                        
-                        if(this.rectangleData[Pindex].length > index){
-                            this.searchOverlap(Pindex).then(res => {
-                                this.saveTimeline(Pindex);
-                            })
-                            
-                        }
+                        this.$delete(
+                            this.timelineIds[currentData.logicRegion].ids,
+                            currentData.id
+                        );
 
+                        if (this.rectangleData[Pindex].length > index) {
+                            this.searchOverlap(Pindex).then((res) => {
+                                this.saveTimeline(Pindex);
+                            });
+                        }
 
                         // if(!this.rectangleData[Pindex].length){
                         //     this.rectangleData[Pindex] = [];
                         // }
                         // this.$nextTick(() => {
                         //     this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
-                        // }) 
+                        // })
                     }
                 }
-            })
+            });
         },
 
-
         //更新屏幕布局 模块
-        updateScreen(data){
+        updateScreen(data) {
             let arr = [];
 
             let newRectangleData = [];
-            for(var i = 0; i < data.length; i++){
+            for (var i = 0; i < data.length; i++) {
                 newRectangleData.push([]);
                 arr.push(data[i]);
-                for(var j = 0; j < this.rectangleData.length; j++){
-                    if(this.rectangleData[j][0] && this.rectangleData[j][0].logicRegion == data[i].id){
+                for (var j = 0; j < this.rectangleData.length; j++) {
+                    if (
+                        this.rectangleData[j][0] &&
+                        this.rectangleData[j][0].logicRegion == data[i].id
+                    ) {
                         newRectangleData[i] = this.rectangleData[j];
                         arr[i] = {
                             ...this.rectangleData[j][0],
-                            ...data[i]
-                        }
+                            ...data[i],
+                        };
                     }
                 }
             }
 
             this.rectangleData = newRectangleData;
-            this.$emit('updateScreen', arr);
+            this.$emit("updateScreen", arr);
         },
 
         //选中时间轴里的 资源
-        selectedCurrentTimeline(data, Pindex){
+        selectedCurrentTimeline(data, Pindex) {
             let copyData = JSON.parse(JSON.stringify(data));
             delete copyData.x;
             delete copyData.displayName;
-            this.$emit('updateScreen', copyData, Pindex);
+            this.$emit("updateScreen", copyData, Pindex);
             this.setCurrentActivate(data, Pindex);
         },
 
         //设置当前激活的矩形数据
-        setCurrentActivate(data, Pindex){
+        setCurrentActivate(data, Pindex) {
             this.currentActivate = {
                 ...data,
-                Pindex
-            }
+                Pindex,
+            };
         },
 
         //点击编辑时段  显示弹窗
-        editTimeBtn(Pindex, index, type){
-            this.editTime = [{
-                startTime: this.rectangleData[Pindex][index].beginTime,
-                Pindex,
-                index,
-                ...this.rectangleData[Pindex][index],
-                type
-            }]
+        editTimeBtn(Pindex, index, type) {
+            this.editTime = [
+                {
+                    startTime: this.rectangleData[Pindex][index].beginTime,
+                    Pindex,
+                    index,
+                    ...this.rectangleData[Pindex][index],
+                    type,
+                },
+            ];
             this.showEditTime = true;
         },
 
         //编辑内容时段
-        updateContentTime(){
+        updateContentTime() {
             let data = this.editTime[0];
-            let obj = JSON.parse(JSON.stringify(this.rectangleData[data.Pindex][data.index]));
+            let obj = JSON.parse(
+                JSON.stringify(this.rectangleData[data.Pindex][data.index])
+            );
             obj.duration = data.duration;
             obj.beginTime = data.beginTime;
-            
-            if(!obj.beginTime){
-                this.$message.warning('请选择开始时间~');
-                return
-            }else if(!obj.duration){
-                this.$message.warning('请填写时长~');
-                return
+
+            if (!obj.beginTime) {
+                this.$message.warning("请选择开始时间~");
+                return;
+            } else if (!obj.duration) {
+                this.$message.warning("请填写时长~");
+                return;
             }
             obj.endTime = this.findEndTime(obj.beginTime, obj.duration);
             this.$set(this.rectangleData[data.Pindex], data.index, obj);
 
-            this.searchOverlap(data.Pindex, data.index).then(res => {
+            this.searchOverlap(data.Pindex, data.index).then((res) => {
                 this.showEditTime = false;
                 this.$set(this.rectangleData, data.Pindex, res);
                 delete this.editTime[0].type;
 
                 this.saveTimeline(data.Pindex);
-            })
-            
+            });
         },
 
         //关闭编辑时段
-        closeEditTime(){
+        closeEditTime() {
             let { Pindex, index } = this.editTime[0];
-            if(this.editTime[0].type == 'new'){
+            if (this.editTime[0].type == "new") {
                 this.rectangleData[Pindex].splice(index, 1);
             }
             this.showEditTime = false;
         },
 
         //发布到终端
-        PubTerminal(){
+        PubTerminal() {
             let data = `?containerId=${this.$route.params.id}`;
             this.pubLoading = true;
-            pubToScreen(data).then(res => {
+            pubToScreen(data).then((res) => {
                 this.pubLoading = false;
-                if(res.code === this.$successCode){
+                if (res.code === this.$successCode) {
                     this.$message.success(res.message);
-                }else if(res.obj){
+                } else if (res.obj) {
                     this.noSettingGame = res.obj;
                 }
-            })
+            });
         },
 
         //显示游戏设置
-        gameSetting(data, Pindex, index){
+        gameSetting(data, Pindex, index) {
             let obj = {
                 configList: data.configList,
                 timelineId: data.id,
-                applicationId: data.applicationId
-            }
-            
+                applicationId: data.applicationId,
+            };
+
             this.editTime = {
                 Pindex,
                 index,
                 ...this.rectangleData[Pindex][index],
-            }
+            };
 
             this.$refs.gameSetting.showGameSetting(obj);
         },
 
         //游戏配置成功
-        gameSettingSuccess(id){
+        gameSettingSuccess(id) {
             let index = this.noSettingGame.indexOf(id);
             this.noSettingGame.splice(index, 1);
             this.saveTimeline(this.editTime.Pindex, this.editTime.index);
         },
 
         //删除时间轴 - 全选按钮
-        changeDeleteAll(){
-            if(this.isDeleteAll){
+        changeDeleteAll() {
+            if (this.isDeleteAll) {
                 this.deleteIds = this.screenIds;
                 this.deleteBtnIsDisabled = false;
-            }else{
+            } else {
                 this.deleteIds = [];
                 this.deleteBtnIsDisabled = true;
             }
         },
 
         //删除时间轴 - 选择多选框
-        changeDelte(){
-            if(this.deleteIds.length != this.screenIds.length){
+        changeDelte() {
+            if (this.deleteIds.length != this.screenIds.length) {
                 this.isDeleteAll = false;
-            }else{
+            } else {
                 this.isDeleteAll = true;
             }
 
-            if(this.deleteIds.length){
+            if (this.deleteIds.length) {
                 this.deleteBtnIsDisabled = false;
-            }else{
+            } else {
                 this.deleteBtnIsDisabled = true;
             }
         },
 
         //删除时间轴 - 点击确定按钮
-        deleteTimeline(){
+        deleteTimeline() {
             let ids = [];
             this.deleteIds.forEach((item, index) => {
-                ids = ids.concat(this.timelineIds[item].ids);
-            })
-            if(!ids.length){
-                this.$message.warning('当前没有可删除的时间轴~')
-                return
-            }
-            this.$confirm(`此操作将删除已选时间轴的全部资源, 是否继续?`, '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
+                for (let key in this.timelineIds[item].ids) {
+                    ids.push(this.timelineIds[item].ids[key]);
+                }
+            });
 
-                this.deleteLoading = true;
-                this.deleteTimelineContent(ids.join(','), null, null, 'checkbox');
-            }).catch(() => {})
+            if (!ids.length) {
+                this.$message.warning("当前没有可删除的时间轴~");
+                return;
+            }
+            this.$confirm(
+                `此操作将删除已选时间轴的全部资源, 是否继续?`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning",
+                }
+            )
+                .then(() => {
+                    this.deleteLoading = true;
+                    this.deleteTimelineContent(
+                        ids.join(","),
+                        null,
+                        null,
+                        "checkbox"
+                    );
+                })
+                .catch(() => {});
         },
 
         //
-        updateStartTime(time, duration){
+        updateStartTime(time, duration) {
             let t = time.split(":");
             //小时
             let h = Number(t[0]);
@@ -873,40 +966,104 @@ export default {
 
             //秒数转为 分钟
             let d = (duration - remainderS) / 60;
-            if(s + remainderS >= 60){
+            if (s + remainderS >= 60) {
                 s = s + remainderS - 60;
                 m = m + 1;
-            }else if(s + remainderS < 0){
-                s = 60 - Math.abs(s+remainderS);
+            } else if (s + remainderS < 0) {
+                s = 60 - Math.abs(s + remainderS);
                 m = m - 1;
-            }else{
+            } else {
                 s = s + remainderS;
             }
-            if(m + d >= 60){
-                m =  m + d - 60;
+            if (m + d >= 60) {
+                m = m + d - 60;
                 h = h + 1;
-            }else if(m + d < 0){
-                m =  60 - Math.abs(m+d);
+            } else if (m + d < 0) {
+                m = 60 - Math.abs(m + d);
                 h = h - 1;
-            }else {
+            } else {
                 m = m + d;
             }
-            return this.addPreZero(h) + ":" + this.addPreZero(m) + ':' + this.addPreZero(s);
+            return (
+                this.addPreZero(h) +
+                ":" +
+                this.addPreZero(m) +
+                ":" +
+                this.addPreZero(s)
+            );
         },
 
         //小于10 前面补个0
-        addPreZero(number){
-            return number < 10 ? '0' + number : number;
+        addPreZero(number) {
+            return number < 10 ? "0" + number : number;
         },
-        
+
+        //查找 时间轴内 最后一个内容的 结束时间
+        findLastContentEndTime(data){
+            let lastTime = '';
+            if(data.length){
+                data.sort((a, b) => {
+                    return (
+                        this.timeDifference(a.endTime) -
+                        this.timeDifference(b.endTime)
+                    );
+                });
+                lastTime = data[data.length-1].endTime;
+            }
+
+            localStorage.timelineContentLastTime = lastTime;
+        },
+
+
+        //选择时间轴内容 复制
+        setCopyData(msg){
+            if(msg.checked){
+                this.copyData[msg.id] = msg.data;
+            }else{
+                this.$delete(this.copyData, msg.id);
+            }
+            
+        },
+
+        //保存复制的内容
+        handleSaveCopyData(){
+            let data = [];
+            let totalDuration = 0;
+            let displayName = '';
+            for(let key in this.copyData){
+                this.$delete(this.copyData[key], 'id');
+                data.push(this.copyData[key]);
+                totalDuration += this.copyData[key].duration;
+                displayName += this.copyData[key].displayName;
+            }
+            data.sort((p, n) => {
+                return this.timeDifference(p.beginTime) - this.timeDifference(n.beginTime)
+            })
+            let obj = {
+                displayName: displayName,
+                duration: totalDuration,
+                type: 'copy',
+                list: data
+            }
+            
+            let timelineCopyDataList = localStorage.timelineCopyDataList ? JSON.parse(localStorage.timelineCopyDataList) : [];
+
+            timelineCopyDataList.push(obj);
+
+            localStorage.timelineCopyDataList = JSON.stringify(timelineCopyDataList);
+
+            this.$message.success('复制成功, 请在剪贴板查看~');
+            this.showCheckbox = false;
+        }
+
     },
     components: {
         Draggable,
-        GameSetting
+        GameSetting,
+        CopyContent
     },
-    beforeDestroy () {
-        eventBus.$off('setScreenLayoutData');
-    },
-}
-
+    beforeDestroy() {
+        eventBus.$off("setScreenLayoutData");
+    }
+};
 </script>

@@ -62,3 +62,13 @@ export function copyTimelineContainer(data) { return post(`/timeline/copyTimelin
 //保存游戏配置
 export function timelineSaveGameConfig(data) { return post('/timeline/assembly', data) }
 
+
+
+//定时发布 列表
+export function timeIntervalList(data) { return get(`/timeline/timing/${data}`) }
+
+//定时发布 选择屏幕 和 时间  发布
+export function timeIntervalPub(data, isConfirm) { return post(`/timeline/timing?isConfirm=${isConfirm}`, data) }
+
+//定时发布 删除
+export function timeIntervalDelete(data) { return del(`/timeline/timing/${data}`) }

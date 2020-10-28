@@ -80,6 +80,21 @@
                             <el-form-item label="描述">
                                 <span>{{resData.description}}</span>
                             </el-form-item>
+
+                            <el-form-item label="定时时间轴">
+                                <el-card
+                                    class="box-card timeline-list"
+                                    :body-style="{ padding: '0px' }"
+                                    v-for="item in resData.timelineTimings"
+                                    :key="item.id"
+                                >
+                                    <div class="screen-info">
+                                        <el-link type="primary"  @click="$router.push(`/timeline/details/${item.containerId}`)"><i class="el-icon-link"></i>{{item.containerName}}</el-link>
+                                        <div class="time">{{ item.playTime }} - {{ item.endTime }}</div>
+                                    </div>
+                                </el-card>
+                            </el-form-item>
+
                         </el-form>
                     </div>
 

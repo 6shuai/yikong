@@ -181,12 +181,14 @@
                     width: 100px;
                     height: 78px;
                     margin-right: 10px;
+                    position: relative;
                     &.video{
                         background: #8484ff;
                     }
                     &.game{
                         background: #f2aa3d;
                     }
+
                     .content{
                         width: 100%;
                         font-size: 10px;
@@ -346,5 +348,6 @@
         }
     }
 }
+
 
 

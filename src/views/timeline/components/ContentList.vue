@@ -7,6 +7,7 @@
                 <el-radio-button :label="2">视频</el-radio-button>
                 <el-radio-button :label="4">图集</el-radio-button>
                 <el-radio-button :label="3">游戏</el-radio-button>
+                <el-radio-button :label="5">剪贴板</el-radio-button>
             </el-radio-group>
             <el-input clearable size="small" placeholder="资源名称" v-model="params.keyword" @input="filtration"></el-input>
             <el-select v-if="params.radio!=3" v-model="contentOwner" size="small" clearable filterable @change="init" placeholder="请选择品牌">
@@ -17,9 +18,23 @@
         <div v-if="contentData.length">
 
             <draggable :options="dragOption" :list="contentData" :clone="onClone" :group="{ name: 'componentLibrary', pull: 'clone', put: false }" ghostClass="ghost" dragClass="drag-module">
-                <div class="box-card content-list" ref="contentList" v-for="(item, index) in contentData" :key="item.id" @click="handlePreview(item)" :title="item.displayName">
+                <div 
+                    class="box-card content-list" 
+                    ref="contentList" 
+                    v-for="(item, index) in contentData" 
+                    :key="item.id" 
+                    @click="handlePreview(item)" 
+                    :title="item.displayName"
+                >
                     <div class="cover"></div>
-                    <div v-if="item.subContentsData && item.contentTypeId == 4" class="atlas" :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`">
+
+                    <!-- 剪贴板 -->
+                    <div class="atlas" v-if="item.list && params.radio == 5" :class="`atlas-${item.list.length > 4 ? '4' : item.list.length}`">
+                        <el-image fit="cover" class="img" v-for="(img, index) in item.list" :key="index" :src="img.image"></el-image>
+                    </div>
+
+                    <!-- 图集 -->
+                    <div v-else-if="item.subContentsData && item.contentTypeId == 4" class="atlas" :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`">
                         <el-image fit="cover" class="img" v-for="(img, index) in filterVideo(item.subContentsData)" v-if="img.contentType==1 && index <=3" :key="index" :src="img.contentPath"></el-image>
                     </div>
                     <el-image v-else fit="cover" class="img" :src="item.image"></el-image>
@@ -30,6 +45,7 @@
                         </p>
                     </div>
                 </div>
+
             </draggable>
 
         </div>
@@ -117,6 +133,9 @@ export default {
                 case 4:
                     this.atlasContentList();
                     break;
+                case 5:
+                    this.clipboardList();
+                    break;
                 default:
                     this.filtration();
                     break;
@@ -191,6 +210,14 @@ export default {
             }
             return data
         },
+
+        //剪贴板内容
+        clipboardList(){
+            let data = localStorage.timelineCopyDataList ? JSON.parse(localStorage.timelineCopyDataList) : [];
+
+            this.contentData = data;
+            
+        }
     },
     components: {
         ContentPreview,

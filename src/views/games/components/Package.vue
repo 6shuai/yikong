@@ -22,7 +22,7 @@
                             label-width="120px"
                         >
                             <el-form-item label="发布时间">
-                                <span>{{item.releaseTime}}</span>
+                                <span>{{formatTime(item.releaseTime)}}</span>
                             </el-form-item>
                             <el-form-item label="发布信息">
                                 <span>{{item.description}}</span>
@@ -128,9 +128,11 @@
 </template>
 <script>
 import { uploadGamePackage } from '@/utils';
+import { timeDisposeTool } from '@/mixins';
 import { packageCreated, packageList, packageSubmitTest, packageOnline } from '@/api/game';
 import SelectPackageVersion from './SelectPackageVersion';
 export default {
+    mixins: [timeDisposeTool],
     data(){
         return{
             dataLoading: false,

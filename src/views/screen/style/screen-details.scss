@@ -96,6 +96,19 @@
                 .el-link{
                     line-height: 1;
                 }
+
+                .timeline-list{
+                    margin-bottom: 10px;
+                    padding-left: 5px;
+                    padding-bottom: 5px;
+                    &:last-child{
+                        margin: 0;
+                    }
+                    .time{
+                        line-height: 1;
+                    }
+                }
+
             }
             .el-form-item{
                 margin: 0;

@@ -4,6 +4,7 @@
             <el-tab-pane label="屏幕布局" name="1"></el-tab-pane>
             <el-tab-pane label="资源选择" name="2"></el-tab-pane>
             <el-tab-pane label="投放屏幕" name="3"></el-tab-pane>
+            <el-tab-pane label="定时发布" name="4"></el-tab-pane>
         </el-tabs>
 
         <div class="tabs-content">
@@ -11,10 +12,13 @@
             <screen-layout :timeData="timeData" v-show="tabActive==1"></screen-layout>
 
             <!-- 资源选择 -->
-            <content-list v-show="tabActive==2"></content-list>
+            <content-list v-if="tabActive==2"></content-list>
             
             <!-- 投放屏幕 -->
-            <screen-list v-show="tabActive==3"></screen-list>
+            <screen-list v-if="tabActive==3"></screen-list>
+
+            <!-- 定时发布 -->
+            <time-interval v-if="tabActive==4"></time-interval>
         </div>
 
 
@@ -24,6 +28,7 @@
 import ScreenLayout from './ScreenLayout';
 import ContentList from './ContentList';
 import ScreenList from './ScreenList';
+import TimeInterval from './TimeInterval';
 export default {
     props: ['timeData'],
     data(){
@@ -37,7 +42,8 @@ export default {
     components: {
         ScreenLayout,
         ContentList,
-        ScreenList
+        ScreenList,
+        TimeInterval
     }
 }
 </script>
