@@ -1,5 +1,5 @@
 <template>
-    <div class="copy-content">
+    <div class="copy-content" @click.prevent="checked=!checked; handleCheckChange();">
         <el-checkbox  
             v-model="checked" 
             @change="handleCheckChange">
@@ -16,8 +16,6 @@ export default {
     },
     methods: {
         handleCheckChange(){
-            console.log(this.checked)
-            console.log(this.data);
             this.$emit('setCopyData', {
                 checked: this.checked,
                 id: this.data.id,

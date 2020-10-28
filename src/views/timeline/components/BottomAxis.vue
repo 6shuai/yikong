@@ -63,7 +63,7 @@
                 type="warning" 
                 size="small"
                 :loading="deleteLoading"
-                @click="showCheckbox=!showCheckbox; copyData={}"
+                @click="showCheckbox=!showCheckbox; copyData={}; copyBtnIsDisabled=true"
             >选择
             </el-button>
 
@@ -72,6 +72,7 @@
                 class="tool-btn" 
                 type="warning" 
                 size="small"
+                :disabled="copyBtnIsDisabled"
                 :loading="deleteLoading"
                 @click="handleSaveCopyData"
             >复制
@@ -290,6 +291,7 @@ export default {
             deleteIds: [],
 
             showCheckbox: false, //是否显示 多选框   点击选择按钮显示
+            copyBtnIsDisabled: false,      //复制按钮 是否禁用
             copyData: {}
         };
     },
@@ -1022,7 +1024,15 @@ export default {
             }else{
                 this.$delete(this.copyData, msg.id);
             }
+
+            let arr = Object.keys(JSON.parse(JSON.stringify(this.copyData)));
+            if(arr.length){
+                this.copyBtnIsDisabled = false;
+            }else{
+                this.copyBtnIsDisabled = true;
+            }
             
+
         },
 
         //保存复制的内容
