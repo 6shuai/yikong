@@ -22,6 +22,7 @@ const moduleMap = {
 	'Role': 'system/role/index',						  //角色管理
 	'Member': 'system/member/index',				      //成员管理
 	'Organization': 'system/organizations/index',		  //品牌列表
+	'OrganizationType': 'system/organizationType/index', //组织类型列表
 	'User': 'user/Center'								  //个人中心
 }
 

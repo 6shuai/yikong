@@ -95,3 +95,11 @@ export function brandOrganizationDetail(data) { return get('/system/member/organ
 export function brandOrganizationEdit(data) { return put('system/member/organization/', data); }
 
 
+//组织类型  列表
+export function organizationTypeList(data) { return get('/organizationType/', data); }
+
+//组织类型  添加 或 修改
+export function organizationTypeCreated(data) { return post('/organizationType/', data); }
+
+//组织类型  删除
+export function organizationTypeDelete(data) { return del(`/organizationType/${data}`); }
