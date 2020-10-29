@@ -77,11 +77,11 @@
             v-if="resData.id"
         >
             <!-- 底部时间轴 -->
-            <bottom-axis
+            <axis
                 @updateScreen="updateScreen"
                 :startTime="startTime"
                 :endTime="endTime"
-            ></bottom-axis>
+            ></axis>
         </div>
 
         <!-- 预览 -->
@@ -115,7 +115,7 @@
 </template>
 <script>
 import LeftTabs from "@/views/timeline/components/DetailTabs";
-import BottomAxis from "@/views/timeline/components/BottomAxis";
+import Axis from "@/views/timeline/components/Axis";
 import ImportTimeline from "@/views/timeline/components/ImportTimeline";
 import {
     timelineContainerDelete,
@@ -207,7 +207,7 @@ export default {
     },
     components: {
         LeftTabs,
-        BottomAxis,
+        Axis,
         ImportTimeline,
     },
 };

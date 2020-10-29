@@ -12,16 +12,6 @@
                 @click="PubTerminal"
             >发布到终端
             </el-button>
-            <!-- 改为自动保存 -->
-            <!-- <el-button 
-                class="tool-btn" 
-                icon="el-icon-folder-checked" 
-                type="info" 
-                size="small"
-                :loading="saveLoading"
-                @click="saveTimeline"
-            >保存 -->
-            </el-button>
             <el-button 
                 v-if="!showDelete && !showCheckbox"
                 class="tool-btn" 
@@ -109,10 +99,10 @@
                         class="screen-item-wrap"
                         style="width: 100%"
                         v-for="(item, Pindex) in screenLayout"
-                        v-if="rectangleData[Pindex]"
                         :key="Pindex"
                     >   
                         <draggable 
+                            v-if="rectangleData[Pindex]"
                             class="screen-item draggable widget-form-list"
                             ghostClass="ghost"
                             :options="sortOption" 

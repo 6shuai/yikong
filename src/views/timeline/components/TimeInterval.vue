@@ -8,13 +8,13 @@
                 @click="addScreenBtn"
                 >定时发布
             </el-button>
-            <div class="clearfix screen-wrap" v-if="screenListLoading">
+            <div class="clearfix screen-wrap" v-loading="screenListLoading">
                 <el-card
                     class="box-card screen-list"
                     :body-style="{ padding: '0px' }"
                     v-for="(item, index) in resData"
                     :key="index"
-                    @click.native="showCurrentScreenTimelineList(item.screenId)"
+                    @click.native.prevent="showCurrentScreenTimelineList(item.screenId)"
                 >
                     <div class="screen-info">
                         <div class="title">
