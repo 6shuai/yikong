@@ -8,12 +8,13 @@
                 @click="addScreenBtn"
                 >定时发布
             </el-button>
-            <div class="clearfix screen-wrap">
+            <div class="clearfix screen-wrap" v-if="screenListLoading">
                 <el-card
                     class="box-card screen-list"
                     :body-style="{ padding: '0px' }"
                     v-for="(item, index) in resData"
                     :key="index"
+                    @click.native="showCurrentScreenTimelineList(item.screenId)"
                 >
                     <div class="screen-info">
                         <div class="title">
@@ -108,15 +109,41 @@
                 >
             </span>
         </el-dialog>
+
+        <!-- 屏幕对应的 定时时间轴列表 -->
+        <el-dialog
+            width="500px"
+            title="定时时间轴列表"
+            :visible.sync="showTimelineList"
+            @close="showTimelineList = false"
+            append-to-body
+        >
+            <div class="clearfix screen-wrap" v-loading="timelineListLoading">
+                <el-card
+                    class="box-card screen-list"
+                    :body-style="{ padding: '0px' }"
+                    v-for="(item, index) in timelineListData"
+                    :key="index"
+                >
+                    <div class="screen-info">
+                        <div class="title">
+                            {{ item.containerName }}
+                        </div>
+                    </div>
+                </el-card>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
 <script>
 import { screenList } from "@/api/screen";
-import { timeIntervalList, timeIntervalPub, timeIntervalDelete } from "@/api/timeline";
+import { timeIntervalList, timeIntervalPub, timeIntervalDelete, timeIntervalScreentTimelineList } from "@/api/timeline";
 export default {
     data() {
         return {
+            screenListLoading: false,
             resData: [], //已添加的屏幕列表
             showAddScreen: false, //添加屏幕 弹框
             screenData: [], //所有的屏幕列表
@@ -130,6 +157,10 @@ export default {
                 selectedId: [],
             },
             btnLoading: false,
+
+            showTimelineList: false,         //是否显示 屏幕对应的定时时间轴列表
+            timelineListLoading: true,
+            timelineListData: []
         };
     },
     mounted() {
@@ -138,7 +169,9 @@ export default {
     methods: {
         //已添加的屏幕列表
         init() {
+            this.screenListLoading = true;
             timeIntervalList(this.$route.params.id).then((res) => {
+                this.screenListLoading = false;
                 if (res.code === this.$successCode) {
                     this.resData = res.obj;
                 }
@@ -244,6 +277,18 @@ export default {
                 })
             })
         },
+
+        //点击屏幕 显示该屏幕的定时 时间轴列表
+        showCurrentScreenTimelineList(id){
+            this.showTimelineList = true;
+            this.timelineListLoading = true;
+            timeIntervalScreentTimelineList(id).then(res => {
+                this.timelineListLoading = false;
+                if(res.code === this.$successCode){
+                    this.timelineListData = res.obj;
+                }
+            })
+        }
     },
 };
 </script>

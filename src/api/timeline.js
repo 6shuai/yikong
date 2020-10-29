@@ -64,8 +64,11 @@ export function timelineSaveGameConfig(data) { return post('/timeline/assembly',
 
 
 
-//定时发布 列表
+//定时发布 屏幕列表
 export function timeIntervalList(data) { return get(`/timeline/timing/${data}`) }
+
+//定时发布 某个屏幕的对应的 定时时间轴列表
+export function timeIntervalScreentTimelineList(data) { return get(`/timeline/timingsByScreenId/${data}`) }
 
 //定时发布 选择屏幕 和 时间  发布
 export function timeIntervalPub(data, isConfirm) { return post(`/timeline/timing?isConfirm=${isConfirm}`, data) }

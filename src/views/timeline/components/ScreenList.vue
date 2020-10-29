@@ -8,7 +8,7 @@
                 @click="addScreenBtn"
                 >添加屏幕
             </el-button>
-            <div class="clearfix screen-wrap">
+            <div class="clearfix screen-wrap" v-loading="screenListLoading">
                 <el-card
                     class="box-card screen-list"
                     :body-style="{ padding: '0px' }"
@@ -103,6 +103,7 @@ import { screenList } from "@/api/screen";
 export default {
     data() {
         return {
+            screenListLoading: false,
             resData: [], //已添加的屏幕列表
             showAddScreen: false, //添加屏幕 弹框
             haveAdd: false, //是否点击了添加屏幕  如果点击了， 关闭弹框时会重新调init()
@@ -121,7 +122,9 @@ export default {
     methods: {
         //已添加的屏幕列表
         init() {
+            this.screenListLoading = true;
             timelinePutScreenList(this.$route.params.id).then((res) => {
+                this.screenListLoading = false;
                 if (res.code === this.$successCode) {
                     this.resData = res.obj;
                 }

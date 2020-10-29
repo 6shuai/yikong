@@ -10,6 +10,7 @@
             v-if="currentData.contentTypeId == 2" 
             :src="currentData.contentPath || currentData.image" 
             controls="controls"
+            :loop="true"
             :autoplay="true" 
         >
         </video>

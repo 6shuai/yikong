@@ -62,7 +62,12 @@
 
             <!-- 视频 -->
             <div class="preview" v-if="previewData.contentTypeId == 2">
-                <video :src="previewData.contentPath" controls="controls"></video>
+                <video 
+                    :src="previewData.contentPath" 
+                    controls="controls"
+                    :autoplay="true"
+                    :loop="true"
+                ></video>
             </div>
 
             <!-- 图集 -->

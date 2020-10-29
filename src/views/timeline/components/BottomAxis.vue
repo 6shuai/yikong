@@ -250,7 +250,7 @@ import {
     pubToScreen,
 } from "@/api/timeline";
 import GameSetting from "./GameSetting";
-import CopyContent  from './CopyContent';
+import CopyContent from "./CopyContent";
 
 export default {
     props: ["startTime", "endTime"],
@@ -291,8 +291,8 @@ export default {
             deleteIds: [],
 
             showCheckbox: false, //是否显示 多选框   点击选择按钮显示
-            copyBtnIsDisabled: false,      //复制按钮 是否禁用
-            copyData: {}
+            copyBtnIsDisabled: false, //复制按钮 是否禁用
+            copyData: {},
         };
     },
     computed: {
@@ -352,31 +352,36 @@ export default {
             let currentData = obj[index];
 
             // 剪贴板内容
-            if(currentData.type === 'copy'){
+            if (currentData.type === "copy") {
                 this.$delete(this.rectangleData[Pindex], index);
-                currentData.list.forEach((item, i) => {              
-                    this.rectangleData[Pindex].splice(index+i , 0, item);
-                    this.onAddSetDataStarTime(item, Pindex, index+i, obj).then(res =>{
-                        if(i === currentData.list.length-1){
-
-                            this.searchOverlap(Pindex).then((res) => {
+                this.$nextTick(() => {
+                    currentData.list.forEach((item, i) => {
+                        this.rectangleData[Pindex].splice(index + i, 0, item);
+                        this.onAddSetDataStarTime(
+                            item,
+                            Pindex,
+                            index + i,
+                            obj
+                        ).then((res) => {
+                                this.searchOverlap(Pindex).then((res) => {});
+                            if (i === currentData.list.length - 1) {
                                 this.saveTimeline(Pindex);
-                            });
-
-                        }
+                                
+                            }
+                        });
                     });
-
                 })
-            }else{
-                this.onAddSetDataStarTime(currentData, Pindex, index, obj).then(res => {
-                    this.editTimeBtn(Pindex, index, "new");
-                })
+            } else {
+                this.onAddSetDataStarTime(currentData, Pindex, index, obj).then(
+                    (res) => {
+                        this.editTimeBtn(Pindex, index, "new");
+                    }
+                );
             }
-
         },
-        
-        //设置拖放数据的开始时间 
-        onAddSetDataStarTime(data, Pindex, index, obj){
+
+        //设置拖放数据的开始时间
+        onAddSetDataStarTime(data, Pindex, index, obj) {
             return new Promise((resolve) => {
                 let time =
                     index == 0 ? this.startTime : obj[index - 1].beginTime;
@@ -387,14 +392,13 @@ export default {
                 data = {
                     ...data,
                     contentId: data.id || data.contentId,
-                    contentDuration: data.duration
+                    contentDuration: data.duration,
                 };
                 delete data.id;
                 this.$set(obj, index, data);
                 resolve(obj);
-            })
+            });
         },
-
 
         //拖拽新添加的资源 开始时间默认为前面的资源的结束时间
         findEndTime(time, duration) {
@@ -437,7 +441,10 @@ export default {
             return new Promise((resolve) => {
                 let obj = this.rectangleData[Pindex];
 
-                obj.forEach((item, index) => {
+                for (let key in obj) {
+                    let item = obj[key];
+                    let index = Number(key);
+
                     //当前资源的开始时间
                     let currentStartTime = item.beginTime;
 
@@ -523,6 +530,7 @@ export default {
                                     currentEndTime,
                                     diffNum
                                 ),
+                                id: null,
                                 duration: diffNum,
                                 contentDuration: diffNum,
                             });
@@ -548,20 +556,42 @@ export default {
                             }
 
                             if (!obj[j]) return;
-                            let temp = obj[index];
-                            obj[index] = obj[j];
-                            obj[j] = temp;
-                            nextData = obj[index];
-                            console.log(obj, index, obj[index], j, obj[j]);
 
-                            obj[index] = {
-                                ...nextData,
-                                beginTime: prevEndTime,
-                                endTime: this.findEndTime(
-                                    prevEndTime,
-                                    nextData.duration
+                            let count = this.timeDifference(
+                                prevEndTime,
+                                currentStartTime
+                            );
+
+                            //时间段  小于 这个资源的秒数   修改这个资源的结束时间  和 秒数
+                            if (count <= obj[j].duration) {
+                                obj[j] = {
+                                    ...obj[j],
+                                    endTime: this.findEndTime(
+                                        obj[j].beginTime,
+                                        obj[j].duration - count
+                                    ),
+                                    duration: obj[j].duration - count,
+                                    contentDuration: obj[j].duration - count,
+                                };
+                            }
+
+                            //单独创建一个资源  插入到游戏资源前面
+                            console.log(obj[j], obj[j].duration)
+                            obj.splice(index, 0, {
+                                ...obj[j],
+                                beginTime: this.findEndTime(
+                                    currentStartTime,
+                                    -count
                                 ),
-                            };
+                                endTime: currentStartTime,
+                                id: obj[j].duration ? null : obj[j].id,
+                                duration: count,
+                                contentDuration: count,
+                            });
+                            console.log(obj[j+1], obj[j+1].duration)
+                            if(!obj[j+1].duration){
+                                this.$delete(obj, j+1);
+                            }
                         }
                     } else {
                         obj[index] = {
@@ -576,7 +606,8 @@ export default {
                             ),
                         };
                     }
-                });
+                }
+
                 obj.sort((a, b) => {
                     return (
                         this.timeDifference(a.beginTime) -
@@ -678,9 +709,10 @@ export default {
                                 this.timeDifference(b.beginTime)
                             );
                         });
-                        if(data.length) lastContentTime.push(data[data.length-1]);
+                        if (data.length)
+                            lastContentTime.push(data[data.length - 1]);
 
-                        if(i == this.screenLayout.length-1){
+                        if (i == this.screenLayout.length - 1) {
                             this.findLastContentEndTime(lastContentTime);
                         }
                         this.$set(this.rectangleData, i, data);
@@ -728,9 +760,12 @@ export default {
                 if (res.code === this.$successCode) {
                     this.$message.success("删除成功~");
                     if (type == "checkbox") {
-
                         for (const key in this.timelineIds) {
-                            this.$set(this.rectangleData, this.timelineIds[key].index, []);
+                            this.$set(
+                                this.rectangleData,
+                                this.timelineIds[key].index,
+                                []
+                            );
                             this.timelineIds[key].ids = {};
                         }
                         this.showDelete = false;
@@ -743,19 +778,12 @@ export default {
                             this.timelineIds[currentData.logicRegion].ids,
                             currentData.id
                         );
-
+                        console.log(this.rectangleData[Pindex].length, index);
                         if (this.rectangleData[Pindex].length > index) {
                             this.searchOverlap(Pindex).then((res) => {
                                 this.saveTimeline(Pindex);
                             });
                         }
-
-                        // if(!this.rectangleData[Pindex].length){
-                        //     this.rectangleData[Pindex] = [];
-                        // }
-                        // this.$nextTick(() => {
-                        //     this.selectedCurrentTimeline(this.rectangleData[Pindex][0] ? this.rectangleData[Pindex][0] : {}, Pindex);
-                        // })
                     }
                 }
             });
@@ -1001,79 +1029,82 @@ export default {
         },
 
         //查找 时间轴内 最后一个内容的 结束时间
-        findLastContentEndTime(data){
-            let lastTime = '';
-            if(data.length){
+        findLastContentEndTime(data) {
+            let lastTime = "";
+            if (data.length) {
                 data.sort((a, b) => {
                     return (
                         this.timeDifference(a.endTime) -
                         this.timeDifference(b.endTime)
                     );
                 });
-                lastTime = data[data.length-1].endTime;
+                lastTime = data[data.length - 1].endTime;
             }
 
             localStorage.timelineContentLastTime = lastTime;
         },
 
-
         //选择时间轴内容 复制
-        setCopyData(msg){
-            if(msg.checked){
+        setCopyData(msg) {
+            if (msg.checked) {
                 this.copyData[msg.id] = msg.data;
-            }else{
+            } else {
                 this.$delete(this.copyData, msg.id);
             }
 
             let arr = Object.keys(JSON.parse(JSON.stringify(this.copyData)));
-            if(arr.length){
+            if (arr.length) {
                 this.copyBtnIsDisabled = false;
-            }else{
+            } else {
                 this.copyBtnIsDisabled = true;
             }
-            
-
         },
 
         //保存复制的内容
-        handleSaveCopyData(){
+        handleSaveCopyData() {
             let data = [];
             let totalDuration = 0;
-            let displayName = '';
-            for(let key in this.copyData){
-                this.$delete(this.copyData[key], 'id');
+            let displayName = "";
+            for (let key in this.copyData) {
+                this.$delete(this.copyData[key], "id");
                 data.push(this.copyData[key]);
                 totalDuration += this.copyData[key].duration;
                 displayName += this.copyData[key].displayName;
             }
             data.sort((p, n) => {
-                return this.timeDifference(p.beginTime) - this.timeDifference(n.beginTime)
-            })
+                return (
+                    this.timeDifference(p.beginTime) -
+                    this.timeDifference(n.beginTime)
+                );
+            });
             let obj = {
                 displayName: displayName,
                 duration: totalDuration,
-                type: 'copy',
-                list: data
-            }
-            
-            let timelineCopyDataList = localStorage.timelineCopyDataList ? JSON.parse(localStorage.timelineCopyDataList) : [];
+                type: "copy",
+                list: data,
+            };
+
+            let timelineCopyDataList = localStorage.timelineCopyDataList
+                ? JSON.parse(localStorage.timelineCopyDataList)
+                : [];
 
             timelineCopyDataList.push(obj);
 
-            localStorage.timelineCopyDataList = JSON.stringify(timelineCopyDataList);
+            localStorage.timelineCopyDataList = JSON.stringify(
+                timelineCopyDataList
+            );
 
-            this.$message.success('复制成功, 请在剪贴板查看~');
+            this.$message.success("复制成功, 请在剪贴板查看~");
             this.showCheckbox = false;
-        }
-
+        },
     },
     components: {
         Draggable,
         GameSetting,
-        CopyContent
+        CopyContent,
     },
     beforeDestroy() {
         eventBus.$off("setScreenLayoutData");
-    }
+    },
 };
 </script>
