@@ -1,3 +1,10 @@
+/*
+ * @Author: liushuai 
+ * @Date: 2020-10-30 15:55:58 
+ * @Desc: 时间轴复制
+ * @Last Modified by: liushuai
+ * @Last Modified time: 2020-10-30 15:56:28
+ */
 <template>
     <div class="copy-content" @click.prevent="checked=!checked; handleCheckChange();">
         <el-checkbox  

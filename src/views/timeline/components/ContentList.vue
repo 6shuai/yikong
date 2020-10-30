@@ -1,94 +1,176 @@
 <template>
-<div class="content-wrap clearfix">
-    <el-scrollbar style="height:100%" v-loading="loading">
-        <div class="search-wrap mb10 ml10">
-            <el-radio-group size="small" @change="handleClickTab" v-model="params.radio">
-                <el-radio-button :label="1">图片</el-radio-button>
-                <el-radio-button :label="2">视频</el-radio-button>
-                <el-radio-button :label="4">图集</el-radio-button>
-                <el-radio-button :label="3">游戏</el-radio-button>
-                <el-radio-button :label="5">剪贴板</el-radio-button>
-            </el-radio-group>
-            <el-input clearable size="small" placeholder="资源名称" v-model="params.keyword" @input="filtration"></el-input>
-            <el-select v-if="params.radio!=3" v-model="contentOwner" size="small" clearable filterable @change="init" placeholder="请选择品牌">
-                <el-option v-for="item in groupData" :key="item.id" :label="item.displayName" :value="item.id">
-                </el-option>
-            </el-select>
-        </div>
-        <div v-if="contentData.length">
-
-            <draggable :options="dragOption" :list="contentData" :clone="onClone" :group="{ name: 'componentLibrary', pull: 'clone', put: false }" ghostClass="ghost" dragClass="drag-module">
-                <div 
-                    class="box-card content-list" 
-                    ref="contentList" 
-                    v-for="(item, index) in contentData" 
-                    :key="item.id" 
-                    @click="handlePreview(item)" 
-                    :title="item.displayName"
+    <div class="content-wrap clearfix">
+        <el-scrollbar style="height: 100%" v-loading="loading">
+            <div class="search-wrap mb10 ml10">
+                <el-radio-group
+                    size="small"
+                    @change="handleClickTab"
+                    v-model="params.radio"
                 >
-                    <div class="cover"></div>
+                    <el-radio-button :label="1">图片</el-radio-button>
+                    <el-radio-button :label="2">视频</el-radio-button>
+                    <el-radio-button :label="4">图集</el-radio-button>
+                    <el-radio-button :label="3">游戏</el-radio-button>
+                    <el-radio-button :label="5">剪贴板</el-radio-button>
+                </el-radio-group>
 
-                    <!-- 剪贴板 -->
-                    <div class="atlas" v-if="item.list && params.radio == 5" :class="`atlas-${item.list.length > 4 ? '4' : item.list.length}`">
-                        <el-image fit="cover" class="img" v-for="(img, index) in item.list" :key="index" :src="img.image"></el-image>
-                    </div>
+                <el-input
+                    clearable
+                    size="small"
+                    placeholder="资源名称"
+                    v-model="params.keyword"
+                    @input="filtration"
+                ></el-input>
+                <el-select
+                    v-if="params.radio != 3"
+                    v-model="contentOwner"
+                    size="small"
+                    clearable
+                    filterable
+                    @change="init"
+                    placeholder="请选择品牌"
+                >
+                    <el-option
+                        v-for="item in groupData"
+                        :key="item.id"
+                        :label="item.displayName"
+                        :value="item.id"
+                    >
+                    </el-option>
+                </el-select>
+            </div>
+            <div v-if="contentData.length">
+                <draggable
+                    :options="dragOption"
+                    :list="contentData"
+                    :clone="onClone"
+                    :group="{
+                        name: 'componentLibrary',
+                        pull: 'clone',
+                        put: false,
+                    }"
+                    ghostClass="ghost"
+                    dragClass="drag-module"
+                >
+                    <div
+                        class="box-card content-list"
+                        ref="contentList"
+                        v-for="(item, index) in contentData"
+                        :key="item.id"
+                        @click="handlePreview(item)"
+                        :title="item.displayName"
+                    >
+                        <div class="cover"></div>
 
-                    <!-- 图集 -->
-                    <div v-else-if="item.subContentsData && item.contentTypeId == 4" class="atlas" :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`">
-                        <el-image fit="cover" class="img" v-for="(img, index) in filterVideo(item.subContentsData)" v-if="img.contentType==1 && index <=3" :key="index" :src="img.contentPath"></el-image>
+                        <!-- 剪贴板 -->
+                        <div
+                            class="atlas"
+                            v-if="item.list && params.radio == 5"
+                            :class="`atlas-${
+                                item.list.length > 4 ? '4' : item.list.length
+                            }`"
+                        >
+                            <div
+                                v-for="(img, index) in item.list"
+                                :key="index"
+                                class="img"
+                            >
+                                <el-image
+                                    v-if="index <= 3"
+                                    fit="cover"
+                                    :src="img.image"
+                                ></el-image>
+                            </div>
+                        </div>
+
+                        <!-- 图集 -->
+                        <div
+                            v-else-if="
+                                item.subContentsData && item.contentTypeId == 4
+                            "
+                            class="atlas"
+                            :class="`atlas-${
+                                item.subContentsData.length > 4
+                                    ? '4'
+                                    : item.subContentsData.length
+                            }`"
+                        >
+                            <el-image
+                                fit="cover"
+                                class="img"
+                                v-for="(img, index) in filterVideo(
+                                    item.subContentsData
+                                )"
+                                v-if="img.contentType == 1 && index <= 3"
+                                :key="index"
+                                :src="img.contentPath"
+                            ></el-image>
+                        </div>
+                        <el-image
+                            v-else
+                            fit="cover"
+                            class="img"
+                            :src="item.image"
+                        ></el-image>
+                        <div class="desc">
+                            <p class="title" :title="item.displayName">
+                                {{ item.displayName }}
+                            </p>
+                            <p class="duration" v-if="item.duration">
+                                <font-awesome-icon :icon="['far', 'clock']" />{{
+                                    item.duration
+                                }}秒
+                            </p>
+                        </div>
                     </div>
-                    <el-image v-else fit="cover" class="img" :src="item.image"></el-image>
-                    <div class="desc">
-                        <p class="title" :title="item.displayName">{{item.displayName}}</p>
-                        <p class="duration" v-if="item.duration">
-                            <font-awesome-icon :icon="['far', 'clock']" />{{item.duration}}秒
-                        </p>
-                    </div>
+                </draggable>
+            </div>
+            <div v-else class="no-data">暂无数据~</div>
+        </el-scrollbar>
+
+        <!-- 预览 -->
+        <el-dialog
+            :title="previewData.displayName"
+            :visible.sync="dialogVisible"
+            width="60%"
+        >
+            <div v-if="dialogVisible">
+                <!-- 图片 -->
+                <div class="preview" v-if="previewData.contentTypeId == 1">
+                    <el-image
+                        fit="cover"
+                        :src="previewData.contentPath"
+                    ></el-image>
                 </div>
 
-            </draggable>
+                <!-- 视频 -->
+                <div class="preview" v-if="previewData.contentTypeId == 2">
+                    <video
+                        :src="previewData.contentPath"
+                        controls="controls"
+                        :autoplay="true"
+                        :loop="true"
+                    ></video>
+                </div>
 
-        </div>
-        <div v-else class="no-data">暂无数据~</div>
-    </el-scrollbar>
-
-    <!-- 预览 -->
-    <el-dialog :title="previewData.displayName" :visible.sync="dialogVisible" width="60%">
-        <div v-if="dialogVisible">
-            <!-- 图片 -->
-            <div class="preview" v-if="previewData.contentTypeId == 1">
-                <el-image fit="cover" :src="previewData.contentPath"></el-image>
+                <!-- 图集 -->
+                <content-preview
+                    v-if="previewData.contentTypeId == 4"
+                    ref="contentPreview"
+                ></content-preview>
             </div>
-
-            <!-- 视频 -->
-            <div class="preview" v-if="previewData.contentTypeId == 2">
-                <video 
-                    :src="previewData.contentPath" 
-                    controls="controls"
-                    :autoplay="true"
-                    :loop="true"
-                ></video>
-            </div>
-
-            <!-- 图集 -->
-            <content-preview v-if="previewData.contentTypeId == 4" ref="contentPreview"></content-preview>
-        </div>
-
-    </el-dialog>
-
-</div>
+        </el-dialog>
+    </div>
 </template>
 
 <script>
 import {
     timelineContentList,
     timelineAtlasContentList,
-    timelineGameList
-} from '@/api/timeline';
-import ContentPreview from '@/views/content/components/ContentPreview';
-import {
-    getOrganizationList
-} from '@/mixins';
+    timelineGameList,
+} from "@/api/timeline";
+import ContentPreview from "@/views/content/components/ContentPreview";
+import { getOrganizationList } from "@/mixins";
 import Draggable from "vuedraggable";
 export default {
     mixins: [getOrganizationList],
@@ -107,9 +189,9 @@ export default {
             dragOption: {
                 fallbackOnBody: false,
                 sort: false,
-                scrollSpeed: 20
+                scrollSpeed: 20,
             },
-        }
+        };
     },
     mounted() {
         this.init();
@@ -118,15 +200,15 @@ export default {
         init() {
             this.loading = true;
             let data = {
-                contentOwner: this.contentOwner
-            }
-            timelineContentList(data).then(res => {
+                contentOwner: this.contentOwner,
+            };
+            timelineContentList(data).then((res) => {
                 this.loading = false;
                 if (res.code === this.$successCode) {
                     this.resData = res.obj;
                     this.filtration();
                 }
-            })
+            });
         },
 
         //选择资源类型
@@ -150,85 +232,94 @@ export default {
         //筛选
         filtration() {
             if (this.params.radio === 1 || this.params.radio === 2) {
-                this.contentData = this.resData.filter(item => {
-                    return item.contentTypeId == this.params.radio && (this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true)
-                })
+                this.contentData = this.resData.filter((item) => {
+                    return (
+                        item.contentTypeId == this.params.radio &&
+                        (this.params.keyword
+                            ? item.displayName.indexOf(this.params.keyword) > -1
+                            : true)
+                    );
+                });
             } else {
-                this.contentData = this.otherData.filter(item => {
-                    return this.params.keyword ? item.displayName.indexOf(this.params.keyword) > -1 : true
-                })
+                this.contentData = this.otherData.filter((item) => {
+                    return this.params.keyword
+                        ? item.displayName.indexOf(this.params.keyword) > -1
+                        : true;
+                });
             }
         },
 
         //获取所有图集资源
         atlasContentList() {
             let data = {
-                contentOwner: this.contentOwner
-            }
+                contentOwner: this.contentOwner,
+            };
             this.loading = true;
-            timelineAtlasContentList(data).then(res => {
+            timelineAtlasContentList(data).then((res) => {
                 this.loading = false;
                 if (res.code === this.$successCode) {
                     this.otherData = res.obj;
                     this.filtration();
                 }
-            })
+            });
         },
 
         //获取所有游戏列表
         gameList() {
             this.loading = true;
-            timelineGameList().then(res => {
+            timelineGameList().then((res) => {
                 this.loading = false;
                 if (res.code === this.$successCode) {
                     this.otherData = res.obj;
                     this.filtration();
                 }
-            })
+            });
         },
 
         //预览
         handlePreview(data) {
             if (data.contentTypeId == 3) return;
             this.previewData = data;
-            let msg = this.previewData.contentTypeId == 4 ? this.previewData.subContentsData : this.previewData;
+            let msg =
+                this.previewData.contentTypeId == 4
+                    ? this.previewData.subContentsData
+                    : this.previewData;
             this.dialogVisible = true;
             this.$nextTick(() => {
                 try {
                     this.$refs.contentPreview.contentPreviewData(msg);
-                } catch (error) {
-                    
-                }
-            })
+                } catch (error) {}
+            });
         },
 
         //过滤视频
         filterVideo(data) {
-            return data.filter(item => {
-                return item.contentType == 1
-            })
+            return data.filter((item) => {
+                return item.contentType == 1;
+            });
         },
 
         onClone(item) {
             const data = {
-                ...item
-            }
-            return data
+                ...item,
+            };
+            return data;
         },
 
         //剪贴板内容
-        clipboardList(){
-            let data = localStorage.timelineCopyDataList ? JSON.parse(localStorage.timelineCopyDataList) : [];
+        clipboardList() {
+            let data = localStorage.timelineCopyDataList
+                ? JSON.parse(localStorage.timelineCopyDataList)
+                : [];
 
             this.contentData = data;
-            
-        }
+        },
     },
     components: {
         ContentPreview,
-        Draggable
-    }
-}
+        Draggable,
+    },
+};
 </script>
 
 <style lang="scss">
@@ -237,7 +328,6 @@ export default {
     height: 100%;
 
     .search-wrap {
-
         .el-input,
         .el-select {
             width: 200px;
@@ -246,8 +336,8 @@ export default {
 
     .content-list {
         width: 100px;
-        height: 100px;
         margin: 0 0 10px 10px;
+        padding-bottom: 2px;
         float: left;
         cursor: pointer;
         border: 1px solid #eee;
@@ -278,6 +368,7 @@ export default {
             width: 100px;
             height: 60px;
             background: #000;
+            overflow: hidden;
 
             &-2 .img {
                 display: inline-block;

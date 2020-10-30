@@ -217,7 +217,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeEditTime">取 消</el-button>
-                <el-button type="primary" @click="updateContentTime">确 定</el-button>
+                <el-button type="primary" :loading="editTimeLoading" @click="updateContentTime">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -256,6 +256,7 @@ export default {
             deleteLoading: false, //清空时间轴按钮loading
             showEditTime: false, //显示内容编辑时段
             editTime: [], //编辑内容时段 参数
+            editTimeLoading: false,   //编辑时间段 提交loading
             noSettingGame: [], //时间轴内的游戏 没有配置。时间轴id数组
             contentTypeId: {
                 image: 1,
@@ -485,7 +486,7 @@ export default {
                         currentStartTime,
                         prevEndTime
                     );
-                    console.log("重叠---------,", diffNum, currentStartTime, prevEndTime);
+                    // console.log("重叠---------,", diffNum, currentStartTime, prevEndTime);
                 }
 
                 //当前资源 开始时间 未紧跟上一个结束时间
@@ -876,9 +877,11 @@ export default {
             }
             obj.endTime = this.findEndTime(obj.beginTime, obj.duration);
             this.$set(this.rectangleData[data.Pindex], data.index, obj);
+            this.editTimeLoading = true;
 
             this.searchOverlap(data.Pindex, data.index).then((res) => {
                 this.showEditTime = false;
+                this.editTimeLoading = false;
                 this.$set(this.rectangleData, data.Pindex, res);
                 delete this.editTime[0].type;
 
@@ -890,7 +893,6 @@ export default {
         closeEditTime() {
             let { Pindex, index } = this.editTime[0];
             if (this.editTime[0].type == "new") {
-                console.log('关闭编辑时段--------->', index);
                 this.rectangleData[Pindex].splice(index, 1);
             }
             this.showEditTime = false;

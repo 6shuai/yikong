@@ -22,6 +22,7 @@
             </div>
         </div>
         <div
+            v-if="resData.id"
             class="timeline-content clearfix"
             :style="{
                 bottom:
@@ -29,12 +30,14 @@
                         ? 290
                         : screenLayout.length * 70 + 62 + 'px',
             }"
-            v-if="resData.id"
         >
+
+            <!-- 左侧tab栏 -->
             <div class="left-tabs">
-                <!-- 左侧tab栏 -->
                 <left-tabs :timeData="resData"></left-tabs>
             </div>
+
+            <!-- 右侧屏幕 -->
             <div class="right-screen">
                 <el-scrollbar style="height: 100%">
                     <div
