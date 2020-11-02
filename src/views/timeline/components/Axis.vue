@@ -201,7 +201,7 @@
                         format="HH:mm:ss"
                         value-format="HH:mm:ss"
                         :picker-options="{
-                            selectableRange: `${editTime[0].startTime} - 23:59:59`
+                            selectableRange: editTime[0].contentTypeId == contentTypeId.game ? '' : `${editTime[0].startTime} - 23:59:59`
                         }"
                         placeholder="选择开始时间">
                     </el-time-picker>
