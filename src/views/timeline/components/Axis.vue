@@ -417,8 +417,8 @@ export default {
             let d = (duration - remainderS) / 60;
             
             if(d > 60){
-                h = h + d / 60;
-                d = 0;
+                h = h + (d - d%60) / 60;
+                d = d % 60;
             }
 
             if (s + remainderS >= 60) {
@@ -896,6 +896,10 @@ export default {
                 return;
             }
             obj.endTime = this.findEndTime(obj.beginTime, obj.duration);
+
+            console.log(obj)
+            return
+
             this.$set(this.rectangleData[data.Pindex], data.index, obj);
             this.editTimeLoading = true;
 
@@ -1033,12 +1037,14 @@ export default {
             //秒数转为 分钟
             let d = (duration - remainderS) / 60;
 
+            
+
             if(d > 60){
-                h = h + d / 60;
-                d = 0;
+                h = h + (d - d%60) / 60;
+                d = d % 60;
             }else if(d < -60){
-                h = h - Math.abs(d) / 60;
-                d = 0;
+                h = h - (Math.abs(d) - d%60) / 60;
+                d = d % 60;
             }
             
             if (s + remainderS >= 60) {
