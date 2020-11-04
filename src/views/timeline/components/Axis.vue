@@ -201,7 +201,7 @@
                         format="HH:mm:ss"
                         value-format="HH:mm:ss"
                         :picker-options="{
-                            selectableRange: editTime[0].contentTypeId == contentTypeId.game ? '' : `${editTime[0].startTime} - 23:59:59`
+                            selectableRange: `${startTime} - ${endTime}`
                         }"
                         placeholder="选择开始时间">
                     </el-time-picker>
@@ -385,7 +385,6 @@ export default {
                 let time =
                     index == 0 ? this.startTime : obj[index - 1].beginTime;
                 let duration = index == 0 ? 0 : obj[index - 1].duration;
-                console.log(time, duration)
                 data.beginTime = this.findEndTime(time, duration);
                 data.endTime = this.findEndTime(data.beginTime, data.duration);
                 data = {
@@ -872,7 +871,6 @@ export default {
 
         //点击编辑时段  显示弹窗
         editTimeBtn(Pindex, index, type) {
-            console.log(this.rectangleData[Pindex][index])
             this.editTime = [
                 {
                     startTime: this.rectangleData[Pindex][index].beginTime,
@@ -896,8 +894,6 @@ export default {
             obj.endTime = this.findEndTime(data.beginTime, data.duration);
             obj.isRotation = data.isRotation;
 
-            // console.log(obj)
-            // return
             if (!obj.beginTime) {
                 this.$message.warning("请选择开始时间~");
                 return;
