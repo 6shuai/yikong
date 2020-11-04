@@ -214,6 +214,14 @@
                         <template slot="append">秒</template>
                     </el-input>
                 </el-form-item>
+                <el-form-item label="是否轮播" class="is-required">
+                    <el-switch
+                        v-model="editTime[0].isRotation"
+                        :active-value="1"
+                        :inactive-value="0"
+                    >
+                    </el-switch>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeEditTime">取 消</el-button>
@@ -377,13 +385,14 @@ export default {
                 let time =
                     index == 0 ? this.startTime : obj[index - 1].beginTime;
                 let duration = index == 0 ? 0 : obj[index - 1].duration;
-
+                console.log(time, duration)
                 data.beginTime = this.findEndTime(time, duration);
                 data.endTime = this.findEndTime(data.beginTime, data.duration);
                 data = {
                     ...data,
                     contentId: data.id || data.contentId,
                     contentDuration: data.duration,
+                    isRotation: 1
                 };
                 delete data.id;
                 this.$set(obj, index, data);
@@ -406,6 +415,12 @@ export default {
 
             //秒数转为 分钟
             let d = (duration - remainderS) / 60;
+            
+            if(d > 60){
+                h = h + d / 60;
+                d = 0;
+            }
+
             if (s + remainderS >= 60) {
                 s = s + remainderS - 60;
                 m = m + 1;
@@ -645,6 +660,7 @@ export default {
                         contentId: obj.contentId,
                         beginTime: "1970-01-01 " + obj.beginTime,
                         duration: obj.duration,
+                        isRotation: obj.isRotation
                     },
                 ];
             } else {
@@ -655,6 +671,7 @@ export default {
                         contentId: item.contentId,
                         beginTime: "1970-01-01 " + item.beginTime,
                         duration: item.duration,
+                        isRotation: item.isRotation
                     });
                 });
             }
@@ -847,6 +864,7 @@ export default {
 
         //点击编辑时段  显示弹窗
         editTimeBtn(Pindex, index, type) {
+            console.log(this.rectangleData[Pindex][index])
             this.editTime = [
                 {
                     startTime: this.rectangleData[Pindex][index].beginTime,
@@ -867,6 +885,8 @@ export default {
             );
             obj.duration = data.duration;
             obj.beginTime = data.beginTime;
+            obj.endTime = this.findEndTime(data.beginTime, data.duration);
+            obj.isRotation = data.isRotation;
 
             if (!obj.beginTime) {
                 this.$message.warning("请选择开始时间~");
@@ -1009,8 +1029,18 @@ export default {
             //秒转换成分钟  余出来的秒数
             let remainderS = duration % 60;
 
+
             //秒数转为 分钟
             let d = (duration - remainderS) / 60;
+
+            if(d > 60){
+                h = h + d / 60;
+                d = 0;
+            }else if(d < -60){
+                h = h - Math.abs(d) / 60;
+                d = 0;
+            }
+            
             if (s + remainderS >= 60) {
                 s = s + remainderS - 60;
                 m = m + 1;
