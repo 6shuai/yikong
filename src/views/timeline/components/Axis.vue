@@ -456,6 +456,11 @@ export default {
             let obj = this.rectangleData[Pindex];
             let isOverlap = false;
             let objLength = obj.length;
+            
+            if(obj.length <= 1) {
+                resolve(obj);
+                return;
+            }
 
             for (let key in obj) {
                 let item = obj[key];
@@ -505,14 +510,14 @@ export default {
                 }
 
                 //当前资源 开始时间 未紧跟上一个结束时间
-                if (
-                    this.timeDifference(prevEndTime, currentStartTime) > 0
-                ) {
-                    diffNum = this.timeDifference(
-                        currentStartTime,
-                        prevEndTime
-                    );
-                }
+                // if (
+                //     this.timeDifference(prevEndTime, currentStartTime) > 0
+                // ) {
+                //     diffNum = this.timeDifference(
+                //         currentStartTime,
+                //         prevEndTime
+                //     );
+                // }
 
                 //游戏资源
                 if (item.contentTypeId == this.contentTypeId.game) {
@@ -790,14 +795,17 @@ export default {
                 if (res.code === this.$successCode) {
                     this.$message.success("删除成功~");
                     if (type == "checkbox") {
-                        for (const key in this.timelineIds) {
+                        console.log(this.timelineIds, this.deleteIds)
+                        this.deleteIds.forEach((item, index) => {
+                            let key = this.timelineIds[item];
                             this.$set(
                                 this.rectangleData,
-                                this.timelineIds[key].index,
+                                key.index,
                                 []
                             );
-                            this.timelineIds[key].ids = {};
-                        }
+                            this.timelineIds[item].ids = {};
+                        })
+
                         this.showDelete = false;
                     } else {
                         let currentData = JSON.parse(
@@ -888,6 +896,8 @@ export default {
             obj.endTime = this.findEndTime(data.beginTime, data.duration);
             obj.isRotation = data.isRotation;
 
+            // console.log(obj)
+            // return
             if (!obj.beginTime) {
                 this.$message.warning("请选择开始时间~");
                 return;
