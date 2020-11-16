@@ -46,7 +46,6 @@
                 <el-checkbox label="全选" v-model="isDeleteAll" @change="changeDeleteAll"></el-checkbox>
             </div>
 
-
             <el-button 
                 v-if="!showCheckbox && !showDelete"
                 class="tool-btn" 
@@ -66,6 +65,14 @@
                 :loading="deleteLoading"
                 @click="handleSaveCopyData"
             >复制
+            </el-button>
+
+            <el-button 
+                class="tool-btn" 
+                type="warning" 
+                size="small"
+                @click="handleShowRule"
+            >设置
             </el-button>
 
         </div>
@@ -235,6 +242,11 @@
             ref="gameSetting"
         ></game-setting>
 
+        <!-- 时间轴调度 -->
+        <timeline-rule
+            ref="timelineRule"
+        ></timeline-rule>
+
     </el-scrollbar>
 </template>
 
@@ -249,6 +261,7 @@ import {
 } from "@/api/timeline";
 import GameSetting from "./GameSetting";
 import CopyContent from "./CopyContent";
+import TimelineRule from './TimelineRule';
 
 export default {
     props: ["startTime", "endTime"],
@@ -303,6 +316,7 @@ export default {
         eventBus.$on("setScreenLayoutData", (data) => {
             let copyData = JSON.parse(JSON.stringify(data.data));
             this.screenLayout = copyData;
+            this.$refs.timelineRule.setScreenList(copyData);
             this.screenLayout.forEach((item, index) => {
                 this.screenIds.push(item.id);
             });
@@ -1151,11 +1165,17 @@ export default {
             this.$message.success("复制成功, 请在剪贴板查看~");
             this.showCheckbox = false;
         },
+
+        //显示时间轴调度界面
+        handleShowRule(){
+            this.$refs.timelineRule.getDetail();
+        }
     },
     components: {
         Draggable,
         GameSetting,
         CopyContent,
+        TimelineRule,
     },
     beforeDestroy() {
         eventBus.$off("setScreenLayoutData");

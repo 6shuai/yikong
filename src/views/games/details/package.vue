@@ -108,8 +108,14 @@
                 <el-form-item label="大屏端游戏包存放路径">
                     <el-input readonly v-model="packageParams.screenPackage"></el-input>
                 </el-form-item>
+                <el-form-item label="大屏端游戏包大小" v-if="packageParams.screenSize">
+                    <div>{{packageParams.screenSize}}</div>
+                </el-form-item>
                 <el-form-item label="手机端的游戏访问地址">
                     <el-input readonly v-model="packageParams.mobilePackage"></el-input>
+                </el-form-item>
+                <el-form-item label="手机端游戏包大小" v-if="packageParams.mobileSize">
+                    <div>{{packageParams.mobileSize}}</div>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -130,7 +136,7 @@
 import { uploadGamePackage } from '@/utils';
 import { timeDisposeTool } from '@/mixins';
 import { packageCreated, packageList, packageSubmitTest, packageOnline } from '@/api/game';
-import SelectPackageVersion from './SelectPackageVersion';
+import SelectPackageVersion from '../components/SelectPackageVersion';
 export default {
     mixins: [timeDisposeTool],
     data(){
@@ -199,8 +205,10 @@ export default {
                 res.obj.forEach(item =>{
                     if(item.type === 'screen'){
                         this.packageParams.screenPackage = item.path;
+                        this.packageParams.screenSize = item.size;
                     }else if(item.type === 'mobile'){
                         this.packageParams.mobilePackage = item.path;
+                        this.packageParams.mobileSize = item.size;
                     }
                 })
             }else{

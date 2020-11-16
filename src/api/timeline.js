@@ -75,3 +75,18 @@ export function timeIntervalPub(data, isConfirm) { return post(`/timeline/timing
 
 //定时发布 删除
 export function timeIntervalDelete(data) { return del(`/timeline/timing/${data}`) }
+
+
+
+//时间轴调度  创建
+export function timelineRuleCreated(data) { return post('/timeline/timelineScheduleStep', data) }
+
+//时间轴调度  获取详情
+export function timelineRuleDetail(data) { return get('/timeline/timelineScheduleStep', data) }
+
+//时间轴调度  删除步骤
+export function timelineRuleDelete(data) { return del(`/timeline/timelineScheduleStep/${data}`) }
+
+//时间轴调度  删除步骤里的屏幕区域
+export function timelineRuleRegionDelete(data) { return del(`/timeline/stepRegion/${data}`) }
+

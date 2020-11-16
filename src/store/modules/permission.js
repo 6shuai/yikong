@@ -98,6 +98,7 @@ export const filterAsyncRouter = (data) => {
 		}
         result.push(oneRouter);
 	})
+	console.log(result)
     return result;
 }
 

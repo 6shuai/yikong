@@ -33,8 +33,8 @@ module.exports = {
 	devServer: {
 		port: 8080,
 		// proxy: 'http://123.206.83.233:8181',
-		proxy: 'http://172.19.112.150:8181',
-		// proxy: 'http://172.19.112.194:8181', //'http://211.159.173.153:8181',   
+		proxy: 'http://172.19.112.105:8181',
+		// proxy: 'http://192.168.8.51:8181',
 		public: '192.168.137.1:8080'
 		//   'http://www.xfengjing.com:8181',
 	},

@@ -31,11 +31,12 @@
                     <el-menu
                         @select="handleSelect"
                         :default-active="currentActive"
+                        :router="true"
                         class="el-menu-vertical-demo">
-                        <el-menu-item index="1">
+                        <el-menu-item :index="`/games/details/${$route.params.id}`">
                             <span slot="title">基本信息</span>
                         </el-menu-item>
-                        <el-menu-item index="2">
+                        <el-menu-item :index="`/games/details/${$route.params.id}/package`">
                             <span slot="title">包管理</span>
                         </el-menu-item>
                         <el-menu-item index="3" disabled>
@@ -50,8 +51,7 @@
             </el-col>
 
             <el-col :span="20" class="right-content">
-                
-                <div class="content" v-if="currentActive==1">
+                <div class="content" v-if="currentActive==`/games/details/${$route.params.id}`">
                     <h2 class="info-title mt20 mb20">基本信息</h2>
                     <el-form 
                         label-width="120px"
@@ -102,8 +102,7 @@
 
                 </div>
 
-                <package v-if="currentActive==2"></package>
-
+                <router-view v-else></router-view>
             </el-col>
 
         </el-row>
@@ -112,8 +111,7 @@
 </template>
 <script>
 import { gameDelete, gameUpdateSecret, gameFavorite } from '@/api/game';
-import Package from './components/Package';
-import { getScreenDetail } from './mixins';
+import { getScreenDetail } from '../mixins';
 export default {
     mixins: [getScreenDetail],
     data(){
@@ -141,6 +139,7 @@ export default {
         
     },
     mounted() {
+        this.currentActive = `/games/details/${this.$route.params.id}`;
         this.init();
     },
     methods: {
@@ -166,7 +165,7 @@ export default {
                 type: 'warning',
                 center: true
             }).then(() => {
-                gameDelete(this.resData.contentId).then(res => {
+                gameDelete(this.resData.id).then(res => {
                     if(res.code === this.$successCode){
                         this.$message.success({
                             message: '删除成功~',
@@ -196,10 +195,10 @@ export default {
         collectContent(){
             let p = {
                 isFavorite: this.resData.isFavorite ? 0 : 1,
-                contentId: this.resData.contentId,
+                id: this.resData.id,
                 userId: this.$store.state.user.loginData.id
             }
-            let s = `?isFavorite=${p.isFavorite}&contentId=${p.contentId}&userId=${p.userId}`;
+            let s = `?isFavorite=${p.isFavorite}&applicationId=${p.id}&userId=${p.userId}`;
 
             gameFavorite(s).then(res => {
                 if(res.code === this.$successCode){
@@ -214,15 +213,12 @@ export default {
             this.currentActive = key;
         }
 
-    },
-    components: {
-        Package
     }
 }
 </script>
 <style lang="scss" scope>
-    @import '../../styles/variables.scss';
-    @import '../content/style/content-details.scss';
+    @import '../../../styles/variables.scss';
+    @import '../../content/style/content-details.scss';
     .games-details{
         .game-info{
             text-align: center;

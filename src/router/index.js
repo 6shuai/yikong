@@ -258,8 +258,14 @@ export const constantRoutes = [
     children: [{
       path: '/games/details/:id',
       name: 'games--details',
-      component: () => import('@/views/games/gamesDetails'),
+      component: () => import('@/views/games/details/index'),
       meta: { title: '游戏信息' },
+      children: [{
+        path: 'package',
+        name: 'games--details--package',
+        component: () => import('@/views/games/details/package'),
+        meta: { title: '包管理' }
+      }]
     }],
     hidden: true
   },
