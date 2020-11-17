@@ -136,7 +136,6 @@
                                     <div class="content-tool">
                                         <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
                                         <div @click="editTimeBtn(Pindex, index)">编辑时段</div>
-                                        <div @click="gameSetting(item, Pindex, index)" v-if="item.logicRegion && item.contentTypeId == contentTypeId.game">游戏设置</div>
                                         <div class="delete" @click="deleteCurrentTimeline(Pindex, index, item.id)">删除</div>
                                     </div>
 
@@ -236,12 +235,6 @@
             </span>
         </el-dialog>
 
-        <!-- 游戏设置 -->
-        <game-setting 
-            @gameSettingSuccess="gameSettingSuccess"
-            ref="gameSetting"
-        ></game-setting>
-
         <!-- 时间轴调度 -->
         <timeline-rule
             ref="timelineRule"
@@ -259,7 +252,6 @@ import {
     timelineDelete,
     pubToScreen,
 } from "@/api/timeline";
-import GameSetting from "./GameSetting";
 import CopyContent from "./CopyContent";
 import TimelineRule from './TimelineRule';
 
@@ -953,30 +945,6 @@ export default {
             });
         },
 
-        //显示游戏设置
-        gameSetting(data, Pindex, index) {
-            let obj = {
-                configList: data.configList,
-                timelineId: data.id,
-                applicationId: data.applicationId,
-            };
-
-            this.editTime = {
-                Pindex,
-                index,
-                ...this.rectangleData[Pindex][index],
-            };
-
-            this.$refs.gameSetting.showGameSetting(obj);
-        },
-
-        //游戏配置成功
-        gameSettingSuccess(id) {
-            let index = this.noSettingGame.indexOf(id);
-            this.noSettingGame.splice(index, 1);
-            this.saveTimeline(this.editTime.Pindex, this.editTime.index);
-        },
-
         //删除时间轴 - 全选按钮
         changeDeleteAll() {
             if (this.isDeleteAll) {
@@ -1173,7 +1141,6 @@ export default {
     },
     components: {
         Draggable,
-        GameSetting,
         CopyContent,
         TimelineRule,
     },
