@@ -39,6 +39,9 @@
                         <el-menu-item :index="`/games/details/${$route.params.id}/package`">
                             <span slot="title">包管理</span>
                         </el-menu-item>
+                        <el-menu-item :index="`/games/details/${$route.params.id}/list`">
+                            <span slot="title">游戏列表</span>
+                        </el-menu-item>
                         <el-menu-item index="3" disabled>
                             <span slot="title">排行榜管理</span>
                         </el-menu-item>
@@ -213,6 +216,11 @@ export default {
             this.currentActive = key;
         }
 
+    },
+    watch:{
+        '$route.path':function(newVal,oldVal){
+            this.currentActive = newVal;
+        }
     }
 }
 </script>

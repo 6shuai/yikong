@@ -41,3 +41,19 @@ export function packageProductionList(data) { return get('/application/applicati
 export function packageProductionUpdate(data) { return post('/application/updateApplyPackage'+data) }
 
 
+
+//游戏管理  详情  游戏装配列表  查询游戏配置列表
+export function gameDataConfigList(data) { return get('/application/gameConfigList', data) }
+
+//游戏管理  详情  游戏装配列表  创建或修改
+export function gameDataCreated(data) { return post('/application/gameAssembly', data) }
+
+//游戏管理  详情  游戏装配列表  
+export function gameDataList(data) { return get('/application/gameAssembly', data) }
+
+//游戏管理  详情  游戏装配列表   获取详情
+export function gameDataDetail(data) { return get(`/application/gameAssemblyDetail/${data}`) }
+
+//游戏管理  详情  游戏装配列表  删除
+export function gameDataDelete(data) { return del(`/application/gameAssembly/${data}`) }
+

@@ -260,12 +260,20 @@ export const constantRoutes = [
       name: 'games--details',
       component: () => import('@/views/games/details/index'),
       meta: { title: '游戏信息' },
-      children: [{
-        path: 'package',
-        name: 'games--details--package',
-        component: () => import('@/views/games/details/package'),
-        meta: { title: '包管理' }
-      }]
+      children: [
+        {
+          path: 'package',
+          name: 'games--details--package',
+          component: () => import('@/views/games/details/package'),
+          meta: { title: '包管理' }
+        },
+        {
+          path: 'list',
+          name: 'games--details--list',
+          component: () => import('@/views/games/details/gameList'),
+          meta: { title: '游戏列表' }
+        }
+      ]
     }],
     hidden: true
   },

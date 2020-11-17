@@ -71,7 +71,7 @@ export function timeIntervalList(data) { return get(`/timeline/timing/${data}`) 
 export function timeIntervalScreentTimelineList(data) { return get(`/timeline/timingsByScreenId/${data}`) }
 
 //定时发布 选择屏幕 和 时间  发布
-export function timeIntervalPub(data, isConfirm) { return post(`/timeline/timing?isConfirm=${isConfirm}`, data) }
+export function timeIntervalPub(data) { return post('/timeline/timing', data) }
 
 //定时发布 删除
 export function timeIntervalDelete(data) { return del(`/timeline/timing/${data}`) }

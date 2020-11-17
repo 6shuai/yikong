@@ -161,11 +161,7 @@ export default {
 
         //创建时间轴调度
         createdRule(){
-            if(!this.ruleParams.scheduleRule){
-                this.ruleParams = {
-                    scheduleRule: 0
-                }
-            }else if(this.ruleParams.scheduleRule && !this.ruleParams.timelineScheduleSteps.length){
+            if(this.ruleParams.scheduleRule && !this.ruleParams.timelineScheduleSteps.length){
                 this.$message.warning('还没添加步骤呢 ฅ⁽͑ ˚̀ ˙̭ ˚́ ⁾̉');
                 return
             }

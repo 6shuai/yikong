@@ -241,8 +241,13 @@ export default {
                 })
             })
 
+            let params = {
+                timings: data,
+                isConfirm
+            }
+
             this.btnLoading = true;
-            timeIntervalPub(data, isConfirm).then((res) => {
+            timeIntervalPub(params).then((res) => {
                 this.btnLoading = false;
                 if (res.code === this.$successCode) {
                     this.$message.success("添加定时发布成功~");

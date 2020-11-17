@@ -192,8 +192,8 @@ export default {
             },
             btnLoading: false,               //确定按钮  loading
             placeRules: {
-                displayName: [{ required: true, trigger: "blur", message: '请输入场所名称~' }],
-                contentType: [{ required: true, trigger: "change", message: '请选择场所类型~' }],
+                displayName: [{ required: true, trigger: "blur", message: '请输入资源名称~' }],
+                contentType: [{ required: true, trigger: "change", message: '请选择场资源类型~' }],
                 contentOwner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
                 image: [{ required: true, trigger: "change", message: '请上传一张展示图片~' }],
                 width: [{ required: true, trigger: "blur", message: '请输入宽~' }],
