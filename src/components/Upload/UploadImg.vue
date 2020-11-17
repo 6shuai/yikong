@@ -4,6 +4,7 @@
         <div v-if="!isArray">   
             <el-upload
                 v-loading="uploadLoading"
+                :data='uploadData'
                 element-loading-text="图片上传中"
                 element-loading-spinner="el-icon-loading"
                 class="avatar-uploader"
