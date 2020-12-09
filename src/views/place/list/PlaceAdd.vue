@@ -314,7 +314,10 @@ export default {
 
         //删除场所图片
         ShowDelete(file, resolve){
-            if(file.id){
+            if(file.isDefault){
+                this.$message.warning('不可以删除封面图~');
+                return
+            }else if(file.id){
                 placeShowDelete(file.id).then(res => {
                     if(res.code === this.$successCode){
                         this.placeForm.placeShowData.splice(file.index, 1);

@@ -146,9 +146,9 @@ export default {
             //图片有id 删除走接口
             let data = {
                 index: index,
-                id: file.id
+                ...file
             }
-            if(file.id){
+            if(file.id || file.isDefault){
                 this.$confirm('此操作将删除当前图片, 是否继续?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',

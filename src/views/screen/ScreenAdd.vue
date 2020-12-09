@@ -249,7 +249,10 @@ export default {
 
         //删除实景图片
         ShowDelete(file, resolve){
-            if(file.id){
+            if(file.isDefault){
+                this.$message.warning('不可以删除封面图~');
+                return
+            }else if(file.id){
                 screenShowDelete(file.id).then(res => {
                     if(res.code === this.$successCode){
                         this.screenParams.screenShowData.splice(file.index, 1);
