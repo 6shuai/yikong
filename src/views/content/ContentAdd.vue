@@ -30,7 +30,7 @@
                         <el-form-item label="展示图片" prop="image">
                             <upload-img 
                                 :imgList="contentParams.image"
-                                @uploadImgPath="$set(contentParams, 'image', $event)"
+                                @uploadImgPath="$set(contentParams, 'image', $event), $set(contentParams, 'newUpload', 1)"
                             ></upload-img>
                         </el-form-item>
                         <el-form-item label="资源类型" prop="contentType">

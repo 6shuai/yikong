@@ -22,7 +22,7 @@
                     <el-form-item label="游戏图标" prop="image">
                         <upload-img 
                             :imgList="gameParams.image"
-                            @uploadImgPath="$set(gameParams, 'image', $event)"
+                            @uploadImgPath="$set(gameParams, 'image', $event); $set(gameParams, 'newUpload', 1)"
                         ></upload-img>
                     </el-form-item>
                     <el-form-item label="游戏截图" prop="applicationShowData">
@@ -60,6 +60,7 @@ export default {
     data(){
         return {
             gameParams: {
+                newUpload: 0,    //是否新上传的图片   0 否  1 是
                 applicationShowData: []
             },
             btnLoading: false,     
@@ -83,9 +84,10 @@ export default {
             this.detailLoading = true;
             this.initDetail().then(res => {
                 this.detailLoading = false;
-                this.gameParams = this.resData;
-                //修改时 id 为资源id
-                this.gameParams.id = this.gameParams.contentId;
+                this.gameParams = {
+                    ...this.gameParams,
+                    ...this.resData
+                }
             })
         },
 

@@ -242,7 +242,8 @@ export default {
         uploadImgSuccess(path){
             this.screenParams.screenShowData.push({
                 uri: path,
-                isDefault: this.screenParams.screenShowData.length ? 0 : 1
+                isDefault: this.screenParams.screenShowData.length ? 0 : 1,
+                newUpload: 1
             })
         },
 

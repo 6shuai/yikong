@@ -39,7 +39,7 @@
             <el-form-item label="展示图片" prop="image">
                 <upload-img
                     :imgList="contentParams.image"
-                    @uploadImgPath="$set(contentParams, 'image', $event)"
+                    @uploadImgPath="$set(contentParams, 'image', $event); $set(contentParams, 'newUpload ', 1)"
                 ></upload-img>
             </el-form-item>
             <div v-if="contentParams.contentType !== 4">
@@ -226,7 +226,7 @@ export default {
     methods: {
         showDialog(id) {
             this.dialogVisible = true;
-            this.contentParams = {};
+            this.contentParams = { newUpload: 0 };
 
             this.$nextTick(() => {
                 this.$refs['addGameForm'].clearValidate();
@@ -276,8 +276,10 @@ export default {
             gameDataDetail(id).then((res) => {
                 this.loading = false;
                 if (res.code === this.$successCode && res.obj) {
-                    this.contentParams = res.obj;
-                    this.contentParams.id = this.contentParams.contentId;
+                    this.contentParams = {
+                        ...this.contentParams,
+                        ...res.obj
+                    }
                 }
             });
         },

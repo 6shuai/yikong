@@ -307,7 +307,8 @@ export default {
         uploadImgSuccess(path){
             this.placeForm.placeShowData.push({
                 uri: path,
-                isDefault: this.placeForm.placeShowData.length ? 0 : 1
+                isDefault: this.placeForm.placeShowData.length ? 0 : 1,
+                newUpload: 1
             })
         },
 

@@ -69,7 +69,10 @@
                         >
                             <span slot="title">游戏列表</span>
                         </el-menu-item>
-                        <el-menu-item index="3" disabled>
+                        <el-menu-item
+                            :index="`/games/${$route.params.id}/rank`"
+                            disabled
+                        >
                             <span slot="title">排行榜管理</span>
                         </el-menu-item>
                         <el-menu-item index="3" disabled>
