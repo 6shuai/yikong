@@ -2,6 +2,7 @@
     <div class="app-main-wrap content-list-wrap" id="app-main-wrap">
         <div class="content-top">
             <el-button 
+                v-if="hasPerm($route.meta.permission, 'AddTimeline')"
                 class="created-btn"
                 type="primary" 
                 icon="el-icon-plus" 

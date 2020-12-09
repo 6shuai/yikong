@@ -13,16 +13,16 @@ export function placeUpdate(data) { return put('/place/', data) }
 export function placeDelete(data) { return del(`/place/${data}`) }
 
 //场所管理  获取所有省
-export function placeProvincesData(data) { return get('/place/provinces', data) }
+export function placeProvincesData(data) { return get('/public/provinces', data) }
 
 //场所管理  根据省代码获取市列表
-export function placeCitysData(data) { return get(`/place/citys/${data}`) }
+export function placeCitysData(data) { return get(`/public/cities/${data}`) }
 
 //场所管理  根据市代码获取区县列表
-export function placeAreasData(data) { return get(`/place/areas/${data}`) }
+export function placeAreasData(data) { return get(`/public/areas/${data}`) }
 
 //场所管理  根据区县代码获取省市区数据
-export function adcodeFindData(data) { return get(`/place/areaData/${data}`) }
+export function adcodeFindData(data) { return get(`/public/areaData/${data}`) }
 
 //场所管理  查询所有场所类型
 export function placeTypeList(data) { return get('/place/placeType', data) }

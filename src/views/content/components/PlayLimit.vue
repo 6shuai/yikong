@@ -115,6 +115,11 @@ export default {
         }
     },
     methods: {
+        //显示播放限制 编辑模态框
+        showDialog(){
+            this.showPlayLimit = true;
+        },
+
         //添加播放限制
         createdLimit(){
             let s = '';
@@ -124,7 +129,7 @@ export default {
             if(s.indexOf(2) > -1){
                 this.limitParams.validDate = Number(s);
             }else{
-                this.limitParams.validate = undefined;
+                this.limitParams.validDate = undefined;
             }
             let params = JSON.parse(JSON.stringify(this.limitParams));
             params.content = Number(this.$route.params.id);
@@ -140,6 +145,7 @@ export default {
                             this.$message.success('添加成功~');
                             this.limitForm = {};
                             this.checkboxGroup = [];
+                            this.$delete(this.limitParams, 'validDate');
                             this.$emit('updateDetail');
                         }
                     })

@@ -125,7 +125,7 @@ export default {
     },
     created() {
         this.init();
-        this.getGroupType();
+        this.getGroupType(null);
     },
     methods: {
         init(){

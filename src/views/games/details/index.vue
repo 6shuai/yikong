@@ -1,45 +1,72 @@
 <template>
-    <el-card class="template-card content-details games-details" v-loading="detailLoading">
+    <el-card
+        class="template-card content-details games-details"
+        v-loading="detailLoading"
+    >
         <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)">
-            </el-page-header>
+            <el-page-header @back="$router.go(-1)"> </el-page-header>
             <div class="header-right">
-                <span @click="editGame"><i class="el-icon-edit" title="编辑"></i>编辑</span>
-                <el-divider direction="vertical"></el-divider>
-                <span @click="collectContent" v-if="!resData.isFavorite"><i class="el-icon-star-off" title="收藏"></i>收藏</span>
-                <span @click="collectContent" v-else><i class="el-icon-star-on" title="取消收藏"></i>取消收藏</span>
-                <el-divider direction="vertical"></el-divider>
-                <span @click="deleteGame"><i class="el-icon-delete" title="删除"></i>删除</span>
+                <span
+                    v-if="resData.authorize"
+                    @click="$refs.pagePermission.showPermission({applicationId: $route.params.id})"
+                    ><i class="el-icon-lock" title="授权"></i>授权<el-divider
+                        direction="vertical"
+                    ></el-divider
+                ></span>
+                <span @click="editGame" v-if="resData.editApplication"
+                    ><i class="el-icon-edit" title="编辑"></i>编辑
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span @click="collectContent" v-if="!resData.isFavorite"
+                    ><i class="el-icon-star-off" title="收藏"></i>收藏
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span @click="collectContent" v-else
+                    ><i class="el-icon-star-on" title="取消收藏"></i>取消收藏
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span @click="deleteGame" v-if="resData.deleteApplication"
+                    ><i class="el-icon-delete" title="删除"></i>删除</span
+                >
             </div>
             <div class="title">
-                <h2>{{resData.displayName}}</h2>
+                <h2>{{ resData.displayName }}</h2>
             </div>
         </div>
         <el-row>
             <el-col :span="4">
                 <div class="game-info">
-                    <el-image 
+                    <el-image
                         v-if="resData.image"
                         class="game-icon"
                         fit="cover"
-                        :src="resData.image" 
+                        :src="resData.image"
                     >
                     </el-image>
-                    <h3 class="title">{{resData.displayName}}</h3>
-                    <p class="desc">{{resData.description}}</p>
+                    <h3 class="title">{{ resData.displayName }}</h3>
+                    <p class="desc">{{ resData.description }}</p>
 
                     <el-menu
                         @select="handleSelect"
                         :default-active="currentActive"
                         :router="true"
-                        class="el-menu-vertical-demo">
-                        <el-menu-item :index="`/games/details/${$route.params.id}`">
+                        class="el-menu-vertical-demo"
+                    >
+                        <el-menu-item
+                            :index="`/games/details/${$route.params.id}`"
+                        >
                             <span slot="title">基本信息</span>
                         </el-menu-item>
-                        <el-menu-item :index="`/games/details/${$route.params.id}/package`">
+                        <el-menu-item
+                            :index="`/games/details/${$route.params.id}/package`"
+                            :disabled="!resData.packageList"
+                        >
                             <span slot="title">包管理</span>
                         </el-menu-item>
-                        <el-menu-item :index="`/games/details/${$route.params.id}/list`">
+                        <el-menu-item
+                            :index="`/games/details/${$route.params.id}/list`"
+                            :disabled="!resData.assemblyList"
+                        >
                             <span slot="title">游戏列表</span>
                         </el-menu-item>
                         <el-menu-item index="3" disabled>
@@ -49,39 +76,39 @@
                             <span slot="title">活动管理</span>
                         </el-menu-item>
                     </el-menu>
-
                 </div>
             </el-col>
 
             <el-col :span="20" class="right-content">
-                <div class="content" v-if="currentActive==`/games/details/${$route.params.id}`">
+                <div
+                    class="content"
+                    v-if="currentActive == `/games/details/${$route.params.id}`"
+                >
                     <h2 class="info-title mt20 mb20">基本信息</h2>
-                    <el-form 
-                        label-width="120px"
-                    >
+                    <el-form label-width="120px">
                         <el-form-item label="游戏名称:">
-                            <span>{{resData.displayName}}</span>
+                            <span>{{ resData.displayName }}</span>
                         </el-form-item>
                         <el-form-item label="描述:">
-                            <span>{{resData.description}}</span>
+                            <span>{{ resData.description }}</span>
                         </el-form-item>
                         <el-form-item label="图标:">
-                            <el-image 
+                            <el-image
                                 v-if="resData.image"
                                 class="icon"
                                 fit="cover"
-                                :src="resData.image" 
+                                :src="resData.image"
                                 :preview-src-list="previewIcon"
                             >
                             </el-image>
                         </el-form-item>
                         <el-form-item label="游戏截图:">
-                            <el-image 
+                            <el-image
                                 class="screenshot"
                                 v-for="item in resData.applicationShowData"
                                 :key="item.id"
                                 fit="cover"
-                                :src="item.url" 
+                                :src="item.url"
                                 :preview-src-list="previewList"
                             >
                             </el-image>
@@ -89,173 +116,225 @@
                     </el-form>
 
                     <h2 class="info-title mt20 mb20">开发信息</h2>
-                    <el-form 
-                        label-width="120px"
-                    >
+                    <el-form label-width="120px">
                         <el-form-item label="AppID:">
-                            <span>{{resData.appId}}</span>
+                            <span>{{ resData.appId }}</span>
                         </el-form-item>
                         <el-form-item label="AppSecret:">
                             <div v-loading="upldateSecretLoading">
-                                <span>{{resData.secret}}</span>
-                                <el-link class="ml20" type="primary" @click="updateSecret">更新</el-link>
+                                <span>{{ resData.secret }}</span>
+                                <el-link
+                                    class="ml20"
+                                    type="primary"
+                                    @click="updateSecret"
+                                    >更新</el-link
+                                >
                             </div>
                         </el-form-item>
                     </el-form>
-
                 </div>
 
                 <router-view v-else></router-view>
             </el-col>
-
         </el-row>
-        
+
+        <!-- 授权 -->
+        <permission 
+            ref="pagePermission" 
+            :premission="premission"
+            :premissionApi="premissionApi"
+        ></permission>
+
     </el-card>
 </template>
 <script>
-import { gameDelete, gameUpdateSecret, gameFavorite } from '@/api/game';
-import { getScreenDetail } from '../mixins';
+import { gameDelete, gameUpdateSecret, gameFavorite, gameAuthority, gameAuthorityUpdate } from "@/api/game";
+import { getScreenDetail } from "../mixins";
+import Permission from '@/components/permission/index';
 export default {
     mixins: [getScreenDetail],
-    data(){
-        return{
-            currentActive: '1',
-            detailLoading: false,           //详情数据加载中
-            upldateSecretLoading: false,     //AppSecret 更新中
-            resData: {}
-        }
+    data() {
+        return {
+            currentActive: "1",
+            detailLoading: false, //详情数据加载中
+            upldateSecretLoading: false, //AppSecret 更新中
+            resData: {},
+            premissionApi: {
+                list: gameAuthority,
+                update: gameAuthorityUpdate
+            },
+            premission: [
+                {
+                    label: '查看游戏列表',
+                    value: 'applicationList'
+                },
+                {
+                    label: '编辑游戏',
+                    value: 'editApplication'
+                },
+                {
+                    label: '删除游戏',
+                    value: 'deleteApplication'
+                },
+                {
+                    label: '查看包列表',
+                    value: 'packageList'
+                },
+                {
+                    label: '编辑游戏包',
+                    value: 'editPackage'
+                },
+                {
+                    label: '删除游戏包',
+                    value: 'deletePackage'
+                },
+                {
+                    label: '查看游戏配置列表',
+                    value: 'assemblyList'
+                },
+                {
+                    label: '编辑游戏配置',
+                    value: 'editAssembly'
+                },
+                {
+                    label: '删除游戏配置',
+                    value: 'deleteAssembly'
+                }
+            ]
+        };
     },
     computed: {
         //游戏图标预览
-        previewIcon(){
+        previewIcon() {
             return [this.resData.image];
         },
 
         //游戏截图预览
-        previewList(){
+        previewList() {
             let arr = [];
-            this.resData.applicationShowData.forEach(item => {
+            this.resData.applicationShowData.forEach((item) => {
                 arr.push(item.url);
-            })
+            });
             return arr;
-        }
-        
+        },
     },
     mounted() {
-        this.currentActive = `/games/details/${this.$route.params.id}`;
+        this.currentActive = this.$route.path;
         this.init();
     },
     methods: {
-        init(){
-            new Promise((resolve) => {
-                this.detailLoading = true;
-                this.initDetail(resolve);
-            }).then(res => {
+        init() {
+            this.detailLoading = true;
+            this.initDetail().then(res => {
+                this.detailLoading = false;
+            }).catch(err => {
                 this.detailLoading = false;
             })
         },
 
         //编辑游戏
-        editGame(){
-            this.$router.push(`/games/edit/${this.$route.params.id}`)
+        editGame() {
+            this.$router.push(`/games/edit/${this.$route.params.id}`);
         },
 
         //删除游戏
-        deleteGame(){
-            this.$confirm('此操作将删除该游戏 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning',
-                center: true
+        deleteGame() {
+            this.$confirm("此操作将删除该游戏 是否继续?", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
+                center: true,
             }).then(() => {
-                gameDelete(this.resData.id).then(res => {
-                    if(res.code === this.$successCode){
+                gameDelete(this.resData.id).then((res) => {
+                    if (res.code === this.$successCode) {
                         this.$message.success({
-                            message: '删除成功~',
+                            message: "删除成功~",
                             duration: 1000,
                             onClose: () => {
-                                this.$router.push('/games/index');
-                            }
+                                this.$router.push("/games/index");
+                            },
                         });
                     }
-                })
-            })
+                });
+            });
         },
 
         //更新 secret
-        updateSecret(){
+        updateSecret() {
             this.upldateSecretLoading = true;
-            gameUpdateSecret(this.resData.id).then(res => {
+            gameUpdateSecret(this.resData.id).then((res) => {
                 this.upldateSecretLoading = false;
-                if(res.code === this.$successCode){
-                    this.$message.success('更新成功~');
+                if (res.code === this.$successCode) {
+                    this.$message.success("更新成功~");
                     this.init();
                 }
-            })
+            });
         },
 
         //收藏
-        collectContent(){
+        collectContent() {
             let p = {
                 isFavorite: this.resData.isFavorite ? 0 : 1,
                 id: this.resData.id,
-                userId: this.$store.state.user.loginData.id
-            }
+                userId: this.$store.state.user.loginData.id,
+            };
             let s = `?isFavorite=${p.isFavorite}&applicationId=${p.id}&userId=${p.userId}`;
 
-            gameFavorite(s).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('操作成功~');
-                    this.$set(this.resData, 'isFavorite', p.isFavorite);
+            gameFavorite(s).then((res) => {
+                if (res.code === this.$successCode) {
+                    this.$message.success("操作成功~");
+                    this.$set(this.resData, "isFavorite", p.isFavorite);
                 }
-            })
+            });
         },
 
         //右侧菜单
-        handleSelect(key){
+        handleSelect(key) {
             this.currentActive = key;
-        }
-
+        },
     },
-    watch:{
-        '$route.path':function(newVal,oldVal){
+    components: {
+        Permission
+    },
+    watch: {
+        "$route.path": function (newVal, oldVal) {
             this.currentActive = newVal;
-        }
-    }
-}
+        },
+    },
+};
 </script>
 <style lang="scss" scope>
-    @import '../../../styles/variables.scss';
-    @import '../../content/style/content-details.scss';
-    .games-details{
-        .game-info{
-            text-align: center;
-            .game-icon{
-                width: 60px;
-                height: 60px;
-            }
-            .desc{
-                font-size: 13px;
-                color: #999;
-                padding-top: 20px;
-                line-height: 24px;
-            }
+@import "../../../styles/variables.scss";
+@import "../../content/style/content-details.scss";
+.games-details {
+    .game-info {
+        text-align: center;
+        .game-icon {
+            width: 60px;
+            height: 60px;
         }
-        .el-image{
-            border-radius: 6px;
-            margin: 0 10px 10px 0;
-            &.icon{
-                width: 80px;
-                height: 80px;
-            }
-            &.screenshot{
-                width: 150px;
-                height: 100px;
-            }
-        }
-        .right-content{
-            border-left: 1px solid #e5e5e5;
-            padding-left: 10px;
+        .desc {
+            font-size: 13px;
+            color: #999;
+            padding-top: 20px;
+            line-height: 24px;
         }
     }
+    .el-image {
+        border-radius: 6px;
+        margin: 0 10px 10px 0;
+        &.icon {
+            width: 80px;
+            height: 80px;
+        }
+        &.screenshot {
+            width: 150px;
+            height: 100px;
+        }
+    }
+    .right-content {
+        border-left: 1px solid #e5e5e5;
+        padding-left: 10px;
+    }
+}
 </style>

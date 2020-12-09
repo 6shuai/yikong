@@ -1,13 +1,13 @@
 import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
 
 //屏幕管理  获取所有点距规格数据
-export function screenDotPitchList(data) { return get('/screen/dotPitch', data) }
+export function screenDotPitchList(data) { return get('/public/dotPitch', data) }
 
 //屏幕管理  获取所有场所ID和名称
 export function screenPlaceList(data) { return get('/screen/place', data) }
 
 //屏幕管理  获取所有宽高比
-export function screenAspectRatioList(data) { return get('/screen/aspectRatio', data) }
+export function screenAspectRatioList(data) { return get('/public/aspectRatio', data) }
 
 //屏幕管理  列表
 export function screenList(data) { return get('/screen/', data) }
@@ -47,3 +47,11 @@ export function bindScreen(data) { return put(`/screen/bindScreen/${data}`) }
 
 //屏幕管理  解除硬件绑定  
 export function unboundScreen(data) { return del(`/screen/bindScreen/${data}`) }
+
+
+
+//查询授权列表
+export function screenAuthority(data) { return get('/screen/screenAuthority/', data) }
+
+//修改权限
+export function screenAuthorityUpdate(data) { return post('/screen/screenAuthority/', data) }

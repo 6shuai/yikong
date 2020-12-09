@@ -9,15 +9,18 @@ export const getScreenDetail = {
         }
     },
     methods: {
-        initDetail(resolve){
-            this.loading = true;
-            let data = `?id=${this.$route.params.id}`;
-            gameDetail(data).then(res => {
-                this.loading = false;
-                if(res.code === this.$successCode){
-                    this.resData = res.obj;
-                    if(resolve) resolve('success');
-                }
+        initDetail(){
+            return new Promise((resolve) => {
+                this.loading = true;
+                let data = `?id=${this.$route.params.id}`;
+                gameDetail(data).then(res => {
+                    this.loading = false;
+                    if(res.code === this.$successCode){
+                        this.resData = res.obj;
+                        this.$store.dispatch('game/setGameDetail', this.resData);
+                        resolve('success');
+                    }
+                })
             })
         }
     }

@@ -25,21 +25,26 @@ axios.interceptors.request.use(
 	}
 );
 
+/**
+ * 响应拦截器
+ * code 4    账号的时效期 过期
+ * code 103  无权限访问
+ */
 axios.interceptors.response.use(
 	(response) => {
 		const res = response.data;
-
 		if (res.code !== 0) {
 			Message.closeAll()
-			//4 账号的时效期 过期
-			//103 无权限访问 先做退出登录
-			if(res.code === 4 || res.code === 103){
+			if(res.code === 4){
 				store.dispatch('user/logout').then(() => {
 					location.reload() // 为了重新实例化vue-router对象 避免bug
 				})
-			}else{
-				Message.error({message: res.message});
+			}else if(res.code === 103){
+				if(location.hash != '#/'){
+					router.push({ path: '/' });
+				}
 			}
+			Message.error({message: res.message});
 
 			
 			// return new Promise(() => {});

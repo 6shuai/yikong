@@ -17,27 +17,18 @@ const moduleMap = {
 	'Timeline': 'timeline/index',                         //时间轴  
 
 	'Log': 'log/index',									  //操作日志
+
+	'Layout': 'screenLayout/index',						  //屏幕布局 模板
 	
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理
 	'Member': 'system/member/index',				      //成员管理
 	'Organization': 'system/organizations/index',		  //品牌列表
-	'OrganizationType': 'system/organizationType/index', //组织类型列表
-	'User': 'user/Center'								  //个人中心
+	'OrganizationType': 'system/organizationType/index',  //组织类型列表
+	'User': 'user/Center',							      //个人中心
+	'BasicRole': 'system/basicRole/index',			      //基础角色管理
 }
 
-/**
- * 当前用户是否具有权限
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-	if (route.meta && route.meta.roles) {
-		return roles.some((role) => route.meta.roles.includes(role));
-	} else {
-		return true;
-	}
-}
 
 /**
  * 通过递归过滤异步路由表
@@ -77,9 +68,21 @@ const actions = {
 	}
 };
 
+//用户页面按钮 操作权限
+function getUserPerm(data){
+	let permArr = [];
+	if(data){
+		data.forEach(item => {
+			permArr.push(item.moduleName);
+		})
+	}
+	return permArr;
+};
+
 //路由格式化
 export const filterAsyncRouter = (data) => {
-    let result = [];
+	let result = [];
+	if(!data) return result;
     data.forEach(one => {
         // 先格式化子路由
         let formattedChildren = null;
@@ -93,12 +96,20 @@ export const filterAsyncRouter = (data) => {
 			component: one.parentID === 1 ? Layout : (resolve) => require(['@/views/' + moduleMap[one.moduleName] + '.vue'], resolve),
 			meta: {
 				title: one.displayName,
-				icon: one.moduleName
+				icon: one.moduleName,
+				permission: getUserPerm(one.subContent),
 			}
 		}
+
+		if(one.route == '/timeline/index'){
+			state.timelinePrem = oneRouter.meta.permission;
+		}else if(one.route == '/games/index'){
+			state.gamesPrem = oneRouter.meta.permission;
+		}
+
+
         result.push(oneRouter);
 	})
-	console.log(result)
     return result;
 }
 

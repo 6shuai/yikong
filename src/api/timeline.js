@@ -33,15 +33,6 @@ export function timelineAddScreen(data) { return post(`/timeline/screenToTimelin
 //时间轴 详情页 - 投放屏幕 - 删除屏幕
 export function timelineDeleteScreen(data) { return del(`/timeline/screenToTimelineContainer/${data}`) }
 
-//时间轴 详情页 - 屏幕布局 - 添加或修改逻辑区域
-export function timelineAddlayout(data) { return post('/timeline/logicRegion', data) }
-
-//时间轴 详情页 - 屏幕布局 - 根据时间轴容器ID查询逻辑区域集合
-export function timelineLayoutList(data) { return get(`/timeline/logicRegion/${data}`) }
-
-//时间轴 详情页 - 屏幕布局 - 删除
-export function timelineLayoutDelete(data) { return del(`/timeline/logicRegion/${data}`) }
-
 
 //时间轴 添加或修改时间轴
 export function timelineCreated(data) { return post('/timeline/', data) }
@@ -89,4 +80,38 @@ export function timelineRuleDelete(data) { return del(`/timeline/timelineSchedul
 
 //时间轴调度  删除步骤里的屏幕区域
 export function timelineRuleRegionDelete(data) { return del(`/timeline/stepRegion/${data}`) }
+
+
+
+//时间轴阶段  创建
+export function timelineStageCreated(data) { return post('/timeline/timelinePhase', data) }
+
+//时间轴阶段  删除阶段
+export function timelineStageDelete(data) { return del(`/timeline/timelinePhase/${data}`) }
+
+//时间轴阶段  屏幕布局模板列表
+export function timelineStageTempList(data) { return get('/timeline/logicRegionTemp/', data) }
+
+
+//时间轴阶段  创建 步骤
+export function timelineStageStepCreated(data) { return post('/timeline/timelineStep', data) }
+
+//时间轴阶段  删除步骤
+export function timelineStageStepDelete(data) { return del(`/timeline/timelineStep/${data}`) }
+
+
+//根据时间轴容器id 查询阶段和步骤数据
+export function timelineStageData(data) { return get(`/timeline/phaseAndStep/${data}`) }
+
+//修改逻辑区域  是否轮播 
+export function timelineRegionUpdate(data) { return put('/timeline/timelineRegion', data) }
+
+
+
+//查询授权列表
+export function timelineAuthority(data) { return get('/timeline/timelineAuthority', data) }
+
+//修改权限
+export function timelineAuthorityUpdate(data) { return post('/timeline/timelineAuthority', data) }
+
 

@@ -93,37 +93,6 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <!-- <div v-if="!screenParams.id || showUserInput">
-                        <el-form-item label="登录用户名" prop="account">
-                            <el-row>
-                                <el-col :span="18">
-                                    <el-input v-model="screenParams.account" placeholder="登录用户名"></el-input>
-                                </el-col>
-                                <el-col :span="4" :offset="2">
-                                    <el-button size="mini" type="info" @click="randomAccount">自动生成</el-button>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-                        <el-form-item label="登录密码" prop="password">
-                            <el-row>
-                                <el-col :span="18">
-                                    <el-input v-model="screenParams.password" placeholder="登录密码"></el-input>
-                                </el-col>
-                                <el-col :span="4" :offset="2">
-                                    <el-button size="mini" type="info" @click="randomPassword">自动生成</el-button>
-                                </el-col>
-                            </el-row>
-                        </el-form-item>
-                    </div> -->
-                    <el-form-item v-if="screenParams.id && !showUserInput" label="登录用户名">
-                        <span>{{screenParams.account}}</span>
-                        <el-button 
-                            size="mini" 
-                            type="primary" 
-                            style="margin-left: 15px"
-                            @click="showUserInput=true;screenParams.isUpdateAccount=1">编辑
-                        </el-button>
-                    </el-form-item>
                     <el-form-item label="实景图片" prop="screenShowData">
                         <upload-img 
                             ref="uploadImg"
@@ -163,16 +132,6 @@ import uploadImg from '@/components/Upload/UploadImg';
 export default {
     mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getDotPitch, getAspectRatio, getScreenDetail],
     data(){
-        // 校验密码是否  包含大写字母、小写字母、数字和特殊字符其中 两种 不能低于八位
-		let validatePass = (rule, value, callback) => {
-			if (value.length < 8) {
-				callback(new Error("密码长度不能低于八位~"));
-			} else if (this.passwordLevel(value) < 2) {
-				callback(new Error("必须包含大写字母、小写字母、数字和特殊字符其中两种~"));
-			} else {
-				callback();
-			}
-		};
         return {
             screenParams: {
                 screenShowData: []
@@ -191,8 +150,6 @@ export default {
                 physicalWidth: [{ required: true, trigger: "blur", message: '请输入物理尺寸宽~' }],
                 physicalHeight: [{ required: true, trigger: "blur", message: '请输入物理尺寸高~' }],
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
-                account: [{ required: true, trigger: "blur", message: '请输入登录用户名~' }],
-                password: [{ required: true, trigger: "blur", message: '请输入登录密码~' },{ validator: validatePass, trigger: "blur" },],
                 screenShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }]
             },
             loading: false,          //编辑时获取详情  loading
@@ -371,68 +328,6 @@ export default {
         randomAccount(){
             let n = Math.random().toString().slice(-6);
             this.$set(this.screenParams, 'account', 'Admin' + n);
-        },
-
-        //密码自动生成  8位随机内容，可以包含大写字母、小写字母、数字和特殊字符，至少包含其中3种。  
-        //自己输入的必须包含两种 不能低于八位
-        randomPassword() {
-            let length = 8;
-            let passwordArray = ['ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz', '1234567890', '~!@#$%&*()'];
-            let password = [];
-            let n = 0;
-            for (let i = 0; i < length; i++) {
-                // 如果密码长度小于9，则全部为随机值
-                if ( password.length < (length - 4) ) {
-                    // 获取随机密码索引
-                    let arrayRandom = Math.floor(Math.random() * 4);
-                    // 获取密码数组值
-                    let passwordItem = passwordArray[arrayRandom];
-                    // 获取密码数组值随机索引
-                    // 得到随机实值
-                    let item = passwordItem[Math.floor(Math.random() * passwordItem.length)];
-                    password.push(item);
-                } else {
-                    // 如果密码大则9，最新的4个密码将推入根据随机密码索引
-                    // 按顺序获取数组值
-                    let newItem = passwordArray[n];
-                    let lastItem = newItem[Math.floor(Math.random() * newItem.length)];
-                    // G获取数组拼接索引
-                    let spliceIndex = Math.floor(Math.random() * password.length);
-                    password.splice(spliceIndex, 0, lastItem);
-                    n++
-                }
-            }
-            this.$set(this.screenParams, 'password', password.join(""));
-        },
-
-        passwordLevel(password) {  
-            let Modes = 0;  
-            for (let i = 0; i < password.length; i++) {  
-                Modes |= CharMode(password.charCodeAt(i));  
-            }  
-            return bitTotal(Modes);  
-        
-            //CharMode函数  
-            function CharMode(iN) {  
-                if (iN >= 48 && iN <= 57)//数字  
-                    return 1;  
-                if (iN >= 65 && iN <= 90) //大写字母  
-                    return 2;  
-                if ((iN >= 97 && iN <= 122) || (iN >= 65 && iN <= 90)) //大小写  
-                    return 4;  
-                else  
-                    return 8; //特殊字符  
-            }  
-        
-            //bitTotal函数  
-            function bitTotal(num) {  
-                let modes = 0;  
-                for (let i = 0; i < 4; i++) {  
-                    if (num & 1) modes++;  
-                    num >>>= 1;  
-                }  
-                return modes;  
-            }  
         }
     },
     components: {

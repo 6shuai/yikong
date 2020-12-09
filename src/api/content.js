@@ -1,7 +1,7 @@
 import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
 
 //资源管理 资源类型列表
-export function getContentTypeList(data) { return get('/content/contentType', data) }
+export function getContentTypeList(data) { return get('/public/contentType', data) }
 
 //资源管理 资源列表
 export function contentList(data) { return get('/content/', data) }
@@ -32,3 +32,16 @@ export function contentListPage(data) { return get('/content/queryForPage', data
 
 //资源管理 删除图集 资源引用
 export function atlasDeleteContent(data) { return del(`/content/atlas/${data}`) }
+
+//资源管理  游戏预览
+export function contentGamePreview(data) { return get('/content/previewGame', data) }
+
+
+
+
+//查询授权列表
+export function contentAuthority(data) { return get('/content/contentAuthority', data) }
+
+//修改权限
+export function contentAuthorityUpdate(data) { return post('/content/contentAuthority', data) }
+

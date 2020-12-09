@@ -2,6 +2,7 @@
     <el-card class="mb20" shadow="never">
         <div class="mb10">
             <el-button 
+                v-if="hasPerm($route.meta.permission, 'AddScreen')"
                 type="primary" 
                 icon="el-icon-plus" 
                 @click="$router.push('/screen/add')"

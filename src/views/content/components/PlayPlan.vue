@@ -94,6 +94,12 @@ export default {
         }
     },
     methods: {
+        //显示播放计划  编辑模态框
+        showDialog(){
+            this.showPlayPlan = true;
+            
+        },
+
         //更新播放计划
         updatePlayPlan(){
             this.$refs.planForm.validate((valid) => {

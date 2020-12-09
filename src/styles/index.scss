@@ -116,7 +116,7 @@ li{
   }
   .header-right{
       float: right;
-      width: 250px;
+      width: 320px;
       text-align: right;
       span{
           cursor: pointer;
@@ -180,6 +180,14 @@ li{
 }
 .mr30{
   margin-right: 30px;
+}
+
+.w220.el-input{
+  width: 220px;
+}
+
+.w200.el-input{
+  width: 200px;
 }
 
 .search-list-wrap{

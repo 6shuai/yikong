@@ -67,7 +67,10 @@ export default {
         showDialog(){
             this.groupParams = {};
             this.addGroupDialog = true;
-            this.getGroupType();
+            this.$nextTick(() => {
+                this.$refs['groupForm'].clearValidate();
+            })
+            this.getGroupType(null);
         },
 
         //编辑时 获取品牌详情

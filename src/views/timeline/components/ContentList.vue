@@ -345,6 +345,7 @@ export default {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
         background: #fff;
         position: relative;
+        overflow: hidden;
 
         .cover {
             position: absolute;
@@ -354,6 +355,7 @@ export default {
         }
 
         .el-image {
+            width: 100%;
             height: 60px;
             background: #000;
         }
@@ -400,7 +402,7 @@ export default {
             .duration {
                 font-size: 12px;
                 color: #999;
-                padding: 0 3px;
+                padding: 0 5px;
 
                 svg {
                     margin-right: 3px;
@@ -410,7 +412,8 @@ export default {
             .title {
                 line-height: 20px;
                 font-size: 12px;
-                padding: 0 3px;
+                width: 100%;
+                margin: 0 3px;
                 overflow: hidden;
                 white-space: nowrap;
             }

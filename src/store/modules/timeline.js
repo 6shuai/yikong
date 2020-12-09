@@ -1,6 +1,7 @@
 const state = {
     dragData: {},               //资源选择 ， 正在拖拽的资源数据
     screenLayoutData: [],       //资源布局 数据
+    screenSize: {},             //屏幕尺寸  真实宽高
 }
 
 const mutations = {
@@ -11,6 +12,10 @@ const mutations = {
     SET_SCREEN_LAYOUT_DATA: (state, data) => {
         state.screenLayoutData = data
     },
+
+    SET_SCREEN_SIZE: (state, data) => {
+        state.screenSize = data;
+    }
 }
 
 const actions = {

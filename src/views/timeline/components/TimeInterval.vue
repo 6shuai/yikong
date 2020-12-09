@@ -2,6 +2,7 @@
     <div class="time-interval-screen-wrap clearfix">
         <el-scrollbar style="height: 100%">
             <el-button
+                v-if="hasPerm($store.state.permission.timelinePrem, 'AddIntervalScreen')"
                 type="primary"
                 icon="el-icon-plus"
                 size="mini"
@@ -14,7 +15,6 @@
                     :body-style="{ padding: '0px' }"
                     v-for="(item, index) in resData"
                     :key="index"
-                    @click.native.prevent="showCurrentScreenTimelineList(item.screenId)"
                 >
                     <div class="screen-info">
                         <div class="title">
@@ -29,7 +29,13 @@
                                 <i class="el-icon-warning"></i>
                             </el-tooltip>
                         </div>
-                        <div class="delete" @click="deleteScreen(index)"><i class="el-icon-delete"></i>删除</div>
+                        <div 
+                            v-if="timelineData.deleteTimingScreen"
+                            class="delete" 
+                            @click="deleteScreen(index)"
+                        >
+                            <i class="el-icon-delete"></i>删除
+                        </div>
                     </div>
                     <div class="time">
                         <i class="el-icon-time"></i>{{item.formatPlayTime}}
@@ -141,6 +147,7 @@
 import { screenList } from "@/api/screen";
 import { timeIntervalList, timeIntervalPub, timeIntervalDelete, timeIntervalScreentTimelineList } from "@/api/timeline";
 export default {
+    props: ['timelineData'],
     data() {
         return {
             screenListLoading: false,
@@ -236,8 +243,7 @@ export default {
                     containerId: Number(this.$route.params.id),
                     screenId: item,
                     playTime: this.addParams.time,
-                    // 时间轴内 最后一个内容的结束时间
-                    endTime: localStorage.timelineContentLastTime ? this.addParams.time.split(' ')[0] + ' ' + localStorage.timelineContentLastTime : this.addParams.time
+                    endTime: this.timelineData.endTimeFormat
                 })
             })
 

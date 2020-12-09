@@ -239,7 +239,7 @@ export default {
         //将用户移除  组织
         delCurrentMember(id){
             let data = {
-                oid: 1,
+                oid: this.groupData.id,
                 uid: id
             }
             memberDelete(data).then(res => {
@@ -273,14 +273,14 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-               organizationDelete(this.groupData.id).then(res => {
+                organizationDelete(this.groupData.id).then(res => {
                     if(res.code === this.$successCode){
                         this.$message.success('操作成功~');
                         this.groupData = {};
                         this.resData = [];
                         this.searchGroupInfo();
                     }
-               })
+                })
             })
         }
     },

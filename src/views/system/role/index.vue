@@ -170,6 +170,10 @@ export default {
             currentRoleAuthList(id).then(res => {
                 this.roleListLoading = false;
                 if(res.code === this.$successCode){
+                    let spliceIndex = res.obj.indexOf(1);
+                    if(spliceIndex){
+                        res.obj.splice(spliceIndex, res.obj.length-1);
+                    }
                     this.selectedAuthority = res.obj;
                 }
             })
@@ -178,7 +182,9 @@ export default {
         //更新权限
         updateRoleSureBtn(){
             let data = `?rid=${this.currentRoleId}`;
-            let selectedKeys = this.$refs.menu.getCheckedKeys(true);
+            let halfKeys = this.$refs.menu.getHalfCheckedKeys();
+            let selectedKeys = this.$refs.menu.getCheckedKeys(false).concat(halfKeys);
+            
             selectedKeys.forEach(key => {
                 data += '&aid=' + key;
             })

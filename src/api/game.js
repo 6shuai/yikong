@@ -28,6 +28,9 @@ export function packageCreated(data) { return post('/application/applicationPack
 //游戏管理 包管理 列表
 export function packageList(data) { return get('/application/applicationPackage', data) }
 
+//游戏管理 包管理 删除
+export function packageDelete(data) { return del(`/application/applicationPackage${data}`) }
+
 //游戏管理 包管理 提交测试
 export function packageSubmitTest(data) { return post('/application/applicationPackageToTest?id='+data) }
 
@@ -39,6 +42,7 @@ export function packageProductionList(data) { return get('/application/applicati
 
 //游戏管理 包管理 变更游戏包
 export function packageProductionUpdate(data) { return post('/application/updateApplyPackage'+data) }
+
 
 
 
@@ -56,4 +60,14 @@ export function gameDataDetail(data) { return get(`/application/gameAssemblyDeta
 
 //游戏管理  详情  游戏装配列表  删除
 export function gameDataDelete(data) { return del(`/application/gameAssembly/${data}`) }
+
+
+
+
+//查询授权列表
+export function gameAuthority(data) { return get('/application/applicationAuthority', data) }
+
+//修改权限
+export function gameAuthorityUpdate(data) { return post('/application/applicationAuthority', data) }
+
 

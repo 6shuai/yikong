@@ -2,6 +2,7 @@
     <div class="app-main-wrap games-list-wrap" id="app-main-wrap">
         <div class="content-top mb20">
             <el-button 
+                v-if="hasPerm($route.meta.permission, 'AddGame')"
                 class="created-btn"
                 type="primary" 
                 icon="el-icon-plus" 
@@ -9,6 +10,26 @@
                 size="small">
                 创建游戏
             </el-button>
+            
+            <el-input 
+                class="ml20 w220"
+                prefix-icon="el-icon-search" 
+                clearable
+                v-model="params.displayName" 
+                placeholder="游戏名称" size="small"
+                @input="search"
+            ></el-input>
+
+            <el-radio-group 
+                class="ml20"
+                v-model="params.isFavorite" 
+                size="small"
+                @change="search"
+            >
+                <el-radio-button label="0">不限</el-radio-button>
+                <el-radio-button label="1">已收藏</el-radio-button>
+            </el-radio-group>
+            
         </div>
 
         <!-- 游戏列表 -->
@@ -54,7 +75,8 @@ export default {
             dataLoading: false,
             params: {
                 pageNo: 1,
-                pageSize: 48
+                pageSize: 48,
+                isFavorite: 0
             },
             totalCount: 0,
             resData: []
@@ -65,7 +87,7 @@ export default {
     },
     methods: {
         init(){
-            this.dataLoading = false;
+            this.dataLoading = true;
             gameList(this.params).then(res => {
                 this.dataLoading = false;
                 if(res.code === this.$successCode){
@@ -86,6 +108,12 @@ export default {
             this.params.pageSize = size;
             this.init();
         },
+
+        //搜索
+        search(){
+            this.params.pageNo = 1;
+            this.init();
+        }
 
     },
     components: {

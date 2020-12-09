@@ -70,7 +70,6 @@ export default {
                 applicationShowData: [{ required: true, type: "array", trigger: "blur", message: '请上传游戏截图~' }],
             },
             loading: false,          //编辑时获取详情  loading
-            copyTimelineParams: {}
         }
     },
     mounted() {
@@ -81,10 +80,8 @@ export default {
     methods: {
         //编辑 获取详情
         getDetail(){
-            new Promise((resolve) => {
-                this.detailLoading = true;
-                this.initDetail(resolve);
-            }).then(res => {
+            this.detailLoading = true;
+            this.initDetail().then(res => {
                 this.detailLoading = false;
                 this.gameParams = this.resData;
                 //修改时 id 为资源id

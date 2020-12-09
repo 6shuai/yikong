@@ -163,6 +163,9 @@ export default {
             this.addParams = JSON.parse(JSON.stringify(data));
             this.addParams.commonType = data.commonType ? 1 : 0;
             this.dialogVisible = true;
+            this.$nextTick(() => {
+                this.$refs['addForm'].clearValidate();
+            })
         },
 
         //添加或编辑  组织类型

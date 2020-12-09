@@ -347,7 +347,6 @@ export default {
                     item.isDefault = 1;
                 }
             })
-            console.log(this.placeForm.placeShowData)
             this.$refs.uploadImg.changeImgUri(this.placeForm.placeShowData);
         },
 

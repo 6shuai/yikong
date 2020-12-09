@@ -4,12 +4,34 @@
             <el-page-header @back="$router.go(-1)">
             </el-page-header>
             <div class="header-right">
-                <span @click="editContent"><i class="el-icon-edit" title="编辑"></i>编辑</span>
+                <span 
+                    v-if="resData.authorize"
+                    @click="$refs.pagePermission.showPermission({contentId: $route.params.id})"
+                    ><i class="el-icon-lock" title="授权"></i>授权
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span 
+                    v-if="resData.edit"
+                    @click="editContent">
+                    <i class="el-icon-edit" title="编辑"></i>编辑
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span 
+                    @click="collectContent" 
+                    v-if="!resData.isFavorite">
+                    <i class="el-icon-star-off" title="收藏"></i>收藏
+                </span>
+                <span 
+                    @click="collectContent" 
+                    v-else>
+                    <i class="el-icon-star-on" title="取消收藏"></i>取消收藏
+                </span>
                 <el-divider direction="vertical"></el-divider>
-                <span @click="collectContent" v-if="!resData.isFavorite"><i class="el-icon-star-off" title="收藏"></i>收藏</span>
-                <span @click="collectContent" v-else><i class="el-icon-star-on" title="取消收藏"></i>取消收藏</span>
-                <el-divider direction="vertical"></el-divider>
-                <span @click="deleteContent"><i class="el-icon-delete" title="删除"></i>删除</span>
+                <span 
+                    v-if="resData.deleteRight"
+                    @click="deleteContent">
+                    <i class="el-icon-delete" title="删除"></i>删除
+                </span>
             </div>
             <div class="title">
                 <h2>{{resData.displayName}}</h2>
@@ -49,6 +71,7 @@
             </div>
             <h2 class="info-title mt20 mb20">播放限制
                 <el-button 
+                    v-if="resData.editPlaybackRestriction"
                     class="edit-btn" 
                     size="mini" 
                     icon="el-icon-edit" 
@@ -74,6 +97,7 @@
 
             <h2 class="info-title mt20 mb20">播放计划 
                 <el-button 
+                    v-if="resData.editPlayPlan"
                     class="edit-btn" 
                     size="mini" 
                     icon="el-icon-edit" 
@@ -111,7 +135,8 @@
                 <ul>
                     <li v-for="item in resData.timelineContainerData" :key="item.id">
                         <div class="t-content">
-                            <div class="title" @click="$router.push(`/timeline/details/${item.id}`)">{{item.displayName}}</div>
+                            <div v-if="resData.jumpToTimeline" class="title" @click="$router.push(`/timeline/details/${item.id}`)">{{item.displayName}}</div>
+                            <div v-else class="title">{{item.displayName}}</div>
                             <!-- <div class="play-limit">
                                 <span class="limit-item">每日曝光 <span class="highlight">12次</span></span>
                                 <span class="limit-item">每日时长 <span class="highlight">3分40秒</span></span>
@@ -139,15 +164,23 @@
             ref="playPlan"
             @updateDetail="initDetail"
         ></play-plan>
+
+        <!-- 授权 -->
+        <permission 
+            ref="pagePermission" 
+            :premission="premission"
+            :premissionApi="premissionApi"
+        ></permission>
         
     </el-card>
 </template>
 <script>
-import { contentDelete } from '@/api/content';
+import { contentDelete, contentAuthority, contentAuthorityUpdate } from '@/api/content';
 import { contentDetailData, contentIsFavorite } from '@/views/content/mixins';
 import PlayLimit from '@/views/content/components/PlayLimit';
 import PlayPlan from '@/views/content/components/PlayPlan';
 import ContentPreview from '@/views/content/components/ContentPreview';
+import Permission from '@/components/permission';
 export default {
     mixins: [contentDetailData, contentIsFavorite],
     data(){
@@ -161,6 +194,36 @@ export default {
                 { id: 6, label: '周六' },
                 { id: 7, label: '周日' }
             ],
+            premissionApi: {
+                list: contentAuthority,
+                update: contentAuthorityUpdate
+            },
+            premission: [
+                {
+                    label: '查看资源',
+                    value: 'list'
+                },
+                {
+                    label: '编辑资源',
+                    value: 'edit'
+                },
+                {
+                    label: '删除资源',
+                    value: 'deleteRight'
+                },
+                {
+                    label: '编辑播放计划',
+                    value: 'editPlayPlan'
+                },
+                {
+                    label: '编辑播放限制',
+                    value: 'editPlaybackRestriction'
+                },
+                {
+                    label: '跳转时间轴',
+                    value: 'jumpToTimeline'
+                }
+            ]
         }
     },
     computed: {
@@ -172,7 +235,7 @@ export default {
         new Promise((resolve) => {
             this.initDetail(resolve);
         }).then(res => {
-            this.$refs.contentPreview.contentPreviewData(this.resData.oldContents ? this.resData.oldContents : this.resData);
+            this.$refs.contentPreview.contentPreviewData(this.resData.oldContents ? this.resData.oldContents : this.resData, 'detail');
         })
     },
     methods: {
@@ -220,12 +283,12 @@ export default {
 
         //显示编辑播放限制
         editPlayimit(){
-            this.$refs.playLimit.showPlayLimit = true;
+            this.$refs.playLimit.showDialog();
         },
 
         //显示编辑播放计划
         editPlan(){
-            this.$refs.playPlan.showPlayPlan = true;
+            this.$refs.playPlan.showDialog();
             if(this.resData.playPlanData.length){
                 let p = JSON.parse(JSON.stringify(this.resData.playPlanData[0]));
                 let data = {
@@ -261,7 +324,8 @@ export default {
     components: {
         PlayLimit,
         PlayPlan,
-        ContentPreview
+        ContentPreview,
+        Permission
     }
 }
 </script>

@@ -2,6 +2,7 @@
     <div class="gameDetail-game-list">
         <div class="game-list-top">
             <el-button
+                v-if="hasPerm($store.state.permission.gamesPrem, 'AddGameAssembly')"
                 type="primary"
                 size="small"
                 icon="el-icon-plus"
@@ -44,15 +45,24 @@
                 min-width="50"
             ></el-table-column>
             <el-table-column
-                prop="packageId"
-                label="游戏包ID"
+                prop="overallVersion"
+                label="游戏包版本"
                 min-width="50"
             ></el-table-column>
             <el-table-column
-                prop="contentId"
-                label="资源ID"
-                min-width="50"
+                prop="description"
+                label="游戏包说明"
+                min-width="100"
             ></el-table-column>
+            <el-table-column
+                prop="versionType"
+                label="游戏包类型"
+                min-width="50"
+            >
+                <template slot-scope="scope">
+                    {{scope.row.versionType==2 ? '线上版本' : scope.row.versionType==1 ? '测试版本' : '开发版本'}}
+                </template>
+            </el-table-column>
             <el-table-column
                 prop="size"
                 label="游戏包大小"
@@ -61,6 +71,7 @@
             <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
                     <el-button
+                        v-if="gameDetail.editAssembly"
                         size="mini"
                         type="primary"
                         @click="handleEdit(scope.row.id)"
@@ -68,6 +79,7 @@
                         编辑
                     </el-button>
                     <el-popover
+                        v-if="gameDetail.deleteAssembly"
                         style="margin-left: 10px"
                         placement="top"
                         :ref="scope.row.id"
@@ -131,6 +143,11 @@ export default {
             resData: [],
         };
     },
+    computed: {
+        gameDetail(){
+            return this.$store.state.game.details
+        }
+    },
     created() {
         this.init();
     },
@@ -177,7 +194,7 @@ export default {
     },
     components: {
         AddGameData,
-    },
+    }
 };
 </script>
 

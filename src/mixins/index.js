@@ -177,10 +177,14 @@ export const getOrganizationTypeList = {
         }
     },
     methods: {
-        getGroupType(){
-            organizationType(0).then(res => {
+        getGroupType(type=0){
+            organizationType(type).then(res => {
                 if(res.code === this.$successCode){
                     // 新建组织的时候，前端列出的可选组织类型，不包含组织外类型，就是说组织类型数据的commonType: true的数据不列出。
+                    if(type == null){
+                        this.groupTypeList = res.obj;
+                        return
+                    }
                     this.groupTypeList = res.obj.filter(item => {
                         return !item.commonType
                     })

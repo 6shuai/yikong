@@ -2,6 +2,7 @@
     <div class="screen-wrap clearfix">
         <el-scrollbar style="height: 100%">
             <el-button
+                v-if="hasPerm($store.state.permission.timelinePrem, 'AddScreen')"
                 type="primary"
                 icon="el-icon-plus"
                 size="mini"
@@ -28,7 +29,10 @@
                                 <i class="el-icon-warning"></i>
                             </el-tooltip>
                         </div>
-                        <div class="delete" @click="deleteScreen(index)">
+                        <div 
+                            v-if="timelineData.deleteDropScreen"
+                            class="delete" 
+                            @click="deleteScreen(index)">
                             <i class="el-icon-delete"></i>删除
                         </div>
                     </div>
@@ -101,6 +105,7 @@ import {
 } from "@/api/timeline";
 import { screenList } from "@/api/screen";
 export default {
+    props: ['timelineData'],
     data() {
         return {
             screenListLoading: false,

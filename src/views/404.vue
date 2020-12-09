@@ -23,7 +23,7 @@ export default {
   name: 'Page404',
   computed: {
     message() {
-      return '网站管理员说你不能进入这个页面...'
+      return '抱歉! 您访问的页面不存在。'
     }
   }
 }

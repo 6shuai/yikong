@@ -86,40 +86,20 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="游戏包" prop="packageId">
-                    <el-select
+                    <el-cascader 
                         v-model="contentParams.packageId"
-                        placeholder="请选择游戏包"
+                        :options="cascaderOptions" 
+                        :show-all-levels="false"
+                        :props="cascaderProps"
                         style="width: 100%"
                     >
-                        <el-option
-                            v-for="item in packageData"
-                            :key="item.id"
-                            :label="
-                                item.versionType == 0
-                                    ? '开发版本'
-                                    : item.versionType == 1
-                                    ? '测试版本'
-                                    : '线上版本'
-                            "
-                            :value="item.id"
-                        >
-                            <span style="float: left">{{
-                                item.versionType == 0
-                                    ? "开发版本"
-                                    : item.versionType == 1
-                                    ? "测试版本"
-                                    : "线上版本"
-                            }}</span>
-                            <span
-                                style="
-                                    float: right;
-                                    color: #8492a6;
-                                    font-size: 13px;
-                                "
-                                >{{ item.description }}</span
-                            >
-                        </el-option>
-                    </el-select>
+                        <template slot-scope="{ node, data }">
+                            <span>{{ data.overallVersion }}</span>
+                            <span> {{ data.description }} </span>
+                        </template>
+                    </el-cascader>
+
+
                 </el-form-item>
                 <el-form-item label="游戏配置" prop="configId">
                     <el-select
@@ -221,20 +201,40 @@ export default {
                     },
                 ],
             },
+            cascaderOptions: [
+                {
+                    id: 2,
+                    description: '线上版本',
+                },
+                {
+                    id: 1,
+                    description: '测试版本',
+                },
+                {
+                    id: 0,
+                    description: '开发版本',
+                }
+            ],
+            cascaderProps: {
+                expandTrigger: 'hover',
+                emitPath: false,
+                value: "id",
+                label: "overallVersion"
+            }
         };
     },
     methods: {
         showDialog(id) {
             this.dialogVisible = true;
             this.contentParams = {};
+
+            this.$nextTick(() => {
+                this.$refs['addGameForm'].clearValidate();
+            })
+
             let data = {
-                applicationId: this.$route.params.id,
+                applicationId: this.$route.params.id
             };
-            packageList(data).then((res) => {
-                if (res.code === this.$successCode) {
-                    this.packageData = res.obj;
-                }
-            });
 
             gameDataConfigList(data).then((res) => {
                 if (res.code === this.$successCode) {
@@ -247,10 +247,32 @@ export default {
                 this.loading = true;
                 this.getDetail(id);
             }
+
+            this.cascaderOptions.forEach((item, index) => {
+                // item.children = ;
+                this.getPackageList(item.id).then((res) => {
+                    this.$set(this.cascaderOptions[index], 'children', res);
+                })
+            })
+
+        },
+
+        getPackageList(type){
+            return new Promise(resolve => {
+                let data = {
+                    pageSize: 9999,
+                    applicationId: this.$route.params.id,
+                    versionType: type
+                };
+                packageList(data).then((res) => {
+                    if (res.code === this.$successCode) {
+                        resolve(res.obj.list);
+                    }
+                });
+            })
         },
 
         getDetail(id) {
-            console.log('id----------->', id)
             gameDataDetail(id).then((res) => {
                 this.loading = false;
                 if (res.code === this.$successCode && res.obj) {

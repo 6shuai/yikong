@@ -14,10 +14,18 @@
             :autoplay="true" 
         >
         </video>
+        <iframe 
+            class="miniview-game"
+            v-if="currentData.contentTypeId== 3"
+            :src="currentData.contentPath"
+            style="width: 100%; height: 500px;"
+            frameborder="no" border="0" scrolling="no"></iframe>
+
         <img v-else :src="currentData.contentPath || currentData.image">
     </div>
 </template>
 <script>
+import { contentGamePreview } from '@/api/content';
 export default {
     data(){
         return{
@@ -44,14 +52,36 @@ export default {
             }, this.currentData.duration * 1000);
         },
 
-        contentPreviewData(data){
+        contentPreviewData(data, type){
             this.data = data;
-            //图集资源
-            if(Array.isArray(this.data)){
-                this.init();
-                this.isArray = true;
+            if(data.contentTypeId == 3){
+                if(type != 'detail'){
+                    contentGamePreview({contentId: data.id}).then(res => {
+                        if(res.code === this.$successCode){
+                            let { applicationPackage, screenId, assembly } = res.obj;
+                            let { mobilePackage, screenPackage } = applicationPackage;
+                            let { configId } = assembly;
+                            this.currentData = {
+                                ...this.data,
+                                contentPath: screenPackage + '?screenId=' + screenId + '&mobilePackage=' + mobilePackage + '&gameRuleId=' + configId
+                            }
+                        }
+                    })
+                }else{
+                    this.currentData = {
+                        ...this.data,
+                        contentTypeId: 1,
+                        contentPath: this.data.image
+                    }
+                }
             }else{
-                this.currentData = this.data;
+                //图集资源
+                if(Array.isArray(this.data)){
+                    this.init();
+                    this.isArray = true;
+                }else{
+                    this.currentData = this.data;
+                }
             }
         }
     },
@@ -82,6 +112,10 @@ export default {
             border-bottom-right-radius: 0.4em;
             top: 0px;
             left: 0px;
+        }
+
+        .miniview-game{
+            height: 400px;
         }
     }
 </style>
