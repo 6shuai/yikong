@@ -278,7 +278,8 @@ export default {
                 if (res.code === this.$successCode && res.obj) {
                     this.contentParams = {
                         ...this.contentParams,
-                        ...res.obj
+                        ...res.obj,
+                        id:  res.obj.contentId
                     }
                 }
             });
