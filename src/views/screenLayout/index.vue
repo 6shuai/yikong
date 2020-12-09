@@ -50,7 +50,7 @@
                     min-width="50"
                 ></el-table-column>
                 <el-table-column
-                    prop="width"
+                    prop="height"
                     label="高度"
                     min-width="50"
                 ></el-table-column>
