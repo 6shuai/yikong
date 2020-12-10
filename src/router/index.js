@@ -272,6 +272,12 @@ export const constantRoutes = [
           name: 'games--details--list',
           component: () => import('@/views/games/details/gameList'),
           meta: { title: '游戏列表' }
+        },
+        {
+          path: 'rank',
+          name: 'games--details--rank',
+          component: () => import('@/views/games/details/rankTemp'),
+          meta: { title: '排行榜管理' }
         }
       ]
     }],
@@ -328,6 +334,22 @@ export const constantRoutes = [
     ],
     hidden: true
   },
+
+  //群管理
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   meta: { title: '群管理' },
+  //   children: [
+  //     {
+  //       path: '/system/group',
+  //       name: 'group',
+  //       component: () => import('@/views/system/group/index'),
+  //       meta: { title: '群管理' },
+  //     }
+  //   ],
+  //   hidden: false
+  // },
 
 ]
 

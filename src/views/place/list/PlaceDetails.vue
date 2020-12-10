@@ -160,7 +160,11 @@ export default {
         }
     },
     mounted() {
-        this.initDetail();
+        this.hasPagePerm('Place').then(res => {
+            if(res){
+                this.initDetail();
+            }
+        })
     },
     methods: {
         //编辑场所

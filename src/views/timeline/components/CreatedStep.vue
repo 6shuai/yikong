@@ -34,8 +34,8 @@
                                     :style="{
                                         width: sub.percentageWidth + '%',
                                         height: sub.percentageHeight + '%',
-                                        top: sub.percentageY + 'px',
-                                        left: sub.percentageX + 'px'
+                                        top: sub.percentageY + '%',
+                                        left: sub.percentageX + '%'
                                     }"
                                 ></div>
                             </div>

@@ -20,6 +20,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "awe-dnd": "^0.3.4",
     "axios": "^0.19.2",
+    "babel-polyfill": "^6.26.0",
     "better-scroll": "^1.15.2",
     "element-resize-detector": "^1.2.1",
     "element-ui": "^2.13.1",

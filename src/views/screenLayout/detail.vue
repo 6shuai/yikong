@@ -156,7 +156,11 @@ export default {
         };
     },
     created() {
-        this.init();
+        this.hasPagePerm('Layout').then(res => {
+            if(res){
+                this.init();
+            }
+        })
     },
     methods: {
         //屏幕模板 缩小比例

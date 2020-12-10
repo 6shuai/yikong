@@ -103,3 +103,16 @@ export function organizationTypeCreated(data) { return post('/organizationType/'
 
 //组织类型  删除
 export function organizationTypeDelete(data) { return del(`/organizationType/${data}`); }
+
+
+
+//群管理    列表
+export function groupList(data) { return get('/group/', data); }
+
+//群管理    删除
+export function groupDelete(data) { return del(`/group/${data}`); }
+
+//群管理    创建
+export function groupCreated(data) { return post('/group/', data); }
+
+

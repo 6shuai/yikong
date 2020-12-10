@@ -70,7 +70,7 @@
                             <span slot="title">游戏列表</span>
                         </el-menu-item>
                         <el-menu-item
-                            :index="`/games/${$route.params.id}/rank`"
+                            :index="`/games/details/${$route.params.id}/rank`"
                             disabled
                         >
                             <span slot="title">排行榜管理</span>
@@ -223,7 +223,11 @@ export default {
     },
     mounted() {
         this.currentActive = this.$route.path;
-        this.init();
+        this.hasPagePerm('Games').then(res => {
+            if(res){
+                this.init();
+            }
+        })
     },
     methods: {
         init() {

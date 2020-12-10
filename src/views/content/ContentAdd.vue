@@ -224,8 +224,12 @@ export default {
         }
     },
     mounted() {
-        this.init();
-        this.contentTypeList();
+        this.hasPagePerm('Content').then(res => {
+            if(res){
+                this.init();
+                this.contentTypeList();
+            }
+        })
     },
     methods: {
         init(){

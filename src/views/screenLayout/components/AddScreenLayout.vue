@@ -269,7 +269,11 @@ export default {
         };
     },
     mounted() {
-        if (this.$route.params.id) this.init();
+        this.hasPagePerm('Layout').then(res => {
+            if(res){
+                if (this.$route.params.id) this.init();
+            }
+        })
     },
     methods: {
         //屏幕模板 缩小比例

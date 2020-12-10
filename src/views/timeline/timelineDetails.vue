@@ -234,7 +234,11 @@ export default {
         };
     },
     mounted() {
-        this.init();
+        this.hasPagePerm('Timeline').then(res => {
+            if(res){
+                this.init();
+            }
+        })
     },
     methods: {
         init() {

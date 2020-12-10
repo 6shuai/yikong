@@ -71,3 +71,19 @@ export function gameAuthority(data) { return get('/application/applicationAuthor
 export function gameAuthorityUpdate(data) { return post('/application/applicationAuthority', data) }
 
 
+
+//排行榜管理  列表
+export function rankTempList(data) { return get('/rankingListTemp/', data) }
+
+//排行榜管理  创建排行榜模板
+export function rankTempCreated(data) { return post('/rankingListTemp/', data) }
+
+//排行榜管理  获取排行榜类型数据
+export function rankTempTypeList(data) { return get('/rankingListTemp/rankingListType', data) }
+
+
+//排行榜管理  创建子周期
+export function rankTempSubcycleCreated(data) { return post('/rankingListTemp/subcycle', data) }
+
+//排行榜管理  删除子周期
+export function rankTempSubcycleDetele(data) { return del('/rankingListTemp/subcycle', data) }

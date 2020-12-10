@@ -156,7 +156,11 @@ export default {
         }
     },
     mounted() {
-        this.init();
+        this.hasPagePerm('Screen').then(res => {
+            if(res){
+                this.init();
+            }
+        })
     },
     methods: {
         init(){

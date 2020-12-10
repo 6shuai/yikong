@@ -4,8 +4,14 @@
             <div slot="header" class="clearfix">
                 权限管理
             </div>
-            <div class="top-operation-wrap">
-                <el-button size="small" type="primary" icon="el-icon-plus" @click="$refs.addAuth.addAuthDialog=true">添加权限</el-button>
+            <div 
+                class="top-operation-wrap">
+                <el-button 
+                    size="small" 
+                    type="primary" 
+                    icon="el-icon-plus" 
+                    @click="$refs.addAuth.addAuthDialog=true"
+                >添加权限</el-button>
             </div>
             <el-table
                 v-loading="tLoading"

@@ -106,9 +106,13 @@ export default {
         }
     },
     mounted() {
-        if(this.$route.params.id){
-            this.getDetail();
-        }
+        this.hasPagePerm('Timeline').then(res => {
+            if(res){
+                if(this.$route.params.id){
+                    this.getDetail();
+                }
+            }
+        })
     },
     methods: {
         //编辑 获取详情

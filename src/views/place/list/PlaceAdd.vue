@@ -185,7 +185,11 @@ export default {
         }
     },
     mounted() {
-        this.init();
+        this.hasPagePerm('Place').then(res => {
+            if(res){
+                this.init();
+            }
+        })
     },
     methods: {
         init(data){

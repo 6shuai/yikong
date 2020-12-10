@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         class="add-game-data"
-        :title="$route.params.id ? '编辑游戏数据' : '创建游戏数据'"
+        :title="contentParams.id ? '编辑游戏数据' : '创建游戏数据'"
         :visible.sync="dialogVisible"
         width="600px"
         :close-on-click-modal="false"

@@ -232,10 +232,14 @@ export default {
         }
     },
     mounted() {
-        new Promise((resolve) => {
-            this.initDetail(resolve);
-        }).then(res => {
-            this.$refs.contentPreview.contentPreviewData(this.resData.oldContents ? this.resData.oldContents : this.resData, 'detail');
+        this.hasPagePerm('Content').then(res => {
+            if(res){
+                new Promise((resolve) => {
+                    this.initDetail(resolve);
+                }).then(res => {
+                    this.$refs.contentPreview.contentPreviewData(this.resData.oldContents ? this.resData.oldContents : this.resData, 'detail');
+                })
+            }
         })
     },
     methods: {

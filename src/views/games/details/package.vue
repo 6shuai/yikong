@@ -112,7 +112,7 @@
 <script>
 import { uploadGamePackage } from "@/utils";
 import { packageCreated } from "@/api/game";
-import PackageList from '../components/packageList';
+import PackageList from '../components/PackageList';
 
 export default {
     data(){

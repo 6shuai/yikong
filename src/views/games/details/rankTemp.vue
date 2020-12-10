@@ -6,18 +6,9 @@
                 type="primary"
                 size="small"
                 icon="el-icon-plus"
-                @click="$refs.addGameData.showDialog()"
-                >添加</el-button
+                @click="$refs.addRankTemp.showDialog()"
+                >添加排行榜模板</el-button
             >
-            <el-input
-                size="small"
-                clearable
-                class="search-input"
-                v-model="params.displayName"
-                placeholder="游戏名称"
-                @input="search"
-            >
-            </el-input>
         </div>
         
         <el-table
@@ -29,47 +20,54 @@
             row-key="id"
             border
         >
-            <el-table-column prop="id" label="游戏图片" width="100">
-                <template slot-scope="scope">
-                    <el-image
-                        style="width: 80px; height: 80px; border-radius: 50%"
-                        :src="scope.row.image"
-                        fit="cover"
-                    >
-                    </el-image>
-                </template>
-            </el-table-column>
             <el-table-column
                 prop="displayName"
-                label="名称"
-                min-width="50"
-            ></el-table-column>
-            <el-table-column
-                prop="overallVersion"
-                label="游戏包版本"
-                min-width="50"
+                label="模板名称"
+                :min-width="100"
             ></el-table-column>
             <el-table-column
                 prop="description"
-                label="游戏包说明"
+                label="模板描述"
+                min-width="120"
+            ></el-table-column>
+            <el-table-column
+                prop="maxCount"
+                label="最大条数"
                 min-width="100"
             ></el-table-column>
             <el-table-column
-                prop="versionType"
-                label="游戏包类型"
-                min-width="50"
-            >
-                <template slot-scope="scope">
-                    {{scope.row.versionType==2 ? '线上版本' : scope.row.versionType==1 ? '测试版本' : '开发版本'}}
-                </template>
-            </el-table-column>
-            <el-table-column
-                prop="size"
-                label="游戏包大小"
-                min-width="50"
+                prop="rankingListType"
+                label="排行榜类型"
+                min-width="100"
             ></el-table-column>
-            <el-table-column label="操作" width="200">
+            <el-table-column
+                prop="prefix"
+                label="数据前缀"
+                min-width="100"
+            ></el-table-column>
+            <el-table-column
+                prop="suffix"
+                label="数据后缀"
+                min-width="100"
+            ></el-table-column>
+            <el-table-column label="操作" width="220">
                 <template slot-scope="scope">
+                    <el-button
+                        v-if="gameDetail.editAssembly"
+                        size="mini"
+                        type="success"
+                        @click="$refs.rankDetail.showDetailDrawer(scope.row)"
+                    >
+                        详情
+                    </el-button>
+                    <el-button
+                        v-if="gameDetail.editAssembly"
+                        size="mini"
+                        type="success"
+                        @click="$refs.rankDetail.showDetailDrawer(scope.row)"
+                    >
+                        子周期
+                    </el-button>
                     <el-button
                         v-if="gameDetail.editAssembly"
                         size="mini"
@@ -111,35 +109,26 @@
             </el-table-column>
         </el-table>
 
-        <el-pagination
-            background
-            layout="total, prev, pager, next, sizes"
-            :page-sizes="[40, 80, 100]"
-            :current-page="Number(params.pageNo)"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :total="totalCount"
-        >
-        </el-pagination>
+        <!-- 添加排行榜模板-->
+        <add-rank-temp ref="addRankTemp" @createdSuccess="init"></add-rank-temp>
 
-        <!-- 添加游戏配置数据 -->
-        <add-game-data ref="addGameData" @createdSuccess="init"></add-game-data>
+        <!-- 添加子周期 -->
+        <add-rank-period ref="rankDetail"></add-rank-period>
+
     </div>
 </template>
 
 <script>
-import { gameDataList, gameDataDelete } from "@/api/game";
-import AddGameData from "../components/AddGameData";
+import { rankTempList, gameDataDelete } from "@/api/game";
+import AddRankTemp from "../components/AddRankTemp";
+import AddRankPeriod from '../components/AddRankPeriod';
 export default {
     data() {
         return {
             tableLoading: false,
             params: {
-                pageNo: 1,
-                pageSize: 40,
-                applicationId: this.$route.params.id,
+                appid: this.$route.params.id
             },
-            totalCount: 0,
             resData: [],
         };
     },
@@ -149,51 +138,30 @@ export default {
         }
     },
     created() {
-        this.init();
+        // this.init();
     },
     methods: {
         init() {
             this.tableLoading = true;
-            gameDataList(this.params).then((res) => {
+            rankTempList(this.params).then((res) => {
                 this.tableLoading = false;
-                this.resData = res.obj.list;
-                this.totalCount = res.obj.totalRecords;
+                this.resData = res.obj;
             });
         },
 
         //编辑
         handleEdit(id) {
-            this.$refs.addGameData.showDialog(id);
+            this.$refs.addRankTemp.showDialog(id);
         },
 
         //删除
         handleDelete(id) {
-            gameDataDelete(id).then((res) => {
-                if (res.code === this.$successCode) {
-                    this.$message.success("删除成功~");
-                    this.init();
-                }
-            });
-        },
-
-        //每页条数
-        handleSizeChange(size) {
-            this.params.pageSize = size;
-        },
-
-        //分页
-        handleCurrentChange(page) {
-            this.params.pageNo = page;
-        },
-
-        //搜索
-        search(){
-            this.params.pageNo = 1;
-            this.init();
+            this.$refs[id].doClose()
         }
     },
     components: {
-        AddGameData,
+        AddRankTemp,
+        AddRankPeriod
     }
 };
 </script>

@@ -24,6 +24,9 @@ import { faWeixin } from "@fortawesome/free-brands-svg-icons"
 import { faBuilding, faWindowMaximize, faClock, faImage } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueDND from 'awe-dnd'
+import BabelPolyfill from 'babel-polyfill'
+
+Vue.use(BabelPolyfill)
 
 library.add(
   faBuilding, faCamera, faLocationArrow, faWindowMaximize, faDownload, faExternalLinkAlt, faTrashAlt, faCaretDown, faImage, 
@@ -60,9 +63,9 @@ const pagePermission = {
 
 
 /**
- * 当前用户是否具有权限
- * @param roles
- * @param route
+ * 按钮操作是否具有权限
+ * @param auths
+ * @param key
  */
 function hasBtnPermission(auths, key) {
 	if(auths && auths.length){
@@ -73,6 +76,31 @@ function hasBtnPermission(auths, key) {
 }
 
 Vue.prototype.hasPerm = hasBtnPermission;
+
+
+/**
+ * 当前页面是否具有权限看到
+ * @param name  路由name
+ * @param key
+ */
+function hasPagePermission(name) {
+  return new Promise((resolve) => {
+    let has = false;
+    store.state.permission.routesMenu.forEach(item => {
+      if(item.name === name){
+        has = true;
+      }
+    })
+    if(has){
+      resolve(true);
+    }else{
+      router.replace('/404');
+      resolve(false);
+    }
+  })
+}
+
+Vue.prototype.hasPagePerm = hasPagePermission;
 
 
 

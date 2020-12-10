@@ -381,7 +381,11 @@ export default {
         };
     },
     mounted() {
-        this.initDetail();
+        this.hasPagePerm('Screen').then(res => {
+            if(res){
+                this.initDetail();
+            }
+        })
     },
     methods: {
         //编辑场所

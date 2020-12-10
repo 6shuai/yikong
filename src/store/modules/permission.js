@@ -52,6 +52,7 @@ export function filterAsyncRoutes(routes, roles) {
 
 const state = {
 	routes: [],
+	routesMenu: [],
 	addRoutes: [],
 };
 
@@ -59,6 +60,9 @@ const mutations = {
 	SET_ROUTES: (state, routes) => {
 		state.addRoutes = routes;
 		state.routes = constantRoutes.concat(routes);
+		routes.forEach((item => {
+			if(item.children) state.routesMenu = state.routesMenu.concat(item.children);
+		}))
 	},
 };
 
