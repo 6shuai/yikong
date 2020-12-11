@@ -212,6 +212,7 @@ $light_gray: #eee;
 .login-container {
   min-height: 100%;
   width: 100%;
+  background: #222831;
   background: -webkit-radial-gradient(0 100%,ellipse cover,rgba(104,128,138,.4) 10%,rgba(138,114,76,0) 40%),linear-gradient(180deg,rgba(57,173,219,.25) 0,rgba(42,60,87,.4)),linear-gradient(135deg,#670d10,#092756);
   overflow: hidden;
 

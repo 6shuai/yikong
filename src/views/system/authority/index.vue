@@ -21,8 +21,6 @@
                 row-key="id"
                 border
                 size="small"
-                :row-key="getRowKeys"
-                :expand-row-keys="expandRowKeys"
                 :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
                 <el-table-column
                     prop="displayName"
@@ -100,10 +98,7 @@ export default {
             tLoading: false,
             expandRowKeys: ['1'],       //默认展开第一个
             treeData: [],
-            authList: [],              
-            getRowKeys(row) {
-                return row.id;
-            },
+            authList: [],       
         }
     },
     created() {

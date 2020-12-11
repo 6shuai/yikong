@@ -82,7 +82,6 @@ export default {
             this.tempId = undefined;
             this.stepParams.phaseId = id;
             this.showCreatedStep = true;
-            console.log(this.stepParams)
             this.layoutTempList();
         },
 
