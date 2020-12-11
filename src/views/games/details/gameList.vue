@@ -129,7 +129,7 @@
 
 <script>
 import { gameDataList, gameDataDelete } from "@/api/game";
-import AddGameData from "../components/AddGameData";
+import AddGameData from "../components/AddGameConfig";
 export default {
     data() {
         return {
