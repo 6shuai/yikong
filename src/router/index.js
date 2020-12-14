@@ -335,28 +335,75 @@ export const constantRoutes = [
     hidden: true
   },
 
-  //群管理
+  //群组管理
   // {
   //   path: '/',
   //   component: Layout,
-  //   meta: { title: '群管理' },
+  //   meta: { title: '群组管理' },
   //   children: [
   //     {
   //       path: '/system/group',
   //       name: 'group',
   //       component: () => import('@/views/system/group/index'),
-  //       meta: { title: '群管理' },
+  //       meta: { title: '群组管理' },
   //     }
   //   ],
   //   hidden: false
   // },
 
+
+  //活动管理
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   meta: { title: '活动管理' },
+  //   children: [
+  //     {
+  //       path: '/activity',
+  //       name: 'activity',
+  //       component: () => import('@/views/activity/index'),
+  //       meta: { title: '活动管理' },
+  //     }
+  //   ],
+  //   hidden: false
+  // },
+
+  // //活动管理  创建
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   meta: { title: '活动管理' },
+  //   children: [
+  //     {
+  //       path: '/activity/add',
+  //       name: 'activityAdd',
+  //       component: () => import('@/views/activity/activityAdd'),
+  //       meta: { title: '创建活动' },
+  //     }
+  //   ],
+  //   hidden: false
+  // },
+
+  // //活动管理  创建
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '资源权限' },
+    children: [
+      {
+        path: '/system/resAuthority',
+        name: 'resAuthority',
+        component: () => import('@/views/system/resAuthority/index'),
+        meta: { title: '资源权限' },
+      }
+    ],
+    hidden: false
+  },
+
 ]
 
 
 export const asyncRoutes = [
-
-
   // { path: '*', redirect: '/404', hidden: true }
 ]
 

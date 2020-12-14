@@ -1,7 +1,7 @@
 <template>
     <!-- 创建群 -->
     <el-dialog
-        title="新建群"
+        :title="groupParams.id ? '编辑群组' : '新建群组'"
         :visible.sync="addGroupDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -13,11 +13,50 @@
             :rules="groupRules"
             v-loading="loading"
         >
-            <el-form-item label="群名称" prop="displayName">
-                <el-input placeholder="群名称" v-model="groupParams.displayName"></el-input>
+            <el-form-item label="群组名称" prop="displayName">
+                <el-input placeholder="群组名称" v-model="groupParams.displayName"></el-input>
+            </el-form-item>
+            <el-form-item label="选择角色" prop="roleId">
+                <el-select
+                    v-model="groupParams.role"
+                    filterable
+                    multiple
+                    placeholder="请选择角色"
+                    style="width: 100%"
+                >
+                    <el-option
+                        v-for="item in roleData"
+                        :key="item.id"
+                        :label="item.displayName"
+                        :value="item.id"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="选择成员" prop="memberId">
+                <el-select
+                    v-model="groupParams.member"
+                    filterable
+                    multiple
+                    placeholder="请选择成员"
+                    style="width: 100%"
+                >
+                    <el-option
+                        v-for="item in memberData"
+                        :key="item.id"
+                        :label="item.displayName"
+                        :value="item.id"
+                    >
+                    </el-option>
+                </el-select>
             </el-form-item>
             <el-form-item label="说明">
-                <el-input placeholder="说明" type="textarea" :rows="3" v-model="groupParams.description"></el-input>
+                <el-input 
+                    placeholder="说明" 
+                    type="textarea" 
+                    :rows="3" 
+                    v-model="groupParams.description"
+                ></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -35,9 +74,13 @@ export default {
         return {
             groupParams:{}, 
             addGroupDialog: false,      
-            addBtnLoading: false,       
+            addBtnLoading: false,   
+            roleData: [],          //角色    
+            memberData: [],        //组织成员
             groupRules: {
-                displayName: [{ required: true, trigger: "blur", message: '请输入群名称~' }],
+                displayName: [{ required: true, trigger: "blur", message: '请输入群组名称~' }],
+                roleId: [{ required: true, trigger: "blur", message: '请选择角色~' }],
+                memberId: [{ required: true, trigger: "blur", message: '请选择成员~' }],
             },
             loading: false
         }

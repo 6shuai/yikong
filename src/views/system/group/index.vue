@@ -1,7 +1,7 @@
 <template>
     <el-card shadow="never" class="organizations-list-wrap">
         <div slot="header" class="clearfix">
-            群管理
+            群组管理
         </div>
         <div class="top-operation-wrap">
             <div class="operation-item">
@@ -10,7 +10,7 @@
                     icon="el-icon-plus" 
                     type="primary" 
                     @click="$refs.createdGroup.showDialog()"
-                >新建群</el-button>
+                >新建群组</el-button>
             </div>
             <div class="operation-item">
                 <el-input 
@@ -30,7 +30,7 @@
             style="width: 100%;margin-bottom: 20px;"
             row-key="id"
             border>
-            <el-table-column prop="displayName" label="群名称" min-width="80"></el-table-column>
+            <el-table-column prop="displayName" label="群组名称" min-width="80"></el-table-column>
             <el-table-column prop="description" label="说明" min-width="100"></el-table-column>
             <el-table-column
                 label="操作"
@@ -40,7 +40,7 @@
                         @click="$refs.groupMember.showGroupMember()"
                         type="primary" 
                         size="mini"
-                    >群成员</el-button>
+                    >群组成员</el-button>
                     <el-button 
                         type="success" 
                         size="mini" 
@@ -51,7 +51,7 @@
                         placement="top"
                         :ref="scope.row.id"
                         width="200">
-                        <p>此操作将删除此群【{{scope.row.displayName}}】, 是否继续?</p>
+                        <p>此操作将删除此群组【{{scope.row.displayName}}】, 是否继续?</p>
                         <div style="text-align: right; margin: 0">
                             <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
                             <el-button type="primary" size="mini" @click="delCurrentGroup(scope.row.id)">确定</el-button>

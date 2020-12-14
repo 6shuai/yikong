@@ -71,7 +71,6 @@
                         </el-menu-item>
                         <el-menu-item
                             :index="`/games/details/${$route.params.id}/rank`"
-                            disabled
                         >
                             <span slot="title">排行榜管理</span>
                         </el-menu-item>
@@ -298,7 +297,8 @@ export default {
         //右侧菜单
         handleSelect(key) {
             this.currentActive = key;
-        },
+        }
+
     },
     components: {
         Permission

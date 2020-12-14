@@ -10,7 +10,7 @@
                     @click="$router.push('/screen/layout/add')"
                     size="small"
                 >
-                    创建布局
+                    新建布局
                 </el-button>
 
                 <el-input

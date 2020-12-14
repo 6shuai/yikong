@@ -50,13 +50,13 @@
                 label="数据后缀"
                 min-width="100"
             ></el-table-column>
-            <el-table-column label="操作" width="220">
+            <el-table-column label="操作" width="300">
                 <template slot-scope="scope">
                     <el-button
                         v-if="gameDetail.editAssembly"
                         size="mini"
                         type="success"
-                        @click="$refs.rankDetail.showDetailDrawer(scope.row)"
+                        @click="$refs.rankDetail.showRankData(scope.row)"
                     >
                         详情
                     </el-button>
@@ -64,7 +64,7 @@
                         v-if="gameDetail.editAssembly"
                         size="mini"
                         type="success"
-                        @click="$refs.rankDetail.showDetailDrawer(scope.row)"
+                        @click="$refs.subCycle.showDetailDrawer(scope.row)"
                     >
                         子周期
                     </el-button>
@@ -113,7 +113,10 @@
         <add-rank-temp ref="addRankTemp" @createdSuccess="init"></add-rank-temp>
 
         <!-- 添加子周期 -->
-        <add-rank-period ref="rankDetail"></add-rank-period>
+        <add-rank-cycle ref="subCycle"></add-rank-cycle>
+
+        <!-- 排行榜数据 -->
+        <rank-detail ref="rankDetail"></rank-detail>
 
     </div>
 </template>
@@ -121,7 +124,9 @@
 <script>
 import { rankTempList, gameDataDelete } from "@/api/game";
 import AddRankTemp from "../components/AddRankTemp";
-import AddRankPeriod from '../components/AddRankPeriod';
+import AddRankCycle from '../components/AddRankCycle';
+import RankDetail from '../components/RankDetail';
+
 export default {
     data() {
         return {
@@ -129,7 +134,9 @@ export default {
             params: {
                 appid: this.$route.params.id
             },
-            resData: [],
+            resData: [{
+                displayName: '一行白鹭上青天'
+            }],
         };
     },
     computed: {
@@ -161,7 +168,8 @@ export default {
     },
     components: {
         AddRankTemp,
-        AddRankPeriod
+        AddRankCycle,
+        RankDetail
     }
 };
 </script>

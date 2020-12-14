@@ -87,3 +87,7 @@ export function rankTempSubcycleCreated(data) { return post('/rankingListTemp/su
 
 //排行榜管理  删除子周期
 export function rankTempSubcycleDetele(data) { return del('/rankingListTemp/subcycle', data) }
+
+
+//排行榜管理  排行榜数据
+export function rankTempData(data) { return get('/rankingListTemp/rankingListData', data) }
