@@ -384,22 +384,6 @@ export const constantRoutes = [
   //   hidden: false
   // },
 
-  // //活动管理  创建
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '资源权限' },
-    children: [
-      {
-        path: '/system/resAuthority',
-        name: 'resAuthority',
-        component: () => import('@/views/system/resAuthority/index'),
-        meta: { title: '资源权限' },
-      }
-    ],
-    hidden: false
-  },
-
 ]
 
 
