@@ -1,7 +1,7 @@
 <template>
     <el-card shadow="never" class="organizations-list-wrap">
         <div slot="header" class="clearfix">
-            群组管理
+            权限群组管理
         </div>
         <div class="top-operation-wrap">
             <div class="operation-item">
@@ -10,7 +10,7 @@
                     icon="el-icon-plus" 
                     type="primary" 
                     @click="$refs.createdGroup.showDialog()"
-                >新建群组</el-button>
+                >新建权限群组</el-button>
             </div>
             <div class="operation-item">
                 <el-input 
@@ -37,10 +37,10 @@
                 min-width="80">
                 <template slot-scope="scope">
                     <el-button 
-                        @click="$refs.groupMember.showGroupMember()"
+                        @click="$refs.groupDetail.showGroupDetail(scope.row.id)"
                         type="primary" 
                         size="mini"
-                    >群组成员</el-button>
+                    >详情</el-button>
                     <el-button 
                         type="success" 
                         size="mini" 
@@ -82,21 +82,21 @@
         <!-- 添加群 -->
         <created-group 
             ref="createdGroup"
-            @createdSuccess="init"
+            @groupCreateSuccess="init"
         ></created-group>
 
         <!-- 群成员 -->
-        <group-member
-            ref="groupMember"
-        ></group-member>
+        <group-detail
+            ref="groupDetail"
+        ></group-detail>
 
     </el-card>
 </template>
 
 <script>
-import { groupList, groupDelete } from '@/api/user';
+import { groupList, groupDelete } from '@/api/group';
 import CreatedGroup from './components/CreatedGroup';
-import GroupMember from './components/GroupMember';
+import GroupDetail from './components/GroupDetail';
 
 export default {
     data(){
@@ -111,7 +111,7 @@ export default {
         }
     },
     created() {
-        // this.init();
+        this.init();
     },
     methods: {
         init(){
@@ -125,7 +125,7 @@ export default {
             })
         },
 
-        //删除群
+        //删除群组
         delCurrentGroup(id){
             groupDelete(id).then(res => {
                 if(res.code === this.$successCode){
@@ -155,7 +155,7 @@ export default {
     },
     components:{
         CreatedGroup,
-        GroupMember
+        GroupDetail
     }
 }
 </script>

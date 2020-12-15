@@ -29,6 +29,7 @@ const moduleMap = {
 	'BasicRole': 'system/basicRole/index',			      //基础角色管理
 	'ResAuthority': 'system/resAuthority/index',		  //资源权限管理
 	'ResRole': 'system/resRole/index',			      	  //资源角色管理
+	'Group': 'system/group/index',			      	      //权限群组
 }
 
 
