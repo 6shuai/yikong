@@ -77,6 +77,19 @@
                             <p><el-link type="primary" @click="$refs.changeRole.showChangeRoleDialog(item)">修改角色</el-link></p>
                         </div>
                     </el-card>
+
+                    <el-pagination
+                        background
+                        hide-on-single-page
+                        layout="total, prev, pager, next, sizes"
+                        :page-sizes="[40, 80, 100]"
+                        :current-page="Number(params.pageNo)"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :total="totalCount"
+                    >
+                    </el-pagination>
+
                 </div>
             </div>
         </el-scrollbar>
@@ -177,6 +190,18 @@ export default {
                     this.resData.splice(index, 1);
                 }
             })
+        },
+
+        //页码
+        handleCurrentChange(page){
+            this.params.pageNo = page;
+            this.getGroupDetail();
+        },
+        
+        //每页多少条
+        handleSizeChange(size){
+            this.params.pageSize = size;
+            this.getGroupDetail();
         }
     },
     components: {
