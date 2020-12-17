@@ -39,9 +39,12 @@ export function contentGamePreview(data) { return get('/content/previewGame', da
 
 
 
-//查询授权列表
-export function contentAuthority(data) { return get('/content/contentAuthority', data) }
+//查询资源 与 群组 相关联列表
+export function contentAuthority(data) { return get('/content/groupContent', data) }
 
-//修改权限
-export function contentAuthorityUpdate(data) { return post('/content/contentAuthority', data) }
+//添加资源 与 群组关联
+export function contentAuthorityUpdate(data) { return post('/content/groupContent', data) }
+
+//删除资源 与 群组关联
+export function contentAuthorityDelete(data) { return del(`/content/groupContent${data}`) }
 

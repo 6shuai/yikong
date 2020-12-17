@@ -317,7 +317,6 @@
         <!-- 授权 -->
         <permission 
             ref="pagePermission" 
-            :premission="premission"
             :premissionApi="premissionApi"
         ></permission>
 
@@ -332,7 +331,8 @@ import {
     bindScreen,
     unboundScreen,
     screenAuthority, 
-    screenAuthorityUpdate
+    screenAuthorityUpdate,
+    screenAuthorityDelete
 } from "@/api/screen";
 import { getScreenDetail, screenIsFavorite } from "@/views/screen/mixins";
 import Permission from '@/components/permission/index';
@@ -358,26 +358,9 @@ export default {
             unboundLoading: false, //解除绑定loading
             premissionApi: {
                 list: screenAuthority,
-                update: screenAuthorityUpdate
-            },
-            premission: [
-                {
-                    label: '查看屏幕',
-                    value: 'list'
-                },
-                {
-                    label: '编辑屏幕',
-                    value: 'edit'
-                },
-                {
-                    label: '删除屏幕',
-                    value: 'deleteRight'
-                },
-                {
-                    label: '操作屏幕',
-                    value: 'operate'
-                }
-            ]
+                update: screenAuthorityUpdate,
+                delete: screenAuthorityDelete
+            }
         };
     },
     mounted() {

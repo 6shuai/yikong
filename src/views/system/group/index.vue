@@ -37,16 +37,19 @@
                 min-width="80">
                 <template slot-scope="scope">
                     <el-button 
-                        @click="$refs.groupDetail.showGroupDetail(scope.row.id)"
+                        v-if="scope.row.groupUserList"
+                        @click="$refs.groupDetail.showGroupDetail(scope.row)"
                         type="primary" 
                         size="mini"
                     >详情</el-button>
                     <el-button 
+                        v-if="scope.row.edit"
                         type="success" 
                         size="mini" 
                         @click="$refs.createdGroup.showDialog(scope.row)"
                     >编辑</el-button>
                     <el-popover
+                        v-if="scope.row.deleteRight"
                         style="margin-left:10px"
                         placement="top"
                         :ref="scope.row.id"

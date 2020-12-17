@@ -15,6 +15,7 @@
 
             <div class="member-wrap">
                 <el-button 
+                    v-if="groupPerm.addGroupUser"
                     size="small" 
                     type="primary"
                     icon="icon-plus"
@@ -48,6 +49,7 @@
                         <div class="del-btn">
                             <p>
                                 <el-popover
+                                    v-if="groupPerm.deleteGroupUser"
                                     placement="top"
                                     :ref="item.id"
                                     width="200"
@@ -74,7 +76,12 @@
                                     <el-link type="danger" slot="reference">删除</el-link>
                                 </el-popover>
                             </p>
-                            <p><el-link type="primary" @click="$refs.changeRole.showChangeRoleDialog(item)">修改角色</el-link></p>
+                            <p><el-link 
+                                v-if="groupPerm.editGroupUser"
+                                type="primary" 
+                                @click="$refs.changeRole.showChangeRoleDialog(item)"
+                                >修改角色</el-link>
+                            </p>
                         </div>
                     </el-card>
 
@@ -127,13 +134,16 @@ export default {
             totalCount: 0,
             resData: [],          //群组成员列表
             groupInfo: {},        //群组详情
-            detailLoading: false,        
+            detailLoading: false,      
+            groupPerm: {},        //权限信息  
         }
     },
     methods: {
-        showGroupDetail(id){
+        showGroupDetail(data){
+            let { id } = data; 
             this.params.id = id;
             this.drawer = true;
+            this.groupPerm = data;
             this.detailLoading = true;
             this.resRole().then(res => {
                 this.getGroupDetail();

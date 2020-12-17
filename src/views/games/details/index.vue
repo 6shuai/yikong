@@ -143,14 +143,13 @@
         <!-- 授权 -->
         <permission 
             ref="pagePermission" 
-            :premission="premission"
             :premissionApi="premissionApi"
         ></permission>
 
     </el-card>
 </template>
 <script>
-import { gameDelete, gameUpdateSecret, gameFavorite, gameAuthority, gameAuthorityUpdate } from "@/api/game";
+import { gameDelete, gameUpdateSecret, gameFavorite, gameAuthority, gameAuthorityUpdate, gameAuthorityDelete } from "@/api/game";
 import { getScreenDetail } from "../mixins";
 import Permission from '@/components/permission/index';
 export default {
@@ -163,46 +162,9 @@ export default {
             resData: {},
             premissionApi: {
                 list: gameAuthority,
-                update: gameAuthorityUpdate
-            },
-            premission: [
-                {
-                    label: '查看游戏列表',
-                    value: 'applicationList'
-                },
-                {
-                    label: '编辑游戏',
-                    value: 'editApplication'
-                },
-                {
-                    label: '删除游戏',
-                    value: 'deleteApplication'
-                },
-                {
-                    label: '查看包列表',
-                    value: 'packageList'
-                },
-                {
-                    label: '编辑游戏包',
-                    value: 'editPackage'
-                },
-                {
-                    label: '删除游戏包',
-                    value: 'deletePackage'
-                },
-                {
-                    label: '查看游戏配置列表',
-                    value: 'assemblyList'
-                },
-                {
-                    label: '编辑游戏配置',
-                    value: 'editAssembly'
-                },
-                {
-                    label: '删除游戏配置',
-                    value: 'deleteAssembly'
-                }
-            ]
+                update: gameAuthorityUpdate,
+                delete: gameAuthorityDelete
+            }
         };
     },
     computed: {

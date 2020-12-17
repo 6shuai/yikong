@@ -8,7 +8,6 @@
         :close-on-press-escape="false"
         width="500px"
     >
-        {{ addParams }}
         <el-form
             label-width="80px"
             :rules="addRules"

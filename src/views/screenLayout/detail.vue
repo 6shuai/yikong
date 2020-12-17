@@ -4,22 +4,13 @@
             <el-page-header @back="$router.go(-1)">
             </el-page-header>
             <div class="header-right">
-                <span
-                    v-if="resData.authorize"
-                    @click="$refs.pagePermission.showPermission({regionTempId: $route.params.id})"
-                    ><i class="el-icon-lock" title="授权"></i>授权<el-divider
-                        direction="vertical"
-                    ></el-divider
-                ></span>
                 <span 
-                    @click="$router.push(`/screen/layout/edit/${$route.params.id}`)"
-                    v-if="resData.edit">
+                    @click="$router.push(`/screen/layout/edit/${$route.params.id}`)">
                     <i class="el-icon-edit" title="编辑"></i>编辑
                     <el-divider direction="vertical"></el-divider>
                 </span>
                 <span 
-                    @click="handleDelete"
-                    v-if="resData.deleteRight">
+                    @click="handleDelete">
                     <i class="el-icon-delete" title="删除"></i>删除
                 </span>
             </div>
@@ -107,24 +98,14 @@
             ></el-table-column>
         </el-table>
 
-        <!-- 授权 -->
-        <permission 
-            ref="pagePermission" 
-            :premission="premission"
-            :premissionApi="premissionApi"
-        ></permission>
-
     </el-card>
 </template>
 <script>
 
 import {
     layoutTempDetail,
-    layoutTempDelete,
-    layoutAuthority,
-    layoutAuthorityUpdate
+    layoutTempDelete
 } from "@/api/screenLayout";
-import Permission from '@/components/permission/index';
 
 export default {
     data() {
@@ -135,10 +116,6 @@ export default {
             ratio: 0,
             rectangleW: 0,
             rectangleH: 0,
-            premissionApi: {
-                list: layoutAuthority,
-                update: layoutAuthorityUpdate
-            },
             premission: [
                 {
                     label: '查看列表',
@@ -228,9 +205,6 @@ export default {
                 });
             });
         },
-    },
-    components: {
-        Permission
     }
 };
 </script>

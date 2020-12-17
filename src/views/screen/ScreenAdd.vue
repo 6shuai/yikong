@@ -116,6 +116,11 @@
                             </li>
                         </ul>
                     </el-form-item>
+                    <group-list 
+                        v-if="!screenParams.id"
+                        propValue="groupIds"
+                        @groupSelected="$set(screenParams, 'groupIds', $event)"
+                    ></group-list>
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="screenSureBtn">提  交</el-button>
                     </el-form-item>
@@ -129,6 +134,9 @@ import { screenPlaceList, screenCreated, screenShowDelete, screenContactDelete, 
 import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import uploadImg from '@/components/Upload/UploadImg';
+import GroupList from '@/components/GroupList/index';
+
+
 export default {
     mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getDotPitch, getAspectRatio, getScreenDetail],
     data(){
@@ -150,7 +158,8 @@ export default {
                 physicalWidth: [{ required: true, trigger: "blur", message: '请输入物理尺寸宽~' }],
                 physicalHeight: [{ required: true, trigger: "blur", message: '请输入物理尺寸高~' }],
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
-                screenShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }]
+                screenShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }],
+                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,          //编辑时获取详情  loading
         }
@@ -339,7 +348,8 @@ export default {
         }
     },
     components: {
-        uploadImg
+        uploadImg,
+        GroupList
     }
 }
 </script>

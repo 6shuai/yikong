@@ -17,10 +17,3 @@ export function layoutTempDetail(data) { return get('/logicRegionTemp/detail', d
 export function layoutTempSubDelete(data) { return del('/logicRegionTemp/sub', data) }
 
 
-
-//查询授权列表
-export function layoutAuthority(data) { return get('/logicRegionTemp/logicRegionTempAuthority', data) }
-
-//修改权限
-export function layoutAuthorityUpdate(data) { return post('/logicRegionTemp/logicRegionTempAuthority', data) }
-

@@ -3,7 +3,6 @@
         <el-card shadow="always">
             <div class="content-top mb20 clearfix">
                 <el-button
-                    v-if="hasPerm($route.meta.permission, 'AddLayout')"
                     class="created-btn"
                     type="primary"
                     icon="el-icon-plus"
