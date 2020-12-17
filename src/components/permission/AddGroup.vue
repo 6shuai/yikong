@@ -12,6 +12,7 @@
         <div v-loading="loading">
             <el-checkbox-group v-model="groupIds">
                 <el-checkbox 
+                    border
                     :label="item.id" 
                     v-for="(item, index) in groupData" 
                     :key="index"
@@ -105,9 +106,19 @@ export default {
         .el-checkbox{
             margin-bottom: 10px;
         }
+        .el-checkbox.is-bordered{
+            width: 100%;
+            height: auto;
+        }
+        .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+            margin-left: 0;
+        }
         .el-checkbox__label{
             vertical-align: middle;
             width: 550px;
+            .title{
+                color: #000;
+            }
             .desc{
                 color: #999;
                 font-size: 12px;
