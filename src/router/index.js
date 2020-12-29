@@ -179,7 +179,7 @@ export const constantRoutes = [
     children: [{
       path: '/content/details/:id',
       name: 'Content--details',
-      component: () => import('@/views/content/ContentDetails'),
+      component: () => import('@/views/content/contentDetails'),
       meta: { title: '资源详情' }
     }],
     hidden: true
