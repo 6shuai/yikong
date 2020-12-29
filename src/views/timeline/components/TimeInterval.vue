@@ -70,7 +70,6 @@
                     </el-form-item>
                     <el-form-item label="选择屏幕" class="is-required">
                         <el-input
-                            size="small"
                             placeholder="搜索屏幕"
                             clearable
                             v-model="params.displayName"
@@ -79,25 +78,24 @@
                                 getScreenList();
                             "
                         ></el-input>
-                        <el-card
-                            class="box-card screen-list"
-                            :body-style="{ padding: '0px' }"
-                            v-for="item in screenData"
-                            :key="item.id"
-                            :class="{
-                                active:
-                                    addParams.selectedId.indexOf(item.id) > -1,
-                            }"
-                            @click.native="selectedCurrentScreen(item.id)"
-                        >
-                            <div class="screen-info">
-                                <div class="title">{{ item.displayName }}</div>
-                            </div>
-                        </el-card>
+
+                        <el-checkbox-group 
+                            v-model="addParams.selectedId">
+                            <el-checkbox 
+                                class="box-card screen-list"
+                                v-for="(item, index) in screenData"
+                                :key="index"
+                                :label="item.id" 
+                                border
+                            >{{item.displayName}}</el-checkbox>
+                        </el-checkbox-group>
+
+
                     </el-form-item>
                 </el-form>
                 <el-pagination
                     background
+                    hide-on-single-page
                     layout="total, prev, pager, next"
                     :current-page="Number(params.pageNo)"
                     @current-change="handleCurrentChange"
@@ -107,6 +105,10 @@
             </div>
 
             <span slot="footer" class="dialog-footer">
+                <el-button
+                    @click="showAddScreen = false"
+                    >取 消
+                </el-button>
                 <el-button
                     type="primary"
                     :loading="btnLoading"
@@ -215,16 +217,6 @@ export default {
             this.getScreenList();
         },
 
-        //选择屏幕
-        selectedCurrentScreen(id) {
-            let index = this.addParams.selectedId.indexOf(id);
-            if (index > -1) {
-                this.addParams.selectedId.splice(index, 1);
-            } else {
-                this.addParams.selectedId.push(id);
-            }
-        },
-
         //添加定时发布
         //isConfirm 0  第一次提交 发生重叠时提示
         //isConfirm 1 再次点击提交，不做验证 
@@ -313,7 +305,6 @@ export default {
     .screen-list {
         width: 100%;
         height: 80px;
-        margin: 10px 0;
         cursor: pointer;
 
         .screen-info {
@@ -350,16 +341,14 @@ export default {
             }
         }
     }
-
-    .no-data {
-        line-height: 40px;
-        text-align: center;
-    }
 }
 
 .time-interval-pub{
     .active {
         border: 1px solid #ff9800;
+    }
+    .el-checkbox.is-bordered+.el-checkbox.is-bordered{
+        margin-left: 0;
     }
 }
 </style>

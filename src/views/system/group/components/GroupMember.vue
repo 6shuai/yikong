@@ -18,7 +18,7 @@
                         class="box-card member clearfix"
                         :body-style="{ padding: '0px' }"
                         v-for="(item, index) in 20"
-                        :key="item.id"
+                        :key="index"
                     >
                         <div class="image-name">
                             <el-image fit="cover" src="https://game.xfengjing.com/app/upload/wx/ee0715e1-e905-4436-864c-62cd0480e37e.png"></el-image>

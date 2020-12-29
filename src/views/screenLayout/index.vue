@@ -70,6 +70,7 @@
             <el-pagination
                 v-if="resData.length"
                 background
+                hide-on-single-page
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[48, 80, 100]"
                 :current-page="Number(params.pageNo)"

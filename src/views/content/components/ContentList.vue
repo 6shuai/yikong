@@ -114,7 +114,7 @@ export default {
 }
 </script>
 <style lang="scss" scope>
-    @import '../../place/list/style/place-card.scss';
+    @import '../../place/style/place-card.scss';
     .content-list{
         .preview-btn{
             display: none;

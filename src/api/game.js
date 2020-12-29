@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { postKeyValueRequest, getKeyValueRequest, get, post, put, del } from '@/utils/request'
 
 //游戏管理  添加或修改
 export function gameCreated(data) { return post('/application/', data) }
@@ -86,4 +86,13 @@ export function rankTempTypeList(data) { return get('/rankingListTemp/rankingLis
 export function rankTempSubcycleCreated(data) { return post('/rankingListTemp/subcycle', data) }
 
 //排行榜管理  删除子周期
-export function rankTempSubcycleDetele(data) { return del('/rankingListTemp/subcycle', data) }
+export function rankTempSubcycleDetele(data) { return del(`/rankingListTemp/subcycle${data}`) }
+
+
+//排行榜管理  排行榜数据
+export function rankTempData(data) { return get('/rankingListTemp/rankingListData', data) }
+
+//排行榜管理  指定用户排行榜数据
+export function rankTempUserData(data) { return get('rankingListTemp/rankingListDataByUser', data) }
+
+

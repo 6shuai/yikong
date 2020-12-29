@@ -419,10 +419,5 @@ export default {
             }
         }
     }
-
-    .no-data {
-        text-align: center;
-        line-height: 100px;
-    }
 }
 </style>

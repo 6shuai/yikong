@@ -308,6 +308,9 @@
                         
                         .image-wrap{
                             height: 60px;
+                            .el-image{
+                                width: 100%;
+                            }
                             img{
                                 width: 100%;
                                 max-width: 98px;

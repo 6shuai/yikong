@@ -39,16 +39,57 @@
                     <el-form-item label="通信地址">
                         <el-input  placeholder="通信地址" v-model="userData.address"></el-input>
                     </el-form-item>
+                    <el-form-item label="密码">
+                        <el-link type="primary" @click="pwParams={};updatePasswordDialog=true">修改密码</el-link>
+                    </el-form-item>
                     <el-form-item label="">
                         <el-button size="normal" :loading="loading" type="primary" @click="updateUser">更新用户信息</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
+
+
+        <!-- 修改密码 -->
+        <el-dialog
+            width="500px"
+            title="修改密码"
+            :visible.sync="updatePasswordDialog"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            class="time-interval-pub"
+            @close="updatePasswordDialog = false"
+            append-to-body
+        >
+            <div class="clearfix">
+                <el-form label-width="80px">
+                    <el-form-item label="密码" class="is-required">
+                        <el-input type="password" v-model="pwParams.password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="确认密码" class="is-required">
+                        <el-input type="password" v-model="pwParams.confirmPassword"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+
+            <span slot="footer" class="dialog-footer">
+                <el-button
+                    @click="updatePasswordDialog = false"
+                    >取 消
+                </el-button>
+                <el-button
+                    type="primary"
+                    :loading="btnLoading"
+                    @click="handleChangePassword"
+                    >确 定</el-button
+                >
+            </span>
+        </el-dialog>
+
     </el-card>
 </template>
 <script>
-import { userUpdate } from '@/api/user';
+import { userUpdate, userPasswordUpdate } from '@/api/user';
 import UploadImg from '@/components/Upload/UploadImg';
 export default {
     data() {
@@ -56,7 +97,10 @@ export default {
             userData: {},
             loading: false, 
             rawData: null, 
-            rules: {}
+            rules: {},
+            updatePasswordDialog: false,
+            pwParams: {},
+            btnLoading: false
         }
     },
     mounted() {
@@ -103,6 +147,30 @@ export default {
         handleAvatarSuccess(path){
             this.userData.avatar = path;
         },
+
+        //修改密码
+        handleChangePassword(){
+            if(!this.pwParams.password){
+                this.$message.error('请输入密码~');
+                return
+            }else if(!this.pwParams.confirmPassword){
+                this.$message.error('请输入确认密码~');
+                return
+            }else if(this.pwParams.password != this.pwParams.confirmPassword){
+                this.$message.error('两次输入的密码不一致');
+                return
+            }
+            this.btnLoading = true;
+
+            this.pwParams.id = this.$store.state.user.loginData.id;
+            userPasswordUpdate(this.pwParams).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('修改成功~');
+                    this.updatePasswordDialog = false;
+                }
+            })
+
+        }
     },
     components: {
         UploadImg

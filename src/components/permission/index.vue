@@ -115,7 +115,9 @@ export default {
                 ...params
             }
             this.premissionData = JSON.parse(JSON.stringify(this.premission));
-            this.init();
+            if(this.premissionApi.list){
+                this.init();
+            }
         },
 
         init(){

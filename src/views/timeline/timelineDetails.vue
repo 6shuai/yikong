@@ -274,7 +274,7 @@ export default {
         //删除
         handelDeleteTimelineBtn() {
             this.$confirm(
-                `此操将删除时间轴【${this.resData.displayName}】, 是否继续?`,
+                `此操作将删除时间轴【${this.resData.displayName}】, 是否继续?`,
                 "提示",
                 {
                     confirmButtonText: "确定",

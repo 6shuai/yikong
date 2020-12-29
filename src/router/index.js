@@ -69,7 +69,7 @@ export const constantRoutes = [
     children: [{
       path: '/place/add',
       name: 'Place--add',
-      component: () => import('@/views/place/list/PlaceAdd'),
+      component: () => import('@/views/place/PlaceAdd'),
       meta: { title: '创建场所' }
     }],
     hidden: true
@@ -83,7 +83,7 @@ export const constantRoutes = [
     children: [{
       path: '/place/edit/:id',
       name: 'Place--edit',
-      component: () => import('@/views/place/list/PlaceAdd'),
+      component: () => import('@/views/place/PlaceAdd'),
       meta: { title: '编辑场所' }
     }],
     hidden: true
@@ -96,7 +96,7 @@ export const constantRoutes = [
     children: [{
       path: '/place/details/:id',
       name: 'Place--details',
-      component: () => import('@/views/place/list/PlaceDetails'),
+      component: () => import('@/views/place/PlaceDetails'),
       meta: { title: '场所详情' }
     }],
     hidden: true
@@ -151,7 +151,7 @@ export const constantRoutes = [
     children: [{
       path: '/content/add',
       name: 'Content--add',
-      component: () => import('@/views/content/ContentAdd'),
+      component: () => import('@/views/content/contentAdd'),
       meta: { title: '创建资源' }
     }],
     hidden: true
@@ -165,7 +165,7 @@ export const constantRoutes = [
     children: [{
       path: '/content/edit/:id',
       name: 'Content--edit',
-      component: () => import('@/views/content/ContentAdd'),
+      component: () => import('@/views/content/contentAdd'),
       meta: { title: '编辑资源' }
     }],
     hidden: true
@@ -179,7 +179,7 @@ export const constantRoutes = [
     children: [{
       path: '/content/details/:id',
       name: 'Content--details',
-      component: () => import('@/views/content/ContentDetails'),
+      component: () => import('@/views/content/contentDetails'),
       meta: { title: '资源详情' }
     }],
     hidden: true
@@ -229,7 +229,7 @@ export const constantRoutes = [
     meta: { title: '游戏管理' },
     children: [{
       path: '/games/add',
-      name: 'games--add',
+      name: 'Games--add',
       component: () => import('@/views/games/gameAdd'),
       meta: { title: '创建游戏' },
     }],
@@ -243,7 +243,7 @@ export const constantRoutes = [
     meta: { title: '游戏管理' },
     children: [{
       path: '/games/edit/:id',
-      name: 'games--edit',
+      name: 'Games--edit',
       component: () => import('@/views/games/gameAdd'),
       meta: { title: '编辑游戏' },
     }],
@@ -257,25 +257,25 @@ export const constantRoutes = [
     meta: { title: '游戏管理' },
     children: [{
       path: '/games/details/:id',
-      name: 'games--details',
+      name: 'Games--details',
       component: () => import('@/views/games/details/index'),
       meta: { title: '游戏信息' },
       children: [
         {
           path: 'package',
-          name: 'games--details--package',
+          name: 'Games--details-package',
           component: () => import('@/views/games/details/package'),
           meta: { title: '包管理' }
         },
         {
           path: 'list',
-          name: 'games--details--list',
+          name: 'Games--details-list',
           component: () => import('@/views/games/details/gameList'),
           meta: { title: '游戏列表' }
         },
         {
           path: 'rank',
-          name: 'games--details--rank',
+          name: 'Games--details-rank',
           component: () => import('@/views/games/details/rankTemp'),
           meta: { title: '排行榜管理' }
         }
@@ -293,7 +293,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/screen/layout/add',
-        name: 'screenlayout--add',
+        name: 'Layout--add',
         component: () => import('@/views/screenLayout/components/AddScreenLayout'),
         meta: { title: '屏幕布局 - 创建' },
       }
@@ -310,7 +310,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/screen/layout/edit/:id',
-        name: 'screenlayout--edit',
+        name: 'Layout--edit',
         component: () => import('@/views/screenLayout/components/AddScreenLayout'),
         meta: { title: '屏幕布局 - 编辑' },
       }
@@ -327,7 +327,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/screen/layout/detail/:id',
-        name: 'screenlayout--detail',
+        name: 'Layout--detail',
         component: () => import('@/views/screenLayout/detail'),
         meta: { title: '屏幕布局 - 详情' },
       }
@@ -335,34 +335,80 @@ export const constantRoutes = [
     hidden: true
   },
 
-  //群管理
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   meta: { title: '群管理' },
-  //   children: [
-  //     {
-  //       path: '/system/group',
-  //       name: 'group',
-  //       component: () => import('@/views/system/group/index'),
-  //       meta: { title: '群管理' },
-  //     }
-  //   ],
-  //   hidden: false
-  // },
+   //活动管理  新建活动
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/add',
+        name: 'Activity--add',
+        component: () => import('@/views/activity/activityAdd'),
+        meta: { title: '活动管理 - 创建' },
+      }
+    ],
+    hidden: true
+  },
+
+   //活动管理  编辑活动
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/edit/:id',
+        name: 'Activity--edit',
+        component: () => import('@/views/activity/activityAdd'),
+        meta: { title: '活动管理 - 编辑' },
+      }
+    ],
+    hidden: true
+  },
+
+   //活动管理  详情
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/detail/:id',
+        name: 'Activity--detail',
+        component: () => import('@/views/activity/detail'),
+        meta: { title: '活动管理 - 详情' },
+      }
+    ],
+    hidden: true
+  },
+
+   //活动管理  统计数据
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/statistics/:id',
+        name: 'Activity--statistics',
+        component: () => import('@/views/activity/statistics/statistics'),
+        meta: { title: '活动管理 - 统计数据' },
+      }
+    ],
+    hidden: true
+  }
 
 ]
 
 
 export const asyncRoutes = [
-
-
   // { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({ x: 0, y: 0 }),
   routes: constantRoutes
 })
 

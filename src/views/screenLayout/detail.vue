@@ -27,85 +27,87 @@
                 <h2>{{resData.displayName}}</h2>
             </div>
         </div>
-        <div class="content">
+        <div v-loading="dataLoading">
+            <div class="content">
 
-            <el-form
-                label-width="100px"
-                class="screen-form"
-                :model="resData"
-            >
-                <el-form-item label="模板名称" prop="displayName">
-                    {{resData.displayName}}
-                </el-form-item>
-                <el-form-item label="宽度" prop="width">
-                    {{resData.width}}
-                </el-form-item>
-                <el-form-item label="高度" prop="height">
-                    {{resData.height}}
-                </el-form-item>
-            </el-form>
+                <el-form
+                    label-width="100px"
+                    class="screen-form"
+                    :model="resData"
+                >
+                    <el-form-item label="模板名称" prop="displayName">
+                        {{resData.displayName}}
+                    </el-form-item>
+                    <el-form-item label="宽度" prop="width">
+                        {{resData.width}}
+                    </el-form-item>
+                    <el-form-item label="高度" prop="height">
+                        {{resData.height}}
+                    </el-form-item>
+                </el-form>
 
-            <div
-                class="layout-warp clearfix"
-                style="height: 100%"
-                v-if="rectangleW && rectangleH"
-            >
                 <div
-                    ref="rectangleWrap"
-                    class="rectangle-wrap"
-                    :style="{ width: rectangleW + 'px', height: rectangleH + 'px' }"
+                    class="layout-warp clearfix"
+                    style="height: 100%"
+                    v-if="rectangleW && rectangleH"
                 >
                     <div
-                        class="rectangle"
-                        v-for="(item, index) in timelineBox" 
-                        :key="index"
-                        :style="{
-                            width: item.width + 'px',
-                            height: item.height + 'px',
-                            top: item.y + 'px',
-                            left: item.x + 'px'
-                        }"
+                        ref="rectangleWrap"
+                        class="rectangle-wrap"
+                        :style="{ width: rectangleW + 'px', height: rectangleH + 'px' }"
                     >
-                        <p class="title">{{item.displayName}}</p>
+                        <div
+                            class="rectangle"
+                            v-for="(item, index) in timelineBox" 
+                            :key="index"
+                            :style="{
+                                width: item.width + 'px',
+                                height: item.height + 'px',
+                                top: item.y + 'px',
+                                left: item.x + 'px'
+                            }"
+                        >
+                            <p class="title">{{item.displayName}}</p>
+                        </div>
                     </div>
-                </div>
-            </div>  
-        </div>
+                </div>  
+            </div>
 
-        <el-table
-            stripe
-            size="small"
-            :data="resData.logicRegionSubs"
-            style="width: 100%; margin-top: 20px"
-            row-key="id"
-            border
-        >
-            <el-table-column
-                prop="displayName"
-                label="屏幕区域"
-                min-width="50"
-            ></el-table-column>
-            <el-table-column
-                prop="width"
-                label="宽"
-                min-width="50"
-            ></el-table-column>
-            <el-table-column
-                prop="height"
-                label="高"
-                min-width="50"
-            ></el-table-column>
-            <el-table-column
-                prop="x"
-                label="x"
-                min-width="50"
-            ></el-table-column>
-            <el-table-column
-                prop="y"
-                label="y"
-                min-width="50"
-            ></el-table-column>
-        </el-table>
+            <el-table
+                stripe
+                size="small"
+                :data="resData.logicRegionSubs"
+                style="width: 100%; margin-top: 20px"
+                row-key="id"
+                border
+            >
+                <el-table-column
+                    prop="displayName"
+                    label="屏幕区域"
+                    min-width="50"
+                ></el-table-column>
+                <el-table-column
+                    prop="width"
+                    label="宽"
+                    min-width="50"
+                ></el-table-column>
+                <el-table-column
+                    prop="height"
+                    label="高"
+                    min-width="50"
+                ></el-table-column>
+                <el-table-column
+                    prop="x"
+                    label="x"
+                    min-width="50"
+                ></el-table-column>
+                <el-table-column
+                    prop="y"
+                    label="y"
+                    min-width="50"
+                ></el-table-column>
+            </el-table>
+        </div>
 
         <!-- 授权 -->
         <permission 
@@ -243,9 +245,9 @@ export default {
             overflow: hidden;
             .rectangle{
                 position: absolute;
-                border: 1px solid #f38181;
-                background: #eaeaea;
-                color: #ff0000;
+                border: 1px solid #f6f6f6;
+                background: #233142;
+                color: #f6f6f6;
                 display: flex;
                 align-items: center;
                 justify-content: center;
