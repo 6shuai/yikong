@@ -102,6 +102,13 @@
                                 <template slot="append">秒</template>    
                             </el-input>   
                         </el-form-item>
+
+
+                        <group-list 
+                            v-if="!contentParams.id"
+                            propValue="groupIds"
+                            @groupSelected="$set(contentParams, 'groupIds', $event)"
+                        ></group-list>
                     </el-col>
                 </el-row>
 
@@ -183,6 +190,8 @@ import UploadVideo from '@/components/Upload/UploadVideo';
 import AtlasUploadImg from '@/views/content/components/AtlasUploadImg';
 import AtlasUploadVideo from '@/views/content/components/AtlasUploadVideo';
 import AtlasContentList from '@/views/content/components/AtlasContentList';
+import GroupList from '@/components/GroupList/index';
+
 export default {
     mixins: [getOrganizationList, getDotPitch, getAspectRatio, contentDetailData, objsDifferMethod],
     data(){
@@ -202,6 +211,7 @@ export default {
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
                 size: [{ required: true, trigger: "blur", message: '请输入文件容量~' }],
                 duration: [{ required: true, trigger: "blur", message: '请输入播放时长~' }],
+                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,
             typeList: [],                  //资源类型列表
@@ -451,7 +461,8 @@ export default {
         UploadVideo,
         AtlasUploadImg,
         AtlasUploadVideo,
-        AtlasContentList
+        AtlasContentList,
+        GroupList
     }
 }
 </script>
