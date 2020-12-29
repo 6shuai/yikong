@@ -122,6 +122,7 @@
                             <div v-loading="upldateSecretLoading">
                                 <span>{{ resData.secret }}</span>
                                 <el-link
+                                    v-if="resData.updateSecret"
                                     class="ml20"
                                     type="primary"
                                     @click="updateSecret"
