@@ -28,7 +28,10 @@ const moduleMap = {
 	'Organization': 'system/organizations/index',		  //品牌列表
 	'OrganizationType': 'system/organizationType/index',  //组织类型列表
 	'User': 'user/Center',							      //个人中心
-	'BasicRole': 'system/basicRole/index'			      //基础角色管理
+	'BasicRole': 'system/basicRole/index',			      //基础角色管理
+	'ResAuthority': 'system/resAuthority/index',		  //资源权限管理
+	'ResRole': 'system/resRole/index',			      	  //资源角色管理
+	'Group': 'system/group/index',			      	      //权限群组
 }
 
 

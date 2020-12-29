@@ -130,7 +130,6 @@
         <!-- 授权 -->
         <permission 
             ref="pagePermission" 
-            :premission="premission"
             :premissionApi="premissionApi"
         ></permission>
 
@@ -145,7 +144,8 @@ import {
     timelineContainerDelete,
     timelineContainerDetail,
     timelineAuthority,
-    timelineAuthorityUpdate
+    timelineAuthorityUpdate, 
+    timelineAuthorityDelete
 } from "@/api/timeline";
 export default {
     data() {
@@ -167,70 +167,9 @@ export default {
             },
             premissionApi: {
                 list: timelineAuthority,
-                update: timelineAuthorityUpdate
-            },
-            premission: [
-                {
-                    label: '查看时间轴',
-                    value: 'list'
-                },
-                {
-                    label: '编辑时间轴容器',
-                    value: 'editTimelineContainer'
-                },
-                {
-                    label: '删除时间轴容器',
-                    value: 'deleteTimelineContainer'
-                },
-                {
-                    label: '编辑逻辑区域',
-                    value: 'editTimelineRegion'
-                },
-                {
-                    label: '删除逻辑区域',
-                    value: 'deleteTimelineRegion'
-                },
-                {
-                    label: '编辑时间轴',
-                    value: 'editTimelineContent'
-                },
-                {
-                    label: '删除时间轴',
-                    value: 'deleteTimelineContent'
-                },
-                {
-                    label: '编辑阶段',
-                    value: 'editTimelinePhase'
-                },
-                {
-                    label: '删除阶段',
-                    value: 'deleteTimelinePhase'
-                },
-                {
-                    label: '删除步骤',
-                    value: 'deleteTimelineStep'
-                },
-                {
-                    label: '发布时间轴',
-                    value: 'publish'
-                },
-                {
-                    label: '复制时间轴',
-                    value: 'copyTimeline'
-                },
-                {
-                    label: '导入时间轴',
-                    value: 'importTimeline'
-                },
-                {
-                    label: '删除投放屏幕',
-                    value: 'deleteDropScreen'
-                },
-                {
-                    label: '删除定时屏幕',
-                    value: 'deleteTimingScreen'
-                }
-            ]
+                update: timelineAuthorityUpdate,
+                delete: timelineAuthorityDelete
+            }
         };
     },
     mounted() {

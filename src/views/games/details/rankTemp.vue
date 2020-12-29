@@ -61,7 +61,7 @@
                 label="数据后缀"
                 min-width="100"
             ></el-table-column>
-            <el-table-column label="操作" width="230">
+            <el-table-column label="操作" width="300">
                 <template slot-scope="scope">
                     <el-button
                         size="mini"
@@ -72,7 +72,7 @@
                     </el-button>
                     <el-button
                         size="mini"
-                        type="warning"
+                        type="success"
                         @click="$refs.subCycle.showDetailDrawer(scope.row)"
                     >
                         子周期
@@ -102,8 +102,9 @@
 <script>
 import { rankTempList, rankTempTypeList } from "@/api/game";
 import AddRankTemp from "../components/AddRankTemp";
-import AddRankCycle from "../components/AddRankCycle";
-import RankDetail from "../components/RankDetail";
+
+import AddRankCycle from '../components/AddRankCycle';
+import RankDetail from '../components/RankDetail';
 
 export default {
     data() {
@@ -153,8 +154,8 @@ export default {
     components: {
         AddRankTemp,
         AddRankCycle,
-        RankDetail,
-    },
+        RankDetail
+    }
 };
 </script>
 
