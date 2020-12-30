@@ -137,7 +137,7 @@ export default {
                 display: flex;
                 flex-wrap: nowrap;
                 padding: 10px 0;
-                height: 60px;
+                height: 70px;
                 line-height: 40px;
                 &:hover{
                     background: #e9f3fb;

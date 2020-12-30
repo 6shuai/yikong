@@ -16,7 +16,7 @@
         </video>
         <iframe 
             class="miniview-game"
-            v-if="currentData.contentTypeId== 3"
+            v-else-if="currentData.contentTypeId== 3"
             :src="currentData.contentPath"
             style="width: 100%; height: 500px;"
             frameborder="no" border="0" scrolling="no"></iframe>
