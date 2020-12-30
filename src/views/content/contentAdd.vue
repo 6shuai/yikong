@@ -3,7 +3,7 @@
         <el-card class="template-card">
             <el-page-header @back="$router.go(-1)">
                 <div slot="content">
-                    {{$route.params.id ? '编辑资源' : '创建资源'}}
+                    {{$route.params.id ? '编辑内容' : '创建内容'}}
                 </div>
             </el-page-header>
             <el-form 
@@ -14,8 +14,8 @@
             >
                 <el-row :gutter="10" class="mt30" v-loading="loading">
                     <el-col :xs="24" :sm="24" :md="12">
-                        <el-form-item label="资源名称" prop="displayName">
-                            <el-input v-model="contentParams.displayName" placeholder="资源名称"></el-input>
+                        <el-form-item label="内容名称" prop="displayName">
+                            <el-input v-model="contentParams.displayName" placeholder="内容名称"></el-input>
                         </el-form-item>
                         <el-form-item label="所属品牌" prop="contentOwner">
                             <el-select v-model="contentParams.contentOwner" filterable placeholder="请选择所属品牌" style="width:100%">
@@ -33,8 +33,8 @@
                                 @uploadImgPath="$set(contentParams, 'image', $event), $set(contentParams, 'newUpload', 1)"
                             ></upload-img>
                         </el-form-item>
-                        <el-form-item label="资源类型" prop="contentType">
-                            <el-select v-model="contentParams.contentType" @change="selectedType" filterable placeholder="请选择资源类型" style="width:100%">
+                        <el-form-item label="内容类型" prop="contentType">
+                            <el-select v-model="contentParams.contentType" @change="selectedType" filterable placeholder="请选择内容类型" style="width:100%">
                                 <el-option 
                                     v-for="item in typeList" 
                                     :key="item.id"
@@ -43,7 +43,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item :label="`上传资源 (${contentTypeName(contentParams.contentType)})`" prop="contentPath" v-if="contentParams.contentType !== 4">
+                        <el-form-item :label="`上传内容 (${contentTypeName(contentParams.contentType)})`" prop="contentPath" v-if="contentParams.contentType !== 4">
                             <!-- 上传图片 -->
                             <div v-if="contentParams.contentType === 1">
                                 <upload-img 
@@ -112,15 +112,15 @@
                     </el-col>
                 </el-row>
 
-                <el-form-item :label="`上传资源 (图集)`" class="is-required" v-if="contentParams.contentType === 4">
+                <el-form-item :label="`上传内容 (图集)`" class="is-required" v-if="contentParams.contentType === 4">
 
                     <div class="atlas-top mb10">
                         <!-- 上传图片 -->
                         <atlas-upload-img @atlasUploadSuccess="atlasUploadSuccess(1, $event)"></atlas-upload-img>
                         <!-- 上传视频 -->
                         <atlas-upload-video @atlasUploadSuccess="atlasUploadSuccess(2, $event)"></atlas-upload-video>
-                        <!-- 选择资源 -->
-                        <el-button size="small" type="primary" @click="$refs.contentlist.showContentList=true">选择资源</el-button>
+                        <!-- 选择内容 -->
+                        <el-button size="small" type="primary" @click="$refs.contentlist.showContentList=true">选择内容</el-button>
                     </div>
                     
                     <!-- 图集列表 -->
@@ -171,7 +171,7 @@
             </div>
         </el-dialog>
         
-        <!-- 选择资源列表 -->
+        <!-- 选择内容列表 -->
         <atlas-content-list 
             ref="contentlist"
             :typeList="typeList"
@@ -201,20 +201,20 @@ export default {
             },
             btnLoading: false,               //确定按钮  loading
             placeRules: {
-                displayName: [{ required: true, trigger: "blur", message: '请输入资源名称~' }],
-                contentType: [{ required: true, trigger: "change", message: '请选择场资源类型~' }],
+                displayName: [{ required: true, trigger: "blur", message: '请输入内容名称~' }],
+                contentType: [{ required: true, trigger: "change", message: '请选择场内容类型~' }],
                 contentOwner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
                 image: [{ required: true, trigger: "change", message: '请上传一张展示图片~' }],
                 width: [{ required: true, trigger: "blur", message: '请输入宽~' }],
                 height: [{ required: true, trigger: "blur", message: '请输入高~' }],
-                contentPath: [{ required: true, trigger: "change", message: '请上传资源~' }],
+                contentPath: [{ required: true, trigger: "change", message: '请上传内容~' }],
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
                 size: [{ required: true, trigger: "blur", message: '请输入文件容量~' }],
                 duration: [{ required: true, trigger: "blur", message: '请输入播放时长~' }],
                 groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,
-            typeList: [],                  //资源类型列表
+            typeList: [],                  //内容类型列表
             aspectRatio: [
                 { width: 1024, height: 768, id: 5 },    //4:3
                 { width: 768, height: 1024, id: 6 },    //3:4
@@ -322,7 +322,7 @@ export default {
             }
         },
 
-        //资源类型列表
+        //内容类型列表
         contentTypeList(){
             getContentTypeList().then(res => {
                 this.typeList = res.obj;
@@ -338,12 +338,12 @@ export default {
             })
         },
 
-        //选择资源类型  清空资源路径
+        //选择内容类型  清空内容路径
         selectedType(){
             this.$delete(this.contentParams, 'contentPath');
         },
 
-        //资源类型名称
+        //内容类型名称
         contentTypeName(type){
             let n;
             switch (type) {
@@ -372,7 +372,7 @@ export default {
             this.handleDuration();
         },
 
-        //已选中的资源
+        //已选中的内容
         selectedContent(data){
             data.forEach(item => {
                 this.atlasData.push(item);
@@ -380,7 +380,7 @@ export default {
             this.handleDuration();
         },
 
-        //删除引用资源
+        //删除引用内容
         contentDelete(index, id){
             if(id){
                 atlasDeleteContent(id).then(res => {

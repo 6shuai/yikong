@@ -10,7 +10,7 @@
                 @click.stop="$router.push(`/content/details/${item.id}`)">
                 <el-image fit="contain" :src="item.image" :style="{height: imageH+'px'}" class="image"></el-image>
                 
-                <!-- 资源类型 -->
+                <!-- 内容类型 -->
                 <div class="resource-type" title="点击预览" @click.stop="handlePreview(item)">
                     <div class="type-btn">
                         <font-awesome-icon v-if="item.contentTypeId==1 || item.contentTypeId==4" :icon="['far', 'image']" />
@@ -75,7 +75,7 @@
             </div>                    
         </el-card>
 
-        <!-- 预览资源 -->
+        <!-- 预览内容 -->
         <el-dialog
             width="1000px"
             :title="currentContent.displayName"
@@ -93,8 +93,8 @@ export default {
     props: ['item', 'name', 'imageH', 'index'],
     data(){
         return{
-            currentContent: {},            //查看选中的预览资源内容
-            showPreview: false,            //显示预览资源
+            currentContent: {},            //查看选中的预览内容内容
+            showPreview: false,            //显示预览内容
         }
     },
     methods: {

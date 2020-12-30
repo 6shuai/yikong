@@ -1,13 +1,13 @@
 <template>
-    <el-dialog title="选择资源" width="1000px" :visible.sync="showContentList" class="atlas-content-list">
+    <el-dialog title="选择内容" width="1000px" :visible.sync="showContentList" class="atlas-content-list">
         <div class="search-wrap">
             <el-input 
                 prefix-icon="el-icon-search" 
                 clearable
                 v-model="params.displayName" 
-                placeholder="资源名称"
+                placeholder="内容名称"
             ></el-input>
-            <el-select v-model="params.contentType" clearable placeholder="请选择资源类型">
+            <el-select v-model="params.contentType" clearable placeholder="请选择内容类型">
                 <el-option 
                     v-for="item in typeList" 
                     :key="item.id"

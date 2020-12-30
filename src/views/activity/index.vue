@@ -21,15 +21,35 @@
                 size="small"
                 @input="search"
             ></el-input>
+
+            <el-radio-group 
+                class="ml20"
+                v-model="params.isFavorite" 
+                size="small"
+                @change="search"
+            >
+                <el-radio-button label="0">不限</el-radio-button>
+                <el-radio-button label="1">已收藏</el-radio-button>
+            </el-radio-group>
+
         </div>
+
+        <div v-if="!resData || !resData.length" class="no-data">暂无数据~</div>
         
-        <div class="mt20" v-loading="tableLoading">
+        <div 
+            class="mt20" 
+            v-if="resData.length"
+            v-loading="tableLoading">
             <el-card
                 class="item"
                 v-for="(item, index) in resData"
                 :key="index"
                 @click.native="handleEdit(item.id)"
             >
+                <div v-if="item.isFavorite" title="已收藏">
+                    <div class="triangle-topleft"></div>
+                    <i class="el-icon-star-off"></i>
+                </div>
                 <div class="content">
                     <div class="title">{{ item.displayName }}</div>
                     <div class="desc">{{ item.description }}</div>
@@ -102,6 +122,7 @@ export default {
         return {
             tableLoading: false,
             params: {
+                isFavorite: 0,
                 pageNo: 1,
                 pageSize: 48
             },
@@ -175,6 +196,7 @@ export default {
         cursor: pointer;
         .el-card__body{
             display: flex;
+            position: relative;
         }
         .title{
             font-size: 20px;
@@ -209,6 +231,23 @@ export default {
                 margin-right: 20px;
                 font-size: 13px;
             }
+        }
+
+        .triangle-topleft{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-top: 30px solid red;
+            border-right: 30px solid transparent;
+        }
+        .el-icon-star-off{
+            position: absolute;
+            top: 0;
+            left: 0;
+            line-height: 20px;
+            color: #fff;
         }
     }
 }

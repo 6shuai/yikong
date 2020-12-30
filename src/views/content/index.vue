@@ -3,7 +3,7 @@
         <!-- 筛选项 -->
         <search @searchResult="search" ref="search"></search>
 
-        <!-- 资源列表 -->
+        <!-- 内容列表 -->
         <div v-if="!dataLoading && !resData.length" style="margin: 20px;text-align:center">
             暂无数据~
         </div>

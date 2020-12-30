@@ -64,6 +64,7 @@
                         v-if="pondParams.id"
                         prop="condition">
                         <el-button
+                            v-if="detailData.addAwardCondition"
                             type="primary"
                             size="small"
                             plain
@@ -78,12 +79,14 @@
                                 <div class="title overflow">{{item.readableString}}</div>
                                 <div class="operation">
                                     <el-link
+                                        v-if="detailData.editAwardCondition"
                                         type="primary"
                                         @click="$refs.addCondition.showDialog(item)"
                                         >编辑</el-link
                                     >
                                     
                                     <el-popover
+                                        v-if="detailData.deleteAwardCondition"
                                         placement="top"
                                         :ref="'condition-' + index"
                                         width="200"
@@ -127,6 +130,7 @@
                     <el-divider content-position="left" v-if="pondParams.id">奖品内容</el-divider>
                     <el-form-item v-if="pondParams.id">
                         <el-button
+                            v-if="detailData.addAwardItem"
                             type="primary"
                             size="small"
                             plain
@@ -169,11 +173,12 @@
                         </div>
                         <div class="operation">
                             <span
+                                v-if="detailData.editAwardItem"
                                 class="edit"
                                 @click="$refs.addPrize.showDialog(item)"
                                 >编辑</span
                             >
-                            <span class="delete">
+                            <span class="delete" v-if="detailData.deleteAwardItem">
                                 <el-popover
                                     placement="top"
                                     :ref="'prize-' + item.id"
@@ -249,6 +254,7 @@ import AddPrize from "./AddPrize";
 import AddCondition from './AddCondition';
 
 export default {
+    props: ['detailData'],
     data() {
         return {
             drawer: false,

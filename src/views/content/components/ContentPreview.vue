@@ -75,7 +75,7 @@ export default {
                     }
                 }
             }else{
-                //图集资源
+                //图集内容
                 if(Array.isArray(this.data)){
                     this.init();
                     this.isArray = true;

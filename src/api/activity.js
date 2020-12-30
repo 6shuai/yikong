@@ -20,6 +20,11 @@ export function activityDelete(data) { return del(`/promotion/${data}`) }
 //活动管理  活动详情
 export function activityDetail(data) { return get('/promotion/detail', data) }
 
+//活动管理  收藏 或 取消收藏
+export function activityFavorite(data) { return put(`/promotion/isFavorite${data}`) }
+
+
+
 
 
 //活动管理  根据活动查询 奖池列表
@@ -64,6 +69,18 @@ export function activityConditionGameList(data) { return get('/promotion/applica
 export function activityConditionRankTemp(data) { return get('/promotion/rankingListTemp', data) }
 
 
+//查询活动与 群组 相关联列表
+export function activityAuthority(data) { return get('/promotion/groupPromotion', data) }
+
+//添加活动与 群组关联
+export function activityAuthorityUpdate(data) { return post('/promotion/groupPromotion', data) }
+
+//删除活动与 群组关联
+export function activityAuthorityDelete(data) { return del(`/promotion/groupPromotion${data}`) }
+
+
+
+
 
 //统计数据  列表
 export function activityStatisticsList(data) { return get('/promotion/statistics', data) }
@@ -77,3 +94,4 @@ export function activityPlaceList(data) { return get('/promotion/place', data) }
 
 //统计数据  屏幕列表
 export function activityScreenList(data) { return get('/promotion/screen', data) }
+

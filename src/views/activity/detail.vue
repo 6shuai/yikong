@@ -3,23 +3,33 @@
         <div class="header-wrap detail-header-wrap mb30">
             <el-page-header @back="$router.go(-1)"> </el-page-header>
             <div class="header-right">
-                <!-- <span
+                <span
+                    v-if="resData.authorize"
                     @click="
                         $refs.pagePermission.showPermission({
-                            regionTempId: $route.params.id,
+                            promotionId: $route.params.id,
                         })
                     "
                     ><i class="el-icon-lock" title="授权"></i>授权<el-divider
                         direction="vertical"
                     ></el-divider
-                ></span> -->
+                ></span>
                 <span
+                    v-if="resData.editPromotion"
                     @click="$router.push(`/activity/edit/${$route.params.id}`)"
                 >
                     <i class="el-icon-edit" title="编辑"></i>编辑
                     <el-divider direction="vertical"></el-divider>
                 </span>
-                <span @click="handleDelete">
+                <span @click="collectContent" v-if="!resData.isFavorite"
+                    ><i class="el-icon-star-off" title="收藏"></i>收藏
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span @click="collectContent" v-else
+                    ><i class="el-icon-star-on" title="取消收藏"></i>取消收藏
+                    <el-divider direction="vertical"></el-divider>
+                </span>
+                <span @click="handleDelete" v-if="resData.deletePromotion">
                     <i class="el-icon-delete" title="删除"></i>删除
                 </span>
             </div>
@@ -75,6 +85,7 @@
                 </el-row>
                 <el-form-item label="奖池：">
                     <el-button
+                        v-if="resData.addAwardPool"
                         size="small"
                         type="primary"
                         plain
@@ -117,7 +128,7 @@
                                 </p>
                             </el-col>
                             <el-col :span="4" class="operation">
-                                <p>
+                                <p v-if="resData.editAwardPool">
                                     <el-link
                                         type="primary"
                                         @click.stop="
@@ -126,7 +137,7 @@
                                         >编辑</el-link
                                     >
                                 </p>
-                                <p>
+                                <p v-if="resData.deleteAwardPool"> 
                                     <el-popover
                                         placement="top"
                                         :ref="item.id"
@@ -183,6 +194,7 @@
         <!-- 添加奖池 -->
         <add-pond 
             ref="addPond" 
+            :detailData="resData"
             @pondCreatedSuccess="getPondList"
         ></add-pond>
 
@@ -195,6 +207,10 @@ import {
     activityDelete,
     activityPondList,
     activityPondDelete,
+    activityFavorite, 
+    activityAuthority,
+    activityAuthorityUpdate,
+    activityAuthorityDelete
 } from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
 import AddPond from "./components/AddPond";
@@ -203,7 +219,11 @@ export default {
     mixins: [getActivityDetail],
     data() {
         return {
-            premissionApi: {},
+            premissionApi: {
+                list: activityAuthority,
+                update: activityAuthorityUpdate,
+                delete: activityAuthorityDelete
+            },
             pondData: [], //奖池列表
             pondLoading: false
         };
@@ -265,6 +285,24 @@ export default {
                 }
             });
         },
+
+        //收藏
+        collectContent() {
+            let p = {
+                isFavorite: this.resData.isFavorite ? 0 : 1,
+                id: this.resData.id,
+                userId: this.$store.state.user.loginData.id,
+            };
+            let s = `?isFavorite=${p.isFavorite}&promotionId=${p.id}&userId=${p.userId}`;
+
+            activityFavorite(s).then((res) => {
+                if (res.code === this.$successCode) {
+                    this.$message.success("操作成功~");
+                    this.$set(this.resData, "isFavorite", p.isFavorite);
+                }
+            });
+
+        }
     },
     components: {
         Permission,

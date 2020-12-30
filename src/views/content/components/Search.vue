@@ -7,15 +7,15 @@
                 icon="el-icon-plus" 
                 @click="$router.push('/content/add')"
                 size="small">
-                创建资源
+                创建内容
             </el-button>
         </div>
         <div class="search-list-wrap">
 
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">资源名称</el-col>
+                <el-col :md="2" :sm="24"  class="title">内容名称</el-col>
                 <el-col :md="22" :sm="24">
-                    <el-input class="dispaly-name" size="small" clearable placeholder="资源名称" v-model="searchParams.displayName" @input="searchContent"></el-input>
+                    <el-input class="dispaly-name" size="small" clearable placeholder="内容名称" v-model="searchParams.displayName" @input="searchContent"></el-input>
                 </el-col>
             </el-row>
             <el-row class="search-list">
@@ -37,7 +37,7 @@
                 </el-col>
             </el-row>
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">资源类型</el-col>
+                <el-col :md="2" :sm="24"  class="title">内容类型</el-col>
                 <el-col :md="22" :sm="24">
                     <el-button 
                         :class="{focus: !searchParams.contentType && searchParams.contentType !== 0}" 
@@ -123,7 +123,7 @@ export default {
             this.$emit('searchResult', this.searchParams);
         },
 
-        //资源类型列表
+        //内容类型列表
         contentTypeList(){
             getContentTypeList().then(res => {
                 this.typeList = res.obj;
