@@ -15,7 +15,7 @@
             <el-row class="search-list">
                 <el-col :md="2" :sm="24"  class="title">资源名称</el-col>
                 <el-col :md="22" :sm="24">
-                    <el-input class="dispaly-name" size="small" clearable placeholder="资源名称" v-model="searchParams.displayName" @input="searchScreen"></el-input>
+                    <el-input class="dispaly-name" size="small" clearable placeholder="资源名称" v-model="searchParams.displayName" @input="searchContent"></el-input>
                 </el-col>
             </el-row>
             <el-row class="search-list">
@@ -23,13 +23,13 @@
                 <el-col :md="22" :sm="24">
                     <el-button 
                         :class="{focus: !searchParams.contentOwner}" 
-                        @click="$delete(searchParams, 'contentOwner');searchScreen()" 
+                        @click="$delete(searchParams, 'contentOwner');searchContent()" 
                         size="small">不限
                     </el-button>
                     <el-button 
                         v-for="item in groupData"
                         :key="item.id"
-                        @click="$set(searchParams, 'contentOwner', item.id);searchScreen()"
+                        @click="$set(searchParams, 'contentOwner', item.id);searchContent()"
                         :class="{focus: searchParams.contentOwner == item.id}"
                         size="small">
                         {{item.displayName}}
@@ -41,7 +41,7 @@
                 <el-col :md="22" :sm="24">
                     <el-button 
                         :class="{focus: !searchParams.contentType && searchParams.contentType !== 0}" 
-                        @click="$delete(searchParams, 'contentType');searchScreen()" 
+                        @click="$delete(searchParams, 'contentType');searchContent()" 
                         size="small">不限
                     </el-button>
                     <el-button
@@ -49,7 +49,7 @@
                         v-for="item in typeList"
                         :key="item.id"
                         :class="{focus: searchParams.contentType == item.id}"
-                        @click="$set(searchParams, 'contentType', item.id);searchScreen()"
+                        @click="$set(searchParams, 'contentType', item.id);searchContent()"
                         :value="item.id">{{item.displayName}}
                     </el-button>
                 </el-col>
@@ -62,8 +62,24 @@
                         v-for="item in timeSortList"
                         :key="item.id"
                         :class="{focus: searchParams.sortType == item.id}"
-                        @click="$set(searchParams, 'sortType', item.id);searchScreen()"
+                        @click="$set(searchParams, 'sortType', item.id);searchContent()"
                         :value="item.id">{{item.label}}
+                    </el-button>
+                </el-col>
+            </el-row>
+            <el-row class="search-list">
+                <el-col :md="2" :sm="24"  class="title">收藏</el-col>
+                <el-col :md="22" :sm="24">
+                    <el-button 
+                        :class="{focus: !searchParams.isFavorite}" 
+                        @click="$delete(searchParams, 'isFavorite');searchContent()" 
+                        size="small">不限
+                    </el-button>
+                    <el-button 
+                        size="small" 
+                        :class="{focus: searchParams.isFavorite}" 
+                        @click="$set(searchParams, 'isFavorite', 1);searchContent()"
+                        >已收藏
                     </el-button>
                 </el-col>
             </el-row>
@@ -103,7 +119,7 @@ export default {
         this.contentTypeList();
     },
     methods:{
-        searchScreen(){
+        searchContent(){
             this.$emit('searchResult', this.searchParams);
         },
 
