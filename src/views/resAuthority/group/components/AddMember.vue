@@ -136,8 +136,8 @@ export default {
             li{
                 display: flex;
                 flex-wrap: nowrap;
-                padding: 15px 0;
-                height: 70px;
+                padding: 10px 0;
+                height: 60px;
                 line-height: 40px;
                 &:hover{
                     background: #e9f3fb;

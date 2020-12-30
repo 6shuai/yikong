@@ -9,9 +9,11 @@
                 @click.stop="$router.push(`/screen/details/${item.id}`)">
                 <el-image fit="cover" :src="item.defaultShow" class="image" :style="{height: imageH+'px'}"></el-image>
                 <!-- 屏幕状态 -->
-                <el-tag v-if="!item.state" class="status ing" effect="dark">建设中</el-tag>
-                <el-tag v-if="item.state == 1" class="status" type="success" effect="dark">在线</el-tag>
-                <el-tag v-if="item.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
+                <div class="screen-state" title="屏幕状态">
+                    <el-tag v-if="!item.state" class="status ing" effect="dark">建设中</el-tag>
+                    <el-tag v-if="item.state == 1" class="status" type="success" effect="dark">在线</el-tag>
+                    <el-tag v-if="item.state == 2" class="status" type="warning" effect="dark">离线</el-tag>
+                </div>
                 <!-- 收藏 -->
                 <el-button 
                     v-if="item.isFavorite"

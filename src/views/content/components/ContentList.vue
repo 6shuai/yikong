@@ -126,8 +126,12 @@ export default {
             .preview-btn{
                 display: block;
             }
+            .content-name{
+                color: #409EFF;
+            }
         }
         .place-title .content-name{
+            transition: color .3s;
             cursor: pointer;
             white-space: nowrap;
             width: 100%;
@@ -135,9 +139,6 @@ export default {
             display: inline-block;
             margin: 0;
             font-size: 16px;
-            &:hover{
-                color: #409EFF;
-            }
         }
 
         .specification{
