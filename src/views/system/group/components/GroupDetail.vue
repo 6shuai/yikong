@@ -19,7 +19,7 @@
                     size="small" 
                     type="primary"
                     icon="icon-plus"
-                    @click="$refs.addMember.showAddMemberDialog(groupInfo.id)"
+                    @click="$refs.addMember.showAddMemberDialog(groupInfo.id, resData)"
                 >添加成员</el-button>
                 <div class="member-list">
                     <el-card

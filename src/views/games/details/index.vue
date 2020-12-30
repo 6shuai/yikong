@@ -121,7 +121,7 @@
                         <el-form-item label="AppSecret:">
                             <div v-loading="upldateSecretLoading">
                                 <span>{{ resData.secret }}</span>
-                                <el-link
+                                <el-link 
                                     v-if="resData.updateSecret"
                                     class="ml20"
                                     type="primary"

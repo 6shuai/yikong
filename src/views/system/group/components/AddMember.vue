@@ -62,19 +62,30 @@ export default {
         }
     },
     methods: {
-        showAddMemberDialog(id){
+        showAddMemberDialog(id, userList){
             this.addMemberDialog = true;
             this.groupId = id;
-            this.getMemberList();
+            this.getMemberList(userList);
         },
 
         //用户列表
-        getMemberList(){
+        getMemberList(userList){
             this.loadingSearchMember = true;
+            
+            let userId = [];
+            userList.forEach(e => {
+                userId.push(e.userId)
+            });
+
             groupMemberList({ name: this.keyword }).then(res => {
                 this.loadingSearchMember = false;
                 if(res.code === this.$successCode){
                     this.memberList = res.obj;
+                    this.memberList.forEach(item =>{
+                        if(userId.includes(item.userId)){
+                            item.haveAdd = true;
+                        }
+                    })
                 }
             })
         },
@@ -126,6 +137,7 @@ export default {
                 display: flex;
                 flex-wrap: nowrap;
                 padding: 15px 0;
+                height: 70px;
                 line-height: 40px;
                 &:hover{
                     background: #e9f3fb;
