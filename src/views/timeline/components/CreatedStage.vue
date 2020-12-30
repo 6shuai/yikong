@@ -12,7 +12,7 @@
         append-to-body
     >
         <el-form label-width="80px">
-            <el-form-item label="开始时间">
+            <el-form-item label="开始时间" class="is-required">
                 <el-time-picker
                     v-model="stageParams.beginTime"
                     value-format="HH:mm:ss"
@@ -21,7 +21,7 @@
                 >
                 </el-time-picker>
             </el-form-item>
-            <el-form-item label="持续时长">
+            <el-form-item label="持续时长" class="is-required">
                 <el-input
                     class="w220 mr30"
                     type="number"
@@ -73,7 +73,6 @@ export default {
                 phaseType,
                 beginTime: data.beginTimeFormat
             }
-            console.log(data)
             if(data && data.id){
                 this.stageParams = {
                     ...this.stageParams,
@@ -81,7 +80,6 @@ export default {
                     beginTime: data.beginTimeFormat
                 }
             }
-            console.log(this.stageParams, data, this.$route.params.id)
         },
         
         //创建阶段

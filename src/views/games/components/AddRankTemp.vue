@@ -34,7 +34,14 @@
                         :value="item.id"
                     >
                         <span style="float: left">{{ item.displayName }}</span>
-                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.description }}</span>
+                        <span
+                            style="
+                                float: right;
+                                color: #8492a6;
+                                font-size: 13px;
+                            "
+                            >{{ item.description }}</span
+                        >
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -59,17 +66,19 @@
                 ></el-input>
             </el-form-item>
             <el-form-item label="小数位数">
-                <el-input-number 
-                    v-model="rankParams.decimalPlaces" 
-                    :min="0" 
-                    :max="100" 
+                <el-input-number
+                    v-model="rankParams.decimalPlaces"
+                    controls-position="right"
+                    :min="0"
+                    :max="100"
                     label="描述文字"
                 ></el-input-number>
             </el-form-item>
             <el-form-item label="最大记录数">
-                <el-input-number 
-                    v-model="rankParams.maxCount" 
-                    :min="1" 
+                <el-input-number
+                    v-model="rankParams.maxCount"
+                    controls-position="right"
+                    :min="1"
                     label="最大记录数"
                 ></el-input-number>
             </el-form-item>
@@ -77,13 +86,18 @@
 
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" v-loading="btnLoading" @click="addRankTempData">确 定</el-button>
+            <el-button
+                type="primary"
+                v-loading="btnLoading"
+                @click="addRankTempData"
+                >确 定</el-button
+            >
         </span>
     </el-dialog>
 </template>
 
 <script>
-import { rankTempCreated, rankTempTypeList } from '@/api/game';
+import { rankTempCreated } from "@/api/game";
 export default {
     data() {
         return {
@@ -92,29 +106,37 @@ export default {
             rankParams: {},
             btnLoading: false,
             rankRules: {
-                displayName: [ { required: true, trigger: "blur", message: "请输入模板名称~" } ],
-                rankingListType: [ { required: true, trigger: "blur", message: "请选择排行榜类型~" } ],
+                displayName: [
+                    {
+                        required: true,
+                        trigger: "blur",
+                        message: "请输入模板名称~",
+                    },
+                ],
+                rankingListType: [
+                    {
+                        required: true,
+                        trigger: "blur",
+                        message: "请选择排行榜类型~",
+                    },
+                ],
             },
-            rankTypeData: []
+            rankTypeData: [],
         };
     },
     methods: {
-        showDialog(id) {
-            this.getRankTypeData();
+        showDialog(rankTypeList, data) {
             this.dialogVisible = true;
+            this.rankTypeData = rankTypeList;
             this.$nextTick(() => {
-                this.$refs['addRankTempForm'].clearValidate();
-            })
+                this.$refs["addRankTempForm"].clearValidate();
+            });
 
             this.rankParams = {
                 maxCount: 1000,
-                appid: this.$route.params.id
+                appid: this.$route.params.id,
+                ...data,
             };
-
-            //获取详情
-            if (id) {
-
-            }
         },
 
         //创建 或 修改游戏装配数据
@@ -122,23 +144,19 @@ export default {
             this.$refs.addRankTempForm.validate((valid) => {
                 if (valid) {
                     this.btnLoading = true;
-                    rankTempCreated(this.rankParams).then(res => {
+                    rankTempCreated(this.rankParams).then((res) => {
                         this.btnLoading = false;
-                        if(res.code === this.$successCode){
-                            this.$message.success(this.rankParams.id ? '创建成功~' : '编辑成功~');
+                        if (res.code === this.$successCode) {
+                            this.$message.success(
+                                this.rankParams.id ? "创建成功~" : "编辑成功~"
+                            );
                             this.dialogVisible = false;
+                            this.$parent.init();
                         }
-                    })
+                    });
                 }
             });
         },
-
-        //排行榜类型
-        getRankTypeData(){
-            rankTempTypeList().then(res => {
-                this.rankTypeData = res.obj;
-            })
-        }
-    }
+    },
 };
 </script>

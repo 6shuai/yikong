@@ -44,10 +44,6 @@
                         font-size: 16px;
                         background: rgba(132, 132, 255, 0.3);
                     }
-                    &.no-data{
-                        padding: 10px;
-                        text-align: center;
-                    }
                     span{
                         display: block;
                         float: left;
@@ -143,10 +139,6 @@
                 .del{
                     color: #606266;
                 }
-            }
-            &.no-data{
-                padding: 10px;
-                text-align: center;
             }
             &>span{
                 display: block;

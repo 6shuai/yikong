@@ -36,17 +36,15 @@ axios.interceptors.response.use(
 		if (res.code !== 0) {
 			Message.closeAll()
 			if(res.code === 4){
-				store.dispatch('user/logout').then(() => {
-					location.reload() // 为了重新实例化vue-router对象 避免bug
-				})
+				logot();
 			}else if(res.code === 103){
-				if(location.hash != '#/'){
+				if(response.config.url == '/user/authority'){
+					logot();
+				}else if(location.hash != '#/'){
 					router.push({ path: '/' });
 				}
 			}
 			Message.error({message: res.message});
-
-			
 			// return new Promise(() => {});
 			return res
 		} else {
@@ -80,6 +78,14 @@ axios.interceptors.response.use(
 		return Promise.reject(error);
 	}
 );
+
+
+//退出登录
+const logot = function(){
+	store.dispatch('user/logout').then(() => {
+		location.reload() // 为了重新实例化vue-router对象 避免bug
+	})
+}
 
 /**
  * get 请求方法

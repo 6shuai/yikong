@@ -10,7 +10,7 @@
         append-to-body
     >
         <el-form label-width="80px">
-            <el-form-item label="选择屏幕布局模板">
+            <el-form-item label="选择屏幕布局模板" class="is-required">
                 <ul class="temp-list clearfix" v-loading="tempLoading">
                     <li 
                         v-for="(item, index) in tempList" 

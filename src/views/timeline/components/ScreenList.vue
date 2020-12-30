@@ -53,7 +53,6 @@
         >
             <div class="clearfix screen-wrap" v-loading="dataLoading">
                 <el-input
-                    size="small"
                     placeholder="屏幕名称"
                     clearable
                     v-model="params.displayName"
@@ -81,6 +80,7 @@
                 </el-card>
                 <el-pagination
                     background
+                    hide-on-single-page
                     layout="total, prev, pager, next"
                     :current-page="Number(params.pageNo)"
                     @current-change="handleCurrentChange"
@@ -90,7 +90,13 @@
             </div>
 
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="updateTimelineScreen"
+                <el-button 
+                    @click="showAddScreen = false"
+                    >取 消</el-button
+                >
+                <el-button 
+                    type="primary" 
+                    @click="updateTimelineScreen"
                     >确 定</el-button
                 >
             </span>
@@ -249,10 +255,6 @@ export default {
             color: red;
             margin-left: 5px;
         }
-    }
-    .no-data {
-        line-height: 40px;
-        text-align: center;
     }
 }
 </style>

@@ -5,7 +5,7 @@
 @import './sidebar.scss';
 
 body {
-  height: 100%;
+  height: 100vh;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -133,7 +133,7 @@ li{
       }
   }
   .title{
-      margin: 0 250px 0 100px;
+      margin: 0 300px;
       text-align: center;
   }
 }
@@ -215,4 +215,9 @@ li{
 
 .el-drawer__header>:first-child{
   outline: none;
+}
+
+.no-data{
+  line-height: 40px !important;
+  text-align: center;
 }

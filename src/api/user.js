@@ -12,6 +12,10 @@ export function userRegister(data) { return post('/entry/register', data); }
 //更新用户信息 
 export function userUpdate(data) { return put('/user/', data); }
 
+//修改登录密码 
+export function userPasswordUpdate(data) { return put('/user/password', data); }
+
+
 //加载菜单列表
 export function getAuthMenu(data) { return get('/user/authority', data); }
 

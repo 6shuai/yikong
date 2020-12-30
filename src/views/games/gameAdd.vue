@@ -43,6 +43,11 @@
                     <el-form-item label="游戏配置保存地址">
                         <el-input v-model="gameParams.gameTimeline" placeholder="游戏配置保存地址"></el-input>
                     </el-form-item>
+                    <group-list 
+                        v-if="!gameParams.id"
+                        propValue="groupIds"
+                        @groupSelected="$set(gameParams, 'groupIds', $event)"
+                    ></group-list>
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="gameSureBtn">提  交</el-button>
                     </el-form-item>
@@ -55,6 +60,8 @@
 import { gameCreated, gameScreenshotDelete } from '@/api/game';
 import { getScreenDetail } from './mixins';
 import UploadImg from '@/components/Upload/UploadImg';
+import GroupList from '@/components/GroupList/index';
+
 export default {
     mixins: [getScreenDetail],
     data(){
@@ -69,6 +76,7 @@ export default {
                 displayName: [{ required: true, trigger: "blur", message: '请输入游戏名称~' }],
                 image: [{ required: true, trigger: "blur", message: '请上传游戏图标~' }],
                 applicationShowData: [{ required: true, type: "array", trigger: "blur", message: '请上传游戏截图~' }],
+                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,          //编辑时获取详情  loading
         }
@@ -140,7 +148,8 @@ export default {
 
     },
     components: {
-        UploadImg
+        UploadImg,
+        GroupList
     }
 }
 </script>

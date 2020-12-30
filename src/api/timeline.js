@@ -108,10 +108,12 @@ export function timelineRegionUpdate(data) { return put('/timeline/timelineRegio
 
 
 
-//查询授权列表
-export function timelineAuthority(data) { return get('/timeline/timelineAuthority', data) }
+//查询资源 与 群组 相关联列表
+export function timelineAuthority(data) { return get('/timeline/groupTimeline', data) }
 
-//修改权限
-export function timelineAuthorityUpdate(data) { return post('/timeline/timelineAuthority', data) }
+//添加资源 与 群组关联
+export function timelineAuthorityUpdate(data) { return post('/timeline/groupTimeline', data) }
 
+//删除资源 与 群组关联
+export function timelineAuthorityDelete(data) { return del(`/timeline/groupTimeline${data}`) }
 

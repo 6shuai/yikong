@@ -54,6 +54,7 @@
 
             <el-pagination
                 background
+                hide-on-single-page
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[48, 80, 100]"
                 @size-change="handleSizeChange"
@@ -130,7 +131,7 @@ export default {
 }
 </script>
 <style lang="scss" scope>
-    @import '../place/list/style/place-card.scss';
+    @import '../place/style/place-card.scss';
     .content-list-wrap{
         .content-top{
             padding-bottom: 20px;

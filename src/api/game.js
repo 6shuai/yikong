@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { postKeyValueRequest, getKeyValueRequest, get, post, put, del } from '@/utils/request'
 
 //游戏管理  添加或修改
 export function gameCreated(data) { return post('/application/', data) }
@@ -62,16 +62,6 @@ export function gameDataDetail(data) { return get(`/application/gameAssemblyDeta
 export function gameDataDelete(data) { return del(`/application/gameAssembly/${data}`) }
 
 
-
-
-//查询授权列表
-export function gameAuthority(data) { return get('/application/applicationAuthority', data) }
-
-//修改权限
-export function gameAuthorityUpdate(data) { return post('/application/applicationAuthority', data) }
-
-
-
 //排行榜管理  列表
 export function rankTempList(data) { return get('/rankingListTemp/', data) }
 
@@ -86,4 +76,20 @@ export function rankTempTypeList(data) { return get('/rankingListTemp/rankingLis
 export function rankTempSubcycleCreated(data) { return post('/rankingListTemp/subcycle', data) }
 
 //排行榜管理  删除子周期
-export function rankTempSubcycleDetele(data) { return del('/rankingListTemp/subcycle', data) }
+export function rankTempSubcycleDetele(data) { return del(`/rankingListTemp/subcycle${data}`) }
+
+
+//排行榜管理  排行榜数据
+export function rankTempData(data) { return get('/rankingListTemp/rankingListData', data) }
+
+
+
+//查询资源 与 群组 相关联列表
+export function gameAuthority(data) { return get('/application/groupApplication', data) }
+
+//添加资源 与 群组关联
+export function gameAuthorityUpdate(data) { return post('/application/groupApplication', data) }
+
+//删除资源 与 群组关联
+export function gameAuthorityDelete(data) { return del(`/application/groupApplication${data}`) }
+

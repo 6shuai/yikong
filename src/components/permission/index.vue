@@ -1,121 +1,112 @@
 <template>
     <!-- 操作权限授权 -->
     <el-dialog
-        class="add-game-data"
-        title="授权"
+        class="res-auth-group-list"
+        title="资源所属权限群组列表"
         :visible.sync="dialogVisible"
         width="1200px"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
     >   
-    <div v-if="premissionData.length">
-    </div>
+        <el-button
+            type="primary"
+            size="small"
+            icon="el-icon-plus"
+            @click="$refs.addGroup.showAddGroup(groupIds)"
+        >
+            添加权限群组
+        </el-button>
+
         <el-table
             ref="multipleTable"
             :data="tableData"
             tooltip-effect="dark"
             v-loading="tableLoading"
-            style="width: 100%"
             border
-            stripe
-            @selection-change="handleSelectionChange">
+            stripe>
             <el-table-column
-                fixed
-                label="ID"
-                prop="userId"
-                width="60">
+                label="权限群组名称"
+                prop="groupName"
+                min-width="150">
             </el-table-column>
             <el-table-column
-                fixed
+                label="群组说明"
+                prop="description"
+                min-width="200">
+            </el-table-column>
+            <el-table-column
                 label="操作"
-                prop="accountName"
-                width="60">
+                prop="description"
+                min-width="80">
                 <template slot-scope="scope">
-                    <el-link @click="colCheckAll(scope.$index)" type="primary">全选</el-link>
-                </template>
-            </el-table-column>
-            <el-table-column
-                fixed
-                label="昵称"
-                prop="accountName"
-                width="120">
-            </el-table-column>
-            <el-table-column 
-                v-for="(item, index) in premissionData"
-                :key="index"
-                :label="item.value"
-                min-width="130">
-                <template slot="header">
-                    <el-checkbox 
-                        v-model="item.checked"
-                        @change="changeCheckAll($event, index, item.value)"
-                    >{{item.label}}</el-checkbox>
-                </template>
-                <template slot-scope="scope">
-                    <el-checkbox 
-                        :true-label="1"
-                        :false-label="0"
-                        size="medium"
-                        v-model="scope.row[item.value]"
-                        @change="changeCheckbox($event, scope.$index, index, item.value)"
-                    ></el-checkbox>
+                    <el-popover
+                        v-if="tableData.length>1"
+                        style="margin-left: 10px"
+                        placement="top"
+                        :ref="scope.row.id"
+                        width="200"
+                    >
+                        <p>
+                            此操作将删除【{{ scope.row.groupName }}】,
+                            是否继续?
+                        </p>
+                        <div style="text-align: right; margin: 0">
+                            <el-button
+                                size="mini"
+                                type="text"
+                                @click="$refs[scope.row.id].doClose()"
+                                >取消</el-button
+                            >
+                            <el-button
+                                type="primary"
+                                size="mini"
+                                @click="handleDelete(scope.row.id, scope.$index)"
+                                >确定</el-button
+                            >
+                        </div>
+                        <el-button slot="reference" type="info" size="mini">删除</el-button>
+                    </el-popover>
                 </template>
             </el-table-column>
         </el-table>
 
-        <el-pagination
-            background
-            class="mt20"
-            layout="total, prev, pager, next, sizes"
-            :page-sizes="[20, 50, 100]"
-            :current-page="Number(params.pageNo)"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :total="totalCount">
-        </el-pagination>
-
         <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button
-                type="primary"
-                v-loading="btnLoading"
-                @click="handleChangePerm"
-                >确 定</el-button
-            >
+            <el-button @click="dialogVisible = false">关 闭</el-button>
         </span>
+
+        <!-- 添加权限群组 -->
+        <add-group
+            ref="addGroup"
+            :updateGroup="premissionApi"
+            :resParams="params"
+            @updateSuccess="init"
+        ></add-group>
+
     </el-dialog>
 </template>
 
 <script>
-import { parse } from 'path-to-regexp';
+import AddGroup from './AddGroup';
+
 export default {
-    props: ['premission', 'premissionApi'],
+    props: ['premissionApi'],
     data() {
         return {
             dialogVisible: false,
-            btnLoading: false,
             tableLoading: false,
-            params: {
-                pageNo: 1,
-                pageSize: 20,
-            },
-            totalCount: 0,
             tableData: [],
-            selected: [],          //要修改的列表
-            editParams: {},
-            checkAll: [],
-            premissionData: [],
+            groupIds: [],
+            params: {}
         };
     },
     methods: {
         showPermission(params) {
             this.dialogVisible = true;
-            this.editParams = params;
             this.params = {
                 ...params
             }
-            this.premissionData = JSON.parse(JSON.stringify(this.premission));
-            this.init();
+            
+            if(this.premissionApi.list){
+                this.init();
+            }
         },
 
         init(){
@@ -123,37 +114,31 @@ export default {
             this.premissionApi.list(this.params).then(res => {
                 this.tableLoading = false;
                 if(res.code === this.$successCode){
-                    let { list, totalRecords } = res.obj;
-                    this.tableData = list;
-                    this.totalCount = totalRecords;
+                    this.tableData = res.obj;
+                    this.findGroupIds();
                 }
             })
         },
 
-        handleSelectionChange(val){
-            console.log(val)
+        //查找已添加的权限组 id
+        findGroupIds(){
+            this.groupIds = [];
+            this.tableData.forEach((item) => {
+                this.groupIds.push(item.groupId);
+            })
         },
 
-        //修改权限
-        handleChangePerm() {
-            let data = [];
-            this.selected.forEach(item => {
-                data.push({
-                    ...this.editParams,
-                    ...item,
-                })
-            }) 
-            if(!data.length){
-                this.$message.warning('没做啥修改啊 (⊙o⊙)');
-                return
-            }
-            this.premissionApi.update(data).then(res => {
+        //删除
+        handleDelete(id, index){
+            this.premissionApi.delete(`?id=${id}`).then(res => {
+                this.$refs[id].doClose()
                 if(res.code === this.$successCode){
-                    this.$message.success('操作成功~');
-                    this.dialogVisible = false;
+                    this.$message.success('删除成功~');
+                    this.tableData.splice(index, 1);
+                    this.findGroupIds();
                 }
             })
-        },
+        }, 
 
         //页码
         handleCurrentChange(page){
@@ -164,62 +149,18 @@ export default {
         handleSizeChange(size){
             this.params.pageSize = size;
         },
-
-        //修改多选框
-        changeCheckbox(event, $index, index, value){
-            let tag = true;
-            let data = this.tableData[$index];
-
-            this.selected.forEach((item, i) => {
-                if(item.userId == data.userId){
-                    this.$set(this.selected, i, data);
-                    tag = false;
-                }
-            })
-            if(tag){
-                this.selected.push(data);
-            }
-
-            if(!value) return;
-            let len = 0;
-            this.tableData.forEach(item => {
-                if(item[value]){
-                    len += 1;
-                }
-            })
-            
-            this.resetCheckAll(index, len == this.tableData.length);
-        },
-
-        //全选
-        changeCheckAll(event, index, value){
-            this.tableData.forEach((item, index) => {
-                item[value] = event;
-                this.$set(this.tableData[index], value, event);
-            })
-            this.selected = this.tableData;
-
-            this.resetCheckAll(index, event);
-        },
-
-        resetCheckAll(index, state){
-            let copy = JSON.parse(JSON.stringify(this.premissionData));
-            copy[index].checked = state;
-            this.premissionData = [];
-            this.$nextTick(() => {
-                this.premissionData = copy;
-            })
-        },
-
-        //按用户 行 全选
-        colCheckAll($index){
-            this.tableData[$index].state = !this.tableData[$index].state;
-            let state = this.tableData[$index].state;
-            this.premissionData.forEach((item, index) => {
-                this.tableData[$index][item.value] = state;
-                this.changeCheckbox(!state, $index);
-            })
-        }
     },
+    components: {
+        AddGroup
+    }
 };
 </script>
+
+<style lang="scss" scope>
+    .res-auth-group-list{
+        .el-table{
+            width: 100%;
+            margin-top: 10px;
+        }
+    }
+</style>

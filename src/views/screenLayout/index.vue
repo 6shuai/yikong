@@ -3,14 +3,13 @@
         <el-card shadow="always">
             <div class="content-top mb20 clearfix">
                 <el-button
-                    v-if="hasPerm($route.meta.permission, 'AddLayout')"
                     class="created-btn"
                     type="primary"
                     icon="el-icon-plus"
                     @click="$router.push('/screen/layout/add')"
                     size="small"
                 >
-                    创建布局
+                    新建布局
                 </el-button>
 
                 <el-input
@@ -70,6 +69,7 @@
             <el-pagination
                 v-if="resData.length"
                 background
+                hide-on-single-page
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[48, 80, 100]"
                 :current-page="Number(params.pageNo)"

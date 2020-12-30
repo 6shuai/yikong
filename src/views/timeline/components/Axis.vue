@@ -581,7 +581,7 @@ export default {
         //删除时间轴  资源
         deleteCurrentTimeline(Pindex, index, id) {
             this.$confirm(
-                `此操将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`,
+                `此操作将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`,
                 "提示",
                 {
                     confirmButtonText: "确定",
@@ -863,7 +863,7 @@ export default {
             let { stageIndex, stepIndex } = this.currentIndex;
             let id = this.stageData[stageIndex].id;
             this.$confirm(
-                `此操将删除【阶段${stageIndex+1}】, 是否继续?`,
+                `此操作将删除【阶段${stageIndex+1}】, 是否继续?`,
                 "提示",
                 {
                     confirmButtonText: "确定",
@@ -899,7 +899,7 @@ export default {
             let { stageIndex, stepIndex } = this.currentIndex;
             let id = this.stageData[stageIndex].timelineSteps[stepIndex].id;
             this.$confirm(
-                `此操将删除【步骤${stepIndex+1}】, 是否继续?`,
+                `此操作将删除【阶段${stageIndex+1}】 > 【步骤${stepIndex+1}】, 是否继续?`,
                 "提示",
                 {
                     confirmButtonText: "确定",

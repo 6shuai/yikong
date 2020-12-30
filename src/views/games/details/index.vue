@@ -33,8 +33,8 @@
                 <h2>{{ resData.displayName }}</h2>
             </div>
         </div>
-        <el-row>
-            <el-col :span="4">
+        <el-row :gutter="20">
+            <el-col :span="4" class="left-menu">
                 <div class="game-info">
                     <el-image
                         v-if="resData.image"
@@ -47,7 +47,6 @@
                     <p class="desc">{{ resData.description }}</p>
 
                     <el-menu
-                        @select="handleSelect"
                         :default-active="currentActive"
                         :router="true"
                         class="el-menu-vertical-demo"
@@ -71,12 +70,8 @@
                         </el-menu-item>
                         <el-menu-item
                             :index="`/games/details/${$route.params.id}/rank`"
-                            disabled
                         >
                             <span slot="title">排行榜管理</span>
-                        </el-menu-item>
-                        <el-menu-item index="3" disabled>
-                            <span slot="title">活动管理</span>
                         </el-menu-item>
                     </el-menu>
                 </div>
@@ -126,7 +121,8 @@
                         <el-form-item label="AppSecret:">
                             <div v-loading="upldateSecretLoading">
                                 <span>{{ resData.secret }}</span>
-                                <el-link
+                                <el-link 
+                                    v-if="resData.updateSecret"
                                     class="ml20"
                                     type="primary"
                                     @click="updateSecret"
@@ -144,14 +140,13 @@
         <!-- 授权 -->
         <permission 
             ref="pagePermission" 
-            :premission="premission"
             :premissionApi="premissionApi"
         ></permission>
 
     </el-card>
 </template>
 <script>
-import { gameDelete, gameUpdateSecret, gameFavorite, gameAuthority, gameAuthorityUpdate } from "@/api/game";
+import { gameDelete, gameUpdateSecret, gameFavorite, gameAuthority, gameAuthorityUpdate, gameAuthorityDelete } from "@/api/game";
 import { getScreenDetail } from "../mixins";
 import Permission from '@/components/permission/index';
 export default {
@@ -164,46 +159,9 @@ export default {
             resData: {},
             premissionApi: {
                 list: gameAuthority,
-                update: gameAuthorityUpdate
-            },
-            premission: [
-                {
-                    label: '查看游戏列表',
-                    value: 'applicationList'
-                },
-                {
-                    label: '编辑游戏',
-                    value: 'editApplication'
-                },
-                {
-                    label: '删除游戏',
-                    value: 'deleteApplication'
-                },
-                {
-                    label: '查看包列表',
-                    value: 'packageList'
-                },
-                {
-                    label: '编辑游戏包',
-                    value: 'editPackage'
-                },
-                {
-                    label: '删除游戏包',
-                    value: 'deletePackage'
-                },
-                {
-                    label: '查看游戏配置列表',
-                    value: 'assemblyList'
-                },
-                {
-                    label: '编辑游戏配置',
-                    value: 'editAssembly'
-                },
-                {
-                    label: '删除游戏配置',
-                    value: 'deleteAssembly'
-                }
-            ]
+                update: gameAuthorityUpdate,
+                delete: gameAuthorityDelete
+            }
         };
     },
     computed: {
@@ -293,27 +251,31 @@ export default {
                     this.$set(this.resData, "isFavorite", p.isFavorite);
                 }
             });
-        },
 
-        //右侧菜单
-        handleSelect(key) {
-            this.currentActive = key;
-        },
+        }
     },
     components: {
         Permission
     },
     watch: {
-        "$route.path": function (newVal, oldVal) {
-            this.currentActive = newVal;
-        },
-    },
+        '$route.path' (n, o) {
+            this.currentActive = n;
+        }
+    }
 };
 </script>
 <style lang="scss" scope>
 @import "../../../styles/variables.scss";
 @import "../../content/style/content-details.scss";
 .games-details {
+    .left-menu{
+        border-right: 1px solid #e5e5e5;
+        margin-right: -1px;
+        .el-menu{
+            border: none;
+        }
+    }
+
     .game-info {
         text-align: center;
         .game-icon {
@@ -340,8 +302,8 @@ export default {
         }
     }
     .right-content {
-        border-left: 1px solid #e5e5e5;
         padding-left: 10px;
+        border-left: 1px solid #e5e5e5;
     }
 }
 </style>

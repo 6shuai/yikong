@@ -73,6 +73,13 @@
                     <el-form-item label="说明">
                         <el-input type="textarea" :rows="3" v-model="timelineParams.description" placeholder="时间轴描述"></el-input>
                     </el-form-item>
+
+                    <group-list 
+                        v-if="!timelineParams.id"
+                        propValue="groupIds"
+                        @groupSelected="$set(timelineParams, 'groupIds', $event)"
+                    ></group-list>
+
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="timelineSureBtn">提  交</el-button>
                     </el-form-item>
@@ -84,6 +91,8 @@
 <script>
 import { getOrganizationList } from '@/mixins';
 import { timelineContainerCreated, timelineContainerDetail } from '@/api/timeline';
+import GroupList from '@/components/GroupList/index';
+
 export default {
     mixins: [getOrganizationList],
     data(){
@@ -100,6 +109,7 @@ export default {
                 height: [{ required: true, trigger: "change", message: '请输入高~' }],
                 beginTime: [{ required: true, trigger: "change", message: '请选择起始时间~' }],
                 endTime: [{ required: true, trigger: "change", message: '请选择结束时间~' }],
+                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,          //编辑时获取详情  loading
             copyTimelineParams: {}
@@ -190,6 +200,9 @@ export default {
             return endAll - startAll;
         },
     },
+    components: {
+        GroupList
+    }
 }
 </script>
 <style lang="scss" scope>

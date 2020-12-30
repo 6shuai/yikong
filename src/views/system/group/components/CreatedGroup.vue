@@ -1,7 +1,7 @@
 <template>
     <!-- 创建群 -->
     <el-dialog
-        title="新建群"
+        :title="groupParams.id ? '编辑权限群组' : '新建权限群组'"
         :visible.sync="addGroupDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -13,11 +13,16 @@
             :rules="groupRules"
             v-loading="loading"
         >
-            <el-form-item label="群名称" prop="displayName">
-                <el-input placeholder="群名称" v-model="groupParams.displayName"></el-input>
+            <el-form-item label="群组名称" prop="displayName">
+                <el-input placeholder="群组名称" v-model="groupParams.displayName"></el-input>
             </el-form-item>
             <el-form-item label="说明">
-                <el-input placeholder="说明" type="textarea" :rows="3" v-model="groupParams.description"></el-input>
+                <el-input 
+                    placeholder="说明" 
+                    type="textarea" 
+                    :rows="3" 
+                    v-model="groupParams.description"
+                ></el-input>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -28,16 +33,16 @@
 </template>
 
 <script>
-import { groupCreated } from '@/api/user';
+import { groupCreated } from '@/api/group';
 
 export default {
     data(){
         return {
             groupParams:{}, 
             addGroupDialog: false,      
-            addBtnLoading: false,       
+            addBtnLoading: false,   
             groupRules: {
-                displayName: [{ required: true, trigger: "blur", message: '请输入群名称~' }],
+                displayName: [{ required: true, trigger: "blur", message: '请输入群组名称~' }]
             },
             loading: false
         }
@@ -62,6 +67,7 @@ export default {
                         if(res.code === this.$successCode){
                             this.$message.success(this.groupParams.id ? '编辑成功~' : '创建成功~');
                             this.addGroupDialog = false;
+                            this.$emit('groupCreateSuccess');
                         }
                     })
                 }

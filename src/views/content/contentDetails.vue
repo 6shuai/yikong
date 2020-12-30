@@ -168,14 +168,13 @@
         <!-- 授权 -->
         <permission 
             ref="pagePermission" 
-            :premission="premission"
             :premissionApi="premissionApi"
         ></permission>
         
     </el-card>
 </template>
 <script>
-import { contentDelete, contentAuthority, contentAuthorityUpdate } from '@/api/content';
+import { contentDelete, contentAuthority, contentAuthorityUpdate, contentAuthorityDelete } from '@/api/content';
 import { contentDetailData, contentIsFavorite } from '@/views/content/mixins';
 import PlayLimit from '@/views/content/components/PlayLimit';
 import PlayPlan from '@/views/content/components/PlayPlan';
@@ -196,34 +195,9 @@ export default {
             ],
             premissionApi: {
                 list: contentAuthority,
-                update: contentAuthorityUpdate
-            },
-            premission: [
-                {
-                    label: '查看资源',
-                    value: 'list'
-                },
-                {
-                    label: '编辑资源',
-                    value: 'edit'
-                },
-                {
-                    label: '删除资源',
-                    value: 'deleteRight'
-                },
-                {
-                    label: '编辑播放计划',
-                    value: 'editPlayPlan'
-                },
-                {
-                    label: '编辑播放限制',
-                    value: 'editPlaybackRestriction'
-                },
-                {
-                    label: '跳转时间轴',
-                    value: 'jumpToTimeline'
-                }
-            ]
+                update: contentAuthorityUpdate,
+                delete: contentAuthorityDelete
+            }
         }
     },
     computed: {

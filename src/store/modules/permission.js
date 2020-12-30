@@ -6,7 +6,7 @@ import Layout from '@/layout';
 
 const moduleMap = {
 	'Home': 'home/index',
-	'Place': 'place/list/index',                          //场所管理 场所列表
+	'Place': 'place/index',                          //场所管理 场所列表
 
 	'Screen': 'screen/index',                          	  //屏幕管理  
 
@@ -16,10 +16,12 @@ const moduleMap = {
 
 	'Timeline': 'timeline/index',                         //时间轴  
 
-	'Log': 'log/index',									  //操作日志
-
 	'Layout': 'screenLayout/index',						  //屏幕布局 模板
-	
+
+	'Activity': 'activity/index',					      //活动管理
+
+
+	'Log': 'log/index',									  //操作日志
 	'Authority': 'system/authority/index',                //权限管理
 	'Role': 'system/role/index',						  //角色管理
 	'Member': 'system/member/index',				      //成员管理
@@ -27,6 +29,9 @@ const moduleMap = {
 	'OrganizationType': 'system/organizationType/index',  //组织类型列表
 	'User': 'user/Center',							      //个人中心
 	'BasicRole': 'system/basicRole/index',			      //基础角色管理
+	'ResAuthority': 'system/resAuthority/index',		  //资源权限管理
+	'ResRole': 'system/resRole/index',			      	  //资源角色管理
+	'Group': 'system/group/index',			      	      //权限群组
 }
 
 
@@ -96,7 +101,8 @@ export const filterAsyncRouter = (data) => {
         let oneRouter = {
             path: one.route, 
             name: one.moduleName, 
-            children: formattedChildren || [], 
+			children: formattedChildren || [], 
+			// 路由懒加载
 			component: one.parentID === 1 ? Layout : (resolve) => require(['@/views/' + moduleMap[one.moduleName] + '.vue'], resolve),
 			meta: {
 				title: one.displayName,

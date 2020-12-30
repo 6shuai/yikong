@@ -58,6 +58,7 @@
                 <el-pagination
                     v-if="pageshow"
                     background
+                    hide-on-single-page
                     layout="total, prev, pager, next, sizes"
                     :page-sizes="[48, 80, 100]"
                     :current-page="Number(params.pageNo)"
@@ -191,6 +192,6 @@ export default {
 }
 </script>
 <style lang="scss" scope>
-    @import '../../../styles/variables.scss';
+    @import '../../styles/variables.scss';
     @import './style/place-card.scss';
 </style>

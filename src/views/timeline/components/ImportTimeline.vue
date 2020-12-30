@@ -97,10 +97,6 @@ export default {
                     }
                 }
             }
-            .no-data{
-                line-height: 40px;
-                text-align: center;
-            }
         }
 
     }
