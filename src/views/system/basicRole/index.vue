@@ -73,7 +73,10 @@
         </el-card>
 
         <!-- 添加  编辑  角色 -->
-        <add-role ref="addRole"></add-role>
+        <add-role 
+            ref="addRole"
+            @addRoleSuccess="init()"
+        ></add-role>
     </div>
 </template>
 

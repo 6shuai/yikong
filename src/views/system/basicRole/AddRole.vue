@@ -96,6 +96,7 @@ export default {
                         if(res.code === this.$successCode){
                             this.addRoleDialog = false;
                             this.$message.success('操作成功~');
+                            this.$emit('addRoleSuccess');
                         }
                     })
                 }
