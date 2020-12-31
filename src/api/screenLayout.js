@@ -14,6 +14,6 @@ export function layoutTempDelete(data) { return del(`/logicRegionTemp/${data}`) 
 export function layoutTempDetail(data) { return get('/logicRegionTemp/detail', data) }
 
 //屏幕布局模板 - 删除模板 逻辑区域
-export function layoutTempSubDelete(data) { return del('/logicRegionTemp/sub', data) }
+export function layoutTempSubDelete(data) { return del(`/logicRegionTemp/sub${data}`) }
 
 

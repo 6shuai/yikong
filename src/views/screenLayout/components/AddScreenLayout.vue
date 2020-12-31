@@ -465,7 +465,7 @@ export default {
         deleteSelectedId() {
             if (this.deleteIdArr.length) {
                 for (let i = 0; i < this.deleteIdArr.length; i++) {
-                    layoutTempSubDelete({ id: this.deleteIdArr[i] }).then(
+                    layoutTempSubDelete(`?id=${this.deleteIdArr[i]}`).then(
                         (res) => {
                             if (res.code === this.$successCode) {
                                 this.deleteIdArr.splice(i, 1);
