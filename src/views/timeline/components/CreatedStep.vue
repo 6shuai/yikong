@@ -100,16 +100,11 @@ export default {
         handleSelected(data){
             this.tempId = data.id;
             let timelineRegions = [];
-            console.log(this.$store)
             let { width, height } = this.$store.state.timeline.screenSize;
 
             data.logicRegionSubs.forEach((item, index) => {
                 timelineRegions.push({
-                    displayName: item.displayName,
-                    x: item.percentageX / 100 * width,
-                    y: item.percentageY / 100 * height,
-                    width: item.percentageWidth / 100 * width,
-                    height: item.percentageHeight / 100 * height
+                    regionSubId: item.id
                 })
             })
 
