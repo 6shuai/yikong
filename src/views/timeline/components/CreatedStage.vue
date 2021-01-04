@@ -98,7 +98,11 @@ export default {
                 if(res.code === this.$successCode){
                     this.$message.success(this.stageParams.id ? '修改成功~' : '创建成功~');
                     this.showCreatedStage = false;
-                    this.$emit('createdStageSuccess', this.stageParams.id ? 'editStage' : 'addStage');
+                    this.$emit('createdStageSuccess', this.stageParams.id ? 'editStage' : 'addStage', {
+                        beginTimeFormat: this.stageParams.beginTime.split('1970-01-01 ')[1],
+                        duration: this.stageParams.duration,
+                        loop: this.stageParams.loop
+                    });
                 }
             })
         }

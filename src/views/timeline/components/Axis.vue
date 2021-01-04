@@ -123,7 +123,7 @@
                     </div>
                     
                     <ul class="info-list">
-                        <li>开始时间：{{formatTime(stageData[currentIndex.stageIndex].beginTime, 'time')}}</li>
+                        <li>开始时间：{{stageData[currentIndex.stageIndex].beginTimeFormat}}</li>
                         <li>结束时间：{{updateStartTime(stageData[currentIndex.stageIndex].beginTimeFormat, stageData[currentIndex.stageIndex].duration)}}</li>
                         <li>循环：{{stageData[currentIndex.stageIndex].loop ? '循环' : '不循环'}}</li>
                     </ul>
@@ -854,8 +854,24 @@ export default {
         },
 
         //创建阶段成功
-        createdStageSuccess(type){
-            this.getStageData(type);
+        createdStageSuccess(type, data){
+            if(type === 'editStage'){
+                console.log(data);
+                let msg = {
+                    ...this.stageData[this.currentIndex.stageIndex],
+                    ...data
+                }
+                this.$set(this.stageData, this.currentIndex.stageIndex, msg);
+
+                // 编辑阶段 
+                this.screenLayout.forEach((item, index) => {
+                    this.searchOverlap(index).then((res) => {
+                        this.saveTimeline(index);
+                    });
+                })
+            }else{
+                this.getStageData(type);
+            }
         },
 
         //删除阶段
@@ -1022,5 +1038,5 @@ export default {
 <style lang="scss" scope>
     .el-scrollbar__bar.is-horizontal>div{
         min-width: 50%;
-    }  
+    } 
 </style>

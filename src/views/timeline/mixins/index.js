@@ -80,11 +80,12 @@ export const timelineFunc = {
 
         //时间轴资源 自动寻位
         timelineForeachFind(resolve, Pindex, stageStarTime) {
+            console.log(stageStarTime)
             let obj = this.rectangleData[Pindex];
             let isOverlap = false;
             let objLength = obj.length;
 
-            if (obj.length <= 1) {
+            if (!obj.length) {
                 resolve(obj);
                 return;
             }
@@ -137,6 +138,7 @@ export const timelineFunc = {
                 }
 
                 //当前资源 开始时间 未紧跟上一个结束时间
+                console.log('------------------>', this.timeDifference(prevEndTime, currentStartTime))
                 if (
                     this.timeDifference(prevEndTime, currentStartTime) > 0
                 ) {
@@ -147,110 +149,110 @@ export const timelineFunc = {
                 }
 
                 //游戏资源
-                if (item.contentTypeId == this.contentTypeId.game) {
-                    //游戏资源的开始时间 和 上一个资源重叠
-                    if (diffNum > 0) {
-                        //把上一个资源的 结束时间改成 到当前游戏的开始时间
-                        obj[index - 1] = {
-                            ...prevData,
-                            endTime: currentStartTime,
-                            contentDuration: prevData.duration - diffNum,
-                            duration: prevData.duration - diffNum,
-                        };
+                // if (item.contentTypeId == this.contentTypeId.game) {
+                //     //游戏资源的开始时间 和 上一个资源重叠
+                //     if (diffNum > 0) {
+                //         //把上一个资源的 结束时间改成 到当前游戏的开始时间
+                //         obj[index - 1] = {
+                //             ...prevData,
+                //             endTime: currentStartTime,
+                //             contentDuration: prevData.duration - diffNum,
+                //             duration: prevData.duration - diffNum,
+                //         };
 
-                        //把上一个资源剩余的 时间 放到游戏的后面
-                        let obj1 = obj;
-                        let j = index + 1;
-                        for (let i = 0; i < obj1.length; i++) {
-                            if (
-                                i > index &&
-                                obj1[i].contentId == this.contentTypeId.game
-                            ) {
-                                j += 1;
-                            } else {
-                                break;
-                            }
-                        }
+                //         //把上一个资源剩余的 时间 放到游戏的后面
+                //         let obj1 = obj;
+                //         let j = index + 1;
+                //         for (let i = 0; i < obj1.length; i++) {
+                //             if (
+                //                 i > index &&
+                //                 obj1[i].contentId == this.contentTypeId.game
+                //             ) {
+                //                 j += 1;
+                //             } else {
+                //                 break;
+                //             }
+                //         }
 
-                        obj.splice(j, 0, {
-                            ...prevData,
-                            beginTime: currentEndTime,
-                            endTime: this.findEndTime(
-                                currentEndTime,
-                                diffNum
-                            ),
-                            id: prevData.duration - diffNum <= 0 ? prevData.id : null,
-                            duration: obj[index - 1].duration <= 0 ? obj[index - 1].duration + diffNum : diffNum,
-                            contentDuration: obj[index - 1].duration <= 0 ? obj[index - 1].duration + diffNum : diffNum,
-                        });
+                //         obj.splice(j, 0, {
+                //             ...prevData,
+                //             beginTime: currentEndTime,
+                //             endTime: this.findEndTime(
+                //                 currentEndTime,
+                //                 diffNum
+                //             ),
+                //             id: prevData.duration - diffNum <= 0 ? prevData.id : null,
+                //             duration: obj[index - 1].duration <= 0 ? obj[index - 1].duration + diffNum : diffNum,
+                //             contentDuration: obj[index - 1].duration <= 0 ? obj[index - 1].duration + diffNum : diffNum,
+                //         });
 
-                        if (prevData.duration - diffNum <= 0)
-                            obj.splice(index - 1, 1);
+                //         if (prevData.duration - diffNum <= 0)
+                //             obj.splice(index - 1, 1);
 
-                        try {
-                            if (this.timeDifference(currentStartTime, obj[index - 2].endTime) > 0) {
-                                isOverlap = true;
-                            }
-                        } catch (e) {
+                //         try {
+                //             if (this.timeDifference(currentStartTime, obj[index - 2].endTime) > 0) {
+                //                 isOverlap = true;
+                //             }
+                //         } catch (e) {
 
-                        }
-                    }
+                //         }
+                //     }
 
-                    if (diffNum < 0 && index != obj.length - 1) {
-                        //把下一个资源挪到 游戏资源的前面
-                        let obj1 = obj;
-                        let j = index;
-                        for (let i = 0; i < obj1.length; i++) {
-                            if (
-                                obj1[index + i] &&
-                                obj1[index + i].contentTypeId ==
-                                this.contentTypeId.game
-                            ) {
-                                j += 1;
-                            } else {
-                                break;
-                            }
-                        }
+                //     if (diffNum < 0 && index != obj.length - 1) {
+                //         //把下一个资源挪到 游戏资源的前面
+                //         let obj1 = obj;
+                //         let j = index;
+                //         for (let i = 0; i < obj1.length; i++) {
+                //             if (
+                //                 obj1[index + i] &&
+                //                 obj1[index + i].contentTypeId ==
+                //                 this.contentTypeId.game
+                //             ) {
+                //                 j += 1;
+                //             } else {
+                //                 break;
+                //             }
+                //         }
 
-                        if (!obj[j]) return;
+                //         if (!obj[j]) return;
 
-                        let count = this.timeDifference(
-                            prevEndTime,
-                            currentStartTime
-                        );
+                //         let count = this.timeDifference(
+                //             prevEndTime,
+                //             currentStartTime
+                //         );
 
-                        //时间段  小于 这个资源的秒数   修改这个资源的结束时间  和 秒数
-                        if (count <= obj[j].duration) {
-                            obj[j] = {
-                                ...obj[j],
-                                endTime: this.findEndTime(
-                                    obj[j].beginTime,
-                                    obj[j].duration - count
-                                ),
-                                duration: obj[j].duration - count,
-                                contentDuration: obj[j].duration - count,
-                            };
-                        }
+                //         //时间段  小于 这个资源的秒数   修改这个资源的结束时间  和 秒数
+                //         if (count <= obj[j].duration) {
+                //             obj[j] = {
+                //                 ...obj[j],
+                //                 endTime: this.findEndTime(
+                //                     obj[j].beginTime,
+                //                     obj[j].duration - count
+                //                 ),
+                //                 duration: obj[j].duration - count,
+                //                 contentDuration: obj[j].duration - count,
+                //             };
+                //         }
 
-                        //单独创建一个资源  插入到游戏资源前面
-                        console.log(obj[j], obj[j].duration)
-                        obj.splice(index, 0, {
-                            ...obj[j],
-                            beginTime: this.findEndTime(
-                                currentStartTime,
-                                -count
-                            ),
-                            endTime: currentStartTime,
-                            id: obj[j].duration ? null : obj[j].id,
-                            duration: count,
-                            contentDuration: count,
-                        });
-                        console.log(obj[j + 1], obj[j + 1].duration)
-                        if (!obj[j + 1].duration) {
-                            this.$delete(obj, j + 1);
-                        }
-                    }
-                } else {
+                //         //单独创建一个资源  插入到游戏资源前面
+                //         console.log(obj[j], obj[j].duration)
+                //         obj.splice(index, 0, {
+                //             ...obj[j],
+                //             beginTime: this.findEndTime(
+                //                 currentStartTime,
+                //                 -count
+                //             ),
+                //             endTime: currentStartTime,
+                //             id: obj[j].duration ? null : obj[j].id,
+                //             duration: count,
+                //             contentDuration: count,
+                //         });
+                //         console.log(obj[j + 1], obj[j + 1].duration)
+                //         if (!obj[j + 1].duration) {
+                //             this.$delete(obj, j + 1);
+                //         }
+                //     }
+                // } else {
                     obj[index] = {
                         ...item,
                         beginTime: this.updateStartTime(
@@ -263,7 +265,7 @@ export const timelineFunc = {
                         ),
                     };
                 }
-            }
+            // }
 
             obj.sort((a, b) => {
                 return (

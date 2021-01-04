@@ -56,13 +56,25 @@ export default {
         hadleImport(id){
             //id     当前时间轴容器ID
             //copyId  被复制时间轴容器ID
-            let data = `?id=${this.$route.params.id}&copyId=${id}`;
-            copyTimelineContainer(data).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('时间轴导入成功~');
-                    this.reload(); //刷新页面
+            this.$confirm(
+                `此操作将覆盖原有的时间轴内容, 是否继续?`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning",
                 }
+            )
+            .then(() => {
+                let data = `?id=${this.$route.params.id}&copyId=${id}`;
+                copyTimelineContainer(data).then(res => {
+                    if(res.code === this.$successCode){
+                        this.$message.success('时间轴导入成功~');
+                        this.reload(); //刷新页面
+                    }
+                })
             })
+            .catch(() => {});
         }
 
     }
