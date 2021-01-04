@@ -1018,3 +1018,9 @@ export default {
     },
 };
 </script>
+
+<style lang="scss" scope>
+    .el-scrollbar__bar.is-horizontal>div{
+        min-width: 50%;
+    }  
+</style>
