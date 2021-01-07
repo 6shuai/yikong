@@ -103,6 +103,7 @@
                 </el-form-item>
                 <el-form-item label="游戏配置" prop="configId">
                     <el-select
+                        filterable
                         v-model="contentParams.configId"
                         placeholder="请选择游戏配置"
                         style="width: 100%"

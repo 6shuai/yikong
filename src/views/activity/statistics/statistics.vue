@@ -78,11 +78,12 @@
 
         <div class="statistics-tool">
             <el-button
+                :disabled="!resData.length"
                 class="right-btn"
                 plain
                 type="primary"
                 size="small"
-                icon="el-icon-download"
+                icon="el-icon-upload2"
                 @click="download"
                 >导出</el-button
             >

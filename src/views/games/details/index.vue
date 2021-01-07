@@ -111,6 +111,9 @@
                             >
                             </el-image>
                         </el-form-item>
+                        <el-form-item label="游戏后台:" v-if="resData.backend">
+                            <el-link :href="resData.backend" target="_blank">{{ resData.backend }}</el-link>
+                        </el-form-item>
                     </el-form>
 
                     <h2 class="info-title mt20 mb20">开发信息</h2>

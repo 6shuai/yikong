@@ -104,7 +104,11 @@
                                 v-if="img.contentType == 1 && index <= 3"
                                 :key="index"
                                 :src="img.contentPath"
-                            ></el-image>
+                            >
+                                <div slot="placeholder" class="image-slot">
+                                    加载中<span class="dot">...</span>
+                                </div>
+                            </el-image>
                         </div>
                         <el-image
                             v-else
@@ -140,7 +144,11 @@
                     <el-image
                         fit="cover"
                         :src="previewData.contentPath"
-                    ></el-image>
+                    >
+                        <div slot="placeholder" class="image-slot">
+                            加载中<span class="dot">...</span>
+                        </div>
+                    </el-image>
                 </div>
 
                 <!-- 视频 -->

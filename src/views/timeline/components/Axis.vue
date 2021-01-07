@@ -221,7 +221,8 @@
                                         placement="top-start"
                                         trigger="hover">
                                         <div class="content-tool">
-                                            <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div>
+                                            <!-- 播放时间段 -->
+                                            <!-- <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div> -->
                                             <div 
                                                 v-if="timelineData.editTimelineContent"
                                                 @click="editTimeBtn(Pindex, index)"
@@ -856,19 +857,18 @@ export default {
         //创建阶段成功
         createdStageSuccess(type, data){
             if(type === 'editStage'){
-                console.log(data);
                 let msg = {
                     ...this.stageData[this.currentIndex.stageIndex],
                     ...data
                 }
                 this.$set(this.stageData, this.currentIndex.stageIndex, msg);
 
-                // 编辑阶段 
-                this.screenLayout.forEach((item, index) => {
-                    this.searchOverlap(index).then((res) => {
-                        this.saveTimeline(index);
-                    });
-                })
+                // // 编辑阶段 
+                // this.screenLayout.forEach((item, index) => {
+                //     this.searchOverlap(index).then((res) => {
+                //         this.saveTimeline(index);
+                //     });
+                // })
             }else{
                 this.getStageData(type);
             }

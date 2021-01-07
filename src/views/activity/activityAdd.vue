@@ -109,6 +109,13 @@
                             ></el-input-number>
                         </el-form-item>
                     </div>
+                    <group-list
+                        v-if="!activityParams.id"
+                        propValue="groupIds"
+                        @groupSelected="
+                            $set(activityParams, 'groupIds', $event)
+                        "
+                    ></group-list>
 
                     <el-form-item label="">
                         <el-button @click="$router.push(`/activity`)"
@@ -122,15 +129,19 @@
                             >提 交</el-button
                         >
                     </el-form-item>
-
                 </el-form>
             </el-col>
         </el-row>
     </el-card>
 </template>
 <script>
-import { activityPlaceModule, activityPayWayList, activityCreated } from "@/api/activity";
+import {
+    activityPlaceModule,
+    activityPayWayList,
+    activityCreated,
+} from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
+import GroupList from "@/components/GroupList/index";
 
 export default {
     mixins: [getActivityDetail],
@@ -139,11 +150,11 @@ export default {
             loading: false,
             btnLoading: false,
             activityParams: {},
-            moduleData: [],         //商场模块
-            payTypeData: [],        //支付方式
+            moduleData: [], //商场模块
+            payTypeData: [], //支付方式
             moduleTypeData: [
-                { id: 1, displayName: '一次性' },
-                { id: 2, displayName: '按游戏次数' }
+                { id: 1, displayName: "一次性" },
+                { id: 2, displayName: "按游戏次数" },
             ],
             activityRules: {
                 displayName: [
@@ -171,39 +182,46 @@ export default {
                     {
                         required: true,
                         trigger: "change",
-                        type: 'number',
+                        type: "number",
                         message: "请选择商场模块~",
-                    }
+                    },
                 ],
                 needCost: [
                     {
                         required: true,
                         trigger: "blur",
                         message: "请选择是否需要支付~",
-                    }
+                    },
                 ],
                 costId: [
                     {
                         required: true,
                         trigger: "change",
-                        type: 'number',
+                        type: "number",
                         message: "请选择支付方式~",
-                    }
+                    },
                 ],
                 costType: [
                     {
                         required: true,
                         trigger: "change",
-                        type: 'number',
+                        type: "number",
                         message: "请选择支付类型~",
-                    }
+                    },
                 ],
                 costValue: [
                     {
                         required: true,
                         trigger: "blur",
                         message: "请输入价格~",
-                    }
+                    },
+                ],
+                groupIds: [
+                    {
+                        required: true,
+                        trigger: "blur",
+                        message: "请选择权限群组~",
+                    },
                 ],
             },
         };
@@ -216,34 +234,34 @@ export default {
                 this.loading = false;
                 this.activityParams = {
                     ...this.resData,
-                    needCost: this.resData.needCost ? 1 : 0
-                }
+                    needCost: this.resData.needCost ? 1 : 0,
+                };
                 this.getPayType();
             });
         }
     },
     methods: {
         //商场模块
-        getPlaceModule(){
-            activityPlaceModule().then(res => {
-                if(res.code === this.$successCode){
+        getPlaceModule() {
+            activityPlaceModule().then((res) => {
+                if (res.code === this.$successCode) {
                     this.moduleData = res.obj;
                 }
-            })
+            });
         },
 
         //奖品数据  支付类型
-        getPayType(){
+        getPayType() {
             let data = { moduleId: this.activityParams.moduleId };
-            activityPayWayList(data).then(res => {
-                if(res.code === this.$successCode){
+            activityPayWayList(data).then((res) => {
+                if (res.code === this.$successCode) {
                     this.payTypeData = res.obj;
                 }
-            })
+            });
         },
 
         //选择商场模块  根据模块id 获取门票(支付方式)列表
-        handleChangeModule(){
+        handleChangeModule() {
             this.getPayType();
         },
 
@@ -266,6 +284,9 @@ export default {
                 }
             });
         },
+    },
+    components: {
+        GroupList,
     },
 };
 </script>

@@ -235,7 +235,10 @@
                 overflow-x: hidden;
             }
             .el-scrollbar__bar{
-                height: 16px;
+                height: 10px;
+                .el-scrollbar__thumb{
+                    height: 10px;
+                }
             }
             .right-content{
                 min-width: 100%;
@@ -421,6 +424,8 @@
     }
     .preview{
         width: 100%;
+        min-height: 400px;
+        line-height: 100%;
         text-align: center;
         .el-image{
             max-width: 100%;

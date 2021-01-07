@@ -60,10 +60,10 @@ export default {
                         if(res.code === this.$successCode){
                             let { applicationPackage, screenId, assembly } = res.obj;
                             let { mobilePackage, screenPackage } = applicationPackage;
-                            let { configId } = assembly;
+                            let { configId, contentId } = assembly;
                             this.currentData = {
                                 ...this.data,
-                                contentPath: screenPackage + '?screenId=' + screenId + '&mobilePackage=' + mobilePackage + '&gameRuleId=' + configId
+                                contentPath: screenPackage + '?screenId=' + screenId + '&mobilePackage=' + mobilePackage + '&gameRuleId=' + configId + '&contentId=' + contentId
                             }
                         }
                     })
