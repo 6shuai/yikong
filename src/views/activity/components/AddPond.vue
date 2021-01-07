@@ -28,9 +28,9 @@
                             placeholder="奖池描述"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="发放规则" prop="awardRule">
+                    <el-form-item label="发放规则" prop="pickSequence">
                         <el-select
-                            v-model="pondParams.awardRule"
+                            v-model="pondParams.pickSequence"
                             filterable
                             placeholder="请选择发放规则"
                         >
@@ -279,7 +279,7 @@ export default {
                         message: "请输入奖池名称~",
                     },
                 ],
-                awardRule: [
+                pickSequence: [
                     {
                         required: true,
                         trigger: "blur",

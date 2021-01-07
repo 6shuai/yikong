@@ -112,7 +112,7 @@
                                     ></el-divider>
                                     <span
                                         >规则：{{
-                                            item.awardRule == 1
+                                            item.pickSequence == 1
                                                 ? "随机"
                                                 : "顺序"
                                         }}</span

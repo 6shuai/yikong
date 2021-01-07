@@ -6,6 +6,7 @@
             element-loading-text="视频上传中"
             element-loading-spinner="el-icon-loading"
             class="avatar-uploader el-upload--text" 
+            :data='uploadData'
             :action="action" 
             :show-file-list="false" 
             :on-success="handleVideoSuccess" 
@@ -22,6 +23,7 @@
             style="height: 456px"
         >
             <el-upload 
+                :data='uploadData'
                 :action="action" 
                 :show-file-list="false" 
                 :on-success="handleVideoSuccess" 
