@@ -1,7 +1,13 @@
 <template>
     <div class="game-package-manage">
         <div class="mb20">
+            <el-radio-group size="small" v-model="versionType">
+                <el-radio-button :label="2">线上版本</el-radio-button>
+                <el-radio-button :label="1">测试版本</el-radio-button>
+                <el-radio-button :label="0">开发版本</el-radio-button>
+            </el-radio-group>
             <el-button
+                class="upload-package"
                 v-if="hasPerm($store.state.permission.gamesPrem, 'UploadPackage')"
                 icon="el-icon-upload2"
                 size="small"
@@ -10,12 +16,12 @@
                 >上传游戏包
             </el-button >
         </div>
-
-        <package-list :versionType="2" ref="productionVersion"></package-list>
+        
+        <package-list v-show="versionType==2" :versionType="2" ref="productionVersion"></package-list>
     
-        <package-list :versionType="1" ref="testVersion"></package-list>
+        <package-list v-show="versionType==1" :versionType="1" ref="testVersion"></package-list>
     
-        <package-list :versionType="0" ref="developmentVersion"></package-list>
+        <package-list v-show="versionType==0" :versionType="0" ref="developmentVersion"></package-list>
         
 
         <!-- 上传游戏包 -->
@@ -117,6 +123,7 @@ import PackageList from '../components/GamePackageList';
 export default {
     data(){
         return{
+            versionType: 2,
             resData: [], //包列表
             uploadDialog: false,
             uploadLoading: false, //上传中
@@ -250,18 +257,15 @@ export default {
 <style lang="scss" scope>
 @import "../../../styles/variables.scss";
 .game-package-manage {
+    .upload-package{
+        float: right;
+    }
+
     .package-list-wrap{
         border: 1px solid #e5e5e5;
         margin-bottom: 20px;
         padding: 10px;
         background: #fff7f7;
-
-        .package-scrollbar{
-            height: 700px;
-            .el-scrollbar__wrap{
-                overflow-x: hidden;
-            }
-        }
     }
     .type-card {
         cursor: pointer;
