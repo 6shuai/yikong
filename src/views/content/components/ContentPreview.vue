@@ -96,7 +96,6 @@ export default {
         height: 100%;
         text-align: center;
         position: relative;
-        background: #000;
         img, video{
             max-width: 100%;
         }

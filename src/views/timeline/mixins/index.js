@@ -2,6 +2,7 @@ export const timelineFunc = {
     methods: {
         //更新 查找资源的开始时间
         updateStartTime(time, duration) {
+            if(!time) return
             let t = time.split(":");
             //小时
             let h = Number(t[0]);

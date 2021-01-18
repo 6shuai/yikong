@@ -1,18 +1,63 @@
 <template>
     <!-- 新建阶段 -->
     <el-dialog
-        width="500px"
+        width="1000px"
         :title="stageParams.id ? '编辑阶段' : '新建阶段'"
         :visible.sync="showCreatedStage"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         :show-close="false"
-        class="timeline-rule"
+        class="timeline-create-stage"
         v-loading="loading"
         append-to-body
     >
         <el-form label-width="80px">
-            <el-form-item label="开始时间" class="is-required">
+            <el-form-item label="选择屏幕布局模板" class="is-required" v-if="!stageParams.id">
+                <ul class="temp-list clearfix" v-loading="tempLoading">
+                    <li 
+                        v-for="(item, index) in tempList" 
+                        :key="index"
+                        :class="{active: item.id==tempId}"
+                        @click="handleSelected(item)"
+                        :title="item.displayName"
+                    >
+                        <div class="layout-warp">
+                            <div 
+                                class="temp-layout"
+                                :style="{
+                                    width: item.height > item.width ? item.width / item.height * 100 + 'px' : '100px',
+                                    height: item.height > item.width ? '100px' : item.height / item.width * 100 + 'px'
+                                }"
+                            >
+                                <div 
+                                    class="item" 
+                                    v-for="sub in item.logicRegionSubs" 
+                                    :key="sub.id"
+                                    :style="{
+                                        width: sub.percentageWidth + '%',
+                                        height: sub.percentageHeight + '%',
+                                        top: sub.percentageY + '%',
+                                        left: sub.percentageX + '%'
+                                    }"
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="title">{{item.displayName}}</div>
+                    </li>
+                    <li 
+                        class="created-temp"
+                        @click="$router.push('/screen/layout/add')"
+                    >   
+                        <i class="el-icon-right"></i>
+                        <p>去创建布局模板</p>
+                    </li>
+                </ul>
+            </el-form-item>
+
+            <el-form-item 
+                v-if="stageParams.phaseType == 2"
+                label="开始时间" 
+                class="is-required">
                 <el-time-picker
                     v-model="stageParams.beginTime"
                     value-format="HH:mm:ss"
@@ -23,20 +68,13 @@
             </el-form-item>
             <el-form-item label="持续时长" class="is-required">
                 <el-input
-                    class="w220 mr30"
+                    class="w220 mr10"
                     type="number"
                     v-model="stageParams.duration"
                     :min="1"
                     placeholder="持续时长"
                 ></el-input>
-            </el-form-item>
-            <el-form-item label="是否循环">
-                <el-switch
-                    :active-value="1"
-                    :inactive-value="0"
-                    v-model="stageParams.loop"
-                >
-                </el-switch>
+                秒
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -53,7 +91,7 @@
 
 <script>
 import { timeDisposeTool } from '@/mixins';
-import { timelineStageCreated } from '@/api/timeline';
+import { timelineStageTempList, timelineStageCreated } from '@/api/timeline';
 export default {
     mixins: [timeDisposeTool],
     data() {
@@ -62,16 +100,21 @@ export default {
             loading: false,
             createdLoading: false,
             stageParams: {},
+            tempId: undefined,
+            tempList: [],
+            tempLoading: true
         };
     },
     methods: {
         showDialog(phaseType, data){
+            this.tempId = undefined;
             this.showCreatedStage = true;
+            this.layoutTempList();
             this.stageParams = {
-                loop: 1,
                 containerId: this.$route.params.id,
                 phaseType,
-                beginTime: data.beginTimeFormat
+                beginTime: data.beginTimeFormat,
+                timelineRegions: data.timelineRegions
             }
             if(data && data.id){
                 this.stageParams = {
@@ -80,11 +123,44 @@ export default {
                     beginTime: data.beginTimeFormat
                 }
             }
+            console.log(this.stageParams)
+        },
+
+        //屏幕布局模板
+        layoutTempList(){
+            this.tempLoading = true;
+            timelineStageTempList().then(res => {
+                this.tempLoading = false;
+                if(res.code === this.$successCode){
+                    this.tempList = res.obj;
+                }
+            })
+        },
+
+        //选择模板
+        handleSelected(data){
+            this.tempId = data.id;
+            let timelineRegions = [];
+            let { width, height } = this.$store.state.timeline.screenSize;
+
+            data.logicRegionSubs.forEach((item, index) => {
+                timelineRegions.push({
+                    regionSubId: item.id
+                })
+            })
+
+            this.stageParams = {
+                ...this.stageParams,
+                timelineRegions
+            }
         },
         
         //创建阶段
         createdStage(){
-            if(!this.stageParams.beginTime){
+            if(!this.stageParams.timelineRegions){
+                this.$message.warning('还没选择屏幕布局~');
+                return
+            }else if(!this.stageParams.beginTime && this.stageParams.phaseType == 2){
                 this.$message.warning('还没选择开始时间~');
                 return
             }else if(!this.stageParams.duration){
@@ -92,16 +168,15 @@ export default {
                 return
             }
             this.createdLoading = true;
-            this.stageParams.beginTime = "1970-01-01 " + this.stageParams.beginTime;
+            this.stageParams.beginTime = this.stageParams.beginTime ? "1970-01-01 " + this.stageParams.beginTime : '';
             timelineStageCreated(this.stageParams).then(res => {
                 this.createdLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success(this.stageParams.id ? '修改成功~' : '创建成功~');
                     this.showCreatedStage = false;
                     this.$emit('createdStageSuccess', this.stageParams.id ? 'editStage' : 'addStage', {
-                        beginTimeFormat: this.stageParams.beginTime.split('1970-01-01 ')[1],
-                        duration: this.stageParams.duration,
-                        loop: this.stageParams.loop
+                        beginTimeFormat: this.stageParams.beginTime ? this.stageParams.beginTime.split('1970-01-01 ')[1] : '',
+                        duration: this.stageParams.duration ? this.stageParams.duration : 0
                     });
                 }
             })
@@ -109,3 +184,61 @@ export default {
     },
 };
 </script>
+
+<style lang="scss" scope>
+    .timeline-create-stage{
+        .temp-list{
+            display: flex;
+            flex-wrap: wrap;
+            li{
+                margin-right: 10px;
+                margin-bottom: 20px;
+                width: 120px;
+                height: 140px;
+                padding: 10px;
+                text-align: center;
+                border: 1px solid #e5e5e5;
+                border-radius: 4px;
+                cursor: pointer;
+
+                &.created-temp{
+                    color: #fc5185;
+                    i{
+                        font-size: 22px;
+                    }
+                }
+
+                &:hover{
+                    border-color: #6a2c70;
+                }
+
+                &.active{
+                    border-color: #6a2c70;
+                }
+
+                .layout-warp{
+                    width: 100px;
+                    height: 100px;
+                    .temp-layout{
+                        display: block;
+                        height: 100px;
+                        position: relative;
+                        border: 1px solid #ffdc93;
+                        margin: 0 auto;
+                        .item{
+                            position: absolute;
+                            border: 1px solid #ff2e63;
+                        }
+                    }
+                }
+
+                .title{
+                    line-height: 20px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+</style>

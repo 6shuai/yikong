@@ -85,33 +85,32 @@
             <!-- 阶段说明 -->
             <div class="stage-info clearfix">
                 <div v-if="stageData.length">
-                    <div class="title">阶段{{currentIndex.stageIndex+1}}</div>
+                    <div class="title">阶段{{stageIndex+1}}</div>
                     <div class="stage-pagination">
                         <!-- 阶段分页 -->
                         <el-pagination
                             background
                             small
                             layout="prev, pager, next"
-                            :current-page="currentIndex.stageIndex+1"
+                            :current-page="stageIndex+1"
                             :page-size="1"
                             :pager-count="5"
                             @current-change="changeStagePage"
                             :total="stageData.length">
                         </el-pagination>
-
                     </div>
 
                     <div class="stage-handle">
-                        <el-link 
+                        <!-- <el-link 
                             v-if="hasPerm($store.state.permission.timelinePrem, 'AddStep')"
                             type="success" 
                             @click="showCreatedStep"
                         >新建步骤
-                        </el-link>
+                        </el-link> -->
                         <el-link 
                             v-if="timelineData.editTimelinePhase"
                             type="primary" 
-                            @click="showCreatedStage(stageData[currentIndex.stageIndex])"
+                            @click="showCreatedStage(stageData[stageIndex])"
                         >编辑
                         </el-link>
                         <el-link 
@@ -121,40 +120,13 @@
                         >删除
                         </el-link>
                     </div>
-                    
-                    <ul class="info-list">
-                        <li>开始时间：{{stageData[currentIndex.stageIndex].beginTimeFormat}}</li>
-                        <li>结束时间：{{updateStartTime(stageData[currentIndex.stageIndex].beginTimeFormat, stageData[currentIndex.stageIndex].duration)}}</li>
-                        <li>循环：{{stageData[currentIndex.stageIndex].loop ? '循环' : '不循环'}}</li>
+                    <ul class="info-list" v-if="phaseType==1">
+                        <li>时长：{{secondToDate(stageData[stageIndex].duration)}}</li>
                     </ul>
-                </div>
-            </div>
-
-            <div class="step-warp clearfix">
-                <div v-if="stageData[currentIndex.stageIndex] && stageData[currentIndex.stageIndex].timelineSteps && stageData[currentIndex.stageIndex].timelineSteps.length">
-                    <div class="title">
-                        步骤{{currentIndex.stepIndex+1}}
-                    </div>
-                    <div class="stage-pagination">
-                        <el-pagination
-                            background
-                            small
-                            layout="prev, pager, next"
-                            :current-page="currentIndex.stepIndex+1"
-                            :page-size="1"
-                            :pager-count="5"
-                            @current-change="changeStepPage"
-                            :total="stageData[currentIndex.stageIndex].timelineSteps.length">
-                        </el-pagination>
-                    </div>
-                    <div class="stage-handle">
-                        <el-link 
-                            v-if="timelineData.deleteTimelineStep"
-                            type="danger" 
-                            @click="deleteStep"
-                        >删除
-                        </el-link>
-                    </div>
+                    <ul class="info-list" v-if="phaseType==2">
+                        <li>开始时间：{{stageData[stageIndex].beginTimeFormat}}</li>
+                        <li>结束时间：{{updateStartTime(stageData[stageIndex].beginTimeFormat, stageData[stageIndex].duration)}}</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -188,7 +160,10 @@
             <div class="axis-right">
                 <div class="right-content">
 
-                    <div class="screen-content-wrap" ref="screenWrap">
+                    <div 
+                        class="screen-content-wrap" 
+                        v-if="rectangleData.length"
+                        ref="screenWrap">
                         <el-scrollbar
                             :native="false"
                             class="screen-item-wrap"
@@ -197,7 +172,6 @@
                             :key="Pindex"
                         >   
                             <draggable 
-                                v-if="rectangleData[Pindex]"
                                 class="screen-item draggable widget-form-list"
                                 ghostClass="ghost"
                                 :options="sortOption" 
@@ -320,12 +294,6 @@
             @createdStageSuccess="createdStageSuccess"
         ></created-stage>
 
-        <!-- 创建步骤 -->
-        <created-step 
-            ref="createdStep"
-            @createdStepSuccess="createdStepSuccess"
-        ></created-step>
-
         <!-- 逻辑区域设置 -->
         <set-is-rotation 
             ref="setIsRotation"
@@ -336,7 +304,7 @@
 </template>
 
 <script>
-import Draggable from "vuedraggable";
+import Draggable, { directive } from "vuedraggable";
 import { mapState } from "vuex";
 import { timelineFunc } from '../mixins';
 import { timeDisposeTool } from '@/mixins';
@@ -346,12 +314,10 @@ import {
     timelineDelete,
     pubToScreen,
     timelineStageData,
-    timelineStageDelete,
-    timelineStageStepDelete
+    timelineStageDelete
 } from "@/api/timeline";
 import CopyContent from "./CopyContent";
 import CreatedStage from './CreatedStage';
-import CreatedStep from './CreatedStep';
 import SetIsRotation from './SetIsRotation'
 
 export default {
@@ -401,17 +367,14 @@ export default {
             phaseType: 1, //阶段类型 1 轮播   2插播
             rotationStage: [],    //轮播内容
             cutInStage: [],       //插播内容
-            currentIndex: {       //当前的阶段 和步骤 下标
-                stageIndex: 0,
-                stepIndex: 0
-            },     
+            stageIndex: 0,        //当前阶段   
             stageData: {},
         };
     },
     computed: {
         ...mapState({
             dragData: (state) => state.timeline.dragData,
-        }),
+        })
     },
     mounted() {
         this.getStageData();
@@ -458,7 +421,7 @@ export default {
         onAddSetDataStarTime(data, Pindex, index, obj) {
             return new Promise((resolve) => {
                 let time =
-                    index == 0 ? this.stageData[this.currentIndex.stageIndex].beginTimeFormat : obj[index - 1].beginTime;
+                    index == 0 ? this.stageData[this.stageIndex].beginTimeFormat ? this.stageData[this.stageIndex].beginTimeFormat : this.startTime : obj[index - 1].beginTime;
                 let duration = index == 0 ? 0 : obj[index - 1].duration;
                 data.beginTime = this.findEndTime(time, duration);
                 data.endTime = this.findEndTime(data.beginTime, data.duration);
@@ -477,8 +440,7 @@ export default {
         //查询是否有重叠
         searchOverlap(Pindex) {
             return new Promise((resolve) => {
-                let { stageIndex, stepIndex } = this.currentIndex;
-                let stageStarTime = this.stageData[stageIndex].beginTimeFormat;
+                let stageStarTime = this.stageData[this.stageIndex].beginTimeFormat;
                 this.timelineForeachFind(resolve, Pindex, stageStarTime);
                 
             });
@@ -547,7 +509,6 @@ export default {
         initTimelineList() {
             this.timelineIds = {};
             if(!this.screenLayout.length) this.timelineLoading = false;
-
 
             for (let i = 0; i < this.screenLayout.length; i++) {
                 var screenParams = this.screenLayout[i];
@@ -836,19 +797,22 @@ export default {
 
         //创建 或 编辑阶段
         showCreatedStage(data){
-            let { stageIndex } = this.currentIndex;
             let len = this.stageData.length;
-            let obj = {
-                beginTimeFormat: len > 0 ? this.updateStartTime(this.stageData[len-1].beginTimeFormat, this.stageData[len-1].duration) : this.startTime
-            };
+            let obj = {};
+            if(this.phaseType == 2){
+                obj = {
+                    beginTimeFormat: len > 0 ? this.updateStartTime(this.stageData[len-1].beginTimeFormat, this.stageData[len-1].duration) : this.startTime
+                };
+            }
             if(data){
-                let { id, containerId, beginTimeFormat, duration, loop } = data;
+                let { id, containerId, beginTimeFormat, duration, loop, timelineRegions  } = data;
                 obj = {
                     id, 
                     containerId,
                     beginTimeFormat,
                     duration,
-                    loop
+                    loop,
+                    timelineRegions
                 }
             }
             this.$refs.createdStage.showDialog(this.phaseType, obj); 
@@ -858,10 +822,10 @@ export default {
         createdStageSuccess(type, data){
             if(type === 'editStage'){
                 let msg = {
-                    ...this.stageData[this.currentIndex.stageIndex],
+                    ...this.stageData[this.stageIndex],
                     ...data
                 }
-                this.$set(this.stageData, this.currentIndex.stageIndex, msg);
+                this.$set(this.stageData, this.stageIndex, msg);
 
                 // // 编辑阶段 
                 // this.screenLayout.forEach((item, index) => {
@@ -876,7 +840,7 @@ export default {
 
         //删除阶段
         deleteStage(){
-            let { stageIndex, stepIndex } = this.currentIndex;
+            let stageIndex = this.stageIndex;
             let id = this.stageData[stageIndex].id;
             this.$confirm(
                 `此操作将删除【阶段${stageIndex+1}】, 是否继续?`,
@@ -892,7 +856,7 @@ export default {
                     if(res.code === this.$successCode){
                         this.$message.success('删除成功~');
                         this.stageData.splice(stageIndex, 1);
-                        this.currentIndex.stageIndex = stageIndex ? stageIndex - 1 : 0;
+                        this.stageIndex = stageIndex ? stageIndex - 1 : 0;
                         this.updateScreenShow();
                     }
                 })
@@ -900,43 +864,7 @@ export default {
             .catch(() => {});
         },
 
-        //创建步骤
-        showCreatedStep(){
-            this.$refs.createdStep.showDialog(this.stageData[this.currentIndex.stageIndex].id);
-        },
-
-        //创建步骤成功
-        createdStepSuccess(){
-            this.getStageData('addStep');
-        },
-
-        //删除步骤
-        deleteStep(){
-            let { stageIndex, stepIndex } = this.currentIndex;
-            let id = this.stageData[stageIndex].timelineSteps[stepIndex].id;
-            this.$confirm(
-                `此操作将删除【阶段${stageIndex+1}】 > 【步骤${stepIndex+1}】, 是否继续?`,
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning",
-                }
-            )
-            .then(() => {
-                timelineStageStepDelete(id).then(res => {
-                    if(res.code === this.$successCode){
-                        this.$message.success('删除成功~');
-                        this.stageData[stageIndex].timelineSteps.splice(stepIndex, 1);
-                        this.currentIndex.stepIndex = stepIndex ? stepIndex - 1 : 0;
-                        this.updateScreenShow();
-                    }
-                })
-            })
-            .catch(() => {});
-        },
-
-        //阶段和步骤 数据
+        //阶段 数据
         getStageData(type){
             this.timelineLoading = true;
             timelineStageData(this.$route.params.id).then(res => {
@@ -954,32 +882,18 @@ export default {
         //当前阶段
         changeStageType(type){
             let data = this.phaseType==1 ? this.rotationStage : this.cutInStage;
-            let { stageIndex, stepIndex } = this.currentIndex;
             this.stageData = data;
             if(!type){
-                this.currentIndex = {
-                    stageIndex: 0,
-                    stepIndex: 0
-                }
-            }else if(type === 'addStep'){
-                this.currentIndex.stepIndex = this.stageData[stageIndex].timelineSteps.length - 1;
-            }else if(type === 'addStage'){
-                this.currentIndex.stageIndex = this.stageData.length - 1;
-                this.currentIndex.stepIndex = this.stageData[stageIndex].timelineSteps[stepIndex] ? stepIndex : 0;
+                this.stageIndex = 0;
+            }if(type === 'addStage'){
+                this.stageIndex = this.stageData.length - 1;
             }
             this.updateScreenShow();
         },
 
         //阶段 分页
         changeStagePage(page){
-            this.currentIndex.stageIndex = page-1;
-            this.currentIndex.stepIndex = 0;
-            this.updateScreenShow();
-        },
-
-        //步骤 分页
-        changeStepPage(page){
-            this.currentIndex.stepIndex = page - 1;
+            this.stageIndex = page-1;
             this.updateScreenShow();
         },
 
@@ -988,7 +902,7 @@ export default {
             this.timelineLoading = true;
             let stepData = undefined;
             try{
-                stepData = this.stageData[this.currentIndex.stageIndex].timelineSteps ? this.stageData[this.currentIndex.stageIndex].timelineSteps[this.currentIndex.stepIndex] : undefined;
+                stepData = this.stageData[this.stageIndex].timelineRegions ? this.stageData[this.stageIndex] : undefined;
             }catch(err){
 
             }
@@ -1012,16 +926,23 @@ export default {
 
         //逻辑区域 修改成功
         updateRotationSuccess(index, isRotation){
-            let data = this.stageData[this.currentIndex.stageIndex].timelineSteps[this.currentIndex.stageIndex].timelineRegions[index];
+            let data = this.stageData[this.stageIndex].timelineRegions[index];
             this.$set(data, 'isRotation', isRotation);
             this.$set(this.screenLayout[index], 'isRotation', isRotation);
         },
+
+        //秒 转 时分秒
+        secondToDate(result){
+            let h = Math.floor(result / 3600);
+            let m = Math.floor((result / 60 % 60));
+            let s = Math.floor((result % 60));
+            return result = (h ? h + '小时' : '') + (m ? m + '分钟' : '') + ( s ? s + '秒' : '');
+        }
     },
     components: {
         Draggable,
         CopyContent,
         CreatedStage,
-        CreatedStep,
         SetIsRotation
     },
     watch: {
@@ -1034,9 +955,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss" scope>
-    .el-scrollbar__bar.is-horizontal>div{
-        min-width: 50%;
-    } 
-</style>

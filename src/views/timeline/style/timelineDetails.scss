@@ -114,7 +114,7 @@
             }
         }
 
-        .stage-info, .step-warp{
+        .stage-info{
             padding: 0 40px;
             width: 100%;
             height: 30px;
@@ -160,15 +160,8 @@
                 float: left;
                 .el-link{
                     margin-right: 20px;
-                    line-height: 20px;
+                    line-height: 21px;
                 }
-            }
-        }
-
-        .step-warp{
-            padding: 0 60px;
-            .step{
-                float: left;
             }
         }
 
@@ -204,7 +197,7 @@
 
         .delete-checkbox{
             position: absolute;
-            top: 92px;
+            top: 62px;
             left: 0;
             z-index: 999;
             width: 100%;
@@ -383,6 +376,12 @@
                             background: rgba(0, 0, 0, 0.5);
                             color: #fff;
                             font-size: 10px;
+                        }
+
+                        .display-name{
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
                         }
                     }
 

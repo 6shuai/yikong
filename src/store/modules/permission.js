@@ -20,6 +20,8 @@ const moduleMap = {
 
 	'Activity': 'activity/index',					      //活动管理
 
+	'CutInAdvertising': 'cutInAdvertising/index',				  //插播广告
+
 
 	'Log': 'log/index',									  //操作日志
 	'Authority': 'system/authority/index',                //权限管理
@@ -32,8 +34,8 @@ const moduleMap = {
 
 
 	'ResAuthority': 'resAuthority/resAuthority/index',		  //资源权限管理
-	'ResRole': 'resAuthority/resRole/index',			      	  //资源角色管理
-	'Group': 'resAuthority/group/index',			      	      //权限群组
+	'ResRole': 'resAuthority/resRole/index',			      //资源角色管理
+	'Group': 'resAuthority/group/index',			      	  //权限群组
 }
 
 

@@ -51,16 +51,6 @@ Vue.prototype.$successCode = 0;    //接口返回code 0 成功
 
 window.eventBus = new Vue();
 
-/**
- * 页面权限
- * @param {*} roles 
- * @param {*} route 
- */
-const pagePermission = {
-	created: 'Created',
-	edit: 'Edit',	
-}
-
 
 /**
  * 按钮操作是否具有权限

@@ -99,7 +99,6 @@
                         </template>
                     </el-cascader>
 
-
                 </el-form-item>
                 <el-form-item label="游戏配置" prop="configId">
                     <el-select
@@ -117,6 +116,22 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                <!-- <el-form-item label="插播广告" prop="configId">
+                    <el-select
+                        filterable
+                        v-model="contentParams.configId"
+                        placeholder="请选择需要插播的广告"
+                        style="width: 100%"
+                    >
+                        <el-option
+                            v-for="item in configData"
+                            :key="item.id"
+                            :label="item.displayName"
+                            :value="item.id"
+                        >
+                        </el-option>
+                    </el-select>
+                </el-form-item> -->
                 <el-form-item label="游戏包大小" prop="size">
                     <el-input
                         type="number"

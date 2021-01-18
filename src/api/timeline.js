@@ -96,12 +96,8 @@ export function timelineStageTempList(data) { return get('/timeline/logicRegionT
 //时间轴阶段  创建 步骤
 export function timelineStageStepCreated(data) { return post('/timeline/timelineStep', data) }
 
-//时间轴阶段  删除步骤
-export function timelineStageStepDelete(data) { return del(`/timeline/timelineStep/${data}`) }
-
-
-//根据时间轴容器id 查询阶段和步骤数据
-export function timelineStageData(data) { return get(`/timeline/phaseAndStep/${data}`) }
+//根据时间轴容器id 查询阶段数据
+export function timelineStageData(data) { return get(`/timeline/phase/${data}`) }
 
 //修改逻辑区域  是否轮播 
 export function timelineRegionUpdate(data) { return put('/timeline/timelineRegion', data) }

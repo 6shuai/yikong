@@ -335,6 +335,59 @@ export const constantRoutes = [
     hidden: true
   },
 
+
+//插播广告 创建
+{
+  path: '/',
+  component: Layout,
+  meta: { title: '插播广告' },
+  children: [
+    {
+      path: '/cutInAdvertising/add',
+      name: 'CutInAdvertising--add',
+      component: () => import('@/views/cutInAdvertising/components/add'),
+      meta: { title: '插播广告 - 创建' },
+    }
+  ],
+  hidden: true
+},
+
+//插播广告 编辑
+{
+  path: '/',
+  component: Layout,
+  meta: { title: '插播广告' },
+  children: [
+    {
+      path: '/cutInAdvertising/edit/:id',
+      name: 'CutInAdvertising--edit',
+      component: () => import('@/views/cutInAdvertising/components/add'),
+      meta: { title: '插播广告 - 编辑' },
+    }
+  ],
+  hidden: true
+},
+
+
+//插播广告 详情
+{
+  path: '/',
+  component: Layout,
+  meta: { title: '插播广告' },
+  children: [
+    {
+      path: '/cutInAdvertising/:id',
+      name: 'CutInAdvertising--detail',
+      component: () => import('@/views/cutInAdvertising/detail'),
+      meta: { title: '插播广告 - 详细' },
+    }
+  ],
+  hidden: true
+},
+
+
+
+
    //活动管理  新建活动
   {
     path: '/',

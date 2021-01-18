@@ -128,14 +128,14 @@
         <import-timeline ref="importTimeline"></import-timeline>
 
         <!-- 授权 -->
-        <permission 
+        <permission  
             ref="pagePermission" 
             :premissionApi="premissionApi"
         ></permission>
 
     </div>
 </template>
-<script>
+<script lange="ts">
 import LeftTabs from "@/views/timeline/components/DetailTabs";
 import Axis from "@/views/timeline/components/Axis";
 import ImportTimeline from "@/views/timeline/components/ImportTimeline";
@@ -162,7 +162,7 @@ export default {
             rectangleW: 480, //编辑区域的宽
             rectangleH: 270, //编辑区域的高
             timelineHeight: {
-                tool: 96,       //时间轴工具栏高度
+                tool: 66,       //时间轴工具栏高度
                 rotation: 90    //时间轴单个逻辑区域的高度
             },
             premissionApi: {
