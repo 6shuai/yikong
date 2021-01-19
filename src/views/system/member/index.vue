@@ -260,7 +260,7 @@ export default {
                 }else{
                     this.groupData = res.obj;
                     this.init();
-                    if(this.isCreator) this.roleList();
+                    this.roleList();
                 }
             })
         },
