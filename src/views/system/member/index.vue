@@ -13,7 +13,7 @@
                 <p>还没有品牌组织，<el-link type="primary" @click="$refs.createdGroup.showDialog()">创建品牌组织</el-link></p>
             </div>
 
-            <div class="top-operation-wrap" v-if="hasPerm($route.meta.permission, 'MemberAdd')">
+            <div class="top-operation-wrap">
                 <el-button size="small" type="primary" icon="el-icon-plus" @click="$refs.addMember.addMemberDialog=true;">添加成员</el-button>
             </div>
             <el-table
