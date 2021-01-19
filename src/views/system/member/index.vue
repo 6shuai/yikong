@@ -12,8 +12,8 @@
             <div v-if="!groupData.id && pageLoad">
                 <p>还没有品牌组织，<el-link type="primary" @click="$refs.createdGroup.showDialog()">创建品牌组织</el-link></p>
             </div>
-            <!-- 只有创建者才能添加成员 -->
-            <div class="top-operation-wrap" v-if="isCreator">
+
+            <div class="top-operation-wrap" v-if="hasPerm($route.meta.permission, 'MemberAdd')">
                 <el-button size="small" type="primary" icon="el-icon-plus" @click="$refs.addMember.addMemberDialog=true;">添加成员</el-button>
             </div>
             <el-table
