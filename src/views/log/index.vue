@@ -6,9 +6,18 @@
 
         <div class="top-operation-wrap">
             <el-input  
+                class="mr10"
                 clearable
                 placeholder="用户名称"
                 v-model="params.accountName"
+                @input="search"
+            ></el-input>
+
+            <el-input  
+                class="mr10"
+                clearable
+                placeholder="操作说明"
+                v-model="params.operation"
                 @input="search"
             ></el-input>
 

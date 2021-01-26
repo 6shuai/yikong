@@ -20,7 +20,7 @@ const moduleMap = {
 
 	'Activity': 'activity/index',					      //活动管理
 
-	'CutInAdvertising': 'cutInAdvertising/index',				  //插播广告
+	'CutInAdver': 'cutInAdvertising/index',				  //插播广告
 
 
 	'Log': 'log/index',									  //操作日志

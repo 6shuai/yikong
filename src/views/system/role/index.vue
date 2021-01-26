@@ -27,7 +27,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="organizationTypeName"
-                    label="组织名称"
+                    label="组织类型名称"
                     min-width="180">
                 </el-table-column>
                 

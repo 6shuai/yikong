@@ -58,31 +58,30 @@ export default {
             memberList: [],               //用户列表 
             loadingSearchMember: false,  //搜索  loading
             groupId: null,               //群组id
-            haveAddMember: false,           
+            haveAddMember: false,    
+            userId: [],       
         }
     },
     methods: {
         showAddMemberDialog(id, userList){
             this.addMemberDialog = true;
             this.groupId = id;
-            this.getMemberList(userList);
+            this.userId = [];
+            userList.forEach(e => {
+                this.userId.push(e.userId)
+            });
+            this.getMemberList();
         },
 
         //用户列表
-        getMemberList(userList){
+        getMemberList(){
             this.loadingSearchMember = true;
-            
-            let userId = [];
-            userList.forEach(e => {
-                userId.push(e.userId)
-            });
-
             groupMemberList({ name: this.keyword }).then(res => {
                 this.loadingSearchMember = false;
                 if(res.code === this.$successCode){
                     this.memberList = res.obj;
                     this.memberList.forEach(item =>{
-                        if(userId.includes(item.userId)){
+                        if(this.userId.includes(item.userId)){
                             item.haveAdd = true;
                         }
                     })

@@ -59,7 +59,7 @@
                     <ul class="duration">
                         <li title="时长">
                             <font-awesome-icon :icon="['far', 'clock']" />
-                            <span>{{item.duration}}s</span>
+                            <span>{{item.duration ? item.duration : '--'}}s</span>
                         </li>
                         <li title="播放次数">
                             <font-awesome-icon :icon="['fas', 'play']" />

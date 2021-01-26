@@ -1,7 +1,10 @@
 <template>
     <div class="game-package-manage">
         <div class="mb20">
-            <el-radio-group size="small" v-model="versionType">
+            <el-radio-group 
+                @change="selectedVersion"
+                size="small" 
+                v-model="versionType">
                 <el-radio-button :label="2">线上版本</el-radio-button>
                 <el-radio-button :label="1">测试版本</el-radio-button>
                 <el-radio-button :label="0">开发版本</el-radio-button>
@@ -17,11 +20,7 @@
             </el-button >
         </div>
         
-        <package-list v-show="versionType==2" :versionType="2" ref="productionVersion"></package-list>
-    
-        <package-list v-show="versionType==1" :versionType="1" ref="testVersion"></package-list>
-    
-        <package-list v-show="versionType==0" :versionType="0" ref="developmentVersion"></package-list>
+        <package-list :versionType="versionType" ref="packageList"></package-list>
         
 
         <!-- 上传游戏包 -->
@@ -75,30 +74,6 @@
                         </div>
                     </el-upload>
                     <span v-if="uploadPackageSuccess">上传成功~</span>
-                </el-form-item>
-                <el-form-item label="大屏端游戏包存放路径">
-                    <el-input
-                        readonly
-                        v-model="packageParams.screenPackage"
-                    ></el-input>
-                </el-form-item>
-                <el-form-item
-                    label="大屏端游戏包大小"
-                    v-if="packageParams.screenSize"
-                >
-                    <div>{{ packageParams.screenSize }}</div>
-                </el-form-item>
-                <el-form-item label="手机端的游戏访问地址">
-                    <el-input
-                        readonly
-                        v-model="packageParams.mobilePackage"
-                    ></el-input>
-                </el-form-item>
-                <el-form-item
-                    label="手机端游戏包大小"
-                    v-if="packageParams.mobileSize"
-                >
-                    <div>{{ packageParams.mobileSize }}</div>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -168,6 +143,9 @@ export default {
             return this.$store.state.game.details;
         },
     },
+    mounted() {
+        this.$refs.packageList.packageListLoad();
+    },
     methods: {
         //显示上传游戏包 窗口
         showUploadDialog() {
@@ -224,27 +202,20 @@ export default {
                         this.uploadDialogLoading = false;
                         if (res.code === this.$successCode) {
                             this.$message.success("提交成功~");
-                            this.uploadDialog = false;
-                            
+                            this.versionType = 0;
+                            this.$nextTick(() => {
+                                this.selectedVersion();
+                                this.uploadDialog = false;
+                            })
                         }
                     });
                 }
             });
         },
 
-        //更新游戏包列表
-        updateGameList(type){
-            switch(type){
-                case 0:
-                    this.$refs.developmentVersion.updateData();
-                    break;
-                case 1:
-                    this.$refs.testVersion.updateData();
-                    break;
-                case 2:
-                    this.$refs.productionVersion.updateData();
-                    break;
-            }
+        //选择包版本
+        selectedVersion(){
+            this.$refs.packageList.packageListLoad();
         }
 
     },

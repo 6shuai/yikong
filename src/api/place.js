@@ -45,3 +45,14 @@ export function placeContactDelete(data) { return del(`/place/placeContact/${dat
 //场所管理  设置图片为列表 封面默认图片
 export function placeShowDefault(data) { return put(`/place/placeShow/${data}`) }
 
+
+
+//查询资源 与 群组 相关联列表
+export function placeAuthority(data) { return get('/place/groupPlace', data) }
+
+//添加资源 与 群组关联
+export function placeAuthorityUpdate(data) { return post('/place/groupPlace', data) }
+
+//删除资源 与 群组关联
+export function placeAuthorityDelete(data) { return del(`/place/groupPlace${data}`) }
+

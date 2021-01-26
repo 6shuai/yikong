@@ -93,3 +93,11 @@ export function gameAuthorityUpdate(data) { return post('/application/groupAppli
 //删除资源 与 群组关联
 export function gameAuthorityDelete(data) { return del(`/application/groupApplication${data}`) }
 
+
+
+//分页查询插播广告
+export function gameCutInAdver(data) { return get('/application/spot', data) }
+
+
+//分页查询活动列表
+export function gameActivity(data) { return get('/application/promotion', data) }

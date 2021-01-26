@@ -162,7 +162,7 @@ export default {
             totalCount: 0,
             resData: [],
             submitTestLoading: [], //提交测试btn loading
-            onlineLoading: [], //上线btn  loading
+            onlineLoading: [],     //上线btn  loading
             delLoading: [],
         };
     },
@@ -171,15 +171,17 @@ export default {
             return this.$store.state.game.details;
         },
     },
-    created() {
-        this.params = {
-            ...this.params,
-            applicationId: this.$route.params.id,
-            versionType: this.versionType,
-        };
-        this.init();
-    },
     methods: {
+        packageListLoad(){
+            this.params = {
+                pageNo: 1,
+                pageSize: 40,
+                applicationId: this.$route.params.id,
+                versionType: this.versionType,
+            };
+            this.init();
+        },
+
         init() {
             this.dataLoading = true;
             packageList(this.params).then((res) => {
@@ -198,8 +200,7 @@ export default {
                 this.$set(this.submitTestLoading, index, false);
                 if (res.code === this.$successCode) {
                     this.$message.success("提交测试成功~");
-                    this.resData.splice(index, 1);
-                    this.$parent.updateGameList(1);
+                    this.init();
                 }
             });
         },
@@ -211,8 +212,7 @@ export default {
                 this.$set(this.onlineLoading, index, true);
                 if (res.code === this.$successCode) {
                     this.$message.success("上线成功~");
-                    this.resData.splice(index, 1);
-                    this.$parent.updateGameList(2);
+                    this.init();
                 }
             });
         },

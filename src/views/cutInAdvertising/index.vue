@@ -3,6 +3,7 @@
         <el-card shadow="always">
             <div class="content-top mb20 clearfix">
                 <el-button
+                    v-if="hasPerm($route.meta.permission, 'AddAdver')"
                     class="created-btn"
                     type="primary"
                     icon="el-icon-plus"
@@ -34,17 +35,12 @@
                 border
             >   
                 <el-table-column
-                    prop="id"
-                    label="id"
-                    width="50"
-                ></el-table-column>
-                <el-table-column
                     prop="displayName"
                     label="名称"
                     min-width="50"
                 ></el-table-column>
                 <el-table-column
-                    prop="width"
+                    prop="timelineContainerName"
                     label="时间轴"
                     min-width="50"
                 ></el-table-column>
@@ -77,7 +73,7 @@
     </div>
 </template>
 <script>
-import { layoutTempList } from "@/api/screenLayout";
+import { cutInAdverList } from "@/api/cutInAdver";
 export default {
     data() {
         return {
@@ -96,7 +92,7 @@ export default {
     methods: {
         init() {
             this.tableLoading = true;
-            layoutTempList(this.params).then((res) => {
+            cutInAdverList(this.params).then((res) => {
                 this.tableLoading = false;
                 this.resData = res.obj.list;
                 this.totalCount = res.obj.totalRecords;

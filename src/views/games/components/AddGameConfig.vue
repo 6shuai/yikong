@@ -87,6 +87,7 @@
                 </el-form-item>
                 <el-form-item label="游戏包" prop="packageId">
                     <el-cascader 
+                        :key="isResouceShow"
                         v-model="contentParams.packageId"
                         :options="cascaderOptions" 
                         :show-all-levels="false"
@@ -116,23 +117,14 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <!-- <el-form-item label="插播广告" prop="configId">
-                    <el-select
-                        filterable
-                        v-model="contentParams.configId"
-                        placeholder="请选择需要插播的广告"
-                        style="width: 100%"
-                    >
-                        <el-option
-                            v-for="item in configData"
-                            :key="item.id"
-                            :label="item.displayName"
-                            :value="item.id"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-form-item> -->
-                <el-form-item label="游戏包大小" prop="size">
+                <el-form-item label="插播广告">
+                    <adver-list @selected="$set(contentParams, 'spotId', $event)" :spotId="contentParams.spotId"></adver-list>
+                </el-form-item>
+
+                <el-form-item label="活动">
+                    <activity-list :promotionId="contentParams.promotionId"></activity-list>
+                </el-form-item>
+                <!-- <el-form-item label="游戏包大小" prop="size">
                     <el-input
                         type="number"
                         v-model="contentParams.size"
@@ -140,7 +132,7 @@
                     >
                         <template slot="append">MB</template>
                     </el-input>
-                </el-form-item>
+                </el-form-item> -->
             </div>
         </el-form>
 
@@ -159,12 +151,17 @@ import {
     gameDataConfigList,
     gameDataCreated,
     gameDataDetail,
+    gameActivity
 } from "@/api/game";
 import UploadImg from "@/components/Upload/UploadImg";
+import AdverList from './AdverList';
+import ActivityList from './ActivityList';
+
 export default {
     mixins: [getOrganizationList, getAspectRatio],
     data() {
         return {
+            isResouceShow: 0,    //解决 el-cascader组件   Cannot read property 'level' of null"
             dialogVisible: false,
             loading: false,
             contentParams: {},
@@ -235,8 +232,8 @@ export default {
                 expandTrigger: 'hover',
                 emitPath: false,
                 value: "id",
-                label: "overallVersion"
-            }
+                label: "displayName"
+            },
         };
     },
     methods: {
@@ -267,6 +264,10 @@ export default {
             this.cascaderOptions.forEach((item, index) => {
                 // item.children = ;
                 this.getPackageList(item.id).then((res) => {
+                    res.forEach(item => {
+                        item.displayName = item.overallVersion + '-' + item.description;
+                        ++this.isResouceShow;
+                    })
                     this.$set(this.cascaderOptions[index], 'children', res);
                 })
             })
@@ -316,10 +317,12 @@ export default {
                     });
                 }
             });
-        },
+        }
     },
     components: {
         UploadImg,
+        AdverList,
+        ActivityList
     },
 };
 </script>

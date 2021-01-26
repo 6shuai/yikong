@@ -31,6 +31,9 @@
                 label="群组说明"
                 prop="description"
                 min-width="200">
+                <template slot-scope="scope">
+                    {{ scope.row.description ? scope.row.description : '--' }}
+                </template>
             </el-table-column>
             <el-table-column
                 label="操作"

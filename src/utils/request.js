@@ -62,7 +62,9 @@ axios.interceptors.response.use(
 				Message.error({
 					message: '权限不足，请联系管理员',
 					onClose: () => {
-						router.push({ path: '/' })
+						if(location.hash != '#/' && location.hash != '#/login'){
+							router.push({ path: '/' })
+						}
 					}
 				});
 				

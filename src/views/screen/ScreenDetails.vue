@@ -25,7 +25,7 @@
                 ></span>
                 <span 
                     v-if="resData.deleteRight"
-                    @click="deletePlace"
+                    @click="deleteScreen"
                     ><i class="el-icon-delete" title="删除"></i>删除</span
                 >
             </div>
@@ -371,13 +371,13 @@ export default {
         })
     },
     methods: {
-        //编辑场所
+        //编辑屏幕
         editScreen() {
             this.$router.push(`/screen/edit/${this.$route.params.id}`);
         },
 
-        //删除场所
-        deletePlace() {
+        //删除屏幕
+        deleteScreen() {
             this.$confirm("此操作将删除该屏幕 是否继续?", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消",
@@ -446,7 +446,7 @@ export default {
                 if (res.code === this.$successCode) {
                     this.$message.success({
                         message: "更新屏幕截图操作成功~",
-                        duration: 2000,
+                        duration: 4000,
                         onClose: () => {
                             this.initDetail();
                         },
