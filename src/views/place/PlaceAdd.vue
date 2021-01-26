@@ -81,6 +81,13 @@
                                 </li>
                             </ul>
                         </el-form-item>
+
+                        <group-list 
+                            v-if="!placeForm.id"
+                            propValue="groupIds"
+                            @groupSelected="$set(placeForm, 'groupIds', $event)"
+                        ></group-list>
+
                         <el-form-item label="">
                             <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="placeSureBtn">提  交</el-button>
                         </el-form-item>
@@ -159,7 +166,8 @@ import TheMap from '@/components/BaiduMap/index';
 import UploadImg from '@/components/Upload/UploadImg';
 import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
 import { getPlaceTypeList, placeDetailData } from '@/views/place/mixins';
-import axios from 'axios';
+import GroupList from '@/components/GroupList/index';
+
 export default {
     mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getPlaceTypeList, placeDetailData],
     data(){
@@ -179,7 +187,8 @@ export default {
                 address: [{ required: true, trigger: "blur", message: '请输入详细地址~' }],
                 placeType: [{ required: true, trigger: "change", message: '请选择场所类型~' }],
                 owner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
-                placeShowData: [{ required: true, trigger: "change", message: '请至少上传一张展示图片~' }]
+                placeShowData: [{ required: true, trigger: "change", message: '请至少上传一张展示图片~' }],
+                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,                  //编辑时获取详情loading
         }
@@ -462,7 +471,8 @@ export default {
     },
     components: {
         TheMap,
-        UploadImg
+        UploadImg,
+        GroupList
     }
 }
 </script>
