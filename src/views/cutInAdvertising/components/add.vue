@@ -56,7 +56,7 @@
                         @groupSelected="$set(params, 'groupIds', $event)"
                     ></group-list>
 
-                    <el-form-item label="轮次" prop="spotStageMaps">
+                    <el-form-item label="游戏阶段" prop="spotStageMaps">
                         <el-button
                             @click="showAddRound = true"
                             type="primary"
@@ -72,18 +72,18 @@
                         >
                             <el-table-column
                                 prop="gameStage"
-                                label="轮次"
+                                label="游戏阶段"
                                 :min-width="60"
                             >
                                 <template slot-scope="scope">
-                                    <el-tag size="mini">
+                                    <el-tag size="mini" type="danger">
                                         {{ scope.row.gameStage }}
                                     </el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column
                                 prop="timelineStageName"
-                                label="阶段"
+                                label="时间轴阶段"
                                 :min-width="60"
                             >
                             </el-table-column>
@@ -148,13 +148,13 @@
 
         <el-dialog
             width="500px"
-            title="添加轮次插播"
+            title="添加插播"
             class="add-round"
             :visible.sync="showAddRound"
             append-to-body
         >
             <el-form label-width="100px" :model="roundParams">
-                <el-form-item label="游戏轮次">
+                <el-form-item label="游戏阶段">
                     <el-input-number
                         :min="1"
                         v-model="roundParams.gameStage"

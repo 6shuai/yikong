@@ -40,13 +40,13 @@
                     class="screen-form"
                     :model="resData"
                 >
-                    <el-form-item label="名称">
+                    <el-form-item label="名称：">
                         {{ resData.displayName }}
                     </el-form-item>
-                    <el-form-item label="时间轴">
+                    <el-form-item label="时间轴：">
                         {{ resData.timelineContainerName }}
                     </el-form-item>
-                    <el-form-item label="轮次">
+                    <el-form-item label="游戏阶段：">
                         <el-table
                             class="round-data"
                             :data="resData.spotStageMaps"
@@ -56,13 +56,18 @@
                         >
                             <el-table-column
                                 prop="gameStage"
-                                label="轮次"
+                                label="游戏阶段"
                                 :min-width="60"
                             >
+                                <template slot-scope="scope">
+                                    <el-tag size="mini" type="danger">
+                                        {{ scope.row.gameStage }}
+                                    </el-tag>
+                                </template>
                             </el-table-column>
                             <el-table-column
                                 prop="timelineStageName"
-                                label="阶段"
+                                label="时间轴阶段"
                                 :min-width="60"
                             >
                             </el-table-column>
