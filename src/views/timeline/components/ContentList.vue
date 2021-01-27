@@ -105,9 +105,7 @@
                                 :key="index"
                                 :src="img.contentPath"
                             >
-                                <div slot="placeholder" class="image-slot">
-                                    加载中<span class="dot">...</span>
-                                </div>
+                                <div slot="placeholder" class="image-slot"></div>
                             </el-image>
                         </div>
                         <el-image
@@ -115,7 +113,9 @@
                             fit="cover"
                             class="img"
                             :src="item.image"
-                        ></el-image>
+                        >
+                            <div slot="placeholder" class="image-slot"></div>
+                        </el-image>
                         <div class="desc">
                             <p class="title" :title="item.displayName">
                                 {{ item.displayName }}
@@ -145,9 +145,7 @@
                         fit="cover"
                         :src="previewData.contentPath"
                     >
-                        <div slot="placeholder" class="image-slot">
-                            加载中<span class="dot">...</span>
-                        </div>
+                        <div slot="placeholder" class="image-slot"></div>
                     </el-image>
                 </div>
 

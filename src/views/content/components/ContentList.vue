@@ -8,7 +8,9 @@
                 class="place-img"
                 :style="{height: imageH+'px'}" 
                 @click.stop="$router.push(`/content/details/${item.id}`)">
-                <el-image fit="contain" :src="item.image" :style="{height: imageH+'px'}" class="image"></el-image>
+                <el-image fit="contain" :src="item.image" :style="{height: imageH+'px'}" class="image">
+                    <div slot="placeholder" class="image-slot"></div>
+                </el-image>
                 
                 <!-- 内容类型 -->
                 <div class="resource-type" title="点击预览" @click.stop="handlePreview(item)">

@@ -319,7 +319,6 @@ export default {
         changePackage(){
             let { mobileSize, screenSize } = this.packageData[this.contentParams.packageId];
             this.contentParams.size = mobileSize + screenSize;
-            console.log(this.contentParams)
         }
     },
     components: {
