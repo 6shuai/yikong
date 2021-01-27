@@ -81,7 +81,6 @@ export const timelineFunc = {
 
         //时间轴资源 自动寻位
         timelineForeachFind(resolve, Pindex, stageStarTime) {
-            console.log(stageStarTime)
             let obj = this.rectangleData[Pindex];
             let isOverlap = false;
             let objLength = obj.length;
@@ -139,7 +138,6 @@ export const timelineFunc = {
                 }
 
                 //当前资源 开始时间 未紧跟上一个结束时间
-                console.log('------------------>', this.timeDifference(prevEndTime, currentStartTime))
                 if (
                     this.timeDifference(prevEndTime, currentStartTime) > 0
                 ) {

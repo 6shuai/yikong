@@ -118,21 +118,18 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="插播广告">
-                    <adver-list @selected="$set(contentParams, 'spotId', $event)" :spotId="contentParams.spotId"></adver-list>
+                    <adver-list 
+                        @selected="$set(contentParams, 'spotId', $event)" 
+                        :spotId="contentParams.spotId">
+                    </adver-list>
                 </el-form-item>
 
                 <el-form-item label="活动">
-                    <activity-list :promotionId="contentParams.promotionId"></activity-list>
+                    <activity-list 
+                        @selected="$set(contentParams, 'promotionId', $event)"
+                        :promotionId="contentParams.promotionId"
+                    ></activity-list>
                 </el-form-item>
-                <!-- <el-form-item label="游戏包大小" prop="size">
-                    <el-input
-                        type="number"
-                        v-model="contentParams.size"
-                        placeholder="游戏包大小"
-                    >
-                        <template slot="append">MB</template>
-                    </el-input>
-                </el-form-item> -->
             </div>
         </el-form>
 

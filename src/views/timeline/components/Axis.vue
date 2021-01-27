@@ -628,7 +628,7 @@ export default {
             obj.beginTime = data.beginTime;
             obj.endTime = this.findEndTime(data.beginTime, data.duration);
             obj.isRotation = data.isRotation;
-            console.log(obj.beginTime)
+            
             if (!obj.beginTime) {
                 this.$message.warning("请选择开始时间~");
                 return;

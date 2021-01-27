@@ -7,7 +7,7 @@
                     class="created-btn"
                     type="primary"
                     icon="el-icon-plus"
-                    @click="$router.push('/cutInAdvertising/add')"
+                    @click="$router.push('/cutInAdver/add')"
                     size="small"
                 >
                     新建插播广告
@@ -101,7 +101,7 @@ export default {
 
         //查看详情
         handleDetail(id) {
-            this.$router.push("/cutInAdvertising/" + id);
+            this.$router.push("/cutInAdver/" + id);
         },
 
         //搜索

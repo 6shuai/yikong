@@ -43,7 +43,6 @@ export default {
     created() {
         //时间轴发布成功 刷新投放屏幕列表
         eventBus.$on("timelinePubSuccess", target => {
-            console.log('发布成功')
             if(this.tabActive == 2){
                 this.$refs.screen.init();
             }else if(this.tabActive == 3){

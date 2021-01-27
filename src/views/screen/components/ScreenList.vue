@@ -6,7 +6,7 @@
         >
             <div class="place-img" 
                 :style="{height: imageH+'px'}"
-                @click.stop="auth ? $router.push(`/screen/details/${item.id}`) : ''">
+                @click.stop="$router.push(`/screen/details/${item.id}`)">
                 <el-image fit="cover" :src="item.defaultShow" class="image" :style="{height: imageH+'px'}"></el-image>
                 <!-- 屏幕状态 -->
                 <div class="screen-state" title="屏幕状态">
@@ -59,7 +59,7 @@
 
 <script>
 export default {
-    props: ['item', 'index', 'name', 'imageH', 'auth'],
+    props: ['item', 'index', 'name', 'imageH'],
     methods: {
         //场所地址  省市区 拼接
         addressJoint(row){

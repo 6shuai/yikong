@@ -1,5 +1,6 @@
 <template>
     <el-select
+        @change="handleSelected"
         filterable
         v-model="activityId"
         placeholder="请选择活动"
@@ -65,7 +66,13 @@ export default {
         handleCurrentChange(page){
             this.adverListParams.pageNo = page;
             this.gameActivityList();
+        },
+
+        //选择活动
+        handleSelected(){
+            this.$emit('selected', this.activityId);
         }
+
     },
     watch: {
         promotionId(){

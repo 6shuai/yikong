@@ -18,7 +18,7 @@
                     v-if="resData.edit"
                     @click="
                         $router.push(
-                            `/cutInAdvertising/edit/${$route.params.id}`
+                            `/cutInAdver/edit/${$route.params.id}`
                         )
                     "
                 >
