@@ -343,9 +343,9 @@ export const constantRoutes = [
   meta: { title: '插播广告' },
   children: [
     {
-      path: '/cutInAdvertising/add',
-      name: 'CutInAdvertising--add',
-      component: () => import('@/views/cutInAdvertising/components/add'),
+      path: '/cutInAdver/add',
+      name: 'CutInAdver--add',
+      component: () => import('@/views/cutInAdver/components/add'),
       meta: { title: '插播广告 - 创建' },
     }
   ],
@@ -359,9 +359,9 @@ export const constantRoutes = [
   meta: { title: '插播广告' },
   children: [
     {
-      path: '/cutInAdvertising/edit/:id',
-      name: 'CutInAdvertising--edit',
-      component: () => import('@/views/cutInAdvertising/components/add'),
+      path: '/cutInAdver/edit/:id',
+      name: 'CutInAdver--edit',
+      component: () => import('@/views/cutInAdver/components/add'),
       meta: { title: '插播广告 - 编辑' },
     }
   ],
@@ -376,10 +376,10 @@ export const constantRoutes = [
   meta: { title: '插播广告' },
   children: [
     {
-      path: '/cutInAdvertising/:id',
-      name: 'CutInAdvertising--detail',
-      component: () => import('@/views/cutInAdvertising/detail'),
-      meta: { title: '插播广告 - 详细' },
+      path: '/cutInAdver/:id',
+      name: 'CutInAdver--detail',
+      component: () => import('@/views/cutInAdver/detail'),
+      meta: { title: '插播广告 - 详情' },
     }
   ],
   hidden: true
