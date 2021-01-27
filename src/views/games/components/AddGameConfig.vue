@@ -87,6 +87,7 @@
                 </el-form-item>
                 <el-form-item label="游戏包" prop="packageId">
                     <el-cascader 
+                        @change="changePackage"
                         :key="isResouceShow"
                         v-model="contentParams.packageId"
                         :options="cascaderOptions" 
@@ -162,7 +163,7 @@ export default {
             dialogVisible: false,
             loading: false,
             contentParams: {},
-            packageData: [],
+            packageData: {},
             configData: [],
             btnLoading: false,
             placeRules: {
@@ -202,14 +203,7 @@ export default {
                         trigger: "change",
                         message: "请选择游戏包~",
                     },
-                ],
-                size: [
-                    {
-                        required: true,
-                        trigger: "blur",
-                        message: "请输入游戏包大小~",
-                    },
-                ],
+                ]
             },
             cascaderOptions: [
                 {
@@ -230,11 +224,12 @@ export default {
                 emitPath: false,
                 value: "id",
                 label: "displayName"
-            },
+            }
         };
     },
     methods: {
         showDialog(id) {
+            this.packageData = {};
             this.dialogVisible = true;
             this.contentParams = { newUpload: 0 };
 
@@ -264,10 +259,14 @@ export default {
                     res.forEach(item => {
                         item.displayName = item.overallVersion + '-' + item.description;
                         ++this.isResouceShow;
+
+                        this.packageData[item.id] = item;
                     })
                     this.$set(this.cascaderOptions[index], 'children', res);
                 })
             })
+
+            console.log(this.packageData)
 
         },
 
@@ -314,6 +313,13 @@ export default {
                     });
                 }
             });
+        },
+
+        //选择游戏包
+        changePackage(){
+            let { mobileSize, screenSize } = this.packageData[this.contentParams.packageId];
+            this.contentParams.size = mobileSize + screenSize;
+            console.log(this.contentParams)
         }
     },
     components: {
