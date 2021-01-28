@@ -156,7 +156,7 @@
             <el-form label-width="100px" :model="roundParams">
                 <el-form-item label="游戏阶段">
                     <el-input-number
-                        :min="1"
+                        :min="0"
                         v-model="roundParams.gameStage"
                         controls-position="right"
                     ></el-input-number>
