@@ -9,6 +9,12 @@
                         direction="vertical"
                     ></el-divider
                 ></span>
+                <span @click="handleStatistics"
+                    v-if="resData.statisics"
+                    ><i class="el-icon-pie-chart" title="数据统计"></i>数据统计<el-divider
+                        direction="vertical"
+                    ></el-divider
+                ></span>
                 <span @click="editScreen"
                     v-if="resData.edit"
                     ><i class="el-icon-edit" title="编辑"></i>编辑<el-divider
@@ -475,6 +481,17 @@ export default {
                 this.unboundLoading = false;
                 if (res.code === this.$successCode) {
                     this.$message.success("解除硬件绑定成功~");
+                }
+            });
+        },
+
+        //数据统计
+        handleStatistics(){
+            this.$router.push({
+                path: '/statisics',
+                query: {
+                    source: 'screen',
+                    screenId: this.$route.params.id
                 }
             });
         }

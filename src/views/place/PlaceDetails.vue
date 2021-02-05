@@ -14,6 +14,12 @@
                         direction="vertical"
                     ></el-divider
                 ></span>
+                <span @click="handleStatistics"
+                    v-if="resData.statisics"
+                    ><i class="el-icon-pie-chart" title="数据统计"></i>数据统计<el-divider
+                        direction="vertical"
+                    ></el-divider
+                ></span>
                 <span @click="editPlace"
                     v-if="resData.edit"
                     ><i class="el-icon-edit" title="编辑"></i>编辑<el-divider
@@ -338,6 +344,17 @@ export default {
                 this.distance = -162 * (this.imgIndex - 3) + -10;
             }
         },
+
+        //数据统计
+        handleStatistics(){
+            this.$router.push({
+                path: '/statisics',
+                query: {
+                    source: 'place',
+                    placeId: this.$route.params.id
+                }
+            });
+        }
     },
     components: {
         TheMap,

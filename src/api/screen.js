@@ -58,3 +58,18 @@ export function screenAuthorityUpdate(data) { return post('/screen/groupScreen',
 
 //删除资源 与 群组关联
 export function screenAuthorityDelete(data) { return del(`/screen/groupScreen${data}`) }
+
+
+
+
+//查询所有游戏列表
+export function screenGameList(data) { return get('/screen/applicationContent', data) }
+
+//统计列表
+export function screenStatistics(data) { return get('/screen/statistics', data) }
+
+//统计详情
+export function screenStatisticsDetail(data) { return get('/screen/statisticsDetail', data) }
+
+
+

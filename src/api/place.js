@@ -56,3 +56,17 @@ export function placeAuthorityUpdate(data) { return post('/place/groupPlace', da
 //删除资源 与 群组关联
 export function placeAuthorityDelete(data) { return del(`/place/groupPlace${data}`) }
 
+//查询所有游戏列表
+export function placeGameList(data) { return get('/place/applicationContent', data) }
+
+//查询所有屏幕列表
+export function placeScreenList(data) { return get('/place/screen', data) }
+
+//统计列表
+export function placeStatistics(data) { return get('/place/statistics', data) }
+
+//统计详情
+export function placeStatisticsDetail(data) { return get('/place/statisticsDetail', data) }
+
+
+

@@ -55,7 +55,6 @@
             </el-form-item>
 
             <el-form-item 
-                v-if="stageParams.phaseType == 2"
                 label="开始时间" 
                 class="is-required">
                 <el-time-picker
@@ -66,7 +65,10 @@
                 >
                 </el-time-picker>
             </el-form-item>
-            <el-form-item label="持续时长" class="is-required">
+            <el-form-item 
+                v-if="stageParams.phaseType == 2"
+                label="持续时长" 
+                class="is-required">
                 <el-input
                     class="w220 mr10"
                     type="number"
@@ -75,6 +77,16 @@
                     placeholder="持续时长"
                 ></el-input>
                 秒
+            </el-form-item>
+            <el-form-item 
+                v-if="stageParams.phaseType == 1"
+                label="是否循环" 
+                prop="isRotation">
+                <el-switch
+                    :active-value="1"
+                    :inactive-value="0"
+                    v-model="stageParams.isRotation"
+                ></el-switch>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -113,8 +125,9 @@ export default {
             this.stageParams = {
                 containerId: this.$route.params.id,
                 phaseType,
+                isRotation: data.isRotation,
                 beginTime: data.beginTimeFormat,
-                timelineRegions: data.timelineRegions
+                timelineRegions: data.timelineRegions,
             }
             if(data && data.id){
                 this.stageParams = {
@@ -160,10 +173,10 @@ export default {
             if(!this.stageParams.timelineRegions){
                 this.$message.warning('还没选择屏幕布局~');
                 return
-            }else if(!this.stageParams.beginTime && this.stageParams.phaseType == 2){
+            }else if(!this.stageParams.beginTime){
                 this.$message.warning('还没选择开始时间~');
                 return
-            }else if(!this.stageParams.duration){
+            }else if(!this.stageParams.duration && this.stageParams.phaseType == 2){
                 this.$message.warning('还没填写持续时间~');
                 return
             }

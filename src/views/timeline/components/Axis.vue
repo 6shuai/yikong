@@ -121,7 +121,7 @@
                         </el-link>
                     </div>
                     <ul class="info-list" v-if="phaseType==1">
-                        <li>时长：{{secondToDate(stageData[stageIndex].duration)}}</li>
+                        <li>开始时间：{{stageData[stageIndex].beginTimeFormat}}</li>
                     </ul>
                     <ul class="info-list" v-if="phaseType==2">
                         <li>开始时间：{{stageData[stageIndex].beginTimeFormat}}</li>
@@ -805,14 +805,15 @@ export default {
                 };
             }
             if(data){
-                let { id, containerId, beginTimeFormat, duration, loop, timelineRegions  } = data;
+                let { id, containerId, beginTimeFormat, duration, loop, timelineRegions, isRotation } = data;
                 obj = {
                     id, 
                     containerId,
                     beginTimeFormat,
                     duration,
                     loop,
-                    timelineRegions
+                    timelineRegions,
+                    isRotation
                 }
             }
             this.$refs.createdStage.showDialog(this.phaseType, obj); 
@@ -929,14 +930,6 @@ export default {
             let data = this.stageData[this.stageIndex].timelineRegions[index];
             this.$set(data, 'isRotation', isRotation);
             this.$set(this.screenLayout[index], 'isRotation', isRotation);
-        },
-
-        //秒 转 时分秒
-        secondToDate(result){
-            let h = Math.floor(result / 3600);
-            let m = Math.floor((result / 60 % 60));
-            let s = Math.floor((result % 60));
-            return result = (h ? h + '小时' : '') + (m ? m + '分钟' : '') + ( s ? s + '秒' : '');
         }
     },
     components: {

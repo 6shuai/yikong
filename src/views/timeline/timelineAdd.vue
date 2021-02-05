@@ -74,6 +74,16 @@
                         <el-input type="textarea" :rows="3" v-model="timelineParams.description" placeholder="时间轴描述"></el-input>
                     </el-form-item>
 
+                    <el-form-item 
+                        label="是否循环" 
+                        prop="isRotation">
+                        <el-switch
+                            :active-value="1"
+                            :inactive-value="0"
+                            v-model="timelineParams.isRotation"
+                        ></el-switch>
+                    </el-form-item>
+
                     <group-list 
                         v-if="!timelineParams.id"
                         propValue="groupIds"
@@ -100,6 +110,7 @@ export default {
             timelineParams: {
                 beginTime: '10:00',
                 endTime: '22:00',
+                isRotation: 1
             },
             btnLoading: false,     
             timelineRules: {

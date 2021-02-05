@@ -10,6 +10,12 @@
                     ><i class="el-icon-lock" title="授权"></i>授权
                     <el-divider direction="vertical"></el-divider>
                 </span>
+                <span @click="handleStatistics"
+                    v-if="resData.statisics && resData.contentTypeId == 3"
+                    ><i class="el-icon-pie-chart" title="数据统计"></i>数据统计<el-divider
+                        direction="vertical"
+                    ></el-divider
+                ></span>
                 <span 
                     v-if="resData.edit"
                     @click="editContent">
@@ -297,6 +303,17 @@ export default {
                 }
             }
             return weekArr.join('、');
+        },
+
+        //数据统计
+        handleStatistics(){
+            this.$router.push({
+                path: '/statisics',
+                query: {
+                    source: 'content',
+                    contentId: this.$route.params.id
+                }
+            });
         }
     },
     components: {

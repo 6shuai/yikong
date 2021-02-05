@@ -61,6 +61,19 @@ export const constantRoutes = [
     hidden: true
   },
 
+  //游戏统计数据
+  {
+    path: '/',
+    component: Layout,
+    children: [{
+      path: '/statisics',
+      name: 'gameStatisics',
+      component: () => import('@/components/Statistics/index'),
+      meta: { title: '数据统计' }
+    }],
+    hidden: true
+  },
+
   //场所管理  创建场所
   {
     path: '/',

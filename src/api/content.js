@@ -48,3 +48,18 @@ export function contentAuthorityUpdate(data) { return post('/content/groupConten
 //删除资源 与 群组关联
 export function contentAuthorityDelete(data) { return del(`/content/groupContent${data}`) }
 
+
+
+//查询所有场所列表
+export function contentPlaceList(data) { return get('/content/place', data) }
+
+//查询所有屏幕列表
+export function contentScreenList(data) { return get('/content/screen', data) }
+
+//统计列表
+export function contentStatistics(data) { return get('/content/statistics', data) }
+
+//统计详情
+export function contentStatisticsDetail(data) { return get('/content/statisticsDetail', data) }
+
+

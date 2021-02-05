@@ -271,7 +271,7 @@ export default {
             data.forEach((item) => {
                 this.coverData.push(item[0] || {});
             });
-        },
+        }
     },
     components: {
         LeftTabs,
