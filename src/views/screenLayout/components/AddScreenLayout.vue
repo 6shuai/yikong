@@ -399,13 +399,12 @@ export default {
             let copyData = JSON.parse(JSON.stringify(this.timelineBox));
             copyData.forEach((item, index) => {
                 //保存时宽高x，y 要乘以比例， 真实的宽高
-                item.width = this.getNum(item.width);
-                item.height = this.getNum(item.height);
+                item.width = this.getNum(item.width, 'width');
+                item.height = this.getNum(item.height, 'height');
                 item.x = this.getNum(item.x);
                 item.y = this.getNum(item.y);
 
                 if (item.x == 0) x1 = true;
-                console.log(item.x , item.width, item.x + item.width, this.screenParams.width);
                 if (item.x + item.width >= this.screenParams.width) x2 = true;
                 totalW += item.width;
             });
@@ -499,12 +498,12 @@ export default {
         getNum(num, type) {
             let result = Math.ceil((num * this.ratio).toFixed(6));
             if (type == "width" && result > this.screenParams.width) {
-                result = this.screenParams.width;
+                return this.screenParams.width;
+            }else if (type == "height" && result > this.screenParams.height) {
+                return this.screenParams.height;
+            }else{
+                return result;
             }
-            if (type == "height" && result > this.screenParams.height) {
-                result = this.screenParams.height;
-            }
-            return result;
         },
     },
     components: {
