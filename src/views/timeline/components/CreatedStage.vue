@@ -61,7 +61,10 @@
                     v-model="stageParams.beginTime"
                     value-format="HH:mm:ss"
                     format="HH:mm:ss"
-                    placeholder="起始时间"
+                    placeholder="开始时间"
+                    :picker-options="{
+                        selectableRange: `${startTime} - 23:59:59`
+                    }"
                 >
                 </el-time-picker>
             </el-form-item>
@@ -106,6 +109,7 @@ import { timeDisposeTool } from '@/mixins';
 import { timelineStageTempList, timelineStageCreated } from '@/api/timeline';
 export default {
     mixins: [timeDisposeTool],
+    props: ['startTime'],
     data() {
         return {
             showCreatedStage: false,

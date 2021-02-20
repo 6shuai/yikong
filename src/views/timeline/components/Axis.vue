@@ -291,6 +291,7 @@
         <!-- 创建或修改 阶段 -->
         <created-stage 
             ref="createdStage"
+            :startTime="startTime"
             @createdStageSuccess="createdStageSuccess"
         ></created-stage>
 
