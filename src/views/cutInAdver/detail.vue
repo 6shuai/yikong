@@ -65,12 +65,6 @@
                                     </el-tag>
                                 </template>
                             </el-table-column>
-                            <el-table-column
-                                prop="timelineStageName"
-                                label="时间轴阶段"
-                                :min-width="60"
-                            >
-                            </el-table-column>
                         </el-table>
                     </el-form-item>
                 </el-form>

@@ -25,7 +25,6 @@
                     </el-form-item>
                     <el-form-item label="时间轴" prop="timelineContainerId">
                         <el-select
-                            @change="findTimelineStage"
                             v-model="params.timelineContainerId"
                             placeholder="请选择时间轴"
                             style="width: 100%"
@@ -80,12 +79,6 @@
                                         {{ scope.row.gameStage }}
                                     </el-tag>
                                 </template>
-                            </el-table-column>
-                            <el-table-column
-                                prop="timelineStageName"
-                                label="时间轴阶段"
-                                :min-width="60"
-                            >
                             </el-table-column>
                             <el-table-column label="操作" width="100">
                                 <template slot-scope="scope">
@@ -161,20 +154,6 @@
                         controls-position="right"
                     ></el-input-number>
                 </el-form-item>
-                <el-form-item label="时间轴阶段">
-                    <el-select
-                        v-model="roundParams.timelineStage"
-                        placeholder="请选择阶段"
-                    >
-                        <el-option
-                            v-for="item in stageData"
-                            :key="item.id"
-                            :label="item.displayName"
-                            :value="item.id"
-                        >
-                        </el-option>
-                    </el-select>
-                </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
@@ -190,7 +169,6 @@
 import {
     cutInAdverCreate,
     cutInAdverTimelineList,
-    cutInAdverTimelineStage,
     cutInAdverDetail,
     cutInAdverRoundDelete
 } from "@/api/cutInAdver";
@@ -225,13 +203,12 @@ export default {
             loading: false, //编辑时获取详情  loading
             timelineListParams: {
                 pageNo: 1,
-                pageSize: 40,
+                pageSize: 200,
             },
             timelineTotal: 0,  //时间轴容器总数
             timelineData: [], //时间轴容器列表
             roundParams: {},
             showAddRound: false,
-            stageData: [], //根据时间轴容器查询的阶段
         };
     },
     mounted() {
@@ -247,7 +224,6 @@ export default {
             cutInAdverDetail({ id: this.$route.params.id }).then((res) => {
                 this.loading = false;
                 this.params = res.obj;
-                this.findTimelineStage();
             });
         },
 
@@ -303,32 +279,8 @@ export default {
             this.getTimelineList();
         },
 
-        //根据时间轴容器查询 阶段
-        findTimelineStage() {
-            cutInAdverTimelineStage({
-                containerId: this.params.timelineContainerId,
-            }).then((res) => {
-                if (res.code === this.$successCode) {
-                    let obj = res.obj;
-                    this.stageData = [];
-                    for (let key in obj) {
-                        this.stageData.push({
-                            id: obj[key],
-                            displayName: key,
-                        });
-                    }
-                }
-            });
-        },
-
-        //添加轮次
+        //添加阶段
         handleAddRound() {
-            this.stageData.forEach((item) => {
-                if (item.id == this.roundParams.timelineStage) {
-                    this.roundParams.timelineStageName = item.displayName;
-                }
-            });
-
             if(this.roundParams.index){
                 this.$set(this.params.spotStageMaps, this.roundParams.index-1, this.roundParams);
             }else{

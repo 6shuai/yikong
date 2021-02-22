@@ -23,9 +23,6 @@ export function cutInAdverRoundDelete(data) { return del(`spot/spotStageMap/${da
 //分页查询时间轴容器列表
 export function cutInAdverTimelineList(data) { return get('/spot/timelineContainer', data) }
 
-//根据时间轴容器 查询阶段
-export function cutInAdverTimelineStage(data) { return get('/spot/timelinePhase', data) }
-
 
 
 
