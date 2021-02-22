@@ -54,7 +54,7 @@
                         v-model="packageParams.description"
                     ></el-input>
                 </el-form-item>
-                <el-form-item label="上传" prop="url">
+                <el-form-item label="上传" prop="screenPackage">
                     <el-upload
                         :action="action"
                         :show-file-list="false"
@@ -131,6 +131,13 @@ export default {
                     {
                         required: true,
                         message: "请输入发布信息~",
+                        trigger: "blur",
+                    },
+                ],
+                screenPackage:  [
+                    {
+                        required: true,
+                        message: "请上传游戏包~",
                         trigger: "blur",
                     },
                 ],
