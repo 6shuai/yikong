@@ -55,8 +55,9 @@
             </el-form-item>
 
             <el-form-item 
-                label="开始时间" 
-                class="is-required">
+                v-if="stageParams.phaseType == 2 || !prevData || (prevData.isRotation && stageParams.phaseType == 1)"
+                :class="{'is-required': stageParams.phaseType == 2 || (prevData && prevData.isRotation)}"
+                label="开始时间" >
                 <el-time-picker
                     v-model="stageParams.beginTime"
                     value-format="HH:mm:ss"
@@ -68,6 +69,7 @@
                 >
                 </el-time-picker>
             </el-form-item>
+
             <el-form-item 
                 v-if="stageParams.phaseType == 2"
                 label="持续时长" 
@@ -118,11 +120,13 @@ export default {
             stageParams: {},
             tempId: undefined,
             tempList: [],
-            tempLoading: true
+            tempLoading: true,
+            prevData: {},            //上一个阶段数据
         };
     },
     methods: {
-        showDialog(phaseType, data){
+        showDialog(phaseType, data, prevData, newStageStartTime){
+            this.prevData = prevData;
             this.tempId = undefined;
             this.showCreatedStage = true;
             this.layoutTempList();
@@ -130,7 +134,7 @@ export default {
                 containerId: this.$route.params.id,
                 phaseType,
                 isRotation: data.isRotation,
-                beginTime: data.beginTimeFormat,
+                beginTime: newStageStartTime,
                 timelineRegions: data.timelineRegions,
             }
             if(data && data.id){
@@ -140,7 +144,6 @@ export default {
                     beginTime: data.beginTimeFormat
                 }
             }
-            console.log(this.stageParams)
         },
 
         //屏幕布局模板
@@ -177,7 +180,7 @@ export default {
             if(!this.stageParams.timelineRegions){
                 this.$message.warning('还没选择屏幕布局~');
                 return
-            }else if(!this.stageParams.beginTime){
+            }else if(!this.stageParams.beginTime && (this.stageParams.phaseType == 2 || this.prevData.isRotation)){
                 this.$message.warning('还没选择开始时间~');
                 return
             }else if(!this.stageParams.duration && this.stageParams.phaseType == 2){
@@ -191,9 +194,11 @@ export default {
                 if(res.code === this.$successCode){
                     this.$message.success(this.stageParams.id ? '修改成功~' : '创建成功~');
                     this.showCreatedStage = false;
+
                     this.$emit('createdStageSuccess', this.stageParams.id ? 'editStage' : 'addStage', {
                         beginTimeFormat: this.stageParams.beginTime ? this.stageParams.beginTime.split('1970-01-01 ')[1] : '',
-                        duration: this.stageParams.duration ? this.stageParams.duration : 0
+                        duration: this.stageParams.duration ? this.stageParams.duration : 0,
+                        isRotation: this.stageParams.isRotation
                     });
                 }
             })

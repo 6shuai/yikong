@@ -2,6 +2,7 @@
     <div class="atlas-upload-btn">
         <el-upload
             :action="action"
+            :data="uploadData"
             :on-success="uploadSuccess"
             :on-error="uploadError"
             :before-upload="beforeUpload"

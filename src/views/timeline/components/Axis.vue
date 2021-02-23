@@ -120,7 +120,8 @@
                         >删除
                         </el-link>
                     </div>
-                    <ul class="info-list" v-if="phaseType==1">
+                    <!-- 前一个阶段是循环时, 下一个阶段必填开始时间 -->
+                    <ul class="info-list" v-if="phaseType==1 && (stageData[stageIndex - 1] ? stageData[stageIndex - 1].isRotation : true)">
                         <li>开始时间：{{stageData[stageIndex].beginTimeFormat}}</li>
                     </ul>
                     <ul class="info-list" v-if="phaseType==2">
@@ -538,7 +539,6 @@ export default {
                     });
                 });
             }
-        
         },
 
         //删除时间轴  资源
@@ -817,7 +817,14 @@ export default {
                     isRotation
                 }
             }
-            this.$refs.createdStage.showDialog(this.phaseType, obj); 
+            let lastStage = this.stageData[this.stageData.length-1] || undefined;
+
+            this.$refs.createdStage.showDialog(
+                this.phaseType, 
+                obj, 
+                data ? this.stageData[this.stageIndex-1] : lastStage,
+                lastStage ? this.updateStartTime(lastStage.beginTimeFormat, lastStage.duration || 30) : this.startTime
+            ); 
         },
 
         //创建阶段成功
