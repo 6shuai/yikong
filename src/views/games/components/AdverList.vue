@@ -2,6 +2,7 @@
     <el-select
         @change="changeSelectAdver"
         filterable
+        clearable
         v-model="adverId"
         placeholder="请选择需要插播的广告"
         style="width: 100%"
@@ -76,7 +77,6 @@ export default {
     },
     watch: {
         spotId(){
-            console.log(this.adverId)
             this.adverId = this.spotId;
         }
     }

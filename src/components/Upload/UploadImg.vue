@@ -64,6 +64,7 @@
                     element-loading-spinner="el-icon-loading"
                 >
                     <el-upload
+                        multiple
                         :action="action"
                         :data='uploadData'
                         :show-file-list="false"

@@ -1,11 +1,14 @@
 <template>
     <div class="atlas-upload-btn">
         <el-upload
+            multiple
+            :limit="5"
             :action="action"
             :data="uploadData"
             :on-success="uploadSuccess"
             :on-error="uploadError"
             :before-upload="beforeUpload"
+            accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF"
             :show-file-list="false">
             <el-button size="small" :loading="uploadLoading" type="primary">{{uploadLoading ? '上传中..' : '上传图片'}}</el-button>
         </el-upload>

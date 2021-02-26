@@ -317,8 +317,10 @@ export default {
 
         //选择游戏包
         changePackage(){
-            let { mobileSize, screenSize } = this.packageData[this.contentParams.packageId];
-            this.contentParams.size = mobileSize + screenSize;
+            if(this.contentParams.packageId){
+                let { mobileSize, screenSize } = this.packageData[this.contentParams.packageId];
+                this.contentParams.size = mobileSize + screenSize;
+            }
         }
     },
     components: {

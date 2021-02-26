@@ -235,6 +235,7 @@ export default {
                         })
                         .catch(() => {});
                 } else if (res.code === this.$successCode) {
+                    this.$message.success('删除成功~');
                     this.resData.splice(index, 1);
                 }
             });

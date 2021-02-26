@@ -2,6 +2,7 @@
     <el-select
         @change="handleSelected"
         filterable
+        clearable
         v-model="activityId"
         placeholder="请选择活动"
         style="width: 100%"

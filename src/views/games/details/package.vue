@@ -54,24 +54,24 @@
                         v-model="packageParams.description"
                     ></el-input>
                 </el-form-item>
-                <el-form-item label="上传" prop="screenPackage">
+                <el-form-item label="选择游戏包" class="is-require">
                     <el-upload
+                        ref="upload"
+                        multiple
                         :action="action"
-                        :show-file-list="false"
                         :before-upload="beforeUpload"
                         :on-success="uploadSuccess"
                         :on-error="uploadError"
+                        :auto-upload="false"
+                        :limit="9"
                     >
-                        <div slot="default">
-                            <el-button
-                                type="primary"
-                                :loading="uploadLoading"
-                                icon="el-icon-upload2"
-                                >{{
-                                    uploadLoading ? "上传中" : "上传游戏包"
-                                }}</el-button
-                            >
-                        </div>
+                        <el-button
+                            v-if="!uploadLoading && !packageParams.screenPackage"
+                            slot="trigger"
+                            type="primary"
+                            icon="el-icon-upload2"
+                            >选择游戏包</el-button
+                        >
                     </el-upload>
                     <span v-if="uploadPackageSuccess">上传成功~</span>
                 </el-form-item>
@@ -82,7 +82,9 @@
                     type="primary"
                     @click="handleSubmit"
                     :loading="uploadDialogLoading"
-                    >确 定</el-button
+                    >{{
+                        uploadDialogLoading ? "提交中" : "提 交"
+                    }}</el-button
                 >
             </span>
         </el-dialog>
@@ -143,6 +145,7 @@ export default {
                 ],
             },
             uploadPackageSuccess: false, //是否上传成功
+            fileData: [],
         }
     },
     computed: {
@@ -172,6 +175,8 @@ export default {
         uploadError() {
             this.$message.error("上传失败~");
             this.uploadLoading = false;
+            this.uploadDialogLoading = false;
+            this.$refs.upload.uploadFiles = [];
         },
 
         //上传成功
@@ -189,8 +194,9 @@ export default {
                         this.packageParams.mobileSize = item.size;
                     }
                 });
+                this.uploadSuccessSubmit();
             } else {
-                this.$message.success(res.message);
+                this.uploadError();
             }
         },
 
@@ -199,26 +205,39 @@ export default {
             this.uploadDialog = false;
         },
 
-        //提交
+        //点击提交按钮
         handleSubmit() {
             this.$refs.upladPackageForm.validate((valid) => {
                 if (valid) {
+                    if(!this.$refs.upload.uploadFiles.length){
+                        this.$message.warning('请选择游戏包~');
+                        return
+                    }
+                    console.log(this.$refs.upload.uploadFiles.length)
                     this.uploadDialogLoading = true;
                     this.packageParams.applicationId = this.$route.params.id;
-                    packageCreated(this.packageParams).then((res) => {
-                        this.uploadDialogLoading = false;
-                        if (res.code === this.$successCode) {
-                            this.$message.success("提交成功~");
-                            this.versionType = 0;
-                            this.$nextTick(() => {
-                                this.selectedVersion();
-                                this.uploadDialog = false;
-                            })
-                        }
-                    });
+                    this.$refs.upload.submit();
                 }
             });
+            
         },
+
+        //上传成功后 提交
+        uploadSuccessSubmit(){
+            packageCreated(this.packageParams).then((res) => {
+                this.uploadDialogLoading = false;
+                if (res.code === this.$successCode) {
+                    this.$message.success("提交成功~");
+                    this.versionType = 0;
+                    this.$nextTick(() => {
+                        this.selectedVersion();
+                        this.uploadDialog = false;
+                    })
+                }
+            });
+},
+
+
 
         //选择包版本
         selectedVersion(){
