@@ -57,13 +57,13 @@
                 <el-form-item label="选择游戏包" class="is-require">
                     <el-upload
                         ref="upload"
-                        multiple
                         :action="action"
                         :before-upload="beforeUpload"
                         :on-success="uploadSuccess"
                         :on-error="uploadError"
                         :auto-upload="false"
-                        :limit="9"
+                        :on-change="handleChange"
+                        :file-list="fileList"
                     >
                         <el-button
                             v-if="!uploadLoading && !packageParams.screenPackage"
@@ -145,7 +145,7 @@ export default {
                 ],
             },
             uploadPackageSuccess: false, //是否上传成功
-            fileData: [],
+            fileList: [],
         }
     },
     computed: {
@@ -161,9 +161,14 @@ export default {
         showUploadDialog() {
             this.packageParams = {};
             this.uploadDialog = true;
+            this.uploadPackageSuccess = false;
             this.$nextTick(() => {
                 this.$refs["upladPackageForm"].clearValidate();
             });
+        },
+
+        handleChange(file, fileList) {
+            this.fileList = fileList.slice(-1);
         },
 
         //上传之前
@@ -183,7 +188,6 @@ export default {
         uploadSuccess(res) {
             this.uploadLoading = false;
             if (res.code == this.$successCode) {
-                this.$message.success("上传成功~");
                 this.uploadPackageSuccess = true;
                 res.obj.forEach((item) => {
                     if (item.type === "screen") {
@@ -213,7 +217,6 @@ export default {
                         this.$message.warning('请选择游戏包~');
                         return
                     }
-                    console.log(this.$refs.upload.uploadFiles.length)
                     this.uploadDialogLoading = true;
                     this.packageParams.applicationId = this.$route.params.id;
                     this.$refs.upload.submit();
