@@ -245,7 +245,7 @@
 
                                             <!-- 在这个时间段播放了多少次 -->
                                             <div class="play-count">
-                                                x{{Math.ceil(timeDifference(item.beginTime, item.endTime) / item.contentDuration)}}
+                                                x{{Math.floor(timeDifference(item.beginTime, item.endTime) / item.contentDuration)}}
                                             </div>
                                         </div>
                                     </el-popover>
