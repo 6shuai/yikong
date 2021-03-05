@@ -244,7 +244,7 @@
                                             </div>
 
                                             <!-- 在这个时间段播放了多少次 -->
-                                            <div class="play-count" v-if="item.contentTypeId == contentTypeId.video || item.contentTypeId == contentTypeId.atlas">
+                                            <div class="play-count">
                                                 x{{Math.ceil(timeDifference(item.beginTime, item.endTime) / item.contentDuration)}}
                                             </div>
                                         </div>

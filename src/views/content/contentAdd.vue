@@ -473,40 +473,48 @@ export default {
             text-align: center;
             padding: 0;
         }
-    }
-    .atlas-list{
-        margin: 0 15px 15px 0;
-        display: inline-block;
-        .duration{
-            margin-top: -10px;
-            color: #999;
+
+        .atlas-list{
+            margin: 0 15px 15px 0;
+            display: inline-block;
+
+            .duration{
+                margin-top: -10px;
+                color: #999;
+                text-align: center;
+
+                .el-input-number--small{
+                    width: 120px;
+                }
+                
+                .text{
+                    margin-left: 5px;
+                }
+            }
+        }
+
+        .el-upload-list{
+            min-height: 148px;
+            display: inline-block;
+        }
+
+        .el-upload-list--picture-card .el-upload-list__item{
+            margin: 0;
+            display: inline-block;
+            .video{
+                width: 100%;
+                height: 100%;
+                background: #000;
+            }
+        }
+
+        .preview-wrap{
             text-align: center;
-            .el-input-number--small{
-                width: 120px;
-            }
-            .text{
-                margin-left: 5px;
+            video, img{
+                width: 100%;
+                max-width: 100%;
             }
         }
-    }
-    .el-upload-list{
-        min-height: 148px;
-        display: inline-block;
-    }
-    .el-upload-list--picture-card .el-upload-list__item{
-        margin: 0;
-        display: inline-block;
-        .video{
-            width: 100%;
-            height: 100%;
-            background: #000;
-        }
-    }
-    .preview-wrap{
-        text-align: center;
-        video, img{
-            width: 100%;
-            max-width: 100%;
-        }
+
     }
 </style>

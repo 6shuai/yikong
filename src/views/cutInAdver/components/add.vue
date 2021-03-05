@@ -41,6 +41,7 @@
                                 small
                                 hide-on-single-page
                                 @current-change="handleCurrentChange"
+                                :page-size="timelineListParams.pageSize"
                                 :current-page="Number(timelineListParams.pageNo)"
                                 layout="prev, pager,next,total"
                                 :total="timelineTotal">
