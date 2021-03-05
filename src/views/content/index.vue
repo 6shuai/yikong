@@ -16,6 +16,7 @@
         </div>
 
         <el-pagination
+            v-if="resData.length"
             background
             layout="total, prev, pager, next, sizes"
             :page-sizes="[48, 80, 100]"

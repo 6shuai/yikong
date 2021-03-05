@@ -175,6 +175,8 @@ import {
 } from "@/api/cutInAdver";
 import GroupList from "@/components/GroupList/index";
 
+// 添加广告轴[id, 名称] ->  添加游戏阶段[阶段, 阶段说明] -> 添加游戏阶段 屏幕列表和广告轴 [广告轴可以自己选择]
+
 export default {
     data() {
         return {
