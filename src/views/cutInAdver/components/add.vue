@@ -23,10 +23,10 @@
                             placeholder="名称"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="时间轴" prop="timelineContainerId">
+                    <el-form-item label="广告轴" prop="timelineContainerId">
                         <el-select
                             v-model="params.timelineContainerId"
-                            placeholder="请选择时间轴"
+                            placeholder="请选择广告轴"
                             style="width: 100%"
                         >
                             <el-option
@@ -174,6 +174,8 @@ import {
     cutInAdverRoundDelete
 } from "@/api/cutInAdver";
 import GroupList from "@/components/GroupList/index";
+
+// 添加广告轴[id, 名称] ->  添加游戏阶段[阶段, 阶段说明] -> 添加游戏阶段 屏幕列表和广告轴 [广告轴可以自己选择]
 
 export default {
     data() {
