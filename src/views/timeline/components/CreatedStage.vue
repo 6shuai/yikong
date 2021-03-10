@@ -189,6 +189,7 @@ export default {
             }
             this.createdLoading = true;
             this.stageParams.beginTime = this.stageParams.beginTime ? "1970-01-01 " + this.stageParams.beginTime : '';
+
             timelineStageCreated(this.stageParams).then(res => {
                 this.createdLoading = false;
                 if(res.code === this.$successCode){
@@ -202,7 +203,19 @@ export default {
                     });
                 }
             })
+        },
+
+        //删除当前阶段后 把下一个阶段的开始时间改成上一个的开始时间
+        changeNextStageTime(params){
+            params.beginTime = params.beginTime ? "1970-01-01 " + params.beginTime : '';
+            timelineStageCreated(params).then(res => {
+                if(res.code === this.$successCode){
+                    console.log('修改下一阶段开始时间成功');
+                }
+            })
         }
+
+
     },
 };
 </script>

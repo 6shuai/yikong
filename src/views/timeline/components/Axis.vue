@@ -863,10 +863,23 @@ export default {
             .then(() => {
                 timelineStageDelete(id).then(res => {
                     if(res.code === this.$successCode){
+                        let beginTime = this.stageData[stageIndex].beginTimeFormat;
                         this.$message.success('删除成功~');
                         this.stageData.splice(stageIndex, 1);
                         this.stageIndex = stageIndex ? stageIndex - 1 : 0;
                         this.updateScreenShow();
+
+                        this.$nextTick(() => {
+                            if(!this.stageData[stageIndex]) return;
+                            //删除阶段之后 下一个阶段开始时间修改成上一个的开始时间
+                            this.stageData[stageIndex] = {
+                                ...this.stageData[stageIndex],
+                                beginTimeFormat: beginTime,
+                                beginTime
+                            };
+                            this.$refs.createdStage.changeNextStageTime(this.stageData[stageIndex]);
+                        })
+
                     }
                 })
             })
@@ -905,6 +918,7 @@ export default {
             this.stageIndex = page-1;
             this.updateScreenShow();
         },
+
 
         //更新预览 显示
         updateScreenShow(){

@@ -23,10 +23,10 @@
                             placeholder="名称"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="时间轴" prop="timelineContainerId">
+                    <el-form-item label="广告轴" prop="timelineContainerId">
                         <el-select
                             v-model="params.timelineContainerId"
-                            placeholder="请选择时间轴"
+                            placeholder="请选择广告轴"
                             style="width: 100%"
                         >
                             <el-option
