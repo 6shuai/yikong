@@ -195,6 +195,19 @@
                     ></el-divider>
                     <div class="info-item">
                         <el-form label-width="85px">
+                            <el-form-item label="探针数据">
+                                <el-link
+                                    v-if="resData.placeId"
+                                    type="primary"
+                                    @click="
+                                        $router.push(
+                                            `/screen/probeData/${$route.params.id}`
+                                        )
+                                    "
+                                    ><i class="el-icon-data-line"></i
+                                    >查看探针数据</el-link
+                                >
+                            </el-form-item>
                             <el-form-item label="所属场所">
                                 <el-link
                                     v-if="resData.placeId"

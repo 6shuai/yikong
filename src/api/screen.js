@@ -73,3 +73,7 @@ export function screenStatisticsDetail(data) { return get('/screen/statisticsDet
 
 
 
+//探针数据
+export function screenProbeData(data) { return get('/screen/screenFootTraffic', data) }
+
+

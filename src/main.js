@@ -24,6 +24,9 @@ import { faWeixin } from "@fortawesome/free-brands-svg-icons"
 import { faBuilding, faWindowMaximize, faClock, faImage } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import VueDND from 'awe-dnd'
+
+import echarts from 'echarts'
+
 import BabelPolyfill from 'babel-polyfill'
 
 Vue.use(BabelPolyfill)
@@ -49,7 +52,11 @@ Vue.use(VueDND)
 Vue.config.productionTip = false;
 Vue.prototype.$successCode = 0;    //接口返回code 0 成功
 
+//注册echarts
+Vue.prototype.$echarts = echarts
+
 window.eventBus = new Vue();
+
 
 
 /**

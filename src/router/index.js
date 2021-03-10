@@ -156,6 +156,19 @@ export const constantRoutes = [
     hidden: true
   },
 
+  //屏幕管理  探针数据
+  {
+    path: '/',
+    component: Layout,
+    children: [{
+      path: '/screen/probeData/:id',
+      name: 'Screen--probeData',
+      component: () => import('@/views/screen/components/probeData'),
+      meta: { title: '探针数据' }
+    }],
+    hidden: true
+  },
+
   //资源管理  创建资源
   {
     path: '/',
