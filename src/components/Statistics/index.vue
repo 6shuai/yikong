@@ -104,8 +104,8 @@
                 min-width="120"
             ></el-table-column>
             <el-table-column
-                prop="scanTimes"
-                label="扫码次数"
+                prop="loginTimes"
+                label="登录次数"
                 min-width="80"
             ></el-table-column>
             <el-table-column

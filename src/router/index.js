@@ -371,7 +371,7 @@ export const constantRoutes = [
     {
       path: '/cutInAdver/add',
       name: 'CutInAdver--add',
-      component: () => import('@/views/cutInAdver/components/add'),
+      component: () => import('@/views/cutInAdver/add'),
       meta: { title: '插播广告 - 创建' },
     }
   ],
@@ -387,7 +387,7 @@ export const constantRoutes = [
     {
       path: '/cutInAdver/edit/:id',
       name: 'CutInAdver--edit',
-      component: () => import('@/views/cutInAdver/components/add'),
+      component: () => import('@/views/cutInAdver/add'),
       meta: { title: '插播广告 - 编辑' },
     }
   ],

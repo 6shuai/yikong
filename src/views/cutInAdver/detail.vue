@@ -43,13 +43,17 @@
                     <el-form-item label="名称：">
                         {{ resData.displayName }}
                     </el-form-item>
-                    <el-form-item label="时间轴：">
-                        {{ resData.timelineContainerName }}
+                    <el-form-item label="广告轴：">
+                        <el-tag 
+                            class="mr10"
+                            v-for="(item, index) in resData.spotContainerRelation" 
+                            :key="index"
+                        >{{ item.containerName }}</el-tag>
                     </el-form-item>
                     <el-form-item label="游戏阶段：">
                         <el-table
                             class="round-data"
-                            :data="resData.spotStageMaps"
+                            :data="resData.spotGameStageRelation"
                             size="mini"
                             border
                             stripe
@@ -60,10 +64,19 @@
                                 :min-width="60"
                             >
                                 <template slot-scope="scope">
-                                    <el-tag size="mini" type="danger">
+                                    <el-tag 
+                                        size="mini" 
+                                        type="danger"
+                                    >
                                         {{ scope.row.gameStage }}
                                     </el-tag>
                                 </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="description"
+                                label="阶段描述"
+                                :min-width="60"
+                            >
                             </el-table-column>
                         </el-table>
                     </el-form-item>
@@ -76,6 +89,7 @@
             ref="pagePermission"
             :premissionApi="premissionApi"
         ></permission>
+
     </el-card>
 </template>
 <script>
@@ -142,7 +156,7 @@ export default {
         },
     },
     components: {
-        Permission,
+        Permission
     },
 };
 </script>

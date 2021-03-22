@@ -245,7 +245,7 @@
 
                                             <!-- 在这个时间段播放了多少次 -->
                                             <div class="play-count">
-                                                x{{Math.floor(timeDifference(item.beginTime, item.endTime) / item.contentDuration)}}
+                                                x{{ playCount(item) }}
                                             </div>
                                         </div>
                                     </el-popover>
@@ -952,6 +952,12 @@ export default {
             let data = this.stageData[this.stageIndex].timelineRegions[index];
             this.$set(data, 'isRotation', isRotation);
             this.$set(this.screenLayout[index], 'isRotation', isRotation);
+        },
+
+        //播放次数
+        playCount(item){
+            let num = Math.floor(this.timeDifference(item.beginTime, item.endTime) / (item.contentDuration));
+            return num ? num : 1;
         }
     },
     components: {
