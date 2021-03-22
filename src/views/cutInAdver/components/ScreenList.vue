@@ -26,7 +26,7 @@
                 :min-width="60"
             >
             </el-table-column>
-            <el-table-column label="操作" width="120" v-if="timelineList.length > 1">
+            <el-table-column label="操作" width="120" v-if="timelineList && timelineList.length > 1">
                 <template slot-scope="scope">
                     <el-button 
                         type="primary" 

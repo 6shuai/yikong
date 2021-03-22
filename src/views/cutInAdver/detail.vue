@@ -67,6 +67,7 @@
                                     <el-tag 
                                         size="mini" 
                                         type="danger"
+                                        @click="$refs.screenList.getScreenList(scope.row.id)"
                                     >
                                         {{ scope.row.gameStage }}
                                     </el-tag>
@@ -90,6 +91,12 @@
             :premissionApi="premissionApi"
         ></permission>
 
+        <!-- 屏幕列表 -->
+        <screen-list 
+            ref="screenList"
+            :timelineList="resData.spotContainerRelation"
+        ></screen-list>
+
     </el-card>
 </template>
 <script>
@@ -101,6 +108,7 @@ import {
     cutInAdverAuthorityDelete,
 } from "@/api/cutInAdver";
 import Permission from "@/components/permission/index";
+import ScreenList from './components/ScreenList';
 
 export default {
     data() {
@@ -156,7 +164,8 @@ export default {
         },
     },
     components: {
-        Permission
+        Permission,
+        ScreenList
     },
 };
 </script>
