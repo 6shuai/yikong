@@ -70,7 +70,6 @@
 
         <el-pagination
             background
-            hide-on-single-page
             layout="total, prev, pager, next, sizes"
             :page-sizes="[48, 80, 100]"
             :current-page="Number(params.pageNo)"
@@ -91,10 +90,7 @@ export default {
     data() {
         return {
             dialogVisible: false,
-            params: {
-                pageNo: 1,
-                pageSize: 48,
-            },
+            params: {},
             tableLoading: false,
             resData: [],
             totalCount: 0,
@@ -106,6 +102,8 @@ export default {
             this.statisticsDetailApi = statisticsDetailApi;
             this.dialogVisible = true;
             this.params = {
+                pageNo: 1,
+                pageSize: 48,
                 ...this.params,
                 ...data
             }

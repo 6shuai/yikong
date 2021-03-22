@@ -114,6 +114,11 @@
                 min-width="80"
             ></el-table-column>
             <el-table-column
+                prop="playerCount"
+                label="游戏人数"
+                min-width="80"
+            ></el-table-column>
+            <el-table-column
                 prop="playtime"
                 label="人均时长"
                 min-width="80"
@@ -137,7 +142,6 @@
 
         <el-pagination
             background
-            hide-on-single-page
             layout="total, prev, pager, next, sizes"
             :page-sizes="[48, 80, 100]"
             :current-page="Number(params.pageNo)"
