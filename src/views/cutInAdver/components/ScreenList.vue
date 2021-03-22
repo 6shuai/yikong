@@ -112,6 +112,7 @@ export default {
         handleShowChangeTimeline(row, index){
             this.changeScreenTimeline = {
                 id: row.id,
+                screenId: row.screenId,
                 index
             }; 
             this.showChangeTimeline = true
