@@ -106,9 +106,14 @@ export function param2Obj(url) {
   )
 }
 
+export const ajaxUrl = process.env.NODE_ENV === 'development'
+	? '/' : `${document.location.origin}/`;   
 
 //上传路径
 export const uploadUrl = '/common/upload/';
 
 //上传游戏包路径 
 export const uploadGamePackage = '/common/uploadApplicationPackage';
+
+//获取登录验证码
+export const getLoginCode = '/entry/verifyCode';

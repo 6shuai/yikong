@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { MessageBox, Message } from 'element-ui';
+import { ajaxUrl } from '@/utils/index';
 import qs from 'qs';
 import store from '../store';
 import router from '@/router';
 
-const ajaxUrl = process.env.NODE_ENV === 'development'
-	? '/' : `${document.location.origin}/`;   
 axios.defaults.timeout = 60000;   
 axios.defaults.baseURL = ajaxUrl;    //设置请求域名 
 axios.defaults.withCredentials = true;  //携带cookie
@@ -27,7 +26,8 @@ axios.interceptors.request.use(
 
 /**
  * 响应拦截器
- * code 4    账号的时效期 过期
+ * code 4    账号的时效期 过期 
+ * code 10   账号被挤
  * code 103  无权限访问
  */
 axios.interceptors.response.use(
@@ -35,11 +35,11 @@ axios.interceptors.response.use(
 		const res = response.data;
 		if (res.code !== 0) {
 			Message.closeAll()
-			if(res.code === 4){
-				logot();
+			if(res.code === 4 || res.code === 10){
+				logout();
 			}else if(res.code === 103){
 				if(response.config.url == '/user/authority'){
-					logot();
+					logout();
 				}else if(location.hash != '#/'){
 					router.push({ path: '/' });
 				}
@@ -83,7 +83,7 @@ axios.interceptors.response.use(
 
 
 //退出登录
-const logot = function(){
+const logout = function(){
 	store.dispatch('user/logout').then(() => {
 		location.reload() // 为了重新实例化vue-router对象 避免bug
 	})

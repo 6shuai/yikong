@@ -49,6 +49,23 @@
 			</span>
 		</el-form-item>
 
+		<el-form-item prop="verifyCode">
+			<span class="svg-container">
+				<svg-icon icon-class="code" />
+			</span>
+			<el-input
+				class="code-input"
+				v-model="loginForm.verifyCode"
+				placeholder="验证码"
+				tabindex="2"
+				auto-complete="on"
+				@keyup.enter.native="submitLogin"
+			/>
+			<span class="code-img" @click="codeImg='';loginCodeImg()" v-loading="!codeImg">
+				<img :src="codeImg" />
+			</span>
+		</el-form-item>
+
 		<el-button
 			:loading="loading"
 			type="primary"
@@ -70,6 +87,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import { ajaxUrl, getLoginCode } from '@/utils/index';
 
 export default {
 	name: "Login",
@@ -83,11 +101,15 @@ export default {
 				],
 				password: [
 					{ required: true, trigger: "blur", message: '请输入密码~' }
+				],
+				verifyCode: [
+					{ required: true, trigger: "blur", message: '请输入验证码~' }
 				]
 			},
 			loading: false,
 			passwordType: "password",
-			redirect: undefined
+			redirect: undefined,
+			codeImg: '',          //验证码图片
 		};
 	},
 	watch: {
@@ -100,6 +122,7 @@ export default {
 	},
 	created() {
 		this.getCookie();
+		this.loginCodeImg();
 	},
 	methods: {
 		getCookie() {
@@ -120,6 +143,13 @@ export default {
 			this.$nextTick(() => {
 				this.$refs.password.focus();
 			});
+		},
+
+		//获取登录验证码
+		loginCodeImg(){
+			setTimeout(() => {
+				this.codeImg = ajaxUrl + getLoginCode
+			}, 1000);
 		},
 
 		//登录
@@ -246,11 +276,27 @@ $light_gray: #eee;
   }
 
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    padding: 4px 5px 4px 15px;
     color: $dark_gray;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
+  }
+
+  .code-input{
+	  width: 50%;
+  }
+
+  .code-img{
+		width: 160px;
+		height: 50px;
+		display: inline-block;
+		float: right;
+		cursor: pointer;
+		img{
+			width: 100%;
+			height: 100%;
+		}
   }
 
   .title-container {
