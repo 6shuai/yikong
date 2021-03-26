@@ -112,8 +112,7 @@ export default {
 					{ required: true, trigger: "blur", message: '请输入用户名~' }
 				],
 				password: [
-					{ required: true, trigger: "blur", message: '请输入密码~' },
-					{ validator: validatePass, trigger: "blur" },
+					{ required: true, trigger: "blur", message: '请输入密码~' }
 				],
 				verifyCode: [
 					{ required: true, trigger: "blur", message: '请输入验证码~' }
