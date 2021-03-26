@@ -87,7 +87,6 @@ import { ajaxUrl, getLoginCode } from '@/utils/index';
 export default {
 	name: "Login",
 	data() {
-		// 校验密码一致性
 		var testPassword = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,15}$/;
 		var validatePass = (rule, value, callback) => {
 			if (!testPassword.test(value)) {
@@ -96,8 +95,11 @@ export default {
 						"至少包含大小写字母、数字和特殊字符的其中3种，长度不小于8位"
 					)
 				);
+			} else {
+				callback();
 			}
 		};
+		// 校验密码一致性
 		var validateConfirmPass = (rule, value, callback) => {
 			if (value === "") {
 				callback(new Error("请再次输入密码！"));
@@ -142,7 +144,8 @@ export default {
 					{ required: true, message: "请输入验证码", trigger: "blur" },
 				],
 			},
-			codeImg: ''
+			codeImg: '',
+			codeTimer: undefined
 		};
 	},
 	watch: {
@@ -159,7 +162,8 @@ export default {
 	methods: {
 		//获取登录验证码
 		loginCodeImg(){
-			setTimeout(() => {
+			clearTimeout(this.codeTimer);
+			this.codeTimer = setTimeout(() => {
 				this.codeImg = ajaxUrl + getLoginCode
 			}, 1000);
 		},

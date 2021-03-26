@@ -116,4 +116,4 @@ export const uploadUrl = '/common/upload/';
 export const uploadGamePackage = '/common/uploadApplicationPackage';
 
 //获取登录验证码
-export const getLoginCode = '/entry/verifyCode';
+export const getLoginCode = 'entry/verifyCode';

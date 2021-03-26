@@ -92,6 +92,18 @@ import { ajaxUrl, getLoginCode } from '@/utils/index';
 export default {
 	name: "Login",
 	data() {
+		var testPassword = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,15}$/;
+		var validatePass = (rule, value, callback) => {
+			if (!testPassword.test(value)) {
+				callback(
+					new Error(
+						"至少包含大小写字母、数字和特殊字符的其中3种，长度不小于8位"
+					)
+				);
+			} else {
+				callback();
+			}
+		};
 		return {
 			checked: false,         //记住账号
 			loginForm: {},
@@ -100,7 +112,8 @@ export default {
 					{ required: true, trigger: "blur", message: '请输入用户名~' }
 				],
 				password: [
-					{ required: true, trigger: "blur", message: '请输入密码~' }
+					{ required: true, trigger: "blur", message: '请输入密码~' },
+					{ validator: validatePass, trigger: "blur" },
 				],
 				verifyCode: [
 					{ required: true, trigger: "blur", message: '请输入验证码~' }
@@ -110,6 +123,7 @@ export default {
 			passwordType: "password",
 			redirect: undefined,
 			codeImg: '',          //验证码图片
+			codeTimer: undefined
 		};
 	},
 	watch: {
@@ -147,7 +161,8 @@ export default {
 
 		//获取登录验证码
 		loginCodeImg(){
-			setTimeout(() => {
+			clearTimeout(this.codeTimer);
+			this.codeTimer = setTimeout(() => {
 				this.codeImg = ajaxUrl + getLoginCode
 			}, 1000);
 		},
@@ -171,9 +186,6 @@ export default {
 					.catch(() => {
 						this.loading = false;
 					});
-				} else {
-					this.$message.error('请输入所有字段');
-					return false;
 				}
 			});
 		},

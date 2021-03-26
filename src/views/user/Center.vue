@@ -150,8 +150,12 @@ export default {
 
         //修改密码
         handleChangePassword(){
+            var testPassword = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,15}$/;
             if(!this.pwParams.password){
                 this.$message.error('请输入密码~');
+                return
+            }else if(!testPassword.test(this.pwParams.password)){
+                this.$message.error('至少包含大小写字母、数字和特殊字符的其中3种，长度不小于8位');
                 return
             }else if(!this.pwParams.confirmPassword){
                 this.$message.error('请输入确认密码~');
@@ -164,6 +168,7 @@ export default {
 
             this.pwParams.id = this.$store.state.user.loginData.id;
             userPasswordUpdate(this.pwParams).then(res => {
+                this.btnLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('修改成功~');
                     this.updatePasswordDialog = false;
