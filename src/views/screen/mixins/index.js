@@ -38,6 +38,7 @@ export const getScreenDetail = {
     methods: {
         initDetail(resolve){
             this.loading = true;
+            if(!this.$route.params.id) return
             let data = `?id=${this.$route.params.id}&userId=${this.$store.state.user.loginData.id}`;
             screenDetail(data).then(res => {
                 this.loading = false;
