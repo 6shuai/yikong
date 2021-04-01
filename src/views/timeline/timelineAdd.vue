@@ -108,8 +108,8 @@ export default {
     data(){
         return {
             timelineParams: {
-                beginTime: '10:00',
-                endTime: '22:00',
+                beginTime: '09:50',
+                endTime: '22:10',
                 isRotation: 1
             },
             btnLoading: false,     
