@@ -62,7 +62,53 @@
                             </div>
                             
                         </el-form-item>
-                        <div v-if="contentParams.contentType !== 4">
+
+                        <el-form-item :label="`上传内容 (图集)`" class="is-required" v-if="contentParams.contentType === 4">
+
+                            <div class="atlas-top mb10">
+                                <!-- 上传图片 -->
+                                <atlas-upload-img @atlasUploadSuccess="atlasUploadSuccess(1, $event)"></atlas-upload-img>
+                                <!-- 上传视频 -->
+                                <atlas-upload-video @atlasUploadSuccess="atlasUploadSuccess(2, $event)"></atlas-upload-video>
+                                <!-- 选择内容 -->
+                                <el-button size="small" type="primary" @click="$refs.contentlist.showContentList=true">选择内容</el-button>
+                            </div>
+                            
+                            <!-- 图集列表 -->
+                            <ul class="el-upload-list el-upload-list--picture-card">
+                                <li class="atlas-list" v-for="(item, index) in atlasData" :key="index">
+                                    <div class="el-upload-list__item is-success">
+                                        <el-image v-if="item.image" fit="cover" class="el-upload-list__item-thumbnail" :src="item.image"></el-image>
+                                        <el-image v-if="item.contentType==1" class="el-upload-list__item-thumbnail" fit="cover" :src="item.image ? item.image : item.contentPath"></el-image>
+                                        <video v-if="item.contentType==2" :src="item.contentPath" class="video"></video>
+                                        <span class="el-upload-list__item-actions">
+                                            <span
+                                                title="预览"
+                                                class="el-upload-list__item-preview"
+                                                @click="previewData=item;dialogVisible=true"
+                                            >
+                                                <i :class="item.contentType==2 ? 'el-icon-video-play' : 'el-icon-zoom-in'"></i>
+                                            </span>
+                                            <span
+                                                title="删除"
+                                                class="el-upload-list__item-delete"
+                                                @click="contentDelete(index, item.id)"
+                                            >
+                                                <i class="el-icon-delete"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="duration">
+                                        <el-input-number size="small" v-model="item.duration" @change="handleContentDuration" placeholder="播放时长" controls-position="right" :min="1"></el-input-number>
+                                        <span class="text">秒</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            
+                        </el-form-item>
+
+
+                        <div>
                             <el-form-item label="分辨率(像素)" class="is-required">
                                 <el-row>
                                     <el-col :span="11">
@@ -111,50 +157,6 @@
                         ></group-list>
                     </el-col>
                 </el-row>
-
-                <el-form-item :label="`上传内容 (图集)`" class="is-required" v-if="contentParams.contentType === 4">
-
-                    <div class="atlas-top mb10">
-                        <!-- 上传图片 -->
-                        <atlas-upload-img @atlasUploadSuccess="atlasUploadSuccess(1, $event)"></atlas-upload-img>
-                        <!-- 上传视频 -->
-                        <atlas-upload-video @atlasUploadSuccess="atlasUploadSuccess(2, $event)"></atlas-upload-video>
-                        <!-- 选择内容 -->
-                        <el-button size="small" type="primary" @click="$refs.contentlist.showContentList=true">选择内容</el-button>
-                    </div>
-                    
-                    <!-- 图集列表 -->
-                    <ul class="el-upload-list el-upload-list--picture-card">
-                        <li class="atlas-list" v-for="(item, index) in atlasData" :key="index">
-                            <div class="el-upload-list__item is-success">
-                                <el-image v-if="item.image" fit="cover" class="el-upload-list__item-thumbnail" :src="item.image"></el-image>
-                                <el-image v-if="item.contentType==1" class="el-upload-list__item-thumbnail" fit="cover" :src="item.image ? item.image : item.contentPath"></el-image>
-                                <video v-if="item.contentType==2" :src="item.contentPath" class="video"></video>
-                                <span class="el-upload-list__item-actions">
-                                    <span
-                                        title="预览"
-                                        class="el-upload-list__item-preview"
-                                        @click="previewData=item;dialogVisible=true"
-                                    >
-                                        <i :class="item.contentType==2 ? 'el-icon-video-play' : 'el-icon-zoom-in'"></i>
-                                    </span>
-                                    <span
-                                        title="删除"
-                                        class="el-upload-list__item-delete"
-                                        @click="contentDelete(index, item.id)"
-                                    >
-                                        <i class="el-icon-delete"></i>
-                                    </span>
-                                </span>
-                            </div>
-                            <div class="duration">
-                                <el-input-number size="small" v-model="item.duration" @change="handleContentDuration" placeholder="播放时长" controls-position="right" :min="1"></el-input-number>
-                                <span class="text">秒</span>
-                            </div>
-                        </li>
-                    </ul>
-                    
-                </el-form-item>
 
                 <el-form-item label="">
                     <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="placeSureBtn">提  交</el-button>
@@ -331,11 +333,32 @@ export default {
 
         //宽高比计算
         aspectRatioCompute(width, height){
-            this.aspectRatio.forEach(item => {
-                if(item.width == width && item.height == height){
-                    this.contentParams.aspectRatio = item.id;
+            //width / height  
+            //  1.33 - 1.7  : 4:3
+            //  1.71 - 2.34 : 16:9
+            // > 2.34       : 21:9
+
+            // id=1(16:9)  id=2(16:10)  id=3(9:16)  id=4(10:16)  id=5(4:3)  id=6(3:4)  id=7(21:9)
+            if(width > height){
+                let ratio = width / height;
+                if(ratio < 1.7){
+                    this.contentParams.aspectRatio = 5;
+                }else if(ratio >= 1.7 && ratio < 2.34){
+                    this.contentParams.aspectRatio = 1;
+                }else{
+                    this.contentParams.aspectRatio = 7;
                 }
-            })
+            }else{
+                let ratio = height / width;
+                if(ratio < 1.7){
+                    this.contentParams.aspectRatio = 6;
+                }else if(ratio >= 1.7 && ratio < 2.34){
+                    this.contentParams.aspectRatio = 3;
+                }else{
+                    this.contentParams.aspectRatio = 7;
+                }
+            }
+            
         },
 
         //选择内容类型  清空内容路径
@@ -365,6 +388,19 @@ export default {
 
         //图集上传成功
         atlasUploadSuccess(type, data){
+            if(!this.atlasData.length){
+                let { duration, width, height, size } = data;
+                this.contentParams = {
+                    ...this.contentParams,
+                    duration,
+                    width,
+                    height,
+                    size
+                }
+                if(this.contentParams.width && this.contentParams.height){
+                    this.aspectRatioCompute(this.contentParams.width, this.contentParams.height);
+                }
+            }
             this.atlasData.push({
                 ...data,
                 contentType: type

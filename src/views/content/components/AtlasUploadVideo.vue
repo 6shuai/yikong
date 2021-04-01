@@ -1,10 +1,12 @@
 <template>
     <div class="atlas-upload-btn">
         <el-upload
+            :data='uploadData'
             :action="action"
             :on-success="uploadSuccess"
             :on-error="uploadError"
             :before-upload="beforeUploadVideo"
+            accept="video/*"
             :show-file-list="false">
             <el-button size="small" :loading="uploadLoading" type="primary">{{uploadLoading ? '上传中..' : '上传视频'}}</el-button>
         </el-upload>

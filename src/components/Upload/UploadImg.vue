@@ -8,6 +8,7 @@
                 element-loading-text="图片上传中"
                 element-loading-spinner="el-icon-loading"
                 class="avatar-uploader"
+                accept="image/*"
                 :action="action"
                 :show-file-list="false"
                 :on-success="uploadSuccess"
@@ -65,6 +66,7 @@
                 >
                     <el-upload
                         multiple
+                        accept="image/*"
                         :action="action"
                         :data='uploadData'
                         :show-file-list="false"

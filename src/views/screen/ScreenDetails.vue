@@ -163,6 +163,9 @@
                     ></el-divider>
                     <div class="info-item">
                         <el-form label-width="85px">
+                            <el-form-item label="屏幕编码">
+                                <span>{{ resData.screenCode }}</span>
+                            </el-form-item>
                             <el-form-item label="屏幕序列号">
                                 <span>{{ resData.serialNumber }}</span>
                             </el-form-item>

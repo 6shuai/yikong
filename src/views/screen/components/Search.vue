@@ -12,9 +12,15 @@
         </div>
         <div class="search-list-wrap">
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">大屏名称</el-col>
+                <el-col :md="2" :sm="24"  class="title">屏幕名称</el-col>
                 <el-col :md="22" :sm="24">
-                    <el-input class="dispaly-name" size="small" clearable placeholder="大屏名称" v-model="searchParams.displayName" @input="searchScreen"></el-input>
+                    <el-input class="dispaly-name" size="small" clearable placeholder="屏幕名称" v-model="searchParams.displayName" @input="searchScreen"></el-input>
+                </el-col>
+            </el-row>
+            <el-row class="search-list">
+                <el-col :md="2" :sm="24"  class="title">屏幕编码</el-col>
+                <el-col :md="22" :sm="24">
+                    <el-input class="dispaly-name" size="small" clearable placeholder="屏幕编码" v-model="searchParams.screenCode" @input="searchScreen"></el-input>
                 </el-col>
             </el-row>
             <el-row class="search-list">

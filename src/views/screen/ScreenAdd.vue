@@ -16,6 +16,9 @@
                     <el-form-item label="大屏名称" prop="displayName">
                         <el-input v-model="screenParams.displayName" placeholder="大屏名称"></el-input>
                     </el-form-item>
+                    <el-form-item label="屏幕编码" prop="screenCode">
+                        <el-input v-model="screenParams.screenCode" placeholder="屏幕编码"></el-input>
+                    </el-form-item>
                     <el-form-item label="场所" prop="place">
                         <el-select filterable v-model="screenParams.place" placeholder="请选择场所" style="width:100%">
                             <el-option 
@@ -150,6 +153,7 @@ export default {
             showUserInput: false,         //是否显示用户名密码框
             screenRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入大屏名称~' }],
+                screenCode: [{ required: true, trigger: "blur", message: '请输入屏幕编码~' }],
                 place: [{ required: true, trigger: "change", message: '请选择场所~' }],
                 owner: [{ required: true, trigger: "change", message: '请选择品牌~' }],
                 dotPitch: [{ required: true, trigger: "change", message: '请选择点距规格~' }],
