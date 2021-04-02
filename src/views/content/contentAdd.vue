@@ -28,6 +28,12 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
+                        <group-list 
+                            v-if="!contentParams.id"
+                            propValue="groupIds"
+                            @groupSelected="$set(contentParams, 'groupIds', $event)"
+                        ></group-list>
+
                         <el-form-item label="内容类型" prop="contentType">
                             <el-select v-model="contentParams.contentType" @change="selectedType" filterable placeholder="请选择内容类型" style="width:100%">
                                 <el-option 
@@ -38,6 +44,14 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="播放时长" prop="duration" v-if="contentParams.contentType">
+                            <el-input type="number" v-model="contentParams.duration"  @change="handleDuration" :min="1" placeholder="播放时长">
+                                <template slot="append">秒</template>    
+                            </el-input>   
+                        </el-form-item>
+
+
+
                         <el-form-item :label="`上传内容 (${contentTypeName(contentParams.contentType)})`" prop="contentPath" v-if="contentParams.contentType !== 4">
                             <!-- 上传图片 -->
                             <div v-if="contentParams.contentType === 1">
@@ -53,6 +67,7 @@
                                 <upload-video 
                                     :url="contentParams.contentPath"
                                     @uploadVideo="uploadVideoSuccess"
+                                    @uploadVideoCover="uploadVideoCover"
                                 ></upload-video>
                             </div>
                             
@@ -140,23 +155,11 @@
                             </el-form-item>
                             <el-form-item label="文件容量" prop="size">
                                 <el-input type="number" v-model="contentParams.size" placeholder="文件容量">
-                                    <template slot="append">MB</template>       
+                                    <!-- <template slot="append">MB</template>        -->
                                 </el-input>   
                             </el-form-item>
 
                         </div>
-                        <el-form-item label="播放时长" prop="duration" v-if="contentParams.contentType">
-                            <el-input type="number" v-model="contentParams.duration"  @change="handleDuration" :min="1" placeholder="播放时长">
-                                <template slot="append">秒</template>    
-                            </el-input>   
-                        </el-form-item>
-
-
-                        <group-list 
-                            v-if="!contentParams.id"
-                            propValue="groupIds"
-                            @groupSelected="$set(contentParams, 'groupIds', $event)"
-                        ></group-list>
                     </el-col>
                 </el-row>
 
@@ -326,6 +329,11 @@ export default {
             if(this.contentParams.width && this.contentParams.height){
                 this.aspectRatioCompute(this.contentParams.width, this.contentParams.height);
             }
+        },
+
+        //上传视频第一帧作为封面图
+        uploadVideoCover(data){
+            this.contentParams.image = data;
         },
 
         //内容类型列表

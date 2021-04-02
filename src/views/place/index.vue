@@ -4,6 +4,17 @@
             <!-- 筛选 -->
             <search @searchResult="search" ref="search"></search>
 
+            <el-pagination
+                v-if="resData.length"
+                background
+                small
+                class="mb10"
+                layout="total, prev, pager, next"
+                :current-page="Number(params.pageNo)"
+                @current-change="handleCurrentChange"
+                :total="totalCount">
+            </el-pagination>
+
             <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">暂无数据~</div>
             <div v-else class="place-content">
                 <div class="place-box" v-loading="tLoading">
@@ -56,9 +67,8 @@
 
                 </div>
                 <el-pagination
-                    v-if="pageshow"
+                    v-if="resData.length"
                     background
-                    hide-on-single-page
                     layout="total, prev, pager, next, sizes"
                     :page-sizes="[48, 80, 100]"
                     :current-page="Number(params.pageNo)"
@@ -98,7 +108,6 @@ export default {
             resData: [],
             totalCount: 0,                //总条数
             tLoading: true,
-            pageshow: false
         }
     },
     mounted() {
@@ -118,7 +127,6 @@ export default {
             this.tLoading = true;
             placeList(this.params).then(res => {
                 this.tLoading = false;
-                this.pageshow = true;
                 this.$nextTick(() => {
                     let data = JSON.parse(JSON.stringify(this.params));
                     delete data.userId;

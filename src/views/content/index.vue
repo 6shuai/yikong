@@ -3,6 +3,17 @@
         <!-- 筛选项 -->
         <search @searchResult="search" ref="search"></search>
 
+        <el-pagination
+            v-if="resData.length"
+            small
+            class="mb10"
+            background
+            layout="total, prev, pager, next"
+            :current-page="Number(params.pageNo)"
+            @current-change="handleCurrentChange"
+            :total="totalCount">
+        </el-pagination>
+
         <!-- 内容列表 -->
         <div v-if="!dataLoading && !resData.length" style="margin: 20px;text-align:center">
             暂无数据~

@@ -25,12 +25,13 @@
                     title="已收藏"
                 >
                 </el-button>
+
+                <div class="screen-code">{{ 10000 + Number(item.id) }}</div>
             
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
                     <span class="name full" @click="$router.push(`/screen/details/${item.id}`)">
-                        <span v-if="item.screenCode">[{{item.screenCode}}]</span>
                         {{item.displayName}}
                     </span>
                 </div>
@@ -94,6 +95,18 @@ export default {
                     background-color: #adadad;
                     border-color: #adadad;
                 }
+            }
+
+            .screen-code{
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: 20px;
+                line-height: 20px;
+                text-indent: 10px;
+                width: 100%;
+                background: rgba(0, 0, 0, .6);
+                color: #fff;
             }
         }
 

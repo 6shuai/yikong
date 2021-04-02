@@ -56,10 +56,6 @@
                         <div
                             class="screen-item"
                             v-for="(item, index) in screenLayout"
-                            @click="
-                                previewData = coverData[index];
-                                dialogVisible = true;
-                            "
                             :key="index"
                             :style="{
                                 width: item.width + 'px',
@@ -69,11 +65,21 @@
                             }"
                         >
                             <img
-                                v-if="
-                                    coverData[index] && coverData[index].image
-                                "
-                                :src="coverData[index].image"
+                                v-if="item.content && item.content.contentTypeId!=4"
+                                :src="item.content.image"
                             />
+                            <div v-if="item.content  && item.content.contentTypeId==4" class="thumb-wrap">
+                                <div class="arrow left" @click.stop="prevNextChange('pre', index, item.content.subContentsData.length)">
+                                    <i class="el-icon-arrow-left"></i>
+                                </div>
+                                <div class="arrow right" @click.stop="prevNextChange('next', index, item.content.subContentsData.length)">
+                                    <i class="el-icon-arrow-right"></i>
+                                </div>
+                                <img :src="item.content.subContentsData[subIndex].contentPath" />
+                                    
+                            </div>
+                            <div class="content-title" v-if="item.content && item.content.contentTypeId!=4">{{ item.content.displayName }}</div>
+                            <div class="content-title" v-if="item.content && item.content.contentTypeId==4"> {{ subIndex + 1 }}/{{item.content.subContentsData.length}}  {{ item.content.displayName }}</div>
                         </div>
                     </div>
                 </el-scrollbar>
@@ -169,7 +175,8 @@ export default {
                 list: timelineAuthority,
                 update: timelineAuthorityUpdate,
                 delete: timelineAuthorityDelete
-            }
+            },
+            subIndex: 0,    //图集默认显示第一个
         };
     },
     mounted() {
@@ -266,11 +273,25 @@ export default {
         },
 
         //预览屏幕
-        previewCover(data) {
-            this.coverData = [];
-            data.forEach((item) => {
-                this.coverData.push(item[0] || {});
-            });
+        previewCover({ Pindex, index, data, item }) {
+            this.subIndex = 0;
+            if(!this.screenLayout.length) return;
+            if(data){
+                data.forEach((item, i) => {
+                    this.$set(this.screenLayout[i], 'content', item[0])
+                });
+            }else{
+                this.$set(this.screenLayout[Pindex], 'content', item)
+            }
+        },
+
+        //图集预览
+        prevNextChange(type, index, total){
+            if(type == 'pre' && this.subIndex > 0){
+                this.subIndex -= 1;
+            }else if(type == 'next' && this.subIndex < total-1){
+                this.subIndex += 1;
+            }
         }
     },
     components: {

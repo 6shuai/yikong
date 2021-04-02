@@ -187,6 +187,7 @@
                                     :title="`【${item.displayName}】`"
                                     class="rectangle"
                                     :class="item.contentTypeId==contentTypeId.image ? 'image' : (item.contentTypeId == contentTypeId.video ? 'video' : 'game')"
+                                    @click="handlePreview(Pindex, index, item)"
                                 >
                                     <!-- 复制功能 点击选择  显示多选框 -->
                                     <copy-content v-if="showCheckbox" :data="item" @setCopyData="setCopyData"></copy-content>
@@ -933,6 +934,7 @@ export default {
 
 
             this.$emit('updateScreen', content);
+            this.updateScreenCoverShow();
             this.rectangleData = [];
             this.screenLayout = JSON.parse(JSON.stringify(content));
             this.screenIds = [];
@@ -944,7 +946,18 @@ export default {
 
         //左上位置  预览显示的逻辑区域封面图
         updateScreenCoverShow(){
-            this.$emit('previewCover', this.rectangleData);
+            this.$emit('previewCover', {
+                data: this.rectangleData
+            });
+        },
+
+        //点击时间轴内容预览
+        handlePreview(Pindex, index, item){
+            this.$emit('previewCover', {
+                Pindex, 
+                index,
+                item: JSON.parse(JSON.stringify(item))
+            });
         },
 
         //逻辑区域 修改成功

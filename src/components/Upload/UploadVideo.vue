@@ -1,7 +1,5 @@
 <template>
     <div class="upload-video-wrap">
-        <video :src="videoSrc" crossOrigin="anonymous" controls="controls" id="videofile"></video>
-        <div id="output"></div>
         <el-upload 
             v-if="!videoUrl"
             v-loading="videoFlag"
@@ -36,13 +34,22 @@
             >
                 <el-button type="primary" size="small">重新上传视频</el-button>
             </el-upload>
-            <video v-if="videoUrl !='' && videoFlag == false" :src="videoUrl" class="video" controls="controls">您的浏览器不支持视频播放</video>
+            <video 
+                v-if="videoUrl !='' && videoFlag == false" 
+                :src="videoUrl" 
+                class="video" 
+                id="videofile"
+                controls="controls">
+                您的浏览器不支持视频播放
+            </video>
         </div>
     </div>
 </template>
 <script>
 import { uploadUrl } from '@/utils';
+import { videoShot } from '@/mixins/UploadVideoShot';
 export default {
+    mixins: [videoShot],
     props: ['url'],
     data(){
         return{
@@ -58,7 +65,6 @@ export default {
     },
     mounted() {
         this.videoUrl = this.url || '';
-        this.getBigectURL()
     },
     methods: {
         beforeUploadVideo(file) {
@@ -80,8 +86,6 @@ export default {
 
         //上传成功
         handleVideoSuccess(res, file) {    
-            console.log('=========', file)       
-                     
             this.videoFlag = false;
             if(res.code === this.$successCode){
                 this.videoUrl = res.obj.path;
@@ -91,6 +95,7 @@ export default {
 
             let videoElement = document.createElement('video')
             videoElement.src = res.obj.path
+            videoElement.setAttribute('crossOrigin', 'anonymous')
             videoElement.currentTime = 1;
             // 当指定的音频/视频的元数据已加载时，会发生 loadedmetadata 事件。 元数据包括：时长、尺寸（仅视频）以及文本轨道。
             let _this = this;
@@ -98,7 +103,6 @@ export default {
                 let width = videoElement.videoWidth
                 let height = videoElement.videoHeight
                 let duration = videoElement.duration; // 视频时长
-                _this.getBigectURL(videoElement.src)      
                 _this.fileInfo = {
                     duration: parseInt(duration),
                     // originalSize: file.size,
@@ -107,44 +111,10 @@ export default {
                     height: height,
                     contentPath: _this.videoUrl
                 }
+                // _this.getBigectURL(videoElement, width, height)      
                 _this.$emit('uploadVideo', _this.fileInfo);
             })
-        },
-
-        //截图视频第一帧图
-        getBigectURL(url) {
-            // var fileReader = new FileReader()
-            // console.log('file------>', file)
-            // fileReader.readAsDataURL(file)
-            var that = this
-            // fileReader.onload = function(e) {
-                that.videoSrc = url;
-
-                var video = document.getElementById("videofile")
-                video.currentTime = 1 //必须设置视频当前时长，要不然会黑屏
-                var output = document.getElementById("output");
-                // 创建画布准备截图
-                var canvas = document.createElement('canvas')
-                // 创建图片标签
-                var img = document.createElement("img");
-
-                video.setAttribute('crossOrigin', 'anonymous')
-                // 设置画布的宽高
-                canvas.width = video.clientWidth
-                canvas.height = video.clientHeight
-                // 图片绘制
-                video.onloadeddata = ((e) => {
-                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
-                    var dataURL = canvas.toDataURL('image/jpeg')
-                    img.src = dataURL;
-                    img.width = canvas.width;
-                    img.height = canvas.height;
-                    // 添加到output盒子里面
-                    output.appendChild(img);
-                    console.log(dataURL)
-                })
-            // }
-        },
+        }
     },
     watch: {
         url(o, n){

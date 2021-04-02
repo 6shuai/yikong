@@ -1,6 +1,16 @@
 <template>
     <div class="app-main-wrap screen-list-wrap" id="app-main-wrap">
         <search @searchResult="search" ref="search"></search>
+        <el-pagination
+            v-if="resData.length"
+            small
+            background
+            class="mb10"
+            layout="total, prev, pager, next"
+            :current-page="Number(params.pageNo)"
+            @current-change="handleCurrentChange"
+            :total="totalCount">
+        </el-pagination>
         <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">
             暂无数据~
         </div>
@@ -19,6 +29,7 @@
             </div>
 
             <el-pagination
+                v-if="resData.length"
                 background
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[48, 80, 100]"

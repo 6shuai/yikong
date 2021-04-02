@@ -35,6 +35,17 @@
             </el-select>
         </div>
 
+        <el-pagination
+            v-if="resData.length"
+            class="mb10"
+            small
+            background
+            layout="total, prev, pager, next"
+            :current-page="Number(params.pageNo)"
+            @current-change="handleCurrentChange"
+            :total="totalCount">
+        </el-pagination>
+
         <!-- 资源列表 -->
         <div v-if="!dataLoading && !resData.length" style="margin: 20px;text-align:center">
             暂无数据~
@@ -53,8 +64,8 @@
             </div>
 
             <el-pagination
+                v-if="resData.length"
                 background
-                hide-on-single-page
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[48, 80, 100]"
                 @size-change="handleSizeChange"
