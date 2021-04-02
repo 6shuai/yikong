@@ -18,12 +18,6 @@
                 </el-col>
             </el-row>
             <el-row class="search-list">
-                <el-col :md="2" :sm="24"  class="title">屏幕编码</el-col>
-                <el-col :md="22" :sm="24">
-                    <el-input class="dispaly-name" size="small" clearable placeholder="屏幕编码" v-model="searchParams.screenCode" @input="searchScreen"></el-input>
-                </el-col>
-            </el-row>
-            <el-row class="search-list">
                 <el-col :md="2" :sm="24"  class="title">地区</el-col>
                 <el-col :md="22" :sm="24">
                     <select-region @selectArea="searchParams={...searchParams, ...$event};searchScreen()"></select-region>
