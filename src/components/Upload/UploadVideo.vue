@@ -1,5 +1,7 @@
 <template>
     <div class="upload-video-wrap">
+        <video :src="videoSrc" crossOrigin="anonymous" controls="controls" id="videofile"></video>
+        <div id="output"></div>
         <el-upload 
             v-if="!videoUrl"
             v-loading="videoFlag"
@@ -50,11 +52,13 @@ export default {
             },
             videoUrl: '',
             videoFlag: false,
-            fileInfo: {}                     //视频详情信息
+            fileInfo: {},                     //视频详情信息
+            videoSrc: ''
         }
     },
     mounted() {
         this.videoUrl = this.url || '';
+        this.getBigectURL()
     },
     methods: {
         beforeUploadVideo(file) {
@@ -70,11 +74,14 @@ export default {
         },
 
         uploadVideoProcess(event, file, fileList){
+            
             this.videoFlag = true;
         },
 
         //上传成功
-        handleVideoSuccess(res, file) {                          
+        handleVideoSuccess(res, file) {    
+            console.log('=========', file)       
+                     
             this.videoFlag = false;
             if(res.code === this.$successCode){
                 this.videoUrl = res.obj.path;
@@ -84,12 +91,14 @@ export default {
 
             let videoElement = document.createElement('video')
             videoElement.src = res.obj.path
+            videoElement.currentTime = 1;
             // 当指定的音频/视频的元数据已加载时，会发生 loadedmetadata 事件。 元数据包括：时长、尺寸（仅视频）以及文本轨道。
             let _this = this;
             videoElement.addEventListener("loadedmetadata", function (_event) {
                 let width = videoElement.videoWidth
                 let height = videoElement.videoHeight
                 let duration = videoElement.duration; // 视频时长
+                _this.getBigectURL(videoElement.src)      
                 _this.fileInfo = {
                     duration: parseInt(duration),
                     // originalSize: file.size,
@@ -100,6 +109,41 @@ export default {
                 }
                 _this.$emit('uploadVideo', _this.fileInfo);
             })
+        },
+
+        //截图视频第一帧图
+        getBigectURL(url) {
+            // var fileReader = new FileReader()
+            // console.log('file------>', file)
+            // fileReader.readAsDataURL(file)
+            var that = this
+            // fileReader.onload = function(e) {
+                that.videoSrc = url;
+
+                var video = document.getElementById("videofile")
+                video.currentTime = 1 //必须设置视频当前时长，要不然会黑屏
+                var output = document.getElementById("output");
+                // 创建画布准备截图
+                var canvas = document.createElement('canvas')
+                // 创建图片标签
+                var img = document.createElement("img");
+
+                video.setAttribute('crossOrigin', 'anonymous')
+                // 设置画布的宽高
+                canvas.width = video.clientWidth
+                canvas.height = video.clientHeight
+                // 图片绘制
+                video.onloadeddata = ((e) => {
+                    canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height)
+                    var dataURL = canvas.toDataURL('image/jpeg')
+                    img.src = dataURL;
+                    img.width = canvas.width;
+                    img.height = canvas.height;
+                    // 添加到output盒子里面
+                    output.appendChild(img);
+                    console.log(dataURL)
+                })
+            // }
         },
     },
     watch: {
