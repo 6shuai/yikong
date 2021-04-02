@@ -6,6 +6,7 @@
                     {{$route.params.id ? '编辑内容' : '创建内容'}}
                 </div>
             </el-page-header>
+
             <el-form 
                 label-width="160px"
                 ref="contentParams"
@@ -26,12 +27,6 @@
                                     :value="item.id">
                                 </el-option>
                             </el-select>
-                        </el-form-item>
-                        <el-form-item label="展示图片" prop="image">
-                            <upload-img 
-                                :imgList="contentParams.image"
-                                @uploadImgPath="$set(contentParams, 'image', $event), $set(contentParams, 'newUpload', 1)"
-                            ></upload-img>
                         </el-form-item>
                         <el-form-item label="内容类型" prop="contentType">
                             <el-select v-model="contentParams.contentType" @change="selectedType" filterable placeholder="请选择内容类型" style="width:100%">
@@ -105,6 +100,13 @@
                                 </li>
                             </ul>
                             
+                        </el-form-item>
+
+                        <el-form-item label="展示图片" prop="image">
+                            <upload-img 
+                                :imgList="contentParams.image"
+                                @uploadImgPath="$set(contentParams, 'image', $event), $set(contentParams, 'newUpload', 1)"
+                            ></upload-img>
                         </el-form-item>
 
 
@@ -304,6 +306,7 @@ export default {
 
         //上传图片成功
         uploadImgSuccess(data){
+            console.log('上传图片成功----->', data)
             this.contentParams = {
                 ...this.contentParams,
                 ...data
@@ -311,6 +314,7 @@ export default {
             if(this.contentParams.width && this.contentParams.height){
                 this.aspectRatioCompute(this.contentParams.width, this.contentParams.height);
             }
+            this.contentParams.image = data.contentPath;
         },
 
         //上传视频成功
@@ -489,7 +493,7 @@ export default {
                 total += item.duration;
             })
             this.contentParams.duration = total;
-        }
+        },
 
     },
     components: {
