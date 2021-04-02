@@ -108,7 +108,7 @@
                                 >提交</el-button
                             >
                         </li>
-                        <li>
+                        <!-- <li>
                             <el-button
                                 type="primary"
                                 icon="el-icon-close-notification"
@@ -118,7 +118,7 @@
                                 @click="setMute"
                                 >静音</el-button
                             >
-                        </li>
+                        </li> -->
                         <li>
                             <el-button
                                 type="primary"
