@@ -102,10 +102,9 @@ export default {
             this.statisticsDetailApi = statisticsDetailApi;
             this.dialogVisible = true;
             this.params = {
+                ...data,
                 pageNo: 1,
-                pageSize: 48,
-                ...this.params,
-                ...data
+                pageSize: 48
             }
             this.getDetail();
         },
