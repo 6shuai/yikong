@@ -204,7 +204,8 @@ export default {
     data(){
         return {
             contentParams: {
-                contentType: 1
+                contentType: 1,
+                duration: 15
             },
             btnLoading: false,               //确定按钮  loading
             placeRules: {
@@ -376,6 +377,11 @@ export default {
         //选择内容类型  清空内容路径
         selectedType(){
             this.$delete(this.contentParams, 'contentPath');
+            if(this.contentParams.contentType == 4){
+                this.$set(this.contentParams, 'duration', null);
+            }else{
+                this.$set(this.contentParams, 'duration', 15);
+            }
         },
 
         //内容类型名称
@@ -415,9 +421,10 @@ export default {
             }
             this.atlasData.push({
                 ...data,
+                duration: 15,
                 contentType: type
             })
-            this.handleDuration();
+            this.handleContentDuration();
         },
 
         //已选中的内容
@@ -486,19 +493,25 @@ export default {
                     item.duration = num;
                 }
                 this.$set(this.atlasData, index, item)
-                if(item.duration == 0){
+                if(!item.duration){
                     item.duration = 15;
                     this.$set(this.atlasData, index, item);
                     this.handleContentDuration();
                 }
             })
+            console.log(this.atlasData)
         },
 
         //修改某个内容的时长时  总播放时长跟随 变化，重新计算
         handleContentDuration(){
             let total = 0;
+            let s = true;
             this.atlasData.forEach(item => {
                 total += item.duration;
+                if(item.contentType == 1 && s){
+                    this.contentParams.image = item.contentPath;
+                    s = false;
+                }
             })
             this.contentParams.duration = total;
         },

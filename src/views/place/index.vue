@@ -10,6 +10,7 @@
                 small
                 class="mb10"
                 layout="total, prev, pager, next"
+                :page-size="Number(params.pageSize)"
                 :current-page="Number(params.pageNo)"
                 @current-change="handleCurrentChange"
                 :total="totalCount">

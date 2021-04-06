@@ -7,6 +7,7 @@
             background
             class="mb10"
             layout="total, prev, pager, next"
+            :page-size="Number(params.pageSize)"
             :current-page="Number(params.pageNo)"
             @current-change="handleCurrentChange"
             :total="totalCount">
@@ -71,12 +72,16 @@ export default {
                 ...JSON.parse(JSON.stringify(this.$route.query))
             }
             this.$refs.search.searchParams = this.params;
+        }else if(this.$store.state.app.screenSearchParams){
+            this.params = this.$store.state.app.screenSearchParams;
+            this.$refs.search.searchParams = this.params;
         }
         this.init();
     },
     methods: {
         init(){
             this.tLoading = true;
+            this.$store.state.app.screenSearchParams = this.params;
             screenList(this.params).then(res => {
                 this.tLoading = false;
                 let data = JSON.parse(JSON.stringify(this.params));

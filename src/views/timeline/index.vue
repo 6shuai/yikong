@@ -41,6 +41,7 @@
             small
             background
             layout="total, prev, pager, next"
+            :page-size="Number(params.pageSize)"
             :current-page="Number(params.pageNo)"
             @current-change="handleCurrentChange"
             :total="totalCount">
@@ -98,12 +99,15 @@ export default {
         if(this.$route.query.pageNo){
             this.params = JSON.parse(JSON.stringify(this.$route.query));
             if(this.params.owner) this.params.owner = Number(this.params.owner);
+        }else if(this.$store.state.app.timelineSearchParams){
+            this.params = this.$store.state.app.timelineSearchParams;
         }
         this.init();
     },
     methods: {
         init(){
             this.dataLoading = true;
+            this.$store.state.app.timelineSearchParams = this.params;
             timelineContainerList(this.params).then(res => {
                 this.dataLoading = false;
                 this.$router.push({

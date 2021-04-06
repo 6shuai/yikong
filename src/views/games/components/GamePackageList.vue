@@ -209,7 +209,7 @@ export default {
         handleOnline(id, index) {
             this.$set(this.onlineLoading, index, true);
             packageOnline(id).then((res) => {
-                this.$set(this.onlineLoading, index, true);
+                this.$set(this.onlineLoading, index, false);
                 if (res.code === this.$successCode) {
                     this.$message.success("上线成功~");
                     this.init();
