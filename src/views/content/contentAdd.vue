@@ -310,7 +310,6 @@ export default {
 
         //上传图片成功
         uploadImgSuccess(data){
-            console.log('上传图片成功----->', data)
             this.contentParams = {
                 ...this.contentParams,
                 ...data
@@ -347,25 +346,25 @@ export default {
         //宽高比计算
         aspectRatioCompute(width, height){
             //width / height  
-            //  1.33 - 1.7  : 4:3
-            //  1.71 - 2.34 : 16:9
-            // > 2.34       : 21:9
+            //  < 1.5  : 4:3
+            //  1.5 - 2.3 : 16:9
+            // > 2.3       : 21:9
 
             // id=1(16:9)  id=2(16:10)  id=3(9:16)  id=4(10:16)  id=5(4:3)  id=6(3:4)  id=7(21:9)
             if(width > height){
                 let ratio = width / height;
-                if(ratio < 1.7){
+                if(ratio < 1.5){
                     this.contentParams.aspectRatio = 5;
-                }else if(ratio >= 1.7 && ratio < 2.34){
+                }else if(ratio >= 1.5 && ratio < 2.3){
                     this.contentParams.aspectRatio = 1;
                 }else{
                     this.contentParams.aspectRatio = 7;
                 }
             }else{
                 let ratio = height / width;
-                if(ratio < 1.7){
+                if(ratio < 1.5){
                     this.contentParams.aspectRatio = 6;
-                }else if(ratio >= 1.7 && ratio < 2.34){
+                }else if(ratio >= 1.5 && ratio < 2.3){
                     this.contentParams.aspectRatio = 3;
                 }else{
                     this.contentParams.aspectRatio = 7;
@@ -499,7 +498,6 @@ export default {
                     this.handleContentDuration();
                 }
             })
-            console.log(this.atlasData)
         },
 
         //修改某个内容的时长时  总播放时长跟随 变化，重新计算
