@@ -14,12 +14,6 @@
                         direction="vertical"
                     ></el-divider
                 ></span>
-                <span @click="handleStatistics"
-                    v-if="resData.statisics"
-                    ><i class="el-icon-pie-chart" title="数据统计"></i>数据统计<el-divider
-                        direction="vertical"
-                    ></el-divider
-                ></span>
                 <span @click="editPlace"
                     v-if="resData.edit"
                     ><i class="el-icon-edit" title="编辑"></i>编辑<el-divider
@@ -141,6 +135,16 @@
 
                 <h2 class="p-info-title mt20 mb20">屏幕信息</h2>
                 <div class="place-info">
+
+                    <el-form label-width="100px">
+                        <el-form-item label="游戏数据统计:" v-if="resData.statisics">
+                            <el-link type="primary" @click="handleStatistics">游戏数据统计</el-link>
+                        </el-form-item>
+                        <el-form-item label="游戏奖励统计:" v-if="resData.statisics">
+                            <el-link type="primary" @click="handleAwardStatistics">游戏奖励统计</el-link>
+                        </el-form-item>
+                    </el-form>
+
                     <div
                         class="place-content"
                         v-if="
@@ -348,7 +352,18 @@ export default {
         //数据统计
         handleStatistics(){
             this.$router.push({
-                path: '/statisics',
+                path: '/game/statisics',
+                query: {
+                    source: 'place',
+                    placeId: this.$route.params.id
+                }
+            });
+        },
+
+        //游戏奖励统计
+        handleAwardStatistics(){
+            this.$router.push({
+                path: '/game/awardStatisics',
                 query: {
                     source: 'place',
                     placeId: this.$route.params.id

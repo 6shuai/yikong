@@ -66,10 +66,23 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     children: [{
-      path: '/statisics',
+      path: '/game/statisics',
       name: 'gameStatisics',
-      component: () => import('@/components/Statistics/index'),
+      component: () => import('@/components/Statistics/game/index'),
       meta: { title: '数据统计' }
+    }],
+    hidden: true
+  },
+
+  //游戏奖励统计数据
+  {
+    path: '/',
+    component: Layout,
+    children: [{
+      path: '/game/awardStatisics',
+      name: 'gameAwardStatisics',
+      component: () => import('@/components/Statistics/award/index'),
+      meta: { title: '游戏奖励数据统计' }
     }],
     hidden: true
   },

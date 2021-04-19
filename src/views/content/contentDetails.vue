@@ -10,12 +10,6 @@
                     ><i class="el-icon-lock" title="授权"></i>授权
                     <el-divider direction="vertical"></el-divider>
                 </span>
-                <span @click="handleStatistics"
-                    v-if="resData.statisics && resData.contentTypeId == 3"
-                    ><i class="el-icon-pie-chart" title="数据统计"></i>数据统计<el-divider
-                        direction="vertical"
-                    ></el-divider
-                ></span>
                 <span 
                     v-if="resData.edit"
                     @click="editContent">
@@ -71,6 +65,20 @@
                         </el-form-item>
                         <el-form-item label="文件大小">
                             <span>{{resData.size ? fileSize(resData.size) : ' - '}}MB</span>
+                        </el-form-item>
+                        <el-form-item label="数据统计" v-if="resData.statisics && resData.contentTypeId == 3">
+                            <el-link
+                                @click="handleStatistics"
+                                type="primary"
+                                >游戏数据统计</el-link
+                            >
+                        </el-form-item>
+                        <el-form-item label="奖励统计" v-if="resData.statisics && resData.contentTypeId == 3">
+                            <el-link
+                                @click="handleAwardStatistics"
+                                type="primary"
+                                >游戏奖励统计</el-link
+                            >
                         </el-form-item>
                     </el-form>
                 </div>
@@ -308,7 +316,18 @@ export default {
         //数据统计
         handleStatistics(){
             this.$router.push({
-                path: '/statisics',
+                path: '/game/statisics',
+                query: {
+                    source: 'content',
+                    contentId: this.$route.params.id
+                }
+            });
+        },
+
+        //游戏奖励数据统计
+        handleAwardStatistics(){
+            this.$router.push({
+                path: '/game/awardStatisics',
                 query: {
                     source: 'content',
                     contentId: this.$route.params.id

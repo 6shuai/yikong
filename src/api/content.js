@@ -63,3 +63,10 @@ export function contentStatistics(data) { return get('/content/statistics', data
 export function contentStatisticsDetail(data) { return get('/content/statisticsDetail', data) }
 
 
+//游戏奖励统计列表
+export function contentAwardStatistics(data) { return get('/content/awardCashStatistics', data) }
+
+//游戏奖励统计详情
+export function contentAwardStatisticsDetail(data) { return get('/content/awardCashStatisticsDetail', data) }
+
+

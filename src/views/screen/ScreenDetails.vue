@@ -9,12 +9,6 @@
                         direction="vertical"
                     ></el-divider
                 ></span>
-                <span @click="handleStatistics"
-                    v-if="resData.statisics"
-                    ><i class="el-icon-pie-chart" title="数据统计"></i>数据统计<el-divider
-                        direction="vertical"
-                    ></el-divider
-                ></span>
                 <span @click="editScreen"
                     v-if="resData.edit"
                     ><i class="el-icon-edit" title="编辑"></i>编辑<el-divider
@@ -204,8 +198,23 @@
                                             `/screen/probeData/${$route.params.id}`
                                         )
                                     "
-                                    ><i class="el-icon-data-line"></i
                                     >查看探针数据</el-link
+                                >
+                            </el-form-item>
+                            <el-form-item label="数据统计" v-if="resData.statisics"> 
+                                <el-link
+                                    @click="handleStatistics"
+                                    v-if="resData.placeId"
+                                    type="primary"
+                                    >游戏数据统计</el-link
+                                >
+                            </el-form-item>
+                            <el-form-item label="奖励统计" v-if="resData.statisics">
+                                <el-link
+                                    v-if="resData.placeId"
+                                    @click="handleAwardStatistics"
+                                    type="primary"
+                                    >游戏奖励统计</el-link
                                 >
                             </el-form-item>
                             <el-form-item label="所属场所">
@@ -217,7 +226,6 @@
                                             `/place/details/${resData.placeId}`
                                         )
                                     "
-                                    ><i class="el-icon-link"></i
                                     >{{ resData.placeName }}</el-link
                                 >
                             </el-form-item>
@@ -230,7 +238,6 @@
                                             `/timeline/details/${resData.timelineContainer.id}`
                                         )
                                     "
-                                    ><i class="el-icon-link"></i
                                     >{{
                                         resData.timelineContainer.displayName
                                     }}</el-link
@@ -501,7 +508,18 @@ export default {
         //数据统计
         handleStatistics(){
             this.$router.push({
-                path: '/statisics',
+                path: '/game/statisics',
+                query: {
+                    source: 'screen',
+                    screenId: this.$route.params.id
+                }
+            });
+        },
+
+        //游戏奖励统计
+        handleAwardStatistics(){
+            this.$router.push({
+                path: '/game/awardStatisics',
                 query: {
                     source: 'screen',
                     screenId: this.$route.params.id

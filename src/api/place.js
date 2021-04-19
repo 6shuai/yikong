@@ -62,11 +62,20 @@ export function placeGameList(data) { return get('/place/applicationContent', da
 //查询所有屏幕列表
 export function placeScreenList(data) { return get('/place/screen', data) }
 
+
 //统计列表
 export function placeStatistics(data) { return get('/place/statistics', data) }
 
 //统计详情
 export function placeStatisticsDetail(data) { return get('/place/statisticsDetail', data) }
 
+
+
+
+//游戏奖励统计列表
+export function placeAwardStatistics(data) { return get('/place/awardCashStatistics', data) }
+
+//游戏奖励统计详情
+export function placeAwardStatisticsDetail(data) { return get('/place/awardCashStatisticsDetail', data) }
 
 
