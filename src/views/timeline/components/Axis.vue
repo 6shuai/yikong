@@ -782,11 +782,8 @@ export default {
                 list: data,
             };
 
-            let timelineCopyDataList = localStorage.timelineCopyDataList
-                ? JSON.parse(localStorage.timelineCopyDataList)
-                : [];
 
-            timelineCopyDataList.push(obj);
+            let timelineCopyDataList = [obj];
 
             localStorage.timelineCopyDataList = JSON.stringify(
                 timelineCopyDataList

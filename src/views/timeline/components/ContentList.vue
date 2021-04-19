@@ -119,6 +119,7 @@
 
       <!-- 分页 -->
       <el-pagination
+        v-if="params.contentType!=5"
         class="mt10 mb10"
         background
         hide-on-single-page
