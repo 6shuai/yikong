@@ -208,6 +208,7 @@ export default {
         //删除当前阶段后 把下一个阶段的开始时间改成上一个的开始时间
         changeNextStageTime(params){
             params.beginTime = params.beginTime ? "1970-01-01 " + params.beginTime : '';
+            delete params.orderIndex
             timelineStageCreated(params).then(res => {
                 if(res.code === this.$successCode){
                     console.log('修改下一阶段开始时间成功');

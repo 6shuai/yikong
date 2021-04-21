@@ -585,7 +585,6 @@ export default {
                 if (res.code === this.$successCode) {
                     this.$message.success("删除成功~");
                     if (type == "checkbox") {
-                        console.log(this.timelineIds, this.deleteIds)
                         this.deleteIds.forEach((item, index) => {
                             let key = this.timelineIds[item];
                             this.$set(
