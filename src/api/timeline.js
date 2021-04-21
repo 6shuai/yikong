@@ -46,9 +46,11 @@ export function timelineDelete(data) { return del(`/timeline/${data}`) }
 //时间轴 发布到终端
 export function pubToScreen(data) { return get(`/timeline/sendTimelineDataToScreen/${data}`) }
 
-//时间轴 复制时间轴  导入时间轴
-export function copyTimelineContainer(data) { return post(`/timeline/copyTimelineContainer${data}`) }
+//时间轴  导入时间轴
+export function importTimelineContainer(data) { return post(`/timeline/importTimelineContainer${data}`) }
 
+//时间轴  复制当前时间轴阶段内容  到其他时间轴
+export function copyTimelineContainer(data) { return post(`/timeline/copyTimelineContainer${data}`) }
 
 //保存游戏配置
 export function timelineSaveGameConfig(data) { return post('/timeline/assembly', data) }

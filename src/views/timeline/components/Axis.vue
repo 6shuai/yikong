@@ -66,6 +66,16 @@
                     type="warning" 
                     size="small"
                     :loading="deleteLoading"
+                    @click="handleCopyToOtherTimeline"
+                >复制到其他时间轴
+                </el-button>
+
+                <el-button 
+                    v-if="!showCheckbox && !showDelete && timelineData.copyTimeline"
+                    class="tool-btn" 
+                    type="warning" 
+                    size="small"
+                    :loading="deleteLoading"
                     @click="showCheckbox=!showCheckbox; copyData={}; copyBtnIsDisabled=true"
                 >选择
                 </el-button>
@@ -301,6 +311,9 @@
             @updateRotationSuccess="updateRotationSuccess"
         ></set-is-rotation>
 
+        <!-- 复制到其他时间轴 -->
+        <copy-to-other-timeline ref="copyToOtherTimeline"></copy-to-other-timeline>
+
     </el-scrollbar>
 </template>
 
@@ -320,6 +333,7 @@ import {
 import CopyContent from "./CopyContent";
 import CreatedStage from './CreatedStage';
 import SetIsRotation from './SetIsRotation';
+import CopyToOtherTimeline from './CopyToOhterTimline';
 
 export default {
     props: ["startTime", "timelineData"],
@@ -966,6 +980,11 @@ export default {
         playCount(item){
             let num = Math.floor(this.timeDifference(item.beginTime, item.endTime) / (item.contentDuration));
             return num ? num : 1;
+        },
+
+        //复制到其他时间轴
+        handleCopyToOtherTimeline(){
+            this.$refs.copyToOtherTimeline.showDialog(this.rotationStage, this.cutInStage);
         }
     },
     components: {
@@ -973,6 +992,7 @@ export default {
         CopyContent,
         CreatedStage,
         SetIsRotation,
+        CopyToOtherTimeline
     },
     watch: {
         rectangleData(val){

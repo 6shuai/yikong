@@ -88,7 +88,7 @@
 <script>
 import {
 	timelineContainerList,
-	copyTimelineContainer,
+	importTimelineContainer,
 	timelineStageData,
 } from "@/api/timeline";
 export default {
@@ -212,7 +212,7 @@ export default {
 			.then(() => {
 				this.btnLoading = true;
 				let data = `?id=${this.$route.params.id}&copyId=${this.activeNames}&regionIds=${ids}&isCoverContainer=${this.isCoverContainer}`;
-				copyTimelineContainer(data).then(res => {
+				importTimelineContainer(data).then(res => {
 					this.btnLoading = false;
 					if(res.code === this.$successCode){
 						this.$message.success({
