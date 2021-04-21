@@ -11,7 +11,6 @@
 	>
 		<div
 			class="clearfix import-timeline-list timeline-wrap"
-			v-loading="dataLoading"
 		>
 
             <el-row :gutter="40">
@@ -34,7 +33,7 @@
 						</el-tree>
 					</div>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="12" v-loading="dataLoading">
                     <el-input
                         placeholder="时间轴名称"
                         clearable
@@ -84,10 +83,8 @@
 import {
 	timelineContainerList,
 	copyTimelineContainer,
-	timelineStageData,
 } from "@/api/timeline";
 export default {
-	inject: ["reload"],
 	data() {
 		return {
 			showImportList: false,

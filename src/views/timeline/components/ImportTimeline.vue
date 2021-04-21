@@ -242,22 +242,6 @@ export default {
 			line-height: 50px;
 			margin: 10px 0;
 			cursor: pointer;
-			.timeline-info {
-				display: flex;
-				.title {
-					padding: 0 10px;
-					flex: 1;
-				}
-				.import {
-					float: right;
-					width: 80px;
-					color: $--color-primary;
-					&:hover {
-						color: $--color-danger;
-						text-decoration: underline;
-					}
-				}
-			}
 		}
 	}
 }
