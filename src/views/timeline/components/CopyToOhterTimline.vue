@@ -48,6 +48,7 @@
                             v-for="(item, index) in resData"
                             :key="index"
                             :label="item.id" 
+                            :disabled="item.id == $route.params.id"
                             border
                         >{{item.displayName}}</el-checkbox>
                     </el-checkbox-group>
