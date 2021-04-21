@@ -57,6 +57,7 @@
                             class="screen-item"
                             v-for="(item, index) in screenLayout"
                             :key="index"
+                            :title="item.content ? item.content.displayName : ''"
                             :style="{
                                 width: item.width + 'px',
                                 height: item.height + 'px',
@@ -78,8 +79,14 @@
                                 <img :src="item.content.subContentsData[subIndex].contentPath" />
                                     
                             </div>
-                            <div class="content-title" v-if="item.content && item.content.contentTypeId!=4">{{ item.content.displayName }}</div>
-                            <div class="content-title" v-if="item.content && item.content.contentTypeId==4"> {{ subIndex + 1 }}/{{item.content.subContentsData.length}}  {{ item.content.displayName }}</div>
+                            <div 
+                                class="content-title overflow" 
+                                v-if="item.content && item.content.contentTypeId!=4"
+                            >{{ item.content.displayName }}</div>
+                            <div 
+                                class="content-title overflow" 
+                                v-if="item.content && item.content.contentTypeId==4"
+                            > {{ subIndex + 1 }}/{{item.content.subContentsData.length}}  {{ item.content.displayName }}</div>
                         </div>
                     </div>
                 </el-scrollbar>
@@ -276,12 +283,16 @@ export default {
         previewCover({ Pindex, index, data, item }) {
             this.subIndex = 0;
             if(!this.screenLayout.length) return;
-            if(data){
-                data.forEach((item, i) => {
-                    this.$set(this.screenLayout[i], 'content', item[0])
-                });
-            }else{
-                this.$set(this.screenLayout[Pindex], 'content', item)
+            try {
+                if(data){
+                    data.forEach((item, i) => {
+                        this.$set(this.screenLayout[i], 'content', item[0])
+                    });
+                }else{
+                    this.$set(this.screenLayout[Pindex], 'content', item)
+                }
+            } catch (error) {
+                
             }
         },
 

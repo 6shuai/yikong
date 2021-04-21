@@ -16,8 +16,10 @@
 <script>
 import { getUploadImgInfo } from '@/mixins/index';
 import { uploadUrl } from '@/utils';
+import { videoShot } from '@/mixins/UploadVideoShot';
 export default {
-    mixins: [getUploadImgInfo],
+    mixins: [getUploadImgInfo, videoShot],
+    props: ['videoPoster'],
     data(){
         return {
             action: uploadUrl,
@@ -25,7 +27,8 @@ export default {
             fileInfo: {},
             uploadData: {                    //上传时附带的额外参数
                 fileType: 'video'
-            }
+            },
+            videoCover: ''
         }
     },
     methods: {
@@ -38,7 +41,9 @@ export default {
             }
 
             let videoElement = document.createElement('video')
-             videoElement.src = res.obj.path
+            videoElement.src = res.obj.path
+            videoElement.setAttribute('crossOrigin', 'anonymous')
+            videoElement.currentTime = 1;
             // 当指定的音频/视频的元数据已加载时，会发生 loadedmetadata 事件。 元数据包括：时长、尺寸（仅视频）以及文本轨道。
             let _this = this;
             videoElement.addEventListener("loadedmetadata", function (_event) {
@@ -52,6 +57,7 @@ export default {
                     height: height,
                     contentPath: res.obj.path
                 }
+                if(!_this.videoPoster) _this.getBigectURL(videoElement, width, height)     
                 _this.$emit('atlasUploadSuccess', _this.fileInfo);
             })
         },
@@ -75,7 +81,7 @@ export default {
             this.uploadLoading = false;
             this.$message.error('上传失败~');
         },
-    },
+    }
 }
 </script>
 

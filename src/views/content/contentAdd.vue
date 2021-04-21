@@ -79,7 +79,11 @@
                                 <!-- 上传图片 -->
                                 <atlas-upload-img @atlasUploadSuccess="atlasUploadSuccess(1, $event)"></atlas-upload-img>
                                 <!-- 上传视频 -->
-                                <atlas-upload-video @atlasUploadSuccess="atlasUploadSuccess(2, $event)"></atlas-upload-video>
+                                <atlas-upload-video
+                                    :videoPoster="contentParams.image"
+                                    @atlasUploadSuccess="atlasUploadSuccess(2, $event)"
+                                    @uploadVideoCover="uploadVideoCover"
+                                ></atlas-upload-video>
                                 <!-- 选择内容 -->
                                 <el-button size="small" type="primary" @click="$refs.contentlist.showContentList=true">选择内容</el-button>
                             </div>
@@ -154,8 +158,8 @@
                                 </el-select>
                             </el-form-item>
                             <el-form-item label="文件容量" prop="size">
-                                <el-input type="number" v-model="contentParams.size" placeholder="文件容量">
-                                    <!-- <template slot="append">MB</template>        -->
+                                <el-input type="number" disabled v-model="fileSize" placeholder="文件容量">
+                                    <template slot="append">MB</template>       
                                 </el-input>   
                             </el-form-item>
 
@@ -201,6 +205,11 @@ import GroupList from '@/components/GroupList/index';
 
 export default {
     mixins: [getOrganizationList, getDotPitch, getAspectRatio, contentDetailData, objsDifferMethod],
+    computed: {
+        fileSize(){
+            return (this.contentParams.size / 1024 / 1024).toFixed(2)
+        }
+    },
     data(){
         return {
             contentParams: {
@@ -423,6 +432,7 @@ export default {
                 duration: 15,
                 contentType: type
             })
+            this.contentParams.size += data.size;
             this.handleContentDuration();
         },
 

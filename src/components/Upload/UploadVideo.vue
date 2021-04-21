@@ -111,7 +111,7 @@ export default {
                     height: height,
                     contentPath: _this.videoUrl
                 }
-                // _this.getBigectURL(videoElement, width, height)      
+                _this.getBigectURL(videoElement, width, height)      
                 _this.$emit('uploadVideo', _this.fileInfo);
             })
         }

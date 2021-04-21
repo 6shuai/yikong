@@ -197,8 +197,6 @@
                                         placement="top-start"
                                         trigger="hover">
                                         <div class="content-tool">
-                                            <!-- 播放时间段 -->
-                                            <!-- <div class="time-frame">{{item.beginTime}}-{{item.endTime}}</div> -->
                                             <div 
                                                 v-if="timelineData.editTimelineContent"
                                                 @click="editTimeBtn(Pindex, index)"
@@ -321,7 +319,7 @@ import {
 } from "@/api/timeline";
 import CopyContent from "./CopyContent";
 import CreatedStage from './CreatedStage';
-import SetIsRotation from './SetIsRotation'
+import SetIsRotation from './SetIsRotation';
 
 export default {
     props: ["startTime", "timelineData"],
@@ -974,7 +972,7 @@ export default {
         Draggable,
         CopyContent,
         CreatedStage,
-        SetIsRotation
+        SetIsRotation,
     },
     watch: {
         rectangleData(val){
