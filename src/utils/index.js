@@ -110,7 +110,7 @@ export const ajaxUrl = process.env.NODE_ENV === 'development'
 	? '/' : `${document.location.origin}/`;   
 
 //上传路径
-export const uploadUrl = '/common/upload/';
+export const uploadUrl = 'common/upload/';
 
 //上传游戏包路径 
 export const uploadGamePackage = '/common/uploadApplicationPackage';

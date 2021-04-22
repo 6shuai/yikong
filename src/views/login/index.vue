@@ -40,7 +40,6 @@
 				name="password"
 				tabindex="2"
 				auto-complete="on"
-				@keyup.enter.native="submitLogin"
 			/>
 			<!-- <span class="show-pwd" @click="showPwd">
 			<svg-icon
@@ -169,7 +168,7 @@ export default {
 		//登录
 		submitLogin() {
 			this.$refs.loginForm.validate(valid => {
-				if (valid) {
+				if (valid && !this.loading) {
 					this.loading = true;
 					if (this.checked) {
 						Cookies.set('username', this.loginForm.username, { expires: 1 })

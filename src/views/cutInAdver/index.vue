@@ -41,7 +41,12 @@
                 ></el-table-column>
                 <el-table-column
                     prop="timelineContainerName"
-                    label="时间轴"
+                    label="广告时间轴"
+                    min-width="50"
+                ></el-table-column>
+                <el-table-column
+                    prop="gameName"
+                    label="游戏"
                     min-width="50"
                 ></el-table-column>
                 <el-table-column label="操作" width="200">

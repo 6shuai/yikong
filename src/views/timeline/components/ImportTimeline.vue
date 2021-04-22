@@ -17,7 +17,7 @@
 				placeholder="时间轴名称"
 				clearable
 				v-model="params.name"
-				@input="init"
+				@input="handleSearch"
 			></el-input>
 			<!-- <el-card class="box-card timeline-list" :body-style="{ padding: '0px' }" v-for="(item, index) in resData" :key="index">
                 <div class="timeline-info">
@@ -135,6 +135,12 @@ export default {
 			this.init();
 		},
 
+		//搜索
+		handleSearch(){
+			this.params.pageNo = 1;
+			this.init();
+		},
+
 		//打开折叠栏
 		handleChange(e) {
 			if (this.activeNames) {
@@ -161,7 +167,6 @@ export default {
 						});
 					}
 
-					console.log(this.timelineData);
 				});
 			}
 		},

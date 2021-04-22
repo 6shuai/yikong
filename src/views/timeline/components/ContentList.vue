@@ -19,7 +19,7 @@
           size="small"
           placeholder="资源名称"
           v-model="params.displayName"
-          @input="init"
+          @input="handleSearch"
         ></el-input>
         <el-select
           v-if="params.contentType != 3"
@@ -222,6 +222,12 @@ export default {
     //分页
     handleCurrentChange(page) {
       this.params.pageNo = page;
+      this.init();
+    },
+
+    //搜索
+    handleSearch(){
+      this.params.pageNo = 1;
       this.init();
     },
 
