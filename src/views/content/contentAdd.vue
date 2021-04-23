@@ -342,7 +342,7 @@ export default {
 
         //上传视频第一帧作为封面图
         uploadVideoCover(data){
-            this.contentParams.image = data;
+            this.$set(this.contentParams, 'image', data)
         },
 
         //内容类型列表
