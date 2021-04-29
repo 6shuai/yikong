@@ -294,7 +294,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="closeEditTime">取 消</el-button>
-                <el-button type="primary" :loading="editTimeLoading" @click="updateContentTime">确 定</el-button>
+                <el-button type="primary" :loading="editTimeLoading" @click="updateContentTime()">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -313,6 +313,13 @@
 
         <!-- 复制到其他时间轴 -->
         <copy-to-other-timeline ref="copyToOtherTimeline"></copy-to-other-timeline>
+
+        <!-- 编辑时间轴内容 -->
+        <!-- <edit-timeline-content 
+            ref="editTimelineContent"
+            @updateContentTime="updateContentTime"
+            @deleteCurrentTimeline="deleteCurrentTimeline"
+        ></edit-timeline-content> -->
 
     </el-scrollbar>
 </template>
@@ -334,6 +341,7 @@ import CopyContent from "./CopyContent";
 import CreatedStage from './CreatedStage';
 import SetIsRotation from './SetIsRotation';
 import CopyToOtherTimeline from './CopyToOhterTimline';
+import EditTimelineContent from './ContentEdit';
 
 export default {
     props: ["startTime", "timelineData"],
@@ -619,21 +627,24 @@ export default {
 
         //点击编辑时段  显示弹窗
         editTimeBtn(Pindex, index, type) {
-            this.editTime = [
-                {
-                    startTime: this.rectangleData[Pindex][index].beginTime,
-                    Pindex,
-                    index,
-                    ...this.rectangleData[Pindex][index],
-                    type,
-                },
-            ];
-            this.showEditTime = true;
+            // if(type){
+                this.editTime = [
+                    {
+                        startTime: this.rectangleData[Pindex][index].beginTime,
+                        Pindex,
+                        index,
+                        ...this.rectangleData[Pindex][index],
+                        type,
+                    },
+                ];
+                this.showEditTime = true;
+            // }else{
+            //     this.$refs.editTimelineContent.showContentEditDialog(this.rectangleData[Pindex][index], Pindex, index);
+            // }
         },
 
         //编辑内容时段
-        updateContentTime() {
-            let data = this.editTime[0];
+        updateContentTime(data = this.editTime[0]) {
             let obj = JSON.parse(
                 JSON.stringify(this.rectangleData[data.Pindex][data.index])
             );
@@ -658,7 +669,7 @@ export default {
                 this.showEditTime = false;
                 this.editTimeLoading = false;
                 this.$set(this.rectangleData, data.Pindex, res);
-                delete this.editTime[0].type;
+                if(this.editTime[0]) delete this.editTime[0].type;
 
                 this.saveTimeline(data.Pindex);
             });
@@ -991,7 +1002,8 @@ export default {
         CopyContent,
         CreatedStage,
         SetIsRotation,
-        CopyToOtherTimeline
+        CopyToOtherTimeline,
+        EditTimelineContent
     },
     watch: {
         rectangleData(val){

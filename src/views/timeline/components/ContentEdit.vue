@@ -4,34 +4,40 @@
         custom-class="timeline-content-edit"
         :title="contentData.contentName"
         :visible.sync="showContentEdit"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
-        :show-close="false"
         class="timeline-create-stage"
-        v-loading="loading"
         append-to-body
-    >
-        <!-- <el-form label-width="80px">
-            <el-form-item 
-                v-if="stageParams.phaseType == 2"
-                label="播放时长" 
-                class="is-required">
-                <el-input
-                    class="w220 mr10"
-                    type="number"
-                    v-model="stageParams.duration"
-                    :min="1"
-                    placeholder="播放时长"
-                ></el-input>
-                秒
-            </el-form-item>
-        </el-form> -->
+    >   
+        <!-- <div class="content-edit-form">
+            <el-form label-width="80px">
+                <el-form-item 
+                    label="播放时长" 
+                    class="is-required">
+                    <el-input
+                        class="w220 mr10"
+                        type="number"
+                        v-model="contentData.duration"
+                        :min="1"
+                        placeholder="播放时长"
+                    ></el-input>
+                    秒
+                </el-form-item>
+                <el-form-item 
+                    label="删除" 
+                    class="is-required">
+                    <el-button type="primary">删除</el-button>
+                </el-form-item>
+            </el-form>
+        </div> -->
 
         <div
             class="screen-item"
         >
             <img
-                v-if="contentData.contentTypeId!=4"
+                v-if="contentData.contentTypeId == 3"
+                :src="contentData.image"
+            />
+            <img
+                v-else-if="contentData.contentTypeId!=4"
                 :src="contentData.contentPath"
             />
             <div v-if="contentData.contentTypeId==4" class="thumb-wrap">
@@ -46,15 +52,34 @@
             </div>
         </div>
 
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="showCreatedStage = false">取 消</el-button>
-            <el-button
-                type="primary"
-                :loading="createdLoading"
-                @click="createdStage"
-                >确 定</el-button
-            >
-        </span>
+        <div class="content-edit-form">
+            <el-form :inline="true" label-width="70px">
+                <el-form-item 
+                    label="播放时长">
+                    <el-input
+                        class="w220 mr10"
+                        type="number"
+                        v-model="contentData.duration"
+                        :min="1"
+                        placeholder="播放时长"
+                    ></el-input>
+                    秒
+                    <el-button 
+                        icon="el-icon-check" 
+                        type="primary"
+                        @click="handleChangeDuration"
+                    >提交</el-button>
+                    <el-button 
+                        icon="el-icon-delete" 
+                        type="danger"
+                        @click="handleDelete"
+                    >删除</el-button>
+                    <el-button @click="showContentEdit = false">取 消</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+
+
     </el-dialog>
 </template>
 
@@ -64,13 +89,30 @@ export default {
         return{
             showContentEdit: false,
             contentData: {},
-            subIndex: 0
+            subIndex: 0,
+            btnLoading: false,
+
         }
     },
     methods: {
-        showContentEditDialog(data){
-            this.contentData = data;
+        showContentEditDialog(data, Pindex, index){
+            this.contentData = {
+                ...data,
+                Pindex, 
+                index
+            };
             this.showContentEdit = true;
+        },
+
+        //编辑时长
+        handleChangeDuration(){
+            this.$emit('updateContentTime', this.contentData);
+        },
+
+        //删除内容
+        handleDelete(){
+            let { Pindex, index, id } = this.contentData;
+            this.$emit('deleteCurrentTimeline', Pindex, index, id);
         }
     },
 }
@@ -129,6 +171,10 @@ export default {
                 color: #fff;
                 text-align: center;
             }
+        }
+
+        .content-edit-form{
+            padding: 20px 0;
         }
     }
 </style>
