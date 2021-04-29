@@ -12,6 +12,17 @@
     .place-info{
         padding: 10px 0;
         overflow: hidden;
+
+        .el-form{
+            padding-bottom: 20px;
+            .el-form-item{
+                margin-bottom: 0;
+
+                .el-link--inner{
+                    line-height: 1;
+                }
+            }
+        }
     
         .place-brand{
             float: left;

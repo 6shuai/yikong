@@ -79,6 +79,17 @@ export function screenAwardStatistics(data) { return get('/screen/awardCashStati
 export function screenAwardStatisticsDetail(data) { return get('/screen/awardCashStatisticsDetail', data) }
 
 
+//玩家行为统计
+export function screenPlayerBehaviralData(data) { return get('/screen/playerBehaviralData', data) }
+
+//游戏奖励统计详情
+export function screenPlayerTimelineData(data) { return get('/screen/statisticsDataByPlayer', data) }
+
+
+//玩家留存统计
+export function screenPlayerKeepData(data) { return get('/screen/playerKeep', data) }
+
+
 
 //探针数据
 export function screenProbeData(data) { return get('/screen/screenFootTraffic', data) }

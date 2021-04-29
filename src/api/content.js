@@ -70,3 +70,13 @@ export function contentAwardStatistics(data) { return get('/content/awardCashSta
 export function contentAwardStatisticsDetail(data) { return get('/content/awardCashStatisticsDetail', data) }
 
 
+
+//玩家行为统计
+export function contentPlayerBehaviralData(data) { return get('/content/playerBehaviralData', data) }
+
+//游戏奖励统计详情
+export function contentPlayerTimelineData(data) { return get('/content/statisticsDataByPlayer', data) }
+
+//玩家留存统计
+export function contentPlayerKeepData(data) { return get('/content/playerKeep', data) }
+

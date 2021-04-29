@@ -1,12 +1,5 @@
 <template>
-	<el-card class="template-card content-details statistics-list">
-		<div class="header-wrap detail-header-wrap mb30">
-			<el-page-header @back="$router.go(-1)"> </el-page-header>
-			<div class="title">
-				<h2>玩家奖励统计</h2>
-			</div>
-		</div>
-
+	<div class="statistics-list">
 		<el-form label-width="80px" :inline="true">
 			<el-form-item
 				label="场所"
@@ -156,7 +149,7 @@
 
 		<!-- 统计数据 详情 -->
 		<statistics-detail ref="statisticsDetail"></statistics-detail>
-	</el-card>
+	</div>
 </template>
 
 <script>

@@ -209,14 +209,6 @@
                                     >游戏数据统计</el-link
                                 >
                             </el-form-item>
-                            <el-form-item label="奖励统计" v-if="resData.statisics">
-                                <el-link
-                                    v-if="resData.placeId"
-                                    @click="handleAwardStatistics"
-                                    type="primary"
-                                    >游戏奖励统计</el-link
-                                >
-                            </el-form-item>
                             <el-form-item label="所属场所">
                                 <el-link
                                     v-if="resData.placeId"
@@ -509,17 +501,6 @@ export default {
         handleStatistics(){
             this.$router.push({
                 path: '/game/statisics',
-                query: {
-                    source: 'screen',
-                    screenId: this.$route.params.id
-                }
-            });
-        },
-
-        //游戏奖励统计
-        handleAwardStatistics(){
-            this.$router.push({
-                path: '/game/awardStatisics',
                 query: {
                     source: 'screen',
                     screenId: this.$route.params.id

@@ -68,7 +68,7 @@ export const constantRoutes = [
     children: [{
       path: '/game/statisics',
       name: 'gameStatisics',
-      component: () => import('@/components/Statistics/game/index'),
+      component: () => import('@/components/Statistics/index'),
       meta: { title: '数据统计' }
     }],
     hidden: true
@@ -83,6 +83,19 @@ export const constantRoutes = [
       name: 'gameAwardStatisics',
       component: () => import('@/components/Statistics/award/index'),
       meta: { title: '游戏奖励数据统计' }
+    }],
+    hidden: true
+  },
+
+  //玩家游戏行为统计
+  {
+    path: '/',
+    component: Layout,
+    children: [{
+      path: '/game/charts',
+      name: 'gameCharts',
+      component: () => import('@/components/Statistics/charts/index'),
+      meta: { title: '玩家游戏行为统计' }
     }],
     hidden: true
   },

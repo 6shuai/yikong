@@ -79,3 +79,13 @@ export function placeAwardStatistics(data) { return get('/place/awardCashStatist
 export function placeAwardStatisticsDetail(data) { return get('/place/awardCashStatisticsDetail', data) }
 
 
+
+//玩家行为统计
+export function placePlayerBehaviralData(data) { return get('/place/playerBehaviralData', data) }
+
+//游戏奖励统计详情
+export function placePlayerTimelineData(data) { return get('/place/statisticsDataByPlayer', data) }
+
+
+//玩家留存统计
+export function placePlayerKeepData(data) { return get('/place/playerKeep', data) }

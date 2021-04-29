@@ -106,7 +106,7 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    boundaryGap: false,
+                    boundaryGap: true,
                     data: date,
                     axisPointer: {
                         type: 'shadow'

@@ -1,5 +1,5 @@
 <template>
-	<div class="statistics-list">
+	<div class="statistics-list keep-statistics">
 		<el-form label-width="80px" :inline="true">
 			<el-form-item
 				label="场所"
@@ -70,7 +70,7 @@
 					@change="search"
 					v-model="datePicker"
 					type="datetimerange"
-					value-format="yyyy-MM-dd HH:mm:ss"
+					value-format="yyyy-MM-dd"
 					range-separator="至"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
@@ -78,19 +78,6 @@
 				</el-date-picker>
 			</el-form-item>
 		</el-form>
-
-		<div class="statistics-tool">
-			<el-button
-				:disabled="!resData.length"
-				class="right-btn"
-				plain
-				type="primary"
-				size="small"
-				icon="el-icon-upload2"
-				@click="download"
-				>导出</el-button
-			>
-		</div>
 
 		<el-table
 			class="mb20"
@@ -100,76 +87,48 @@
 			:data="resData"
 			row-key="id"
 			border
+			:summary-method="getSummaries"
+			show-summary
 		>
 			<el-table-column
-				prop="occur"
-				label="时间段"
 				min-width="120"
-			></el-table-column>
+			>
+                <template slot-scope="scope">
+                    <div>{{ scope.row.day }} 新增去重</div>
+                </template>
+            </el-table-column>
 			<el-table-column
-				prop="loginTimes"
-				label="登录次数"
-				min-width="80"
-			></el-table-column>
-			<el-table-column
-				prop="playTimes"
-				label="游戏次数"
-				min-width="80"
-			></el-table-column>
-			<el-table-column
-				prop="playerCount"
-				label="游戏人数"
-				min-width="80"
-			></el-table-column>
-			<el-table-column label="操作" width="110">
-				<template slot-scope="scope">
-					<el-button
-						size="mini"
-						type="primary"
-						@click="handleDetail(scope.row)"
-					>
-						查看详情
-					</el-button>
-				</template>
-			</el-table-column>
+                v-for="(item, index) in resData"
+                :key="index"
+				:label="item.day"
+				min-width="120"
+			>
+                <template slot-scope="scope">
+                    <div v-if="item.keeps && item.keeps.length">{{ item.keeps[scope.$index] }}</div>
+                    <div ref="hight" v-if="scope.$index == index">{{ item.new || 0 }}</div>
+                </template>
+            </el-table-column>
 		</el-table>
-
-		<el-pagination
-			background
-			layout="total, prev, pager, next, sizes"
-			:page-sizes="[48, 80, 100]"
-			:current-page="Number(params.pageNo)"
-			@size-change="handleSizeChange"
-			@current-change="handleCurrentChange"
-			:total="totalCount"
-		>
-		</el-pagination>
-
-		<!-- 统计数据 详情 -->
-		<player-statistics-detail ref="statisticsDetail"></player-statistics-detail>
+		
+		<el-tag effect="dark">复玩率: {{ (replayRate * 100).toFixed(2) }} %</el-tag>
 
 	</div>
 </template>
 
 <script>
-import qs from "qs";
-import PlayerStatisticsDetail from "./StatisticsDetail";
 import {
 	placeGameList,
 	placeScreenList,
-	placeStatistics,
-	placeStatisticsDetail,
+	placePlayerKeepData,
 } from "@/api/place";
 import {
 	screenGameList,
-	screenStatistics,
-	screenStatisticsDetail,
+	screenPlayerKeepData,
 } from "@/api/screen";
 import {
 	contentPlaceList,
 	contentScreenList,
-	contentStatistics,
-	contentStatisticsDetail,
+	contentPlayerKeepData,
 } from "@/api/content";
 
 export default {
@@ -185,7 +144,7 @@ export default {
 			gameData: [], //游戏列表
 			tableLoading: false,
 			resData: [],
-			totalCount: 0,
+			replayRate: '',
 			api: {},
 		};
 	},
@@ -201,25 +160,21 @@ export default {
 		let ScreenList = undefined;
 		let GameList = undefined;
 		let StatisticsList = undefined;
-		let StatisticsDetail = undefined;
 
 		switch (this.$route.query.source) {
 			case "place":
 				ScreenList = placeScreenList;
 				GameList = placeGameList;
-				StatisticsList = placeStatistics;
-				StatisticsDetail = placeStatisticsDetail;
+				StatisticsList = placePlayerKeepData;
 				break;
 			case "screen":
 				GameList = screenGameList;
-				StatisticsList = screenStatistics;
-				StatisticsDetail = screenStatisticsDetail;
+				StatisticsList = screenPlayerKeepData;
 				break;
 			case "content":
 				PlaceList = contentPlaceList;
 				ScreenList = contentScreenList;
-				StatisticsList = contentStatistics;
-				StatisticsDetail = contentStatisticsDetail;
+				StatisticsList = contentPlayerKeepData;
 				break;
 			default:
 				break;
@@ -230,7 +185,6 @@ export default {
 			ScreenList,
 			GameList,
 			StatisticsList,
-			StatisticsDetail,
 		};
 
 		this.init();
@@ -248,14 +202,33 @@ export default {
 			if (!this.params.placeId) delete this.params.placeId;
 			if (!this.params.screenId) delete this.params.screenId;
 			if (!this.params.contentId) delete this.params.contentId;
+
+			this.resData = [];
 			this.api.StatisticsList(this.params).then((res) => {
 				this.tableLoading = false;
 				if (res.code === this.$successCode) {
-					let { list, totalRecords } = res.obj;
-					this.resData = list;
-					this.totalCount = totalRecords;
+					if(!res.obj) return
+					let { playerKeep, replayRate } = res.obj;
+					this.resData = playerKeep;
+					this.replayRate = replayRate;
+
+					this.$nextTick(() => {
+						this.$refs.hight.forEach(item => {
+							item.parentElement.parentElement.style.background = "#ffc7c7";
+						})
+					})
 				}
 			});
+		},
+
+		//合计行 数据
+		getSummaries(){
+			let sums = ['参与人数'];
+			this.resData.forEach(item => {
+				sums.push(item.total);
+			})
+
+			return sums
 		},
 
 		//场所列表
@@ -282,50 +255,13 @@ export default {
 			});
 		},
 
-		//查看详情
-		handleDetail(row) {
-			this.$refs.statisticsDetail.showDialog(
-				{
-					occur: row.occur,
-					placeId: this.params.placeId,
-					screenId: this.params.screenId,
-					contentId: this.params.contentId
-				},
-				this.api.StatisticsDetail
-			);
-		},
-
 		//搜索
 		search() {
 			this.params.pageNo = 1;
-			this.params.startTime = this.datePicker ? this.datePicker[0] : "";
-			this.params.endTime = this.datePicker ? this.datePicker[1] : "";
+			this.params.startTime = this.datePicker ? this.datePicker[0] + ' 00:00:00' : '';
+			this.params.endTime = this.datePicker ? this.datePicker[1] + ' 00:00:00'  : '';
 			this.init();
-		},
-
-		//分页
-		handleCurrentChange(page) {
-			this.params.pageNo = page;
-			this.init();
-		},
-
-		//每页多少条
-		handleSizeChange(size) {
-			this.params.pageSize = size;
-			this.init();
-		},
-
-		//导出
-		download() {
-			window.open(
-				`${document.location.origin}/${
-					this.$route.query.source
-				}/export?${qs.stringify(this.params)}`
-			);
-		},
-	},
-	components: {
-		PlayerStatisticsDetail,
+		}
 	},
 };
 </script>

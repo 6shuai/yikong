@@ -2,8 +2,10 @@
     <el-dialog
         class="statistics-detail"
         title="统计数据详情"
+        :close-on-click-modal="false"
+		:close-on-press-escape="false"
         :visible.sync="dialogVisible"
-        width="1000px"
+        width="1100px"
     >
         <el-table
             class="mb20"
@@ -58,12 +60,26 @@
                 min-width="80"
             ></el-table-column>
             <el-table-column
+                prop="logoutTimes"
+                label="退出次数"
+                min-width="80"
+            ></el-table-column>
+            <el-table-column
                 prop="playtime"
                 label="时长"
                 min-width="80"
             >
                 <template slot-scope="scope">
                     {{ scope.row.playtime }} 秒
+                </template>
+            </el-table-column>
+            <el-table-column
+                prop="playtime"
+                label="操作"
+                min-width="80"
+            >
+                <template slot-scope="scope">
+                    <el-link type="primary" @click="handlePlayerTimeline(scope.row)">游戏轨迹</el-link>
                 </template>
             </el-table-column>
         </el-table>
@@ -82,10 +98,15 @@
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">关 闭</el-button>
         </span>
+
+        <player-timeline ref="playerTimeline"></player-timeline>
+
     </el-dialog>
 </template>
 
 <script>
+import PlayerTimeline from '../charts/timeline';
+
 export default {
     data() {
         return {
@@ -132,7 +153,24 @@ export default {
             this.params.pageSize = size;
             this.getDetail();
         },
+
+        //查看玩家行为轨迹
+        handlePlayerTimeline(data){
+            let { placeId, screenId, contentId, startTime, endTime, occur } = this.params;
+            this.$refs.playerTimeline.showPlayerTimeline({
+                playerId: data.playerId,
+                occur,
+                placeId,
+                screenId,
+                contentId,
+                startTime,
+                endTime
+            })
+        }
     },
+    components: {
+        PlayerTimeline
+    }
 };
 </script>
 
