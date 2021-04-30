@@ -327,6 +327,7 @@ export default {
                 this.aspectRatioCompute(this.contentParams.width, this.contentParams.height);
             }
             this.contentParams.image = data.contentPath;
+            this.$set(this.contentParams, 'newUpload', 1);
         },
 
         //上传视频成功
@@ -518,6 +519,7 @@ export default {
                 total += item.duration;
                 if(item.contentType == 1 && s){
                     this.contentParams.image = item.contentPath;
+                    this.$set(this.contentParams, 'newUpload', 1);
                     s = false;
                 }
             })

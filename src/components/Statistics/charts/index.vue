@@ -261,7 +261,7 @@ export default {
 			let chartDom = document.getElementById("chart");
 			let myChart = echarts.init(chartDom);
 			let option;
-			let resData = this.resData; //['2021-04-18 09:30:00', '2021-04-18 09:30:12', '2021-04-18 09:30:33', '2021-04-18 09:32:50', '2021-04-18 09:36:23', '2021-04-18 09:38:30', '2021-04-18 09:42:23', '2021-04-18 09:43:12','2021-04-18 09:44:11'];
+			let resData = this.resData; 
 			let date = [];
 			let data = [];
 			let count = 0;
