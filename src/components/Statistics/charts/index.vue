@@ -146,7 +146,7 @@ export default {
 			api: {},
 			activeName: "",
 			timeNum: 5,
-			chartText: '登录人数'
+			chartText: '登录次数'
 		};
 	},
 	mounted() {
@@ -213,13 +213,13 @@ export default {
 
 			switch (this.params.hehavior) {
 				case 1:
-					this.chartText = '登录人数';
+					this.chartText = '登录次数';
 					break;
 				case 3:
-					this.chartText = '玩游戏人数';
+					this.chartText = '玩游戏次数';
 					break;
 				case 2:
-					this.chartText = '退出人数';
+					this.chartText = '退出次数';
 					break;
 				default:
 					break;
@@ -291,7 +291,7 @@ export default {
 
 			option = {
 				tooltip: {
-					trigger: "axis"
+					trigger: "axis",
 				},
 				toolbox: {
                     feature: {
@@ -387,7 +387,7 @@ export default {
 							},
 						},
 						name: this.chartText,
-						type: "bar",
+						type: "line",
 						smooth: true,
 						data: data,
 					},
@@ -400,25 +400,34 @@ export default {
 				myChart.resize();
 			};
 
-			myChart.off("click");
-			//点击事件
-			myChart.on("click", function (params) {
-				// console.log(params.dataIndex, _this.timelineData)
-				let startTime = date[params.dataIndex].split(' - ')[0];
-				let endTime = date[params.dataIndex].split(' - ')[1];
-				_this.$refs.statisticsDetail.showDialog(
-					{
-						// occur: row.occur,
-						placeId: _this.params.placeId,
-						screenId: _this.params.screenId,
-						contentId: _this.params.contentId,
-						startTime,
-						endTime,
-						hehavior: _this.params.hehavior,
-					},
-					_this.api.StatisticsDetail
-				);
+			myChart.getZr().off('click');
+			myChart.getZr().on('click',params=>{
+				const pointInPixel= [params.offsetX, params.offsetY];
+				if (myChart.containPixel('grid',pointInPixel)) {
+					let xIndex=myChart.convertFromPixel({seriesIndex:0},[params.offsetX, params.offsetY])[0];
+					/*事件处理代码书写位置*/
+					let startTime = date[xIndex].split(' - ')[0];
+					let endTime = date[xIndex].split(' - ')[1];
+					_this.$refs.statisticsDetail.showDialog(
+						{
+							// occur: row.occur,
+							placeId: _this.params.placeId,
+							screenId: _this.params.screenId,
+							contentId: _this.params.contentId,
+							startTime,
+							endTime,
+							hehavior: _this.params.hehavior,
+						},
+						_this.api.StatisticsDetail
+					);
+				}
 			});
+
+			// //点击事件
+			// myChart.on("click", function (params) {
+				// console.log(params.dataIndex, _this.timelineData)
+				
+			// });
 		},
 
 		//传入时间  和 时长  返回一个新的时间

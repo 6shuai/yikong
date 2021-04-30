@@ -16,7 +16,11 @@
                     v-for="(activity, index) in resData.playerBehaviralData"
                     :key="index"
                     :timestamp="activity.occur">
-                    {{activity.hehavior == 1 ? '登录' : activity.hehavior == 2 ? '退出' : '开始游戏' }}
+                    <div class="content">
+                        <span class="state">{{activity.hehavior == 1 ? '登录' : activity.hehavior == 2 ? '退出' : '开始游戏' }}</span>
+                        <span class="desc">{{ activity.note }}</span>
+                    </div>
+                    
                 </el-timeline-item>
             </el-timeline>
         </div>
@@ -76,11 +80,24 @@ export default {
             .el-image{
                 width: 70px;
                 height: 70px;
+                border: 1px solid #e5e5e5;
                 border-radius: 50%;
             }
 
             p.name{
                 line-height: 40px;
+            }
+        }
+
+        .content{
+            .state{
+                padding-right: 20px;
+                display: inline-block;
+                width: 80px;
+            }
+
+            .desc{
+                color: #999;
             }
         }
     }
