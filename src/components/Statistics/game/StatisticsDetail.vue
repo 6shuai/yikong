@@ -53,17 +53,29 @@
                 prop="loginTimes"
                 label="登录次数"
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ scope.row.loginTimes || 0 }}
+                </template>
+            </el-table-column>
             <el-table-column
                 prop="playTimes"
                 label="游戏次数"
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ scope.row.playTimes || 0 }}
+                </template>
+            </el-table-column>
             <el-table-column
                 prop="logoutTimes"
                 label="退出次数"
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ scope.row.logoutTimes || 0 }}
+                </template>
+            </el-table-column>
             <el-table-column
                 prop="playtime"
                 label="时长"

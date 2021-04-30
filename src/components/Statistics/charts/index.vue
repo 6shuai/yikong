@@ -146,6 +146,7 @@ export default {
 			api: {},
 			activeName: "",
 			timeNum: 5,
+			chartText: '登录人数'
 		};
 	},
 	mounted() {
@@ -209,6 +210,21 @@ export default {
 			if (!this.params.placeId) delete this.params.placeId;
 			if (!this.params.screenId) delete this.params.screenId;
 			if (!this.params.contentId) delete this.params.contentId;
+
+			switch (this.params.hehavior) {
+				case 1:
+					this.chartText = '登录人数';
+					break;
+				case 3:
+					this.chartText = '玩游戏人数';
+					break;
+				case 2:
+					this.chartText = '退出人数';
+					break;
+				default:
+					break;
+			}
+
 			this.api.PlayerBehaviorList(this.params).then((res) => {
 				this.tableLoading = false;
 				if (res.code === this.$successCode) {
@@ -303,7 +319,7 @@ export default {
                     }
 				},
 				yAxis: {
-					name: "人数",
+					name: this.chartText,
 					type: "value",
 					axisLabel: {
 						formatter: "{value} ",
@@ -370,7 +386,7 @@ export default {
 								},
 							},
 						},
-						name: "人数",
+						name: this.chartText,
 						type: "bar",
 						smooth: true,
 						data: data,

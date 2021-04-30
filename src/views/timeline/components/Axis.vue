@@ -138,6 +138,11 @@
                         <li>开始时间：{{stageData[stageIndex].beginTimeFormat}}</li>
                         <li>结束时间：{{updateStartTime(stageData[stageIndex].beginTimeFormat, stageData[stageIndex].duration)}}</li>
                     </ul>
+
+                    <ul class="info-list">
+                        <li>时长：{{ formatSeconds }}</li>
+                    </ul>
+                    
                 </div>
             </div>
         </div>
@@ -392,12 +397,36 @@ export default {
             cutInStage: [],       //插播内容
             stageIndex: 0,        //当前阶段   
             stageData: {},
+            stagetContentDuration: 0,  //阶段内容总时长
         };
     },
     computed: {
         ...mapState({
             dragData: (state) => state.timeline.dragData,
-        })
+        }),
+         //秒 转成  时分秒
+        formatSeconds(){
+            var theTime = parseInt(this.stagetContentDuration);// 秒
+            var middle= 0;// 分
+            var hour= 0;// 小时
+
+            if(theTime > 60) {
+                middle= parseInt(theTime/60);
+                theTime = parseInt(theTime%60);
+                if(middle> 60) {
+                    hour= parseInt(middle/60);
+                    middle= parseInt(middle%60);
+                }
+            }
+            var result = ""+parseInt(theTime)+"秒";
+            if(middle > 0) {
+                result = ""+parseInt(middle)+"分"+result;
+            }
+            if(hour> 0) {
+                result = ""+parseInt(hour)+"小时"+result;
+            }
+            return result;
+        },
     },
     mounted() {
         this.getStageData();
@@ -464,6 +493,7 @@ export default {
         searchOverlap(Pindex) {
             return new Promise((resolve) => {
                 let stageStarTime = this.stageData[this.stageIndex].beginTimeFormat;
+                console.log(Pindex, stageStarTime)
                 this.timelineForeachFind(resolve, Pindex, stageStarTime);
                 
             });
@@ -524,6 +554,8 @@ export default {
                     });
 
                     this.$set(this.rectangleData, Pindex, obj);
+
+                    this.findStageDuratioMax();
                 }
             });
         },
@@ -555,11 +587,13 @@ export default {
                         this.$set(this.rectangleData, i, data);
                         if(i == this.screenLayout.length-1){
                             this.timelineLoading = false;
+                            this.findStageDuratioMax();
                         } 
 
                     });
                 });
             }
+
         },
 
         //删除时间轴  资源
@@ -581,6 +615,7 @@ export default {
                         let obj = this.rectangleData;
                         this.rectangleData = [];
                         this.rectangleData = obj;
+                        this.findStageDuratioMax();
                     }
                 })
                 .catch(() => {});
@@ -592,6 +627,7 @@ export default {
                 this.deleteLoading = false;
                 if (res.code === this.$successCode) {
                     this.$message.success("删除成功~");
+                    
                     if (type == "checkbox") {
                         this.deleteIds.forEach((item, index) => {
                             let key = this.timelineIds[item];
@@ -620,6 +656,8 @@ export default {
                             });
                         }
                     }
+
+                    this.findStageDuratioMax();
 
                 }
             });
@@ -995,7 +1033,24 @@ export default {
         //复制到其他时间轴
         handleCopyToOtherTimeline(){
             this.$refs.copyToOtherTimeline.showDialog(this.rotationStage, this.cutInStage);
-        }
+        },
+
+        //找到阶段里 逻辑区域时长最长的
+        findStageDuratioMax() {
+            this.$nextTick(() => {
+                let stageTotalDuration = 0;
+                let data = JSON.parse(JSON.stringify(this.rectangleData))
+                data.forEach((item, index) => {
+                    let totalDuration = 0;
+                    item.forEach((t) => {
+                        totalDuration += Number(t.duration);
+                    });
+                    item.totalDuration = totalDuration;
+                    stageTotalDuration = stageTotalDuration > totalDuration ? stageTotalDuration : totalDuration;
+                });
+                this.stagetContentDuration = stageTotalDuration;
+            })
+        },
     },
     components: {
         Draggable,
