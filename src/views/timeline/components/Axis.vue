@@ -1042,6 +1042,7 @@ export default {
                 let data = JSON.parse(JSON.stringify(this.rectangleData))
                 data.forEach((item, index) => {
                     let totalDuration = 0;
+                    if(!item) return
                     item.forEach((t) => {
                         totalDuration += Number(t.duration);
                     });

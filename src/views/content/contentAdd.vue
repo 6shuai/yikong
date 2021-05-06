@@ -278,7 +278,7 @@ export default {
                         aspectRatio: data.aspectRatioId,
                         size: data.size,
                         duration: data.duration,
-                        id: data.id
+                        id: data.id,
                     }
 
                     if(this.contentParams.contentType === 4){

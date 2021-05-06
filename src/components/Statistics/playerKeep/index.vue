@@ -258,8 +258,8 @@ export default {
 		//搜索
 		search() {
 			this.params.pageNo = 1;
-			this.params.startTime = this.datePicker ? this.datePicker[0] + ' 00:00:00' : '';
-			this.params.endTime = this.datePicker ? this.datePicker[1] + ' 00:00:00'  : '';
+			this.params.startTime = this.datePicker[0] ? this.datePicker[0] + ' 00:00:00' : '';
+			this.params.endTime = this.datePicker[1] ? this.datePicker[1] + ' 00:00:00'  : '';
 			this.init();
 		}
 	},
