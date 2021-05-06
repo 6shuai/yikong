@@ -343,6 +343,7 @@ export default {
 
         //上传视频第一帧作为封面图
         uploadVideoCover(data){
+            this.$set(this.contentParams, 'newUpload', 1);
             this.$set(this.contentParams, 'image', data)
         },
 
