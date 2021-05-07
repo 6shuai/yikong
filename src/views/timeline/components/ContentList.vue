@@ -95,7 +95,7 @@
               v-for="(img, index) in filterVideo(item.subContentsData)"
               v-if="img.contentType == 1 && index <= 3"
               :key="index"
-              :src="img.contentPath"
+              :src="img.image"
             >
               <div slot="placeholder" class="image-slot"></div>
             </el-image>

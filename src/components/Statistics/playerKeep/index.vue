@@ -94,18 +94,24 @@
 				min-width="120"
 			>
                 <template slot-scope="scope">
-                    <div>{{ scope.row.day }} 新增去重</div>
+                    <div v-if="scope.$index < resData.length-1">{{ scope.row.day }} 新增去重</div>
+					<div v-else>新玩家</div>
                 </template>
             </el-table-column>
+
 			<el-table-column
                 v-for="(item, index) in resData"
                 :key="index"
 				:label="item.day"
 				min-width="120"
+				v-if="item.day"
 			>
                 <template slot-scope="scope">
-                    <div v-if="item.keeps && item.keeps.length">{{ item.keeps[scope.$index] }}</div>
-                    <div ref="hight" v-if="scope.$index == index">{{ item.new || 0 }}</div>
+					<div v-if="scope.$index < resData.length-1">
+						<div v-if="item.keeps && item.keeps.length">{{ item.keeps[scope.$index] }}</div>
+						<div ref="hight" v-if="scope.$index == index">{{ item.new || 0 }}</div>
+					</div>
+					<div v-else>{{ item.firstPlay }}</div>
                 </template>
             </el-table-column>
 		</el-table>
@@ -211,10 +217,10 @@ export default {
 					let { playerKeep, replayRate } = res.obj;
 					this.resData = playerKeep;
 					this.replayRate = replayRate;
-
+					this.resData.push({})
 					this.$nextTick(() => {
 						this.$refs.hight.forEach(item => {
-							item.parentElement.parentElement.style.background = "#ffc7c7";
+							item.parentElement.parentElement.parentElement.style.background = "#ffc7c7";
 						})
 					})
 				}

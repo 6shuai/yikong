@@ -240,11 +240,11 @@
                                                 class="image-wrap atlas" 
                                                 :class="`atlas-${item.subContentsData.length > 4 ? '4' : item.subContentsData.length}`"
                                                 v-if="item.contentTypeId == contentTypeId.atlas">
-                                                <el-image 
+                                                <el-image s
                                                     v-for="img in item.subContentsData" 
                                                     v-if="img.contentType==1" 
-                                                    :key="img.contentPath" 
-                                                    :src="img.contentPath" 
+                                                    :key="img.image" 
+                                                    :src="img.image" 
                                                     fit="cover">
                                                 </el-image>
                                             </div>
@@ -398,6 +398,7 @@ export default {
             stageIndex: 0,        //当前阶段   
             stageData: {},
             stagetContentDuration: 0,  //阶段内容总时长
+            findDurationTimer: undefined
         };
     },
     computed: {
@@ -407,25 +408,26 @@ export default {
          //秒 转成  时分秒
         formatSeconds(){
             var theTime = parseInt(this.stagetContentDuration);// 秒
-            var middle= 0;// 分
-            var hour= 0;// 小时
+        //     var middle= 0;// 分
+        //     var hour= 0;// 小时
 
-            if(theTime > 60) {
-                middle= parseInt(theTime/60);
-                theTime = parseInt(theTime%60);
-                if(middle> 60) {
-                    hour= parseInt(middle/60);
-                    middle= parseInt(middle%60);
-                }
-            }
-            var result = ""+parseInt(theTime)+"秒";
-            if(middle > 0) {
-                result = ""+parseInt(middle)+"分"+result;
-            }
-            if(hour> 0) {
-                result = ""+parseInt(hour)+"小时"+result;
-            }
-            return result;
+        //     if(theTime > 60) {
+        //         middle= parseInt(theTime/60);
+        //         theTime = parseInt(theTime%60);
+        //         if(middle> 60) {
+        //             hour= parseInt(middle/60);
+        //             middle= parseInt(middle%60);
+        //         }
+        //     }
+        //     var result = ""+parseInt(theTime)+"秒";
+        //     if(middle > 0) {
+        //         result = ""+parseInt(middle)+"分"+result;
+        //     }
+        //     if(hour> 0) {
+        //         result = ""+parseInt(hour)+"小时"+result;
+        //     }
+        //     return result;
+            return theTime + '秒';
         },
     },
     mounted() {
@@ -583,8 +585,9 @@ export default {
                                 item.id;
                         });
                     }
+                    
+                    this.$set(this.rectangleData, i, data);
                     this.$nextTick(() => {
-                        this.$set(this.rectangleData, i, data);
                         if(i == this.screenLayout.length-1){
                             this.timelineLoading = false;
                             this.findStageDuratioMax();
@@ -1037,7 +1040,8 @@ export default {
 
         //找到阶段里 逻辑区域时长最长的
         findStageDuratioMax() {
-            this.$nextTick(() => {
+            clearTimeout(this.findDurationTimer);
+            this.findDurationTimer = setTimeout(() => {
                 let stageTotalDuration = 0;
                 let data = JSON.parse(JSON.stringify(this.rectangleData))
                 data.forEach((item, index) => {
@@ -1050,7 +1054,7 @@ export default {
                     stageTotalDuration = stageTotalDuration > totalDuration ? stageTotalDuration : totalDuration;
                 });
                 this.stagetContentDuration = stageTotalDuration;
-            })
+            }, 500);
         },
     },
     components: {
