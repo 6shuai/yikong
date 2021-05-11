@@ -2,12 +2,6 @@
     <div class="app-main-wrap screen-list-wrap" id="app-main-wrap">
         <search @searchResult="search" ref="search"></search>
         <div class="download">
-            <el-button 
-                type="primary" 
-                @click="exportScreenDuration"
-                size="mini">
-                导出在线屏幕阶段时长
-            </el-button>
             <el-pagination
                 v-if="resData.length"
                 small
@@ -127,13 +121,6 @@ export default {
         handleSizeChange(num){
             this.params.pageSize = num;
             this.init();
-        },
-
-        //导出在线屏幕 阶段时长
-        exportScreenDuration(){
-            window.open(
-				`${document.location.origin}/screen/exportOnlineScreenPhaseDuration`
-			);
         }
         
     },
@@ -146,18 +133,4 @@ export default {
 </script>
 <style lang="scss" scope>
     @import '../place/style/place-card.scss';
-
-    .screen-list-wrap{
-        .download{
-            text-align: right;
-            .el-button{
-                display: inline-block;
-                margin-right: 20px;
-            }
-        }
-
-        .el-pagination{
-            display: inline-block;
-        }
-    }
 </style>
