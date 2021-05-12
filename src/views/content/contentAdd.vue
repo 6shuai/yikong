@@ -448,6 +448,7 @@ export default {
 
         //删除引用内容
         contentDelete(index, id){
+            this.contentParams.duration = this.contentParams.duration - this.atlasData[index].duration;
             if(id){
                 atlasDeleteContent(id).then(res => {
                     if(res.code === this.$successCode){
@@ -457,7 +458,6 @@ export default {
             }else{
                 this.atlasData.splice(index, 1);
             }
-            this.handleDuration();
         },
 
         //图集类型  保存时操作
