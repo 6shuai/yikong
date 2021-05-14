@@ -52,7 +52,7 @@
 
 
 
-                        <el-form-item :label="`上传内容 (${contentTypeName(contentParams.contentType)})`" prop="contentPath" v-if="contentParams.contentType !== 4">
+                        <el-form-item :label="`上传内容 (${contentTypeName(contentParams.contentType)})`" prop="contentPath" v-if="contentParams.contentType == 1 || contentParams.contentType == 2">
                             <!-- 上传图片 -->
                             <div v-if="contentParams.contentType === 1">
                                 <upload-img 
@@ -102,7 +102,7 @@
                                                 @click="previewData=item;dialogVisible=true"
                                             >
                                                 <i :class="item.contentType==2 ? 'el-icon-video-play' : 'el-icon-zoom-in'"></i>
-                                            </span>
+                                            </span>  
                                             <span
                                                 title="删除"
                                                 class="el-upload-list__item-delete"
@@ -119,6 +119,21 @@
                                 </li>
                             </ul>
                             
+                        </el-form-item>
+
+
+                        <el-form-item label="直播地址" prop="streamUri" v-if="contentParams.contentType == 5">
+                            <el-input v-model="contentParams.streamUri" placeholder="直播地址"></el-input>
+                        </el-form-item>
+                        <el-form-item label="直播协议" prop="protocolId" v-if="contentParams.contentType == 5">
+                            <el-select v-model="contentParams.protocolId" placeholder="请选择直播协议类型" style="width:100%">
+                                <el-option 
+                                    v-for="item in liveAgreementData" 
+                                    :key="item.id"
+                                    :label="item.displayName" 
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
 
                         <el-form-item label="展示图片" prop="image">
@@ -157,7 +172,7 @@
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="文件容量" prop="size">
+                            <el-form-item label="文件容量" prop="size" v-if="contentParams.contentType != 5">
                                 <el-input type="number" disabled v-model="fileSize" placeholder="文件容量">
                                     <template slot="append">MB</template>       
                                 </el-input>   
@@ -192,7 +207,7 @@
     </div>
 </template>
 <script>
-import { getContentTypeList, contentCreated, atlasDeleteContent } from '@/api/content';
+import { getContentTypeList, contentCreated, atlasDeleteContent, contentLiveAgreement } from '@/api/content';
 import { getOrganizationList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio } from '@/views/screen/mixins';
 import { contentDetailData } from '@/views/content/mixins';
@@ -228,7 +243,9 @@ export default {
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
                 size: [{ required: true, trigger: "blur", message: '请输入文件容量~' }],
                 duration: [{ required: true, trigger: "blur", message: '请输入播放时长~' }],
-                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
+                groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }],
+                streamUri: [{ required: true, trigger: "blur", message: '请输入直播地址~' }],
+                protocolId: [{ required: true, trigger: "blur", message: '请选择直播协议类型~' }],
             },
             loading: false,
             typeList: [],                  //内容类型列表
@@ -248,6 +265,7 @@ export default {
             atlasData: [],                              //图集内容
             dialogVisible: false,
             previewData: {},                            //预览的内容
+            liveAgreementData: [],                      //直播协议列表
         }
     },
     mounted() {
@@ -279,10 +297,16 @@ export default {
                         size: data.size,
                         duration: data.duration,
                         id: data.id,
+                        streamUri: data.streamUri,
+                        protocolId: data.protocolId 
                     }
 
                     if(this.contentParams.contentType === 4){
                         this.atlasData = data.oldContents;
+                    }
+
+                    if(this.contentParams.contentType === 5){
+                        this.getLiveAgreement();
                     }
                 })
             }
@@ -389,6 +413,8 @@ export default {
             this.$delete(this.contentParams, 'contentPath');
             if(this.contentParams.contentType == 4){
                 this.$set(this.contentParams, 'duration', null);
+            }else if (this.contentParams.contentType == 5) {
+                this.getLiveAgreement();
             }else{
                 this.$set(this.contentParams, 'duration', 15);
             }
@@ -526,6 +552,13 @@ export default {
             })
             this.contentParams.duration = total;
         },
+
+        //获取直播协议 列表
+        getLiveAgreement(){
+            contentLiveAgreement().then(res => {
+                this.liveAgreementData = res.obj;
+            })
+        }
 
     },
     components: {

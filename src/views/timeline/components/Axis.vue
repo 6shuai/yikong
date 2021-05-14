@@ -407,7 +407,7 @@ export default {
         }),
          //秒 转成  时分秒
         formatSeconds(){
-            var theTime = parseInt(this.stagetContentDuration);// 秒
+            var theTime = this.stagetContentDuration;// 秒
         //     var middle= 0;// 分
         //     var hour= 0;// 小时
 
@@ -1053,8 +1053,30 @@ export default {
                     item.totalDuration = totalDuration;
                     stageTotalDuration = stageTotalDuration > totalDuration ? stageTotalDuration : totalDuration;
                 });
-                this.stagetContentDuration = stageTotalDuration;
+                this.stagetContentDuration = this.accAdd(stageTotalDuration);
             }, 500);
+        },
+
+        //小数点精准计算
+        accAdd(arg1 = 0, arg2 = 0) {
+            var r1, r2, m;
+            try {
+                r1 = arg1.toString().split(".")[1].length
+            } catch (e) {
+                r1 = 0
+            }
+            try {
+                r2 = arg2.toString().split(".")[1].length
+            } catch (e) {
+                r2 = 0
+            }
+            m = Math.pow(10, Math.max(r1, r2))
+            let num = ((arg1 * m + arg2 * m) / m).toString();
+            if (num.indexOf('.') > -1) {
+                return num.substring(0, num.indexOf(".") + 3)
+            } else {
+                return (arg1 + arg2).toString();
+            }
         },
     },
     components: {

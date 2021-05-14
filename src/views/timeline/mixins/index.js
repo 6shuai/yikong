@@ -2,6 +2,7 @@ export const timelineFunc = {
     methods: {
         //更新 查找资源的开始时间
         updateStartTime(time, duration) {
+            duration = Math.ceil(duration)
             if(!time) return
             let t = time.split(":");
             //小时
@@ -51,7 +52,7 @@ export const timelineFunc = {
                 ":" +
                 this.addPreZero(m) +
                 ":" +
-                this.addPreZero(s)
+                this.addPreZero(Math.ceil(s))
             );
         },
 
@@ -283,6 +284,7 @@ export const timelineFunc = {
 
         //传入时间  和秒数    返回一个新的时间
         findEndTime(time, duration) {
+            duration = Math.ceil(duration)
             let t = time.split(":");
             //小时
             let h = Number(t[0]);
@@ -319,7 +321,7 @@ export const timelineFunc = {
                 ":" +
                 this.addPreZero(m) +
                 ":" +
-                this.addPreZero(s)
+                this.addPreZero(Math.ceil(s))
             );
         },
     }

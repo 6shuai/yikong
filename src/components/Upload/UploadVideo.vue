@@ -104,7 +104,7 @@ export default {
                 let height = videoElement.videoHeight
                 let duration = videoElement.duration; // 视频时长
                 _this.fileInfo = {
-                    duration: parseInt(duration),
+                    duration: String(duration),
                     // originalSize: file.size,
                     size: file.size,
                     width: width,

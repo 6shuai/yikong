@@ -11,7 +11,8 @@
           <el-radio-button :label="2">视频</el-radio-button>
           <el-radio-button :label="4">图集</el-radio-button>
           <el-radio-button :label="3">游戏</el-radio-button>
-          <el-radio-button :label="5">剪贴板</el-radio-button>
+          <el-radio-button :label="5">直播</el-radio-button>
+          <el-radio-button :label="6">剪贴板</el-radio-button>
         </el-radio-group>
 
         <el-input
@@ -67,7 +68,7 @@
           <!-- 剪贴板 -->
           <div
             class="atlas"
-            v-if="item.list && params.contentType == 5"
+            v-if="item.list && params.contentType == 6"
             :class="`atlas-${item.list.length > 4 ? '4' : item.list.length}`"
           >
             <div v-for="(img, index) in item.list" :key="index" class="img">
@@ -119,7 +120,7 @@
 
       <!-- 分页 -->
       <el-pagination
-        v-if="params.contentType!=5"
+        v-if="params.contentType!=6"
         class="mt10 mb10"
         background
         hide-on-single-page
@@ -211,7 +212,7 @@ export default {
 
     //选择资源类型
     handleClickTab() {
-      if (this.params.contentType == 5) {
+      if (this.params.contentType == 6) {
         this.clipboardList();
       } else {
         this.params.pageNo = 1;
