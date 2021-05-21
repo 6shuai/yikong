@@ -57,7 +57,7 @@
 					<el-button 
 						size="mini"
 						type="success"
-                        @click="dialogVisible=true;logDetails=JSON.parse(scope.row.params)"
+                        @click="dialogVisible=true;logDetails=hasJson(scope.row.params)"
 					>
 						查看详情
                     </el-button>
@@ -83,8 +83,8 @@
             width="40%">
             <pre style="white-space: pre-wrap!important;
             word-wrap: break-word!important;
-            *white-space:normal!important;">
-                {{logDetails}}
+            *white-space:normal!important;
+            line-height:2">{{logDetails}}
             </pre>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">关 闭</el-button>
@@ -163,7 +163,18 @@ export default {
         handleSizeChange(num){
             this.params.pageSize = num;
             this.init();
-		}
+		},
+
+        hasJson(data){
+            let result = data;
+            try {
+                result = JSON.parse(data) 
+            } catch (error) {
+                
+            }
+
+            return result
+        }
     }
 }
 </script>
