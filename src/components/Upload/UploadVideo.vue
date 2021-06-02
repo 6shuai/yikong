@@ -2,14 +2,12 @@
     <div class="upload-video-wrap">
         <el-upload 
             v-if="!videoUrl"
-            v-loading="videoFlag"
-            element-loading-text="视频上传中"
             element-loading-spinner="el-icon-loading"
             class="avatar-uploader el-upload--text" 
             accept="video/*"
             :data='uploadData'
             :action="action" 
-            :show-file-list="false" 
+            :show-file-list="false"
             :on-success="handleVideoSuccess" 
             :before-upload="beforeUploadVideo" 
             :on-progress="uploadVideoProcess"
@@ -18,8 +16,6 @@
         </el-upload>
         <div 
             v-if="videoUrl !=''"
-            v-loading="videoFlag"
-            element-loading-text="视频上传中"
             element-loading-spinner="el-icon-loading"
             style="height: 456px"
         >
@@ -27,7 +23,7 @@
                 accept="video/*"
                 :data='uploadData'
                 :action="action" 
-                :show-file-list="false" 
+                :show-file-list="false"
                 :on-success="handleVideoSuccess" 
                 :before-upload="beforeUploadVideo" 
                 :on-progress="uploadVideoProcess"
@@ -43,6 +39,13 @@
                 您的浏览器不支持视频播放
             </video>
         </div>
+
+        <div class="video-progress" v-if="videoFlag">
+            <el-progress 
+                type="circle" 
+                :percentage="videoUploadPercent"
+            ></el-progress>
+        </div>
     </div>
 </template>
 <script>
@@ -53,6 +56,7 @@ export default {
     props: ['url'],
     data(){
         return{
+            videoUploadPercent: 0,           //上传进度
             action: uploadUrl,
             uploadData: {                    //上传时附带的额外参数
                 fileType: 'video'
@@ -60,7 +64,7 @@ export default {
             videoUrl: '',
             videoFlag: false,
             fileInfo: {},                     //视频详情信息
-            videoSrc: ''
+            videoSrc: '',
         }
     },
     mounted() {
@@ -68,6 +72,7 @@ export default {
     },
     methods: {
         beforeUploadVideo(file) {
+            this.videoUploadPercent = 0;
             const isLt300M = file.size / 1024 / 1024  < 300;
             if (['video/mp4', 'video/ogg', 'video/flv','video/avi','video/wmv','video/rmvb'].indexOf(file.type) == -1) {
                 this.$message.error('请上传正确的视频格式~');
@@ -80,13 +85,14 @@ export default {
         },
 
         uploadVideoProcess(event, file, fileList){
-            
             this.videoFlag = true;
+            this.videoUploadPercent = Math.floor(file.percentage);
         },
 
         //上传成功
         handleVideoSuccess(res, file) {    
             this.videoFlag = false;
+
             if(res.code === this.$successCode){
                 this.videoUrl = res.obj.path;
             }else{
@@ -125,6 +131,22 @@ export default {
 </script>
 <style lang="scss" scope>
     .upload-video-wrap{
+        position: relative;
+
+        .video-progress{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+            text-align: center;
+
+            .el-progress{
+                display: inline-block;
+            }
+        }
+
         .avatar-uploader {
             display: inline-block;
         }

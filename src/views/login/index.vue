@@ -11,7 +11,6 @@
 		<div class="title-container">
 			<img src="../../assets/images/login_logo.png" alt="易控">
 		</div>
-
 		<el-form-item prop="username">
 			<span class="svg-container">
 				<svg-icon icon-class="user" />
