@@ -18,7 +18,7 @@
             class="miniview-game"
             v-else-if="currentData.contentTypeId== 3"
             :src="currentData.contentPath"
-            style="width: 100%; height: 500px;"
+            style="width: 970px; height: 563px;"
             frameborder="no" border="0" scrolling="no"></iframe>
 
         <img v-else :src="currentData.contentPath || currentData.image">
