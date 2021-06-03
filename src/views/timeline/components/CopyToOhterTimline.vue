@@ -47,7 +47,7 @@
                             class="box-card screen-list"
                             v-for="(item, index) in resData"
                             :key="index"
-                            :label="item.id" 
+                            :label="item.label" 
                             :disabled="item.id == $route.params.id"
                             border
                         >{{item.displayName}}</el-checkbox>
@@ -73,10 +73,35 @@
 
 		<span slot="footer" class="dialog-footer">
 			<el-button @click="showImportList = false">取 消</el-button>
-			<el-button type="primary" :loading="btnLoading" @click="hadleImport"
+			<el-button type="primary" @click="handleConfirm"
 				>确 定</el-button
 			>
 		</span>
+
+		<el-dialog
+			title="确认要复制到以下时间轴"
+			:visible.sync="showConfirm"
+			:close-on-click-modal="false"
+			:close-on-press-escape="false"
+			:show-close="false"
+			append-to-body
+		>
+			<el-tag
+				v-for="item in checkedTimeline"
+				class="mr20 mb20 bold"
+				:key="item"
+				effect="plain">
+				{{ item }}
+			</el-tag>
+
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="showConfirm = false">再想想</el-button>
+				<el-button type="primary" :loading="btnLoading" @click="hadleImport"
+					>确 定</el-button
+				>
+			</span>
+		</el-dialog>
+
 	</el-dialog>
 </template>
 
@@ -89,6 +114,7 @@ export default {
 	data() {
 		return {
 			showImportList: false,
+			showConfirm: false,
 			dataLoading: false,
 			resData: [],
 			params: {
@@ -103,7 +129,10 @@ export default {
 				label: "label",
 			},
 			btnLoading: false, //提交按钮loading
-			isCoverContainer: 0
+			isCoverContainer: 0,
+			checkedTimeline: [],  //要复制到的时间轴
+			checkedIds: [],       //要复制到的时间轴id
+			regionIds: [],
 		};
 	},
 	methods: {
@@ -139,6 +168,9 @@ export default {
 				this.dataLoading = false;
 				if (res.code === this.$successCode) {
 					let { list, totalRecords } = res.obj;
+					list.forEach(item => {
+						item.label = item.displayName + '-' + item.id
+					})
 					this.resData = list;
 					this.totalCount = totalRecords;
 				}
@@ -178,15 +210,15 @@ export default {
 			return arr;
 		},
 
-		hadleImport() {
+		handleConfirm() {
 			//id     当前时间轴容器ID
 			//copyId  被复制时间轴容器ID
 			let treeKeys = this.$refs.tree.getCheckedKeys();
-			let ids = treeKeys.filter((item) => {
+			this.regionIds = treeKeys.filter((item) => {
 				return Number(item);
 			});
 
-			if(!ids.length){
+			if(!this.regionIds.length){
 				this.$message.warning('还没选择要复制的时间轴阶段呢~')
 				return
 			}else if(!this.targetIds.length){
@@ -194,17 +226,34 @@ export default {
 				return
             }
 
-            this.btnLoading = true;
-            let data = `?sourceId=${this.$route.params.id}&targetIds=${this.targetIds}&regionIds=${ids}&isCoverContainer=${this.isCoverContainer}`;
+			this.checkedTimeline = [];
+			this.checkedIds = [];
+
+			this.targetIds.forEach(item => {
+				this.checkedTimeline.push(item.split('-')[0])
+				this.checkedIds.push(item.split('-')[1])
+			})
+
+			this.showConfirm = true;
+			
+			
+            
+            
+		},
+
+		//确定复制
+		hadleImport(){
+			this.btnLoading = true;
+            let data = `?sourceId=${this.$route.params.id}&targetIds=${this.checkedIds}&regionIds=${this.regionIds}&isCoverContainer=${this.isCoverContainer}`;
             copyTimelineContainer(data).then(res => {
                 this.btnLoading = false;
                 if(res.code === this.$successCode){
                     this.$message.success('操作成功~');
-                    this.showImportList = false;
+                    this.showConfirm = false;
+					this.showImportList = false;
                 }
             })
-            
-		},
+		}
 	},
 };
 </script>

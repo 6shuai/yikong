@@ -115,3 +115,6 @@ export function timelineAuthorityUpdate(data) { return post('/timeline/groupTime
 //删除资源 与 群组关联
 export function timelineAuthorityDelete(data) { return del(`/timeline/groupTimeline${data}`) }
 
+
+//删除轮播轴 或者 插播轴
+export function timelineClearDelete(data) { return del(`/timeline/rotateOrCutInPhase${data}`) }

@@ -10,10 +10,18 @@
                         <el-radio-button :label="2">插播</el-radio-button>
                     </el-radio-group>
                     <el-link 
+                        class="mr20"
                         v-if="hasPerm($store.state.permission.timelinePrem, 'AddStage')"
                         type="success" 
                         @click="showCreatedStage()"
                     >新建阶段
+                    </el-link>
+                    <el-link 
+                        v-if="timelineData.deleteRotateOrCutInPhase"
+                        :disabled="stageData.length?false:true"
+                        type="danger" 
+                        @click="handleClearDeleteTimeline"
+                    >删除{{ phaseType==1 ? '轮播' : '插播' }}
                     </el-link>
                 </div>
                 <el-button 
@@ -340,7 +348,8 @@ import {
     timelineDelete,
     pubToScreen,
     timelineStageData,
-    timelineStageDelete
+    timelineStageDelete,
+    timelineClearDelete
 } from "@/api/timeline";
 import CopyContent from "./CopyContent";
 import CreatedStage from './CreatedStage';
@@ -495,7 +504,6 @@ export default {
         searchOverlap(Pindex) {
             return new Promise((resolve) => {
                 let stageStarTime = this.stageData[this.stageIndex].beginTimeFormat;
-                console.log(Pindex, stageStarTime)
                 this.timelineForeachFind(resolve, Pindex, stageStarTime);
                 
             });
@@ -1078,6 +1086,33 @@ export default {
                 return (arg1 + arg2).toString();
             }
         },
+
+        //清空删除 时间轴 或者 插播轴
+        handleClearDeleteTimeline() {
+            this.$confirm(
+                `此操作将删除${this.phaseType==1 ? '轮播' : '插播'}轴所有阶段, 是否继续?`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning",
+                }
+            )
+                .then(() => {
+                    let data = `?containerId=${this.$route.params.id}&phaseType=${this.phaseType}`
+                    timelineClearDelete(data).then(res => {
+                        this.$message.success('操作成功~');
+                        this.stageData = [];
+                        this.screenLayout = [];
+                        if(this.phaseType == 1){
+                            this.rotationStage = [];
+                        }else{
+                            this.cutInStage = [];
+                        }
+                    })
+                })
+                .catch(() => {});
+        }
     },
     components: {
         Draggable,
