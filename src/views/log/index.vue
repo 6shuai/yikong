@@ -21,6 +21,14 @@
                 @input="search"
             ></el-input>
 
+            <el-input  
+                class="mr10"
+                clearable
+                placeholder="操作内容"
+                v-model="params.params"
+                @input="search"
+            ></el-input>
+
             <el-date-picker
                 v-model="datetime"
                 @change="search"
@@ -47,22 +55,30 @@
                     {{formatTime(scope.row.createTime)}}
                 </template>
             </el-table-column>
-            <el-table-column prop="ip" label="ip" min-width="50"></el-table-column>
-            <el-table-column prop="method" label="方法名" min-width="100"></el-table-column>
-            <el-table-column prop="operation" label="操作说明" min-width="100"></el-table-column>
-			<el-table-column
+            <el-table-column prop="operation" label="操作说明" min-width="60"></el-table-column>
+            <el-table-column prop="ip" label="详情" min-width="200">
+                <template slot-scope="scope">
+                    <el-tag
+                        @click="dialogVisible=true;logDetails=hasJson(scope.row.params)"
+                        class="log_detail overflow"
+                        effect="dark">
+                        {{ hasJson(scope.row.params) }}
+                    </el-tag>
+                </template>
+            </el-table-column>
+			<!-- <el-table-column
 				label="操作"
 				width="150">
 				<template slot-scope="scope">
 					<el-button 
 						size="mini"
 						type="success"
-                        @click="dialogVisible=true;logDetails=hasJson(scope.row.params)"
+                        
 					>
 						查看详情
                     </el-button>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 		</el-table>
 
 		<el-pagination
@@ -178,3 +194,11 @@ export default {
     }
 }
 </script>
+
+
+<style lang="scss" scope>
+    .log_detail{
+        max-width: 100%;
+        cursor: pointer;
+    }
+</style>
