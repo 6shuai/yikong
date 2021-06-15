@@ -38,7 +38,6 @@ export default {
         //上传成功
         uploadSuccess(res, file){
             this.uploadOverCount += 1;
-            console.log(this.uploadOverCount, this.fileList.length)
             if(this.uploadOverCount == this.fileList.length){
                 this.uploadLoading = false;
             }

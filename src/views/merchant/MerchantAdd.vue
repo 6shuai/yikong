@@ -57,6 +57,7 @@
                         ></group-list>
 
                         <el-form-item label="">
+                            <el-button @click="$router.go(-1)">取  消</el-button>
                             <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="placeSureBtn">提  交</el-button>
                         </el-form-item>
                     </el-form>
