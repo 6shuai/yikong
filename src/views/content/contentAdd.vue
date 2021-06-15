@@ -449,7 +449,7 @@ export default {
                     duration,
                     width,
                     height,
-                    size
+                    size: 0
                 }
                 if(this.contentParams.width && this.contentParams.height){
                     this.aspectRatioCompute(this.contentParams.width, this.contentParams.height);
