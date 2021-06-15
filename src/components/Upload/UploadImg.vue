@@ -211,6 +211,7 @@ export default {
     },
     watch: {
         imgList(o, n){
+            console.log(this.fileList)
             if(this.fileList && !this.fileList.length){
                 this.changeImgUri();
             }

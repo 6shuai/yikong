@@ -6,7 +6,7 @@ import Layout from '@/layout';
 
 const moduleMap = {
 	'Home': 'home/index',
-	'Place': 'place/index',                          //场所管理 场所列表
+	'Place': 'place/index',                          	  //场所管理 场所列表
 
 	'Screen': 'screen/index',                          	  //屏幕管理  
 
@@ -20,7 +20,9 @@ const moduleMap = {
 
 	'Activity': 'activity/index',					      //活动管理
 
-	'CutInAdver': 'cutInAdver/index',				  //插播广告
+	'CutInAdver': 'cutInAdver/index',				      //插播广告
+
+	'Merchant': 'merchant/index',				          //商户管理
 
 
 	'Log': 'log/index',									  //操作日志
