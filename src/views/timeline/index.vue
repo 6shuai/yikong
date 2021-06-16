@@ -14,7 +14,7 @@
                 prefix-icon="el-icon-search" 
                 clearable
                 v-model="params.name" 
-                placeholder="资源名称" size="small"
+                placeholder="时间轴名称" size="small"
                 @input="search"
             ></el-input>
 
