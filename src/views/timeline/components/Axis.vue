@@ -939,7 +939,8 @@ export default {
                         this.updateScreenShow();
 
                         this.$nextTick(() => {
-                            if(!this.stageData[stageIndex]) return;
+                            //插播阶段不做处理
+                            if(!this.stageData[stageIndex] || this.phaseType == 2) return;
                             //删除阶段之后 下一个阶段开始时间修改成上一个的开始时间
                             this.stageData[stageIndex] = {
                                 ...this.stageData[stageIndex],
