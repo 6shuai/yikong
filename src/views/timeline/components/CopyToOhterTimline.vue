@@ -169,7 +169,7 @@ export default {
 				if (res.code === this.$successCode) {
 					let { list, totalRecords } = res.obj;
 					list.forEach(item => {
-						item.label = item.displayName + '-' + item.id
+						item.label = item.displayName + '@@@@' + item.id
 					})
 					this.resData = list;
 					this.totalCount = totalRecords;
@@ -230,8 +230,8 @@ export default {
 			this.checkedIds = [];
 
 			this.targetIds.forEach(item => {
-				this.checkedTimeline.push(item.split('-')[0])
-				this.checkedIds.push(item.split('-')[1])
+				this.checkedTimeline.push(item.split('@@@@')[0])
+				this.checkedIds.push(item.split('@@@@')[1])
 			})
 
 			this.showConfirm = true;
