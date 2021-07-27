@@ -125,7 +125,7 @@
         
         <!-- 添加游戏阶段 -->
         <el-dialog
-            width="500px"
+            width="600px"
             title="添加游戏阶段"
             class="add-round"
             :close-on-click-modal="false"
@@ -133,8 +133,12 @@
             :visible.sync="showAddRound"
             append-to-body
         >
-            <el-form label-width="100px">
-                <el-form-item label="游戏阶段">
+            <el-form 
+                ref="addStage"
+                :model="gameStageParams"
+                :rules="addStageRule"
+                label-width="165px">
+                <el-form-item label="游戏阶段" prop="gameStage">
                     <el-input-number
                         :min="0"
                         v-model="gameStageParams.gameStage"
@@ -143,6 +147,28 @@
                 </el-form-item>
                 <el-form-item label="阶段描述">
                     <el-input v-model="gameStageParams.description"></el-input>
+                </el-form-item>
+                <el-form-item label="插播方式" prop="spotWay">
+                    <el-radio-group v-model="gameStageParams.spotWay">
+                        <el-radio :label="0">阶段结束</el-radio>
+                        <el-radio :label="1">阶段内</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="前置时间" prop="interval">
+                    <el-input-number
+                        :min="0"
+                        v-model="gameStageParams.interval"
+                        controls-position="right"
+                    ></el-input-number> 
+                    <span>秒</span>
+                </el-form-item>
+                <el-form-item label="第几次结束该阶段插播" prop="hitCount">
+                    <el-input-number
+                        :min="-1"
+                        v-model="gameStageParams.hitCount"
+                        controls-position="right"
+                    ></el-input-number> 
+                    <span class="text-hight">(-1 表示每次该阶段都插播)</span>
                 </el-form-item>
             </el-form>
 
@@ -205,6 +231,12 @@ export default {
 
             showAddAdvTimeline: false,
             spotContainerRelation: [],       //选择广告轴
+            addStageRule: {
+                gameStage: [ { required: true, trigger: "blur", message: "请输入游戏阶段~" } ],
+                spotWay: [ { required: true, trigger: "change", message: "请选择插播方式~" } ],
+                interval: [ { required: true, trigger: "blur", message: "请输入插播前置时间~" } ],
+                hitCount: [ { required: true, trigger: "blur", message: "请输入在第几次阶段插播~" } ],
+            }
         };
     },
     mounted() {
@@ -311,18 +343,23 @@ export default {
 
         //添加阶段
         handleAddRound() {
-            if(this.params.id){
-                this.gameStageParams.spotId = this.params.id;
-                cutInAdverGameStageAdd(this.gameStageParams).then(res => {
-                    if(res.code === this.$successCode){
-                        this.$message.success('添加游戏阶段成功~');
-                        this.gameStageParams = res.obj;
+            this.$refs.addStage.validate((valid) => {
+                if(valid){
+                    if(this.params.id){
+                        this.gameStageParams.spotId = this.params.id;
+                        cutInAdverGameStageAdd(this.gameStageParams).then(res => {
+                            if(res.code === this.$successCode){
+                                this.$message.success('添加游戏阶段成功~');
+                                this.gameStageParams = res.obj;
+                                this.addStageResult();
+                            }
+                        })
+                    }else{
                         this.addStageResult();
                     }
-                })
-            }else{
-                this.addStageResult();
-            }
+                }
+                
+            })
             
         },
 

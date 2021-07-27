@@ -460,6 +460,8 @@ export default {
                 duration: 15,
                 contentType: type
             })
+
+        
             this.contentParams.size += data.size;
             this.handleContentDuration();
         },
@@ -478,10 +480,12 @@ export default {
             if(id){
                 atlasDeleteContent(id).then(res => {
                     if(res.code === this.$successCode){
+                        this.contentParams.size -= this.atlasData[index].size;
                         this.atlasData.splice(index, 1);
                     }
                 })
             }else{
+                this.contentParams.size -= this.atlasData[index].size;
                 this.atlasData.splice(index, 1);
             }
         },
@@ -601,6 +605,7 @@ export default {
         .el-upload-list{
             min-height: 148px;
             display: inline-block;
+            position: relative;
         }
 
         .el-upload-list--picture-card .el-upload-list__item{
