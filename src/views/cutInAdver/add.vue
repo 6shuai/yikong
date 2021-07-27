@@ -149,22 +149,30 @@
                     <el-input v-model="gameStageParams.description"></el-input>
                 </el-form-item>
                 <el-form-item label="插播方式" prop="spotWay">
-                    <el-radio-group v-model="gameStageParams.spotWay">
-                        <el-radio :label="0">阶段结束</el-radio>
-                        <el-radio :label="1">阶段内</el-radio>
-                    </el-radio-group>
+                    <el-checkbox-group v-model="gameStageParams.spotWay">
+                        <el-checkbox :label="0">阶段结束</el-checkbox>
+                        <el-checkbox :label="1">阶段内</el-checkbox>
+                    </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="前置时间" prop="interval">
+                <el-form-item 
+                    label="前置时间" 
+                    :prop="gameStageParams.spotWay.includes(1) ? 'interval' : 'empty'"
+                >
                     <el-input-number
                         :min="0"
+                        :disabled="!gameStageParams.spotWay.includes(1)"
                         v-model="gameStageParams.interval"
                         controls-position="right"
                     ></el-input-number> 
                     <span>秒</span>
                 </el-form-item>
-                <el-form-item label="第几次结束该阶段后插播" prop="hitCount">
+                <el-form-item 
+                    label="第几次结束该阶段后插播" 
+                    :prop="gameStageParams.spotWay.includes(0) ? 'hitCount' : 'empty'"
+                >
                     <el-input-number
                         :min="-1"
+                        :disabled="!gameStageParams.spotWay.includes(0)"
                         v-model="gameStageParams.hitCount"
                         controls-position="right"
                     ></el-input-number> 
@@ -226,7 +234,10 @@ export default {
             timelineTotal: 0,  //时间轴容器总数
             timelineData: [], //时间轴容器列表
             addTimelineArr: {},
-            gameStageParams: {},
+            gameStageParams: {
+                hitCount: [],
+                spotWay: []
+            },
             showAddRound: false,
 
             showAddAdvTimeline: false,
