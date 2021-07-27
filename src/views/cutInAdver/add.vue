@@ -137,7 +137,7 @@
                 ref="addStage"
                 :model="gameStageParams"
                 :rules="addStageRule"
-                label-width="165px">
+                label-width="180px">
                 <el-form-item label="游戏阶段" prop="gameStage">
                     <el-input-number
                         :min="0"
@@ -162,7 +162,7 @@
                     ></el-input-number> 
                     <span>秒</span>
                 </el-form-item>
-                <el-form-item label="第几次结束该阶段插播" prop="hitCount">
+                <el-form-item label="第几次结束该阶段后插播" prop="hitCount">
                     <el-input-number
                         :min="-1"
                         v-model="gameStageParams.hitCount"

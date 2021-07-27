@@ -49,7 +49,7 @@
             </el-table-column>
             <el-table-column
                 prop="hitCount"
-                label="第几次结束该阶段插播"
+                label="第几次结束该阶段后插播"
                 :min-width="60"
             >
             </el-table-column>
