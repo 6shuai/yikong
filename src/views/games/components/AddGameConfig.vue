@@ -39,7 +39,7 @@
             <el-form-item label="展示图片" prop="image">
                 <upload-img
                     :imgList="contentParams.image"
-                    @uploadImgPath="$set(contentParams, 'image', $event); $set(contentParams, 'newUpload ', 1)"
+                    @uploadImgPath="$set(contentParams, 'image', $event); $set(contentParams, 'newUpload', 1)"
                 ></upload-img>
             </el-form-item>
             <div v-if="contentParams.contentType !== 4">
