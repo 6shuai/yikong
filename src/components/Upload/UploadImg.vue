@@ -116,7 +116,7 @@ export default {
             //需要返回图片的信息
             if(this.haveImgInfo){
                 new Promise((resolve) => {
-                    this.imageInfo(file, res.obj.path, resolve);
+                    this.imageInfo(file, res.obj, resolve);
                 }).then(res => {
                     this.$emit('uploadImgPath', res);
                 })

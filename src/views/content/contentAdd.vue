@@ -482,11 +482,13 @@ export default {
                     if(res.code === this.$successCode){
                         this.contentParams.size -= this.atlasData[index].size;
                         this.atlasData.splice(index, 1);
+                        if(!this.atlasData.length) this.contentParams.image = ''
                     }
                 })
             }else{
                 this.contentParams.size -= this.atlasData[index].size;
                 this.atlasData.splice(index, 1);
+                if(!this.atlasData.length) this.contentParams.image = ''
             }
         },
 
@@ -548,7 +550,7 @@ export default {
             let s = true;
             this.atlasData.forEach(item => {
                 total += item.duration;
-                if(item.contentType == 1 && s){
+                if(item.contentType == 1 && s && !this.contentParams.image){
                     this.contentParams.image = item.contentPath;
                     this.$set(this.contentParams, 'newUpload', 1);
                     s = false;

@@ -92,9 +92,11 @@ export default {
         //上传成功
         handleVideoSuccess(res, file) {    
             this.videoFlag = false;
+            let ciphertext = '';
 
             if(res.code === this.$successCode){
                 this.videoUrl = res.obj.path;
+                ciphertext = res.obj.ciphertext;
             }else{
                 this.$message.error('视频上传失败，请重新上传！');
             }
@@ -115,6 +117,7 @@ export default {
                     size: file.size,
                     width: width,
                     height: height,
+                    ciphertext: ciphertext,
                     contentPath: _this.videoUrl
                 }
                 _this.getBigectURL(videoElement, width, height)      

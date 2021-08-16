@@ -42,7 +42,7 @@ export default {
                 this.uploadLoading = false;
             }
             new Promise((resolve) => {
-                this.imageInfo(file, res.obj.path, resolve);
+                this.imageInfo(file, res.obj, resolve);
             }).then(res => {
                 this.$emit('atlasUploadSuccess', res);
             })

@@ -193,6 +193,7 @@ export default {
                     if (item.type === "screen") {
                         this.packageParams.screenPackage = item.path;
                         this.packageParams.screenSize = item.size;
+                        this.packageParams.ciphertext = item.ciphertext;
                     } else if (item.type === "mobile") {
                         this.packageParams.mobilePackage = item.path;
                         this.packageParams.mobileSize = item.size;
