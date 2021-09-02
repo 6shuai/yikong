@@ -22,7 +22,7 @@
         <game-award-statistics v-if="activeName=='奖励统计'"></game-award-statistics>
 
         <!-- 行为统计 -->
-        <game-hehavior-statistics v-if="activeName=='行为统计'"></game-hehavior-statistics>
+        <game-behavior-statistics v-if="activeName=='行为统计'"></game-behavior-statistics>
 
         <!-- 留存统计 -->
         <game-player-keep-statistics v-if="activeName=='留存统计'"></game-player-keep-statistics>
@@ -34,7 +34,7 @@
 <script>
 import gameDataStatistics from './game/index';
 import gameAwardStatistics from './award/index';
-import gameHehaviorStatistics from './charts/index';
+import gamebehaviorStatistics from './charts/index';
 import gamePlayerKeepStatistics from './playerKeep/index';
 
 export default {
@@ -46,7 +46,7 @@ export default {
     components: {
         gameDataStatistics,
         gameAwardStatistics,
-        gameHehaviorStatistics,
+        gamebehaviorStatistics,
         gamePlayerKeepStatistics
     }
 }

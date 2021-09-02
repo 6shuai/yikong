@@ -79,7 +79,7 @@
 			</el-form-item>
 
 			<el-form-item label="选择行为">
-				<el-radio-group v-model="params.hehavior" @change="init">
+				<el-radio-group v-model="params.behavior" @change="init">
 					<el-radio-button :label="1">登录统计</el-radio-button>
 					<el-radio-button :label="3">开始游戏统计</el-radio-button>
 					<el-radio-button :label="2">退出统计</el-radio-button>
@@ -116,25 +116,25 @@ import {
 	placeGameList,
 	placeScreenList,
 	placeStatisticsDetail,
-	placePlayerBehaviralData
+	placePlayerBehavioralData
 } from "@/api/place";
 import {
 	screenGameList,
 	screenStatisticsDetail,
-	screenPlayerBehaviralData,
+	screenPlayerBehavioralData,
 } from "@/api/screen";
 import {
 	contentPlaceList,
 	contentScreenList,
 	contentStatisticsDetail,
-	contentPlayerBehaviralData,
+	contentPlayerBehavioralData,
 } from "@/api/content";
 
 export default {
 	data() {
 		return {
 			params: {
-				hehavior: 1,
+				behavior: 1,
 			},
 			datePicker: [],
 			placeData: [], //场所列表
@@ -167,19 +167,19 @@ export default {
 			case "place":
 				ScreenList = placeScreenList;
 				GameList = placeGameList;
-				PlayerBehaviorList = placePlayerBehaviralData;
+				PlayerBehaviorList = placePlayerBehavioralData;
 				StatisticsDetail = placeStatisticsDetail;
 
 				break;
 			case "screen":
 				GameList = screenGameList;
-				PlayerBehaviorList = screenPlayerBehaviralData;
+				PlayerBehaviorList = screenPlayerBehavioralData;
 				StatisticsDetail = screenStatisticsDetail;
 				break;
 			case "content":
 				PlaceList = contentPlaceList;
 				ScreenList = contentScreenList;
-				PlayerBehaviorList = contentPlayerBehaviralData;
+				PlayerBehaviorList = contentPlayerBehavioralData;
 				StatisticsDetail = contentStatisticsDetail;
 				break;
 			default:
@@ -211,7 +211,7 @@ export default {
 			if (!this.params.screenId) delete this.params.screenId;
 			if (!this.params.contentId) delete this.params.contentId;
 
-			switch (this.params.hehavior) {
+			switch (this.params.behavior) {
 				case 1:
 					this.chartText = '登录次数';
 					break;
@@ -416,7 +416,7 @@ export default {
 							contentId: _this.params.contentId,
 							startTime,
 							endTime,
-							hehavior: _this.params.hehavior,
+							behavior: _this.params.behavior,
 						},
 						_this.api.StatisticsDetail
 					);

@@ -76,7 +76,7 @@ export function contentAwardStatisticsDetail(data) { return get('/content/awardC
 
 
 //玩家行为统计
-export function contentPlayerBehaviralData(data) { return get('/content/playerBehaviralData', data) }
+export function contentPlayerBehavioralData(data) { return get('/content/playerBehavioralData', data) }
 
 //游戏奖励统计详情
 export function contentPlayerTimelineData(data) { return get('/content/statisticsDataByPlayer', data) }

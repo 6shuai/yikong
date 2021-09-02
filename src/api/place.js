@@ -81,7 +81,7 @@ export function placeAwardStatisticsDetail(data) { return get('/place/awardCashS
 
 
 //玩家行为统计
-export function placePlayerBehaviralData(data) { return get('/place/playerBehaviralData', data) }
+export function placePlayerBehavioralData(data) { return get('/place/playerBehavioralData', data) }
 
 //游戏奖励统计详情
 export function placePlayerTimelineData(data) { return get('/place/statisticsDataByPlayer', data) }

@@ -179,11 +179,13 @@ export default {
         //每页条数
         handleSizeChange(size) {
             this.params.pageSize = size;
+            this.init();
         },
 
         //分页
         handleCurrentChange(page) {
             this.params.pageNo = page;
+            this.init();
         },
 
         //搜索

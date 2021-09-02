@@ -80,7 +80,7 @@ export function screenAwardStatisticsDetail(data) { return get('/screen/awardCas
 
 
 //玩家行为统计
-export function screenPlayerBehaviralData(data) { return get('/screen/playerBehaviralData', data) }
+export function screenPlayerBehavioralData(data) { return get('/screen/playerBehavioralData', data) }
 
 //游戏奖励统计详情
 export function screenPlayerTimelineData(data) { return get('/screen/statisticsDataByPlayer', data) }

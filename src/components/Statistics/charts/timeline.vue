@@ -13,11 +13,11 @@
             </div>
             <el-timeline>
                 <el-timeline-item
-                    v-for="(activity, index) in resData.playerBehaviralData"
+                    v-for="(activity, index) in resData.playerBehavioralData"
                     :key="index"
                     :timestamp="activity.occur">
                     <div class="content">
-                        <span class="state">{{activity.hehavior == 1 ? '登录' : activity.hehavior == 2 ? '退出' : '开始游戏' }}</span>
+                        <span class="state">{{activity.behavior == 1 ? '登录' : activity.behavior == 2 ? '退出' : '开始游戏' }}</span>
                         <span class="desc">{{ activity.note }}</span>
                     </div>
                     
