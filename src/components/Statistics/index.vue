@@ -34,7 +34,7 @@
 <script>
 import gameDataStatistics from './game/index';
 import gameAwardStatistics from './award/index';
-import gamebehaviorStatistics from './charts/index';
+import gameBehaviorStatistics from './charts/index';
 import gamePlayerKeepStatistics from './playerKeep/index';
 
 export default {
@@ -46,7 +46,7 @@ export default {
     components: {
         gameDataStatistics,
         gameAwardStatistics,
-        gamebehaviorStatistics,
+        gameBehaviorStatistics,
         gamePlayerKeepStatistics
     }
 }
