@@ -160,7 +160,7 @@ export default {
             this.roleAutDialog = true;
             this.roleListLoading = true;
             this.currentRoleId = id;
-            if(this.selectedAuthority.length) this.$refs.menu.setCheckedKeys([])
+            if(this.$refs.menu) this.$refs.menu.setCheckedKeys([])
             this.selectedAuthority = [];
             resRoleAuthority({resourceRoleId: id}).then(res => {
                 this.roleListLoading = false;

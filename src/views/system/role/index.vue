@@ -79,6 +79,7 @@
                 :close-on-click-modal="false"
                 :close-on-press-escape="false"
                 width="500px">
+                
                 <div v-loading="roleListLoading">
                     <el-tree
                         ref="menu"
@@ -166,7 +167,7 @@ export default {
             this.roleAutDialog = true;
             this.roleListLoading = true;
             this.currentRoleId = id;
-            if(this.selectedAuthority.length) this.$refs.menu.setCheckedKeys([])
+            if(this.$refs.menu) this.$refs.menu.setCheckedKeys([])
             currentRoleAuthList(id).then(res => {
                 this.roleListLoading = false;
                 if(res.code === this.$successCode){
