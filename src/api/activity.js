@@ -9,6 +9,9 @@ export function activityCreated(data) { return post('/promotion/', data) }
 //活动管理  商场模块
 export function activityPlaceModule(data) { return get('/promotion/promotionModule', data) }
 
+//活动管理  商户列表
+export function activityMerchantList(data) { return get('/promotion/merchant', data) }
+
 //活动管理  根据商场模块id 获取活动门票列表  支付方式列表
 export function activityPayWayList(data) { return get('/promotion/promotionTicket', data) }
 

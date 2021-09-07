@@ -265,7 +265,6 @@ export default {
             }
             .role-list{
                 width: 250px;
-                height: 54px;
                 float: left;
                 color: #999;
                 line-height: 25px;

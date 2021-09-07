@@ -61,6 +61,9 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="选择商户" prop="moduleId">
+                        <div class="select-merchant">选择商户<i class="el-icon-arrow-right"></i></div>
+                    </el-form-item>
                     <el-form-item label="需要支付" prop="needCost">
                         <el-switch
                             :active-value="1"
@@ -132,6 +135,10 @@
                 </el-form>
             </el-col>
         </el-row>
+
+        <!-- 选择商户 -->
+        <select-merchant></select-merchant>
+
     </el-card>
 </template>
 <script>
@@ -142,6 +149,7 @@ import {
 } from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
 import GroupList from "@/components/GroupList/index";
+import SelectMerchant from './components/SelectMerchant';
 
 export default {
     mixins: [getActivityDetail],
@@ -287,6 +295,29 @@ export default {
     },
     components: {
         GroupList,
+        SelectMerchant,
     },
 };
 </script>
+
+<style lang="scss" scope>
+    .game-add-wrap{
+        .select-merchant{
+            width: 200px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 6px;
+            border: 1px solid #DCDFE6;
+            padding-left: 15px;
+            position: relative;
+            cursor: pointer;
+    
+    
+            .el-icon-arrow-right{
+                position: absolute;
+                top: 13px;
+                right: 10px;
+            }
+        }
+    }
+</style>

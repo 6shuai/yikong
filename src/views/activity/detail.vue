@@ -82,6 +82,26 @@
                             </el-form-item>
                         </div>
                     </el-col>
+                    <el-col :md="12" :sm="12" :xs="24">
+                        <el-form-item label="邀请链接：">
+                            <div class="generate-link">
+                                <div class="invite-link">
+                                    <el-button type="primary" size="small">生成邀请链接</el-button>
+                                    <div 
+                                        class="link tag-read" 
+                                        data-clipboard-text="http://www.xfengjing.com"
+                                        @click="copy"
+                                        title="点击复制链接"
+                                    >
+                                        http://www.xfengjing.com <i class="el-icon-copy-document"></i>
+                                    </div>
+                                </div>
+                                <div class="invite-link-qr">
+                                    <vue-qr text="http://www.xfengjing.com" :margin="0" colorDark="#000" colorLight="#fff" :size="200"></vue-qr>
+                                </div>
+                            </div>
+                        </el-form-item>
+                    </el-col>
                 </el-row>
                 <el-form-item label="奖池：">
                     <el-button
@@ -214,6 +234,8 @@ import {
 } from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
 import AddPond from "./components/AddPond";
+import Clipboard from 'clipboard'
+import vueQr from 'vue-qr'
 
 export default {
     mixins: [getActivityDetail],
@@ -225,7 +247,8 @@ export default {
                 delete: activityAuthorityDelete
             },
             pondData: [], //奖池列表
-            pondLoading: false
+            pondLoading: false,
+            generateLinkUrl: ''  //生成的邀请链接  https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=123&pid=234&pm=2&t=xxxxwere
         };
     },
     created() {
@@ -245,7 +268,7 @@ export default {
                         this.pondData = res.obj;
                     }
                 }
-            );
+            ); 
         },
 
         //删除
@@ -301,12 +324,40 @@ export default {
                     this.$set(this.resData, "isFavorite", p.isFavorite);
                 }
             });
+        },
 
+        //生成邀请链接
+        createInviteLink(){
+            // https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=123&pid=234&pm=2&t=xxxxwere
+            //mid 商户id   pid 活动id  pm=2 固定   t 接口code
+            createLink().then(res => {
+                if(res.code === this.$successCode){
+                    let mid = '',
+                        pid = this.$route.params.id,
+                        pm = 2,
+                        token = res.token;
+                    this.generateLinkUrl = `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t${token}`
+                }
+            })
+        },
+
+        //复制链接
+        copy () {
+            var clipboard = new Clipboard('.tag-read')
+            clipboard.on('success', e => {
+                this.$message.success('复制成功', e)
+                e.clearSelection()
+            })
+            clipboard.on('error', e =>{
+                // 不支持复制
+                this.$message.error('该浏览器不支持复制')
+            })
         }
     },
     components: {
         Permission,
         AddPond,
+        vueQr
     },
 };
 </script>
@@ -363,6 +414,29 @@ export default {
                 }
             }
         }
+    }
+}
+
+.generate-link{
+    padding: 0 20px;
+
+    .invite-link{
+        
+        .link{
+            margin-left: 40px;
+            line-height: 40px;
+            cursor: pointer;
+            display: inline-block;
+            
+            &:hover{
+                color: #8484FF;
+            }
+        }
+    }
+
+
+    .invite-link-qr{
+        padding: 20px 0;
     }
 }
 </style>

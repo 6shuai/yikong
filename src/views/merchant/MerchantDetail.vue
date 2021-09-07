@@ -125,12 +125,13 @@ export default {
                     }
                 });
             });
-        }
+        },
+        
 
     },
     components: {
         ScreenList,
-        Permission,
+        Permission
     },
 };
 </script>
