@@ -47,9 +47,10 @@
         <el-table
             stripe
             size="small"
-            :data="[]"
+            :data="this.resData.merchantAdmin"
             style="width: 100%"
             row-key="id"
+            class="merchantAdmin"
             border>
             <el-table-column label="头像" min-width="50">
                 <template slot-scope="scope">
@@ -60,8 +61,18 @@
                 </template>
             </el-table-column>
             <el-table-column prop="nickname" label="昵称" min-width="80"></el-table-column>
-            <el-table-column prop="bossMobile" label="手机号" min-width="80"></el-table-column>
-            <el-table-column prop="rule" label="身份" min-width="80"></el-table-column>
+            <el-table-column prop="mobile" label="手机号" min-width="80"></el-table-column>
+            <el-table-column label="身份" min-width="80">
+                <template slot-scope="scope">
+                    <el-tag 
+                        type="parmary" 
+                        v-for="item in scope.row.roles" 
+                        size="small"
+                        :key="item.id"
+                    >{{ item.displayName }}
+                </el-tag>
+                </template>
+            </el-table-column>
         </el-table>
 
         <!-- 授权 -->
@@ -151,6 +162,17 @@ export default {
             font-size: 18px;
             font-weight: bold;
             line-height: 30px;
+        }
+    }
+
+    .merchantAdmin{
+        .member-header-img{
+            width: 50px;
+            height: 50px;
+        }
+
+        .el-tag{
+            margin-right: 5px;
         }
     }
 </style>

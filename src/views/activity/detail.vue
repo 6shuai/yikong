@@ -86,18 +86,20 @@
                         <el-form-item label="邀请链接：">
                             <div class="generate-link">
                                 <div class="invite-link">
-                                    <el-button type="primary" size="small">生成邀请链接</el-button>
-                                    <div 
-                                        class="link tag-read" 
-                                        data-clipboard-text="http://www.xfengjing.com"
-                                        @click="copy"
-                                        title="点击复制链接"
-                                    >
-                                        http://www.xfengjing.com <i class="el-icon-copy-document"></i>
-                                    </div>
+                                    <el-button type="primary" size="small" @click="handleGenerateLink">生成邀请链接</el-button>
+                                    <el-link type="primary" @click="$refs.linkList.showGenerateLinkList()">已生成的链接列表</el-link>
                                 </div>
-                                <div class="invite-link-qr">
-                                    <vue-qr text="http://www.xfengjing.com" :margin="0" colorDark="#000" colorLight="#fff" :size="200"></vue-qr>
+                                <div 
+                                    class="link tag-read" 
+                                    :data-clipboard-text="generateLinkUrl"
+                                    @click="copy"
+                                    title="点击复制链接"
+                                    v-if="generateLinkUrl"
+                                >
+                                    {{ generateLinkUrl }}<i class="el-icon-copy-document"></i>
+                                </div>
+                                <div class="invite-link-qr" v-if="generateLinkUrl">
+                                    <vue-qr :text="generateLinkUrl" :margin="0" colorDark="#000" colorLight="#fff" :size="200"></vue-qr>
                                 </div>
                             </div>
                         </el-form-item>
@@ -218,6 +220,9 @@
             @pondCreatedSuccess="getPondList"
         ></add-pond>
 
+        <!-- 已生成的链接列表 -->
+        <link-list ref="linkList" :mid="resData.merchantId"></link-list>
+
     </el-card>
 </template>
 
@@ -230,12 +235,14 @@ import {
     activityFavorite, 
     activityAuthority,
     activityAuthorityUpdate,
-    activityAuthorityDelete
+    activityAuthorityDelete,
+    activityGenerateLink
 } from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
 import AddPond from "./components/AddPond";
 import Clipboard from 'clipboard'
 import vueQr from 'vue-qr'
+import LinkList from './components/LinkList'
 
 export default {
     mixins: [getActivityDetail],
@@ -327,15 +334,19 @@ export default {
         },
 
         //生成邀请链接
-        createInviteLink(){
+        handleGenerateLink(){
             // https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=123&pid=234&pm=2&t=xxxxwere
             //mid 商户id   pid 活动id  pm=2 固定   t 接口code
-            createLink().then(res => {
+            let { id, merchantId } = this.resData;
+            let data = {
+                id: id
+            }
+            activityGenerateLink(data).then(res => {
                 if(res.code === this.$successCode){
-                    let mid = '',
-                        pid = this.$route.params.id,
+                    let mid = merchantId,
+                        pid = id,
                         pm = 2,
-                        token = res.token;
+                        token = res.obj;
                     this.generateLinkUrl = `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t${token}`
                 }
             })
@@ -357,7 +368,8 @@ export default {
     components: {
         Permission,
         AddPond,
-        vueQr
+        vueQr,
+        LinkList
     },
 };
 </script>
@@ -421,19 +433,21 @@ export default {
     padding: 0 20px;
 
     .invite-link{
-        
-        .link{
+        .el-link{
             margin-left: 40px;
-            line-height: 40px;
-            cursor: pointer;
-            display: inline-block;
-            
-            &:hover{
-                color: #8484FF;
-            }
         }
     }
 
+    .link{
+        display: block;
+        line-height: 40px;
+        cursor: pointer;
+        display: inline-block;
+        
+        &:hover{
+            color: #8484FF;
+        }
+    }
 
     .invite-link-qr{
         padding: 20px 0;

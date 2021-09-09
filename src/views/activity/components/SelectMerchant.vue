@@ -11,12 +11,19 @@
         <el-input
             placeholder="请输入商户名称"
             prefix-icon="el-icon-search"
-            v-model="params.displayName">
+            v-model="params.displayName"
+            @input="handleSearch"
+        >
         </el-input>
 
-        <div class="merchant-list">
-            <div class="item" v-for="item in 10" :key="item">
-                madongmei
+        <div class="merchant-list" v-loading="loading">
+            <div 
+                class="item" 
+                v-for="item in resData" 
+                :key="item"
+                @click="handleSelected(item)"
+            >
+                {{ item.displayName }}
             </div>
         </div>
         <el-pagination
@@ -28,36 +35,59 @@
             @current-change="handleCurrentChange"
             :total="totalCount">
         </el-pagination>
-
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="showDialog=false">取消</el-button>
-            <el-button type="primary" @click="handleSelected">确定</el-button>
-        </span>
     </el-dialog>
 </template>
 
 <script>
-import { ctivityMerchantList } from "@/api/activity";
+import { activityMerchantList } from "@/api/activity";
 export default {
     data(){
         return{
-            showDialog: true,
+            showDialog: false,
             totalCount: 0,
             params: {
                 pageNo: 1,
                 pageSize: 20
-            }
+            },
+            resData: [],
+            loading: false
         }
     },
     methods: {
+        showMerchantList(){
+            this.showDialog = true;
+            if(!this.resData.length){
+                this.init();
+            }
+        },
+
+        init(){
+            this.loading = true;
+            activityMerchantList(this.params).then(res => {
+                this.loading = false;
+                if(res.code == this.$successCode){
+                    this.resData = res.obj.list;
+                    this.totalCount = res.obj.totalRecords;
+                }
+            })
+        },
+
+        //搜索
+        handleSearch(){
+            this.params.pageNo = 1;
+            this.init();
+        },
+
         //分页
         handleCurrentChange(page){
-            console.log(page)
+            this.params.pageNo = page;
+            this.init();
         },
 
         //选中商户
-        handleSelected(){
-
+        handleSelected(data){
+            this.$emit('merchantId', { id: data.id, displayName: data.displayName });
+            this.showDialog = false
         }
     }
 }

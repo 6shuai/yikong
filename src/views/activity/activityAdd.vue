@@ -62,7 +62,9 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="选择商户" prop="moduleId">
-                        <div class="select-merchant">选择商户<i class="el-icon-arrow-right"></i></div>
+                        <div class="select-merchant" @click="$refs.merchant.showMerchantList()">
+                            {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
+                        </div>
                     </el-form-item>
                     <el-form-item label="需要支付" prop="needCost">
                         <el-switch
@@ -137,7 +139,10 @@
         </el-row>
 
         <!-- 选择商户 -->
-        <select-merchant></select-merchant>
+        <select-merchant 
+            ref="merchant" 
+            @merchantId="activityParams.merchantId=$event.id;merchantName=$event.displayName"
+        ></select-merchant>
 
     </el-card>
 </template>
@@ -194,6 +199,13 @@ export default {
                         message: "请选择商场模块~",
                     },
                 ],
+                merchantId: [
+                    {
+                        required: true,
+                        trigger: "blur",
+                        message: "请选择商户~",
+                    },
+                ],
                 needCost: [
                     {
                         required: true,
@@ -232,6 +244,7 @@ export default {
                     },
                 ],
             },
+            merchantName: ''
         };
     },
     created() {

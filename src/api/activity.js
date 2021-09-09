@@ -98,3 +98,10 @@ export function activityPlaceList(data) { return get('/promotion/place', data) }
 //统计数据  屏幕列表
 export function activityScreenList(data) { return get('/promotion/screen', data) }
 
+
+
+//生成邀请链接
+export function activityGenerateLink(data) { return postKeyValueRequest('/promotion/generateLink', data) }
+
+//统计数据  屏幕列表
+export function activityGenerateLinkList(data) { return get('promotion/generateLink', data) }
