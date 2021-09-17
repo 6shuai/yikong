@@ -17,11 +17,11 @@
             >   
                 <div 
                     class="link tag-read" 
-                    :data-clipboard-text="`https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${2}&t=${item}`"
+                    :data-clipboard-text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${2}&t=${item}`"
                     @click="copy"
                     title="点击复制链接"
                 >
-                    {{ `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${2}&t${item}` }}
+                    {{ `https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${2}&t${item}` }}
                 </div>
             </div>
         </div>
