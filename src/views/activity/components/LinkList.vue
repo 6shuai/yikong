@@ -17,7 +17,7 @@
             >   
                 <div 
                     class="link tag-read" 
-                    :data-clipboard-text="`https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${2}&t${item}`"
+                    :data-clipboard-text="`https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${2}&t=${item}`"
                     @click="copy"
                     title="点击复制链接"
                 >
@@ -61,8 +61,9 @@ export default {
         copy () {
             var clipboard = new Clipboard('.tag-read')
             clipboard.on('success', e => {
-                this.$message.success('复制成功', e)
+                this.$message.success('复制成功')
                 e.clearSelection()
+                clipboard.destroy()
             })
             clipboard.on('error', e =>{
                 // 不支持复制

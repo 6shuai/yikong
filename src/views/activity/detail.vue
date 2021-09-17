@@ -347,7 +347,7 @@ export default {
                         pid = id,
                         pm = 2,
                         token = res.obj;
-                    this.generateLinkUrl = `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t${token}`
+                    this.generateLinkUrl = `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t=${token}`
                 }
             })
         },
@@ -358,6 +358,7 @@ export default {
             clipboard.on('success', e => {
                 this.$message.success('复制成功', e)
                 e.clearSelection()
+                clipboard.destroy()
             })
             clipboard.on('error', e =>{
                 // 不支持复制
