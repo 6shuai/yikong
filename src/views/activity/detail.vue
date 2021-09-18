@@ -345,7 +345,7 @@ export default {
                 if(res.code === this.$successCode){
                     let mid = merchantId,
                         pid = id,
-                        pm = 2,
+                        pm = 3,
                         token = res.obj;
                     this.generateLinkUrl = `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t=${token}`
                 }

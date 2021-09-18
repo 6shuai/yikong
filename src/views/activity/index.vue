@@ -53,7 +53,7 @@
                 <div class="content">
                     <div class="title">{{ item.displayName }}</div>
                     <div class="desc">{{ item.description }}</div>
-                    <ul class="other">
+                    <!-- <ul class="other">
                         <li>
                             <span>屏幕：
                                 <el-tag
@@ -86,7 +86,7 @@
                                 </el-tag>
                             </span>
                         </li>
-                    </ul>
+                    </ul> -->
                 </div>
 
                 <div class="operation">
