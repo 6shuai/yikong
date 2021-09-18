@@ -21,7 +21,7 @@
                     @click="copy"
                     title="点击复制链接"
                 >
-                    {{ `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t${item}` }}
+                    {{ `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t${item}` }}        
                 </div>
             </div>
         </div>

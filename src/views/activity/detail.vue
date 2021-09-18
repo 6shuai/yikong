@@ -255,7 +255,7 @@ export default {
             },
             pondData: [], //奖池列表
             pondLoading: false,
-            generateLinkUrl: ''  //生成的邀请链接  https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=123&pid=234&pm=2&t=xxxxwere
+            generateLinkUrl: ''  //生成的邀请链接  https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
         };
     },
     created() {
@@ -335,7 +335,7 @@ export default {
 
         //生成邀请链接
         handleGenerateLink(){
-            // https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=123&pid=234&pm=2&t=xxxxwere
+            // https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
             //mid 商户id   pid 活动id  pm=2 固定   t 接口code
             let { id, merchantId } = this.resData;
             let data = {
@@ -347,7 +347,7 @@ export default {
                         pid = id,
                         pm = 3,
                         token = res.obj;
-                    this.generateLinkUrl = `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t=${token}`
+                    this.generateLinkUrl = `https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${pid}&pm=${pm}&t=${token}`
                 }
             })
         },
