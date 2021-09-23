@@ -32,6 +32,26 @@
                 <el-radio-button label="1">已收藏</el-radio-button>
             </el-radio-group>
 
+            <div class="coupon-right">
+                <el-button
+                    class="created-btn"
+                    type="primary"
+                    icon="el-icon-plus"
+                    size="small"
+                    @click="$router.push('activity/couponAdd')"
+                >
+                    新建优惠券
+                </el-button>
+                <el-button
+                    class="created-btn"
+                    type="primary"
+                    size="small"
+                    @click="$router.push('activity/coupon')"
+                >
+                    券列表
+                </el-button>
+            </div>
+
         </div>
 
         <div v-if="!resData || !resData.length" class="no-data">暂无数据~</div>
@@ -184,6 +204,10 @@ export default {
 
 <style lang="scss" scope>
 .activity-list {
+    .coupon-right{
+        float: right;
+    }
+
     .pond-name-tag{
         margin: 0 5px 5px 0;
         &:last-child{

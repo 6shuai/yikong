@@ -66,54 +66,6 @@
                             {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
                         </div>
                     </el-form-item>
-                    <el-form-item label="需要支付" prop="needCost">
-                        <el-switch
-                            :active-value="1"
-                            :inactive-value="0"
-                            v-model="activityParams.needCost"
-                        ></el-switch>
-                    </el-form-item>
-
-                    <div v-if="activityParams.needCost">
-                        <el-form-item label="支付方式" prop="costId">
-                            <el-select
-                                v-model="activityParams.costId"
-                                filterable
-                                placeholder="请选择支付的方式"
-                            >
-                                <el-option
-                                    v-for="item in payTypeData"
-                                    :key="item.id"
-                                    :label="item.displayName"
-                                    :value="item.id"
-                                >
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="支付类型" prop="costType">
-                            <el-select
-                                v-model="activityParams.costType"
-                                filterable
-                                placeholder="请选择支付类型"
-                            >
-                                <el-option
-                                    v-for="item in moduleTypeData"
-                                    :key="item.id"
-                                    :label="item.displayName"
-                                    :value="item.id"
-                                >
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="价格" prop="costValue">
-                            <el-input-number
-                                v-model="activityParams.costValue"
-                                placeholder="价格"
-                                :min="0"
-                                controls-position="right"
-                            ></el-input-number>
-                        </el-form-item>
-                    </div>
                     <group-list
                         v-if="!activityParams.id"
                         propValue="groupIds"
@@ -206,36 +158,6 @@ export default {
                         message: "请选择商户~",
                     },
                 ],
-                needCost: [
-                    {
-                        required: true,
-                        trigger: "blur",
-                        message: "请选择是否需要支付~",
-                    },
-                ],
-                costId: [
-                    {
-                        required: true,
-                        trigger: "change",
-                        type: "number",
-                        message: "请选择支付方式~",
-                    },
-                ],
-                costType: [
-                    {
-                        required: true,
-                        trigger: "change",
-                        type: "number",
-                        message: "请选择支付类型~",
-                    },
-                ],
-                costValue: [
-                    {
-                        required: true,
-                        trigger: "blur",
-                        message: "请输入价格~",
-                    },
-                ],
                 groupIds: [
                     {
                         required: true,
@@ -254,9 +176,9 @@ export default {
             this.initDetail().then((res) => {
                 this.loading = false;
                 this.activityParams = {
-                    ...this.resData,
-                    needCost: this.resData.needCost ? 1 : 0,
+                    ...this.resData
                 };
+                this.merchantName = this.resData.merchantName
                 this.getPayType();
             });
         }

@@ -100,6 +100,19 @@ export const constantRoutes = [
     hidden: true
   },
 
+  //玩家优惠券统计
+  {
+    path: '/',
+    component: Layout,
+    children: [{
+      path: '/game/couponStatisics',
+      name: 'gameCoupon',
+      component: () => import('@/components/couponStatistics/index'),
+      meta: { title: '优惠券统计' }
+    }],
+    hidden: true
+  },
+
   //场所管理  创建场所
   {
     path: '/',
@@ -488,6 +501,70 @@ export const constantRoutes = [
     hidden: true
   },
 
+  //活动管理  新建优惠券
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/couponAdd',
+        name: 'Activity--addCoupon',
+        component: () => import('@/views/activity/coupon/couponAdd'),
+        meta: { title: '活动管理 - 创建优惠券' },
+      }
+    ],
+    hidden: true
+  },
+
+  //活动管理  编辑优惠券
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/couponAdd/:id',
+        name: 'Activity--editCoupon',
+        component: () => import('@/views/activity/coupon/couponAdd'),
+        meta: { title: '活动管理 - 编辑优惠券' },
+      }
+    ],
+    hidden: true
+  },
+
+  //活动管理  优惠券列表
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/coupon',
+        name: 'Activity--coupon',
+        component: () => import('@/views/activity/coupon/index'),
+        meta: { title: '活动管理 - 优惠券列表' },
+      }
+    ],
+    hidden: true
+  },
+
+  //活动管理  优惠券详情
+  {
+    path: '/',
+    component: Layout,
+    meta: { title: '活动管理' },
+    children: [
+      {
+        path: '/activity/coupon/:id',
+        name: 'Activity--couponDetail',
+        component: () => import('@/views/activity/coupon/detail'),
+        meta: { title: '活动管理 - 优惠券详情' },
+      }
+    ],
+    hidden: true
+  },
+
    //活动管理  统计数据
   {
     path: '/',
@@ -503,7 +580,6 @@ export const constantRoutes = [
     ],
     hidden: true
   },
-
 
   // 商户管理 - 添加商户
   {

@@ -95,3 +95,8 @@ export function screenPlayerKeepData(data) { return get('/screen/playerKeep', da
 export function screenProbeData(data) { return get('/screen/screenFootTraffic', data) }
 
 
+//优惠券统计列表
+export function screenCouponStatistics(data) { return get('/screen/couponStatistics', data) }
+
+//优惠券统计详情
+export function screenCouponStatisticsDetail(data) { return get('/screen/couponStatisticsDetail', data) }

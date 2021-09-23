@@ -39,6 +39,10 @@ export function activityPondCreated(data) { return post('/promotion/awardPool', 
 //活动管理  删除奖池
 export function activityPondDelete(data) { return del(`/promotion/awardPool${data}`) }
 
+//活动管理  奖池类型列表
+export function activityCurrencyTypeList(data) { return get('/promotion/currencyType', data) }
+
+
 
 
 //活动管理  根据奖池查询 奖品列表
@@ -104,4 +108,38 @@ export function activityScreenList(data) { return get('/promotion/screen', data)
 export function activityGenerateLink(data) { return postKeyValueRequest('/promotion/generateLink', data) }
 
 //统计数据  屏幕列表
-export function activityGenerateLinkList(data) { return get('promotion/generateLink', data) }
+export function activityGenerateLinkList(data) { return get('/promotion/generateLink', data) }
+
+
+//优惠券类型列表
+export function activityCouponTypeList(data) { return get('/promotion/couponType', data) }
+
+//保存或修改优惠券
+export function activityCouponCreated(data) { return post('/promotion/couponDefinition', data) }
+
+//优惠券列表
+export function activityCouponList(data) { return get('/promotion/couponDefinition', data) }
+
+//优惠券详情
+export function activityCouponDetail(data) { return get('/promotion/couponDefinitionDetail', data) }
+
+
+//查询优惠券与 群组 相关联列表
+export function activityCouponAuthority(data) { return get('/promotion/groupCouponDefinition', data) }
+
+//添加优惠券与 群组关联
+export function activityCouponAuthorityUpdate(data) { return post('/promotion/groupCouponDefinition', data) }
+
+//删除优惠券与 群组关联
+export function activityCouponAuthorityDelete(data) { return del(`/promotion/groupCouponDefinition${data}`) }
+
+
+//优惠券统计列表
+export function couponStatistics(data) { return get('/promotion/couponStatistics', data) }
+
+//优惠券统计详情
+export function couponStatisticsDetail(data) { return get('/promotion/couponStatisticsDetail', data) }
+
+//当前活动下的优惠券列表
+export function couponStatisticsCouponList(data) { return get('/promotion/couponDefinitionForStatistics', data) }
+

@@ -73,6 +73,9 @@
                                 >游戏数据统计</el-link
                             >
                         </el-form-item>
+                        <el-form-item label="优惠券统计:" v-if="resData.statisics && resData.contentTypeId == 3">
+                            <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
+                        </el-form-item>
                     </el-form>
                 </div>
             </div>
@@ -310,6 +313,17 @@ export default {
         handleStatistics(){
             this.$router.push({
                 path: '/game/statisics',
+                query: {
+                    source: 'content',
+                    contentId: this.$route.params.id
+                }
+            });
+        },
+
+        //优惠券数据统计
+        handleCouponStatistics(){
+            this.$router.push({
+                path: '/game/couponStatisics',
                 query: {
                     source: 'content',
                     contentId: this.$route.params.id

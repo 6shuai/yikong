@@ -19,8 +19,8 @@
         <div class="merchant-list" v-loading="loading">
             <div 
                 class="item" 
-                v-for="item in resData" 
-                :key="item"
+                v-for="(item, index) in resData" 
+                :key="index"
                 @click="handleSelected(item)"
             >
                 {{ item.displayName }}

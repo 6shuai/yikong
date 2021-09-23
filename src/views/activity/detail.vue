@@ -67,22 +67,9 @@
                         <el-form-item label="商场模块：">
                             {{ resData.moduleName }}
                         </el-form-item>
-                        <el-form-item label="需要支付：">
-                            {{ resData.needCost ? '需要' : '不需要' }}
+                        <el-form-item label="优惠券统计：">
+                            <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
                         </el-form-item>
-                        <div v-if="resData.needCost">
-                            <el-form-item label="支付方式：">
-                                {{ resData.costName }}
-                            </el-form-item>
-                            <el-form-item label="支付类型：">
-                                {{ resData.costType == 1 ? '一次性' : '按游戏次数' }}
-                            </el-form-item>
-                            <el-form-item label="价格：">
-                                {{ resData.costValue }}
-                            </el-form-item>
-                        </div>
-                    </el-col>
-                    <el-col :md="12" :sm="12" :xs="24">
                         <el-form-item label="邀请链接：">
                             <div class="generate-link">
                                 <div class="invite-link">
@@ -204,6 +191,7 @@
                         </el-row>
                     </el-scrollbar>
                 </el-form-item>
+
             </el-form>
         </div>
 
@@ -219,6 +207,7 @@
             :detailData="resData"
             @pondCreatedSuccess="getPondList"
         ></add-pond>
+
 
         <!-- 已生成的链接列表 -->
         <link-list ref="linkList" :mid="resData.merchantId"></link-list>
@@ -265,6 +254,7 @@ export default {
         }
     },
     methods: {
+
         //根据活动id 查询奖池列表
         getPondList() {
             this.pondLoading = true;
@@ -364,6 +354,17 @@ export default {
                 // 不支持复制
                 this.$message.error('该浏览器不支持复制')
             })
+        },
+
+        //优惠券数据统计
+        handleCouponStatistics(){
+            this.$router.push({
+                path: '/game/couponStatisics',
+                query: {
+                    source: 'activity',
+                    promotionId: this.$route.params.id,
+                }
+            });
         }
     },
     components: {

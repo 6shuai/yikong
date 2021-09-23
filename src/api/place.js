@@ -89,3 +89,10 @@ export function placePlayerTimelineData(data) { return get('/place/statisticsDat
 
 //玩家留存统计
 export function placePlayerKeepData(data) { return get('/place/playerKeep', data) }
+
+
+//优惠券统计列表
+export function placeCouponStatistics(data) { return get('/place/couponStatistics', data) }
+
+//优惠券统计详情
+export function placeCouponStatisticsDetail(data) { return get('/place/couponStatisticsDetail', data) }

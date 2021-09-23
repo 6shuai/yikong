@@ -209,6 +209,14 @@
                                     >游戏数据统计</el-link
                                 >
                             </el-form-item>
+                            <el-form-item label="优惠券统计" v-if="resData.statisics"> 
+                                <el-link
+                                    @click="handleCouponStatistics"
+                                    v-if="resData.placeId"
+                                    type="primary"
+                                    >优惠券数据统计</el-link
+                                >
+                            </el-form-item>
                             <el-form-item label="所属场所">
                                 <el-link
                                     v-if="resData.placeId"
@@ -501,6 +509,17 @@ export default {
         handleStatistics(){
             this.$router.push({
                 path: '/game/statisics',
+                query: {
+                    source: 'screen',
+                    screenId: this.$route.params.id
+                }
+            });
+        },
+
+        //优惠券数据统计
+        handleCouponStatistics(){
+            this.$router.push({
+                path: '/game/couponStatisics',
                 query: {
                     source: 'screen',
                     screenId: this.$route.params.id

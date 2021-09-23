@@ -43,23 +43,18 @@
                         <el-pagination
                             small
                             @current-change="handleCurrentChange"
-                            :current-page="Number(pagination.pageNo)"
+                            :page-size="Number(currencyParams.pageSize)"
+                            :current-page="Number(currencyParams.pageNo)"
                             layout="prev, pager,next,total"
                             :total="totalCount">
                         </el-pagination>
                     </div>
                 </el-select>
             </el-form-item>
-            <el-form-item label="总数量" prop="itemCount">
+            <el-form-item label="总数量" prop="total">
                 <el-input
-                    v-model="prizeParams.itemCount"
+                    v-model="prizeParams.total"
                     placeholder="总数量"
-                ></el-input>
-            </el-form-item>
-            <el-form-item label="剩余数量" prop="remainingCount">
-                <el-input
-                    v-model="prizeParams.remainingCount"
-                    placeholder="剩余数量"
                 ></el-input>
             </el-form-item>
             <el-form-item label="单次上限" prop="awardCountLimit">
@@ -97,6 +92,7 @@
 import { activityCurrencyList, activityPrizeCreated } from "@/api/activity";
 
 export default {
+    props: ['currencyType'],
     data() {
         return {
             showPrizeDialog: false,
@@ -104,7 +100,7 @@ export default {
             btnLoading: false,
             currencyData: [],
             prizeLoading: false,
-            pagination: {
+            currencyParams: {            //奖品列表筛选参数
                 pageSize: 40,
                 pageNo: 1
             },
@@ -117,18 +113,11 @@ export default {
                         message: "请选择奖品~",
                     },
                 ],
-                itemCount: [
+                total: [
                     {
                         required: true,
                         trigger: "blur",
                         message: "请输入奖品的总数量~",
-                    },
-                ],
-                remainingCount: [
-                    {
-                        required: true,
-                        trigger: "blur",
-                        message: "请输入奖品的剩余数量~",
                     },
                 ],
                 awardCountLimit: [
@@ -154,7 +143,8 @@ export default {
         //奖品数据列表
         getCurrencyList() {
             this.prizeLoading = true;
-            activityCurrencyList().then((res) => {
+            this.currencyParams.currencyType = this.currencyType;
+            activityCurrencyList(this.currencyParams).then((res) => {
                 this.prizeLoading = false;
                 if (res.code === this.$successCode) {
                     let { list, totalRecords } = res.obj;
@@ -166,7 +156,7 @@ export default {
 
         //分页
         handleCurrentChange(page){
-            this.pagination.pageNo = page;
+            this.currencyParams.pageNo = page;
             this.getCurrencyList();
         },
 

@@ -28,6 +28,21 @@
                             placeholder="奖池描述"
                         ></el-input>
                     </el-form-item>
+                    <el-form-item label="奖池类型" prop="poolType">
+                        <el-select
+                            v-model="pondParams.poolType"
+                            filterable
+                            placeholder="请选择奖池类型"
+                        >
+                            <el-option
+                                v-for="item in pondTypeData"
+                                :key="item.id"
+                                :label="item.displayName"
+                                :value="item.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="发放规则" prop="pickSequence">
                         <el-select
                             v-model="pondParams.pickSequence"
@@ -163,8 +178,8 @@
                         <div class="content">
                             <p class="title">{{ item.currencyName }}</p>
                             <p class="desc">
-                                库存: {{ item.remainingCount }} /
-                                {{ item.itemCount }}
+                                库存: {{ item.residue }} /
+                                {{ item.total }}
                                 <el-divider direction="vertical"></el-divider>
                                 单次上限：{{ item.awardCountLimit }}
                                 <el-divider direction="vertical"></el-divider>
@@ -230,6 +245,7 @@
         <!-- 添加 或 修改奖品 -->
         <add-prize
             ref="addPrize"
+            :currencyType="pondParams.poolType"
             @prizeCreatedSuccess="getPrizeList"
         ></add-prize>
 
@@ -248,7 +264,8 @@ import {
     activityPrizeList,
     activityPrizeDelete,
     activityConditionList,
-    activityConditionDelete
+    activityConditionDelete, 
+    activityCurrencyTypeList
 } from "@/api/activity";
 import AddPrize from "./AddPrize";
 import AddCondition from './AddCondition';
@@ -279,6 +296,13 @@ export default {
                         message: "请输入奖池名称~",
                     },
                 ],
+                poolType: [
+                    {
+                        required: true,
+                        trigger: "blur",
+                        message: "请选择奖池类型~",
+                    },
+                ],
                 pickSequence: [
                     {
                         required: true,
@@ -305,6 +329,7 @@ export default {
             prizeLoading: false,
             conditionData: [],      //条件列表
             conditionLoading: false, 
+            pondTypeData: [],       //奖池类型
         };
     },
     methods: {
@@ -323,6 +348,7 @@ export default {
 
             this.$nextTick(() => {
                 this.$refs["addPondForm"].clearValidate();
+                this.getCurrencyTypeList();
             });
         },
 
@@ -408,6 +434,13 @@ export default {
                 if(res.code === this.$successCode){
                     this.conditionData = res.obj;
                 }
+            })
+        },
+        
+        //奖池类型列表
+        getCurrencyTypeList(){
+            activityCurrencyTypeList().then(res => {
+                this.pondTypeData = res.obj;
             })
         }
     },

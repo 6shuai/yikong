@@ -58,7 +58,7 @@ export function contentAuthorityDelete(data) { return del(`/content/groupContent
 export function contentPlaceList(data) { return get('/content/place', data) }
 
 //查询所有屏幕列表
-export function contentScreenList(data) { return get('/content/screen', data) }
+export function contentcontentList(data) { return get('/content/screen', data) }
 
 //统计列表
 export function contentStatistics(data) { return get('/content/statistics', data) }
@@ -84,3 +84,9 @@ export function contentPlayerTimelineData(data) { return get('/content/statistic
 //玩家留存统计
 export function contentPlayerKeepData(data) { return get('/content/playerKeep', data) }
 
+
+//优惠券统计列表
+export function contentCouponStatistics(data) { return get('/content/couponStatistics', data) }
+
+//优惠券统计详情
+export function contentCouponStatisticsDetail(data) { return get('/content/couponStatisticsDetail', data) }

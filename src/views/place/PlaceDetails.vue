@@ -140,6 +140,9 @@
                         <el-form-item label="游戏数据统计:" v-if="resData.statisics">
                             <el-link type="primary" @click="handleStatistics">游戏数据统计</el-link>
                         </el-form-item>
+                        <el-form-item label="优惠券统计:" v-if="resData.statisics">
+                            <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
+                        </el-form-item>
                     </el-form>
 
                     <div
@@ -350,6 +353,17 @@ export default {
         handleStatistics(){
             this.$router.push({
                 path: '/game/statisics',
+                query: {
+                    source: 'place',
+                    placeId: this.$route.params.id
+                }
+            });
+        },
+
+        //优惠券数据统计
+        handleCouponStatistics(){
+            this.$router.push({
+                path: '/game/couponStatisics',
                 query: {
                     source: 'place',
                     placeId: this.$route.params.id
