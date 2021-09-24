@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        width="500px"
+        width="800px"
         title="邀请链接"
         class="link-list-dialog"
         :visible.sync="showDialog"
@@ -17,11 +17,23 @@
             >   
                 <div 
                     class="link tag-read" 
-                    :data-clipboard-text="`https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}`"
+                    :data-clipboard-text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}`"
                     @click="copy"
                     title="点击复制链接"
                 >
-                    {{ `https://static.xfenging.com/coupon/writeoff/invite/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t${item}` }}        
+                    {{ `https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}` }}        
+                </div>
+                <div class="link-qrcode">
+                    <el-popover
+                        placement="right"
+                        width="374"
+                        trigger="click">
+                        <vue-qr :text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}`" :margin="0" colorDark="#000" colorLight="#fff" :size="350"></vue-qr>
+                        <svg-icon
+                            slot="reference"
+                            icon-class="qrcode"
+                        ></svg-icon>
+                    </el-popover>
                 </div>
             </div>
         </div>
@@ -31,6 +43,7 @@
 <script>
 import { activityGenerateLinkList } from "@/api/activity";
 import Clipboard from 'clipboard'
+import vueQr from 'vue-qr'
 export default {
     props: ['mid'],
     data(){
@@ -70,7 +83,10 @@ export default {
                 this.$message.error('该浏览器不支持复制')
             })
         }
-    }
+    },
+    components: {
+        vueQr
+    },
 }
 </script>
 
@@ -83,10 +99,24 @@ export default {
                 line-height: 30px;
                 border-bottom: 1px solid #f0f0f0;
                 cursor: pointer;
+                display: flex;
 
-                &:hover{
-                    background: #F5F7FA;
-                    color: #8484FF;
+                .link{
+                    &:hover{
+                        background: #F5F7FA;
+                        color: #8484FF;
+                    }
+                }
+
+
+                .link-qrcode{
+                    flex: 1;
+                    text-align: right;
+
+                    svg.svg-icon{
+                        width: 30px;
+                        height: 30px;
+                    }
                 }
             }
         }

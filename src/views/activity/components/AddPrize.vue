@@ -92,7 +92,6 @@
 import { activityCurrencyList, activityPrizeCreated } from "@/api/activity";
 
 export default {
-    props: ['currencyType'],
     data() {
         return {
             showPrizeDialog: false,
@@ -131,19 +130,19 @@ export default {
         };
     },
     methods: {
-        showDialog(data) {
+        showDialog(data, poolType) {
             this.prizeParams = data ? JSON.parse(JSON.stringify(data)) : {};
             this.showPrizeDialog = true;
-            if (!this.currencyData.length) this.getCurrencyList();
+            this.getCurrencyList(poolType);
             this.$nextTick(() => {
                 this.$refs["addPrizeForm"].clearValidate();
             });
         },
 
         //奖品数据列表
-        getCurrencyList() {
+        getCurrencyList(poolType) {
             this.prizeLoading = true;
-            this.currencyParams.currencyType = this.currencyType;
+            this.currencyParams.currencyType = poolType;
             activityCurrencyList(this.currencyParams).then((res) => {
                 this.prizeLoading = false;
                 if (res.code === this.$successCode) {

@@ -152,7 +152,7 @@
                             @click="
                                 $refs.addPrize.showDialog({
                                     poolId: pondParams.id,
-                                })
+                                }, pondParams.poolType)
                             "
                             >添加</el-button
                         >
@@ -244,7 +244,6 @@
         <!-- 添加 或 修改奖品 -->
         <add-prize
             ref="addPrize"
-            :currencyType="pondParams.poolType"
             @prizeCreatedSuccess="getPrizeList"
         ></add-prize>
 
