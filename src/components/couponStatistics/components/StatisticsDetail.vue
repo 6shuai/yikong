@@ -112,7 +112,6 @@ export default {
                 pageSize: 48
             }
             this.getDetail();
-            this.getCouponTypeList(data)
         },
 
         getDetail(){
