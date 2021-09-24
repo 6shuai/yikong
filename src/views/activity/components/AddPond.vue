@@ -178,12 +178,11 @@
                         <div class="content">
                             <p class="title">{{ item.currencyName }}</p>
                             <p class="desc">
-                                库存: {{ item.residue }} /
-                                {{ item.total }}
+                                <span>库存: {{ item.residue }} / {{ item.total }}</span>
                                 <el-divider direction="vertical"></el-divider>
-                                单次上限：{{ item.awardCountLimit }}
+                                <span>单次上限：{{ item.awardCountLimit }}</span>
                                 <el-divider direction="vertical"></el-divider>
-                                概率：{{ item.rate ? item.rate : 0 }}%
+                                <span>概率：{{ item.rate ? item.rate : 0 }}%</span>
                             </p>
                         </div>
                         <div class="operation">
@@ -473,7 +472,7 @@ export default {
             padding-bottom: 40px;
 
             .item {
-                width: 300px;
+                width: 400px;
                 margin: 5px;
                 background: #222831;
                 color: #fff;
@@ -490,6 +489,9 @@ export default {
                         &.desc {
                             font-size: 13px;
                             color: #999;
+                            display: flex;
+                            justify-content: space-around;
+                            align-items: center;
                         }
                     }
                     .operation {
