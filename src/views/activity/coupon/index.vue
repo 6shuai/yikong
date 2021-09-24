@@ -8,8 +8,15 @@
 
         <div class="coupon-list mt20">
             <div class="coupon-list-top">
+                <el-button
+                    type="primary"
+                    icon="el-icon-plus"
+                    @click="$router.push('/activity/couponAdd')"
+                >
+                    新建优惠券
+                </el-button>
                 <el-input
-                    class="w200 mr10"
+                    class="w200 ml10 mr10"
                     prefix-icon="el-icon-search"
                     clearable
                     v-model="params.displayName"

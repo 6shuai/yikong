@@ -38,7 +38,7 @@
                     type="primary"
                     icon="el-icon-plus"
                     size="small"
-                    @click="$router.push('activity/couponAdd')"
+                    @click="$router.push('/activity/couponAdd')"
                 >
                     新建优惠券
                 </el-button>
@@ -46,7 +46,7 @@
                     class="created-btn"
                     type="primary"
                     size="small"
-                    @click="$router.push('activity/coupon')"
+                    @click="$router.push('/activity/coupon')"
                 >
                     券列表
                 </el-button>
