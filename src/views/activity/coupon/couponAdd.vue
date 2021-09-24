@@ -40,7 +40,12 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="商户" class="is-required">
+                    <el-form-item label="商户" prop="merchant">
+                        <el-input-number
+                            style="display: none;"
+                            v-model="couponParams.merchant"
+                            placeholder="优惠券名称"
+                        ></el-input-number>
                         <div class="select-merchant" @click="$refs.merchant.showMerchantList()">
                             {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
                         </div>
@@ -126,7 +131,8 @@ export default {
                 couponType: [
                     {
                         required: true,
-                        trigger: "blur",
+                        trigger: "change",
+                        type: 'number',
                         message: "请选择优惠券类型~",
                     },
                 ],

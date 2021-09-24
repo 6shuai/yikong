@@ -61,7 +61,12 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="选择商户" prop="moduleId">
+                    <el-form-item label="选择商户" prop="merchantId">
+                        <el-input-number
+                            style="display: none;"
+                            v-model="activityParams.merchantId"
+                            placeholder="优惠券名称"
+                        ></el-input-number>
                         <div class="select-merchant" @click="$refs.merchant.showMerchantList()">
                             {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
                         </div>
