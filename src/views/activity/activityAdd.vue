@@ -247,6 +247,10 @@ export default {
 
         //删除商户
         handleDeleteMerchant(id, index){
+            if(!id){
+                this.activityParams.merchants.splice(index, 1);
+                return
+            }
             actvityDeleteMerchant(id).then(res => {
                 if(res.code == this.$successCode){
                     this.$message.success('删除成功~');
