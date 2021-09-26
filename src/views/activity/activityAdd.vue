@@ -243,7 +243,6 @@ export default {
         //选择商户
         handleMerchant(data){
             this.$set(this.activityParams, 'merchants', data);
-            console.log(this.activityParams.merchants)
         },
 
         //删除商户
