@@ -67,6 +67,17 @@
                         <el-form-item label="商场模块：">
                             {{ resData.moduleName }}
                         </el-form-item>
+                        <el-form-item label="商户：">
+                            <el-tag
+                                v-for="(item, index) in resData.merchants"
+                                :key="index"
+                                class="mr10"
+                                type="primary"
+                                size="mini"
+                                >
+                            {{ item.merchantName }}
+                        </el-tag>
+                        </el-form-item>
                         <el-form-item label="优惠券统计：">
                             <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
                         </el-form-item>

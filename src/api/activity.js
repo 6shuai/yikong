@@ -143,3 +143,5 @@ export function couponStatisticsDetail(data) { return get('/promotion/couponStat
 //当前活动下的优惠券列表
 export function couponStatisticsCouponList(data) { return get('/promotion/couponDefinitionForStatistics', data) }
 
+//删除活动的商户
+export function actvityDeleteMerchant(data) { return del(`/promotion/promotionMerchant?id=${data}`) }

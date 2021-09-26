@@ -88,6 +88,7 @@ export default {
         vueQr
     },
 }
+
 </script>
 
 <style lang="scss">

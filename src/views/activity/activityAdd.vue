@@ -61,15 +61,20 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="选择商户" prop="merchantId">
-                        <el-input-number
-                            style="display: none;"
-                            v-model="activityParams.merchantId"
-                            placeholder="优惠券名称"
-                        ></el-input-number>
-                        <div class="select-merchant" @click="$refs.merchant.showMerchantList()">
+                    <el-form-item label="选择商户" prop="merchants">
+                        <div class="select-merchant mb20" @click="$refs.merchant.showMerchantList(activityParams.merchants)">
                             {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
                         </div>
+                        <el-tag
+                            v-for="(item, index) in activityParams.merchants"
+                            :key="index"
+                            class="mr10"
+                            type="primary"
+                            closable
+                            @close="handleDeleteMerchant(item.id, index)"
+                            >
+                            {{ item.merchantName }}
+                        </el-tag>
                     </el-form-item>
                     <group-list
                         v-if="!activityParams.id"
@@ -98,7 +103,7 @@
         <!-- 选择商户 -->
         <select-merchant 
             ref="merchant" 
-            @merchantId="activityParams.merchantId=$event.id;merchantName=$event.displayName"
+            @merchantId="handleMerchant"
         ></select-merchant>
 
     </el-card>
@@ -108,10 +113,11 @@ import {
     activityPlaceModule,
     activityPayWayList,
     activityCreated,
+    actvityDeleteMerchant,
 } from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
 import GroupList from "@/components/GroupList/index";
-import SelectMerchant from './components/SelectMerchant';
+import SelectMerchant from './components/ActivitySelectMerchant';
 
 export default {
     mixins: [getActivityDetail],
@@ -156,10 +162,11 @@ export default {
                         message: "请选择商场模块~",
                     },
                 ],
-                merchantId: [
+                merchants: [
                     {
                         required: true,
                         trigger: "blur",
+                        type: "array",
                         message: "请选择商户~",
                     },
                 ],
@@ -232,6 +239,22 @@ export default {
                 }
             });
         },
+
+        //选择商户
+        handleMerchant(data){
+            this.$set(this.activityParams, 'merchants', data);
+            console.log(this.activityParams.merchants)
+        },
+
+        //删除商户
+        handleDeleteMerchant(id, index){
+            actvityDeleteMerchant(id).then(res => {
+                if(res.code == this.$successCode){
+                    this.$message.success('删除成功~');
+                    this.activityParams.merchants.splice(index, 1);
+                }
+            })
+        }
     },
     components: {
         GroupList,
