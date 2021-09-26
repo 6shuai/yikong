@@ -45,25 +45,24 @@ import { activityGenerateLinkList } from "@/api/activity";
 import Clipboard from 'clipboard'
 import vueQr from 'vue-qr'
 export default {
-    props: ['mid'],
     data(){
         return{
             showDialog: false,
             resData: [],
-            loading: false
+            loading: false,
+            mid: null
         }
     },
     methods: {
-        showGenerateLinkList(){
+        showGenerateLinkList(merchantId){
             this.showDialog = true;
-            if(!this.resData.length){
-                this.init();
-            }
+            this.init(merchantId);
         },
 
-        init(){
+        init(merchantId){
             this.loading = true;
-            activityGenerateLinkList({ id: this.$route.params.id }).then(res => {
+            this.mid = merchantId;
+            activityGenerateLinkList({ id: this.$route.params.id, merchantId }).then(res => {
                 this.loading = false;
                 if(res.code == this.$successCode){
                     this.resData = res.obj;

@@ -67,6 +67,9 @@
                         <el-form-item label="商场模块：">
                             {{ resData.moduleName }}
                         </el-form-item>
+                        <el-form-item label="优惠券统计：">
+                            <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
+                        </el-form-item>
                         <el-form-item label="商户：">
                             <el-tag
                                 v-for="(item, index) in resData.merchants"
@@ -75,17 +78,31 @@
                                 type="primary"
                                 size="mini"
                                 >
-                            {{ item.merchantName }}
-                        </el-tag>
+                                {{ item.merchantName }}
+                            </el-tag>
                         </el-form-item>
-                        <el-form-item label="优惠券统计：">
-                            <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
+                        <el-form-item label="当前商户">
+                            <el-select
+                                v-model="currentMerchant"
+                                filterable
+                                placeholder="请选择商户"
+                                size="small"
+                                @change="handleChangeMerchant"
+                            >
+                                <el-option
+                                    v-for="item in resData.merchants"
+                                    :key="item.merchant"
+                                    :label="item.merchantName"
+                                    :value="item.merchant"
+                                >
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                         <el-form-item label="邀请链接：">
                             <div class="generate-link">
                                 <div class="invite-link">
                                     <el-button type="primary" size="small" @click="handleGenerateLink">生成邀请链接</el-button>
-                                    <el-link type="primary" @click="$refs.linkList.showGenerateLinkList()">已生成的链接列表</el-link>
+                                    <el-link type="primary" @click="$refs.linkList.showGenerateLinkList(currentMerchant)">已生成的链接列表</el-link>
                                 </div>
                                 <div 
                                     class="link tag-read" 
@@ -255,12 +272,15 @@ export default {
             },
             pondData: [], //奖池列表
             pondLoading: false,
-            generateLinkUrl: ''  //生成的邀请链接  https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
+            generateLinkUrl: '',  //生成的邀请链接  https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
+            currentMerchant: null,  //当前商户
         };
     },
     created() {
         if (this.$route.params.id) {
-            this.initDetail();
+            this.initDetail().then(res => {
+                this.currentMerchant = this.resData.merchants[0].merchant;
+            });
             this.getPondList();
         }
     },
@@ -338,13 +358,14 @@ export default {
         handleGenerateLink(){
             // https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
             //mid 商户id   pid 活动id  pm=2 固定   t 接口code
-            let { id, merchantId } = this.resData;
+            let { id } = this.resData;
             let data = {
-                id: id
+                id,
+                merchantId: this.currentMerchant
             }
             activityGenerateLink(data).then(res => {
                 if(res.code === this.$successCode){
-                    let mid = merchantId,
+                    let mid = this.currentMerchant,
                         pid = id,
                         pm = 3,
                         token = res.obj;
@@ -376,6 +397,11 @@ export default {
                     promotionId: this.$route.params.id,
                 }
             });
+        },
+
+        //选择商户
+        handleChangeMerchant(){
+            this.generateLinkUrl = '';
         }
     },
     components: {
