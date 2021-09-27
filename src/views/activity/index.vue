@@ -73,40 +73,44 @@
                 <div class="content">
                     <div class="title">{{ item.displayName }}</div>
                     <div class="desc">{{ item.description }}</div>
-                    <!-- <ul class="other">
-                        <li>
+                    <ul class="other">
+                        <li v-if="item.screenName">
                             <span>屏幕：
                                 <el-tag
                                     class="pond-name-tag"
+                                    v-for="screen in item.screenName"
+                                    :key="screen"
                                     type="warning"
                                     size="mini">
-                                    万达
+                                    {{ screen }}
                                 </el-tag>
                             </span>
                         </li>
-                        <li>
+                        <li v-if="item.contentName">
                             <span>游戏：
                                 <el-tag
                                     class="pond-name-tag"
-                                    type="info"
+                                    v-for="content in item.contentName"
+                                    :key="content"
+                                    type="warning"
                                     size="mini">
-                                    头脑网址
+                                    {{ content }}
                                 </el-tag>
                             </span>
                         </li>
-                        <li>
+                        <li v-if="item.poolName">
                             <span>奖励：
                                 <el-tag
                                     class="pond-name-tag"
-                                    v-for="item in 2"
-                                    :key="item"
+                                    v-for="pool in item.poolName"
+                                    :key="pool"
                                     type="success"
                                     size="mini">
-                                    奖池
+                                    {{ pool }}
                                 </el-tag>
                             </span>
                         </li>
-                    </ul> -->
+                    </ul>
                 </div>
 
                 <div class="operation">
@@ -167,6 +171,11 @@ export default {
                     let { list, totalRecords } = res.obj;
                     this.resData = list;
                     this.totalCount = totalRecords;
+                    this.resData.forEach(val => {
+                        if(val.poolName) val.poolName = val.poolName.split(',');
+                        if(val.contentName) val.contentName = val.contentName.split(',');
+                        if(val.screenName) val.screenName = val.screenName.split(',');
+                    })
                 }
             })
         },

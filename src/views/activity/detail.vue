@@ -57,10 +57,26 @@
                             {{ resData.endTime }}
                         </el-form-item>
                         <el-form-item label="活动屏幕：">
-                            {{ resData.screen }}
+                            <el-tag
+                                v-for="(item, index) in resData.screens"
+                                :key="index"
+                                class="mr10"
+                                type="primary"
+                                size="mini"
+                                >
+                                {{ item.displayName }}
+                            </el-tag>
                         </el-form-item>
                         <el-form-item label="活动游戏：">
-                            {{ resData.game }}
+                            <el-tag
+                                v-for="(item, index) in resData.contents"
+                                :key="index"
+                                class="mr10"
+                                type="primary"
+                                size="mini"
+                                >
+                                {{ item.displayName }}
+                            </el-tag>
                         </el-form-item>
                     </el-col>
                     <el-col :md="12" :sm="12" :xs="24">
