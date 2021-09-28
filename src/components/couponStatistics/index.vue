@@ -72,6 +72,25 @@
 				</el-select>
 			</el-form-item>
 
+			<el-form-item label="状态">
+				<el-select
+					v-model="params.state"
+					clearable
+					placeholder="请选择优惠券状态"
+					@clear="$delete(params, 'state')"
+					@change="search"
+					class="mb20"
+				>
+					<el-option
+						v-for="item in [{ id: 0, name: '未核销' }, { id: 1, name: '已核销' }, { id: 2, name: '已过期' }]"
+						:key="item.id"
+						:label="item.name"
+						:value="item.id"
+					>
+					</el-option>
+				</el-select>
+			</el-form-item>
+
 			<el-form-item label="时间范围">
 				<el-date-picker
 					@change="search"
@@ -289,6 +308,7 @@ export default {
 
 		//查看详情
 		handleDetail(row) {
+			console.log(this.params.state)
 			this.$refs.statisticsDetail.showDialog(
 				{
 					collectionTime: row.collectionTime,
@@ -298,7 +318,8 @@ export default {
 					contentId: this.params.contentId,
 					promotionId: this.$route.query.promotionId
 				},
-				this.api.StatisticsDetail
+				this.api.StatisticsDetail,
+				this.params.state
 			);
 		},
 

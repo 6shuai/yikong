@@ -98,18 +98,17 @@ export default {
             resData: [],
             totalCount: 0,
             statisticsDetailApi: undefined,
-            couponTypeListApi: undefined,
         };
     },
     methods: {
-        showDialog(data, statisticsDetailApi, couponTypeListApi) {
+        showDialog(data, statisticsDetailApi, state) {
             this.statisticsDetailApi = statisticsDetailApi;
-            this.couponTypeListApi = couponTypeListApi;
             this.dialogVisible = true;
             this.params = {
                 ...data,
                 pageNo: 1,
-                pageSize: 48
+                pageSize: 48,
+                state
             }
             this.getDetail();
         },
