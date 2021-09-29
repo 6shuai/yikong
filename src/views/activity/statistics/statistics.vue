@@ -99,13 +99,13 @@
             border
         >
             <el-table-column
-                prop="period"
+                prop="occur"
                 label="时间段"
                 min-width="120"
             ></el-table-column>
             <el-table-column
-                prop="scanTimes"
-                label="扫码次数"
+                prop="loginTimes"
+                label="登录次数"
                 min-width="80"
             ></el-table-column>
             <el-table-column
@@ -114,13 +114,10 @@
                 min-width="80"
             ></el-table-column>
             <el-table-column
-                prop="playtime"
-                label="人均时长"
+                prop="playerCount"
+                label="游戏人数"
                 min-width="80"
             >
-                <template slot-scope="scope">
-                    {{ scope.row.playtime }} 秒
-                </template>
             </el-table-column>
             <el-table-column label="详情" width="110">
                 <template slot-scope="scope">
@@ -219,8 +216,8 @@ export default {
         handleDetail(row) {
             this.$refs.statisticsDetail.showDialog(
                 {
-                    promotionId: row.promotionId,
-                    period: row.period,
+                    promotionId: this.$route.params.id,
+                    occur: row.occur,
                     placeId: this.params.placeId,
                     screenId: this.params.screenId,
                     contentId: this.params.contentId
@@ -267,3 +264,4 @@ export default {
     }
 }
 </style>
+
