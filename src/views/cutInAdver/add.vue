@@ -148,36 +148,6 @@
                 <el-form-item label="阶段描述">
                     <el-input v-model="gameStageParams.description"></el-input>
                 </el-form-item>
-                <el-form-item label="插播方式" prop="spotWay">
-                    <el-checkbox-group v-model="gameStageParams.spotWay">
-                        <el-checkbox :label="0">阶段结束</el-checkbox>
-                        <el-checkbox :label="1">阶段内</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item 
-                    label="前置时间" 
-                    :prop="gameStageParams.spotWay.includes(1) ? 'interval' : 'empty'"
-                >
-                    <el-input-number
-                        :min="0"
-                        :disabled="!gameStageParams.spotWay.includes(1)"
-                        v-model="gameStageParams.interval"
-                        controls-position="right"
-                    ></el-input-number> 
-                    <span>秒</span>
-                </el-form-item>
-                <el-form-item 
-                    label="第几次结束该阶段后插播" 
-                    :prop="gameStageParams.spotWay.includes(0) ? 'hitCount' : 'empty'"
-                >
-                    <el-input-number
-                        :min="-1"
-                        :disabled="!gameStageParams.spotWay.includes(0)"
-                        v-model="gameStageParams.hitCount"
-                        controls-position="right"
-                    ></el-input-number> 
-                    <span class="text-hight">(-1 表示每次该阶段都插播)</span>
-                </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">
@@ -235,8 +205,8 @@ export default {
             timelineData: [], //时间轴容器列表
             addTimelineArr: {},
             gameStageParams: {
-                hitCount: [],
-                spotWay: []
+                // hitCount: [],
+                // spotWay: []
             },
             showAddRound: false,
 
@@ -244,9 +214,9 @@ export default {
             spotContainerRelation: [],       //选择广告轴
             addStageRule: {
                 gameStage: [ { required: true, trigger: "blur", message: "请输入游戏阶段~" } ],
-                spotWay: [ { required: true, trigger: "change", message: "请选择插播方式~" } ],
-                interval: [ { required: true, trigger: "blur", message: "请输入插播前置时间~" } ],
-                hitCount: [ { required: true, trigger: "blur", message: "请输入在第几次阶段插播~" } ],
+                // spotWay: [ { required: true, trigger: "change", message: "请选择插播方式~" } ],
+                // interval: [ { required: true, trigger: "blur", message: "请输入插播前置时间~" } ],
+                // hitCount: [ { required: true, trigger: "blur", message: "请输入在第几次阶段插播~" } ],
             }
         };
     },

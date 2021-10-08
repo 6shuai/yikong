@@ -126,9 +126,19 @@
 			</el-table-column>
 			<el-table-column
 				prop="couponCount"
-				label="优惠券数量"
+				label="发券量"
 				min-width="80"
 			></el-table-column>
+			<el-table-column
+                prop="writeOffCount"
+                label="核销量"
+                min-width="80"
+            ></el-table-column>
+            <el-table-column
+                prop="writeOffRate"
+                label="核销率"
+                min-width="80"
+            ></el-table-column>
 			<el-table-column label="详情" width="110">
 				<template slot-scope="scope">
 					<el-button

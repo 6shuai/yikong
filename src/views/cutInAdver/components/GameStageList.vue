@@ -29,30 +29,6 @@
                     {{ scope.row.description || '-' }}
                 </template> 
             </el-table-column>
-            <el-table-column
-                prop="spotWay"
-                label="插播方式"
-                :min-width="60"
-            >
-                <template slot-scope="scope">
-                    {{ scope.row.spotWay ? '阶段内' : '阶段结束' }}
-                </template> 
-            </el-table-column>
-            <el-table-column
-                prop="spotWay"
-                label="前置时间"
-                :min-width="60"
-            >
-                <template slot-scope="scope">
-                    {{ scope.row.interval }}秒
-                </template> 
-            </el-table-column>
-            <el-table-column
-                prop="hitCount"
-                label="第几次结束该阶段后插播"
-                :min-width="60"
-            >
-            </el-table-column>
             <el-table-column label="操作" width="80">
                 <template slot-scope="scope">
                     <el-popover
