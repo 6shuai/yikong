@@ -143,6 +143,7 @@ export default {
         getCurrencyList(poolType) {
             this.prizeLoading = true;
             this.currencyParams.currencyType = poolType;
+            this.currencyParams.promotionId = this.$route.params.id;
             activityCurrencyList(this.currencyParams).then((res) => {
                 this.prizeLoading = false;
                 if (res.code === this.$successCode) {
