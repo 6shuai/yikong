@@ -217,7 +217,7 @@ export default {
 				break;
 			case "content":
 				PlaceList = contentPlaceList;
-				ScreenList = contentScreenList;
+				ScreenList = placeScreenList;
 				StatisticsList = contentStatistics;
 				StatisticsDetail = contentStatisticsDetail;
 				break;
