@@ -145,3 +145,13 @@ export function couponStatisticsCouponList(data) { return get('/promotion/coupon
 
 //删除活动的商户
 export function actvityDeleteMerchant(data) { return del(`/promotion/promotionMerchant?id=${data}`) }
+
+
+//添加或修改奖励领取限制规则
+export function activityAddLimit(data) { return post('/promotion/claimLimit', data) }
+
+//查询奖励领取限制规则列表
+export function activityLimitList(data) { return get('/promotion/claimLimit', data) }
+
+//删除奖励领取限制规则
+export function activityLimitDelete(data) { return del(`/promotion/claimLimit${data}`) }
