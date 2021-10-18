@@ -10,12 +10,29 @@
             clearable
             placeholder="请选择优惠券状态"
             @change="handleSearch"
+            @clear="$delete(params, 'state')"
             class="mb20"
         >
             <el-option
                 v-for="item in [{ id: 0, name: '未核销' }, { id: 1, name: '已核销' }, { id: 2, name: '已过期' }]"
                 :key="item.id"
                 :label="item.name"
+                :value="item.id"
+            >
+            </el-option>
+        </el-select>
+        <el-select
+            v-model="params.couponDefinitionId"
+            clearable
+            placeholder="请选择优惠券"
+            @change="handleSearch"
+            @clear="$delete(params, 'couponDefinitionId')"
+            class="mb20 ml20"
+        >
+            <el-option
+                v-for="item in couponData"
+                :key="item.id"
+                :label="item.displayName" 
                 :value="item.id"
             >
             </el-option>
@@ -89,6 +106,7 @@
 </template>
 
 <script>
+import { couponStatisticsDetailCouponList } from '@/api/activity';
 export default {
     data() {
         return {
@@ -98,6 +116,7 @@ export default {
             resData: [],
             totalCount: 0,
             statisticsDetailApi: undefined,
+            couponData: [],    //优惠券列表
         };
     },
     methods: {
@@ -111,6 +130,7 @@ export default {
                 state
             }
             this.getDetail();
+            this.getCouponList(data)
         },
 
         getDetail(){
@@ -141,6 +161,15 @@ export default {
         handleSearch(){
             this.params.pageNo = 1;
             this.getDetail();
+        },
+
+        //获取当前详细下的优惠券列表
+        getCouponList(data){
+            couponStatisticsDetailCouponList(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.couponData = res.obj;
+                }
+            })
         }
     },
 };

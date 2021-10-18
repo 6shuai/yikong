@@ -119,11 +119,6 @@
 				label="发券时间"
 				min-width="80"
 			></el-table-column>
-			<el-table-column 
-				prop="couponDefinitionName" 
-				label="优惠券名称" 
-				min-width="150">
-			</el-table-column>
 			<el-table-column
 				prop="couponCount"
 				label="发券量"
@@ -318,7 +313,6 @@ export default {
 
 		//查看详情
 		handleDetail(row) {
-			console.log(this.params.state)
 			this.$refs.statisticsDetail.showDialog(
 				{
 					collectionTime: row.collectionTime,

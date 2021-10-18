@@ -140,6 +140,10 @@ export function couponStatistics(data) { return get('/promotion/couponStatistics
 //优惠券统计详情
 export function couponStatisticsDetail(data) { return get('/promotion/couponStatisticsDetail', data) }
 
+//优惠券统计详情 优惠券列表
+export function couponStatisticsDetailCouponList(data) { return get('/promotion/couponDefinitionByPromotion', data) }
+
+
 //当前活动下的优惠券列表
 export function couponStatisticsCouponList(data) { return get('/promotion/couponDefinitionForStatistics', data) }
 
