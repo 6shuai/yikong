@@ -19,6 +19,7 @@
             small
             hide-on-single-page
             @current-change="handleCurrentChange"
+            :page-size="Number(activityListParams.pageSize)"
             :current-page="Number(activityListParams.pageNo)"
             layout="prev, pager,next,total"
             :total="activityTotal">
