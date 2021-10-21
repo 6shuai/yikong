@@ -146,6 +146,7 @@ export default {
                     beginTime: data.beginTimeFormat
                 }
             }
+            console.log(allTimelineStartTimeArr)
         },
 
         //屏幕布局模板

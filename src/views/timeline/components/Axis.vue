@@ -893,15 +893,15 @@ export default {
                 obj, 
                 data ? this.stageData[this.stageIndex-1] : lastStage,
                 lastStage ? this.updateStartTime(lastStage.beginTimeFormat, lastStage.duration || 30) : this.startTime,
-                this.getCutinTimelineStartTime()
+                this.getCutinTimelineStartTime(this.stageIndex)
             ); 
         },
 
         //插播所有阶段的开始时间
-        getCutinTimelineStartTime(){
+        getCutinTimelineStartTime(i){
             let arr = [];
-            this.stageData.forEach(e => {
-                arr.push(e.beginTimeFormat)
+            this.stageData.forEach((e, index) => {
+                if(index != i) arr.push(e.beginTimeFormat)
             })
             return arr
         },
