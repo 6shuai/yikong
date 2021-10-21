@@ -892,9 +892,20 @@ export default {
                 this.phaseType, 
                 obj, 
                 data ? this.stageData[this.stageIndex-1] : lastStage,
-                lastStage ? this.updateStartTime(lastStage.beginTimeFormat, lastStage.duration || 30) : this.startTime
+                lastStage ? this.updateStartTime(lastStage.beginTimeFormat, lastStage.duration || 30) : this.startTime,
+                this.getCutinTimelineStartTime()
             ); 
         },
+
+        //插播所有阶段的开始时间
+        getCutinTimelineStartTime(){
+            let arr = [];
+            this.stageData.forEach(e => {
+                arr.push(e.beginTimeFormat)
+            })
+            return arr
+        },
+
 
         //创建阶段成功
         createdStageSuccess(type, data){

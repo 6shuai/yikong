@@ -163,8 +163,8 @@ export default {
             this.params = {
                 ...this.params,
                 pageNo: 1,
-                startTime: this.datetime[0],
-                endTime: this.datetime[1]
+                startTime: this.datetime && this.datetime.length ? this.datetime[0] : '',
+                endTime: this.datetime && this.datetime.length ? this.datetime[1] : ''
             };
             this.init();
         },

@@ -122,10 +122,12 @@ export default {
             tempList: [],
             tempLoading: true,
             prevData: {},            //上一个阶段数据
+            allTimelineStartTimeArr: [],    //所有插播阶段的开始时间
         };
     },
     methods: {
-        showDialog(phaseType, data, prevData, newStageStartTime){
+        showDialog(phaseType, data, prevData, newStageStartTime, allTimelineStartTimeArr){
+            this.allTimelineStartTimeArr = allTimelineStartTimeArr;
             this.prevData = prevData;
             this.tempId = undefined;
             this.showCreatedStage = true;
@@ -185,6 +187,9 @@ export default {
                 return
             }else if(!this.stageParams.duration && this.stageParams.phaseType == 2){
                 this.$message.warning('还没填写持续时间~');
+                return
+            }else if(this.allTimelineStartTimeArr.includes(this.stageParams.beginTime)){
+                this.$message.warning('开始时间重复~');
                 return
             }
             this.createdLoading = true;
