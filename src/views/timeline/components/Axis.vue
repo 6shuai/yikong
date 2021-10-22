@@ -893,7 +893,7 @@ export default {
                 obj, 
                 data ? this.stageData[this.stageIndex-1] : lastStage,
                 lastStage ? this.updateStartTime(lastStage.beginTimeFormat, lastStage.duration || 30) : this.startTime,
-                this.getCutinTimelineStartTime(this.stageIndex)
+                this.getCutinTimelineStartTime(data ? this.stageIndex : null)
             ); 
         },
 

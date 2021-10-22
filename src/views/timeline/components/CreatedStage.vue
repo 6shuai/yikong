@@ -207,6 +207,8 @@ export default {
                         duration: this.stageParams.duration ? this.stageParams.duration : 0,
                         isRotation: this.stageParams.isRotation
                     });
+                }else{
+                    this.stageParams.beginTime = this.stageParams.beginTime.split('1970-01-01 ')[1]
                 }
             })
         },
