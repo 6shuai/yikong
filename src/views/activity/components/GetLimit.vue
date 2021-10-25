@@ -22,8 +22,9 @@
                     clearable
                     placeholder="请选择限制类型"
                 >
+                        <!-- v-for="item in [{ id: 1, name: '单品限制' }, { id: 2, name: '总量限制' }]" -->
                     <el-option
-                        v-for="item in [{ id: 1, name: '单品限制' }, { id: 2, name: '总量限制' }]"
+                        v-for="item in [{ id: 1, name: '默认类型' }]" 
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -113,9 +114,10 @@
 </template>
 
 <script>
-import { activityAddLimit } from '@/api/activity';
+import { activityAddLimit, activityPondAddLimit } from '@/api/activity';
 
 export default {
+    props: ['ponId'],
     data(){
         return{
             showLimitDialog: false,
@@ -187,8 +189,14 @@ export default {
             this.$refs.addLimitForm.validate((valid) => {
                 if(valid){
                     this.btnLoading = true;
-                    this.limitParams.promotion = this.$route.params.id
-                    activityAddLimit(this.limitParams).then(res => {
+                    let addLimitApi = activityAddLimit;
+                    if(this.ponId){
+                        addLimitApi = activityPondAddLimit;
+                        this.limitParams.item = this.ponId;
+                    }else{
+                        this.limitParams.promotion = this.$route.params.id;
+                    }
+                    addLimitApi(this.limitParams).then(res => {
                         this.btnLoading = false;
                         if(res.code == 0){
                             this.$message.success('操作成功~');

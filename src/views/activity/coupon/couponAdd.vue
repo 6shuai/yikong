@@ -50,6 +50,35 @@
                             {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
                         </div>
                     </el-form-item>
+                    <el-form-item label="有效期类型" prop="expirationType">
+                        <el-select
+                            v-model="couponParams.expirationType"
+                            filterable
+                            clearable
+                            placeholder="请选择有效期类型"
+                        >
+                            <el-option
+                                v-for="item in [{ id: 1, name: '活动期间' }, { id: 2, name: '固定时间' }]"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item 
+                        label="有效期" 
+                        prop="period"
+                        v-if="couponParams.expirationType==2"
+                    >
+                        <el-date-picker
+                            v-model="couponParams.period"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            format="yyyy-MM-dd HH:mm:ss"
+                            placeholder="有效期"
+                        >
+                        </el-date-picker>
+                    </el-form-item>
                     <el-form-item label="使用条件">
                         <el-input
                             v-model="couponParams.condition"
@@ -150,6 +179,21 @@ export default {
                         trigger: "blur",
                         message: "请选择权限群组~",
                     },
+                ],
+                expirationType: [
+                    {
+                        required: true,
+                        trigger: "change",
+                        type: 'number',
+                        message: "请选择有效期类型~",
+                    },
+                ],
+                period: [
+                    { 
+                        required: true, 
+                        trigger: "change", 
+                        message: "请选择过期时间~" 
+                    }
                 ],
             },
         };

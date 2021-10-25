@@ -187,7 +187,7 @@
                                 {{ scope.row.duplicate ? "允许" : "不允许" }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" width="100">
+                        <el-table-column label="操作" width="110">
                             <template slot-scope="scope">
                                 <el-link
                                     type="primary"
@@ -242,117 +242,10 @@
                     </el-table>
                 </el-form-item>
                 <el-form-item label="领取限制：">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        plain
-                        @click="$refs.addGetLimit.showGetLimit()"
-                        >添加领取限制</el-button
-                    >
-                    <el-table
-                        v-loading="limitLoading"
-                        stripe
-                        size="small"
-                        :data="limitData"
-                        style="width: 100%; margin-bottom: 20px"
-                        row-key="id"
-                        border
-                    >   
-                        <el-table-column
-                            prop="claimLimit"
-                            label="限制类型"
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                {{scope.row.claimLimit == 1? "单品限制" : "总量限制"}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                            prop="beginType"
-                            label="开始时间类型"
-                            min-width="150"
-                        >
-                            <template slot-scope="scope">
-                                {{scope.row.beginType == 1? "活动期间" : "固定时间"}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                            prop="beginTime"
-                            label="开始时间"
-                            min-width="100"
-                        ></el-table-column>
-                        <el-table-column
-                            prop="endType"
-                            label="结束时间类型"
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                {{scope.row.endType == 1? "活动期间" : "固定时间"}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                            prop="endTime"
-                            label="结束时间"
-                            min-width="100"
-                        >
-                        </el-table-column>
-                        <el-table-column
-                            prop="limit"
-                            label="限制数量"
-                            min-width="100"
-                        >
-                        </el-table-column>
-                        <el-table-column label="操作" width="100">
-                            <template slot-scope="scope">
-                                <el-link
-                                    type="primary"
-                                    @click.stop="
-                                        $refs.addGetLimit.showGetLimit(scope.row)
-                                    "
-                                    >编辑</el-link
-                                >
-                                <span class="ml20" v-if="resData.deleteAwardPool"> 
-                                    <el-popover
-                                        placement="top"
-                                        :ref="scope.row.id"
-                                        width="200"
-                                    >
-                                        <p>
-                                            此操作将删除此限制条件, 是否继续?
-                                        </p>
-                                        <div
-                                            style="text-align: right; margin: 0"
-                                        >
-                                            <el-button
-                                                size="mini"
-                                                type="text"
-                                                @click="
-                                                    $refs[scope.row.id][0].doClose()
-                                                "
-                                                >取消</el-button
-                                            >
-                                            <el-button
-                                                type="primary"
-                                                size="mini"
-                                                @click="
-                                                    handleDeleteLimit(
-                                                        scope.row.id,
-                                                        scope.$index
-                                                    )
-                                                "
-                                                >确定</el-button
-                                            >
-                                        </div>
-                                        <el-link
-                                            type="danger"
-                                            slot="reference"
-                                            >删除</el-link
-                                        >
-                                    </el-popover>
-                                </span>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <!-- 添加领取限制 -->
+                    <add-get-limit
+                        ref="addGetLimit"
+                    ></add-get-limit>
                 </el-form-item>
 
             </el-form>
@@ -371,12 +264,6 @@
             @pondCreatedSuccess="getPondList"
         ></add-pond>
 
-        <!-- 添加领取限制 -->
-        <add-get-limit
-            ref="addGetLimit"
-            @limitCreatedSuccess="getLimitList"
-        ></add-get-limit>
-
         <!-- 已生成的链接列表 -->
         <link-list ref="linkList" :mid="resData.merchantId"></link-list>
 
@@ -394,13 +281,11 @@ import {
     activityAuthorityUpdate,
     activityAuthorityDelete,
     activityGenerateLink,
-    activityLimitList,
-    activityLimitDelete
 } from "@/api/activity";
 import { getActivityDetail } from "./mixins/index";
 import AddPond from "./components/AddPond";
 import LinkList from './components/LinkList';
-import AddGetLimit from './components/GetLimit';
+import AddGetLimit from './components/AddGetLimit';
 import Clipboard from 'clipboard';
 import vueQr from 'vue-qr';
 
@@ -417,8 +302,6 @@ export default {
             pondLoading: false,
             generateLinkUrl: '',  //生成的邀请链接  https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
             currentMerchant: null,  //当前商户
-            limitData: [],           //领取限制 数据
-            limitLoading: false,     //领取限制列表 loading
         };
     },
     created() {
@@ -427,7 +310,6 @@ export default {
                 this.currentMerchant = this.resData.merchants[0].merchant;
             });
             this.getPondList();
-            this.getLimitList();
         }
     },
     methods: {
@@ -548,31 +430,6 @@ export default {
         //选择商户
         handleChangeMerchant(){
             this.generateLinkUrl = '';
-        },
-
-        //根据活动id 查询领取限制列表
-        getLimitList() {
-            this.limitLoading = true;
-            activityLimitList({ promotionId: this.$route.params.id }).then(
-                (res) => {
-                    this.limitLoading = false;
-                    if (res.code === this.$successCode) {
-                        this.limitData = res.obj;
-                    }
-                }
-            ); 
-        },
-
-        //删除限制规则
-        handleDeleteLimit(id, index) {
-            let data = `?id=${id}`;
-            activityLimitDelete(data).then((res) => {
-                if (res.code === this.$successCode) {
-                    this.$message.success("删除成功~");
-                    this.limitData.splice(index, 1);
-                    this.$refs[id][0].doClose();
-                }
-            });
         },
     },
     components: {

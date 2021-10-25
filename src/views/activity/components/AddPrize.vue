@@ -52,10 +52,21 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="总数量" prop="total">
-                <el-input
+                <el-input-number
                     v-model="prizeParams.total"
                     placeholder="总数量"
-                ></el-input>
+                    @blur="computedDayLimit"
+                    :min="0"
+                    controls-position="right"
+                ></el-input-number>
+            </el-form-item>
+             <el-form-item label="每日发放量" prop="dayLimit">
+                <el-input-number
+                    v-model="prizeParams.dayLimit"
+                    placeholder="每日发放量"
+                    :min="0"
+                    controls-position="right"
+                ></el-input-number>
             </el-form-item>
             <el-form-item label="单次上限" prop="awardCountLimit">
                 <el-input-number
@@ -126,11 +137,22 @@ export default {
                         message: "请输入单次上限~",
                     },
                 ],
+                dayLimit: [
+                    {
+                        required: true,
+                        trigger: "blur",
+                        message: "请输入每日发放量~",
+                    },
+                ],
             },
+            totalDayCount: null,   //活动总天数
         };
     },
     methods: {
-        showDialog(data, poolType) {
+        showDialog(data, poolType, beginTime, endTime) {
+            var diff = new Date(endTime).getTime() / 1000 - new Date(beginTime).getTime() / 1000;
+            var timeDay = parseInt(diff / 60 / 60 / 24);
+            this.totalDayCount = timeDay;
             this.prizeParams = data ? JSON.parse(JSON.stringify(data)) : {};
             this.showPrizeDialog = true;
             this.getCurrencyList(poolType);
@@ -176,6 +198,14 @@ export default {
                 }
             });
         },
+
+        //计算每日发放量
+        computedDayLimit(){
+            if(!this.prizeParams.dayLimit){
+                let count = parseInt(this.prizeParams.total / this.totalDayCount)
+                this.prizeParams.dayLimit = count;
+            }
+        }
     },
 };
 </script>

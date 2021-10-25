@@ -152,7 +152,7 @@
                             @click="
                                 $refs.addPrize.showDialog({
                                     poolId: pondParams.id,
-                                }, pondParams.poolType)
+                                }, pondParams.poolType, detailData.beginTime, detailData.endTime)
                             "
                             >添加</el-button
                         >
@@ -183,14 +183,22 @@
                                 <span>单次上限：{{ item.awardCountLimit }}</span>
                                 <el-divider direction="vertical"></el-divider>
                                 <span>概率：{{ item.rate ? item.rate : 0 }}%</span>
+                                <el-divider direction="vertical"></el-divider>
+                                <span>每日发放量：{{ item.dayLimit ? item.dayLimit : 0 }}</span>
                             </p>
                         </div>
                         <div class="operation">
                             <span
                                 v-if="detailData.editAwardItem"
                                 class="edit"
-                                @click="$refs.addPrize.showDialog(item)"
+                                @click="$refs.addPrize.showDialog(item, pondParams.poolType, detailData.beginTime, detailData.endTime)"
                                 >编辑</span
+                            >
+                            <span
+                                v-if="detailData.editAwardItem"
+                                class="edit"
+                                @click="$refs.addGetLimit.showGetLimit(item.id)"
+                                >领取限制</span
                             >
                             <span class="delete" v-if="detailData.deleteAwardItem">
                                 <el-popover
@@ -241,17 +249,24 @@
             </div>
         </div>
 
-        <!-- 添加 或 修改奖品 -->
+        <!-- 添加 或 修改 奖品 -->
         <add-prize
             ref="addPrize"
             @prizeCreatedSuccess="getPrizeList"
         ></add-prize>
 
-        <!-- 添加 或 编辑条件 -->
+        <!-- 添加 或 编辑 条件 -->
         <add-condition
             ref="addCondition"
             @addConditionSuccess="addConditionSuccess"
         ></add-condition>
+
+        <!-- 添加 或 编辑 领取限制 -->
+        <add-pond-get-limit
+            ref="addGetLimit"
+        ></add-pond-get-limit>
+
+        
 
     </el-drawer>
 </template>
@@ -267,6 +282,7 @@ import {
 } from "@/api/activity";
 import AddPrize from "./AddPrize";
 import AddCondition from './AddCondition';
+import AddPondGetLimit from './PondGetLimit.vue';
 
 export default {
     props: ['detailData'],
@@ -279,11 +295,11 @@ export default {
             ruleData: [
                 {
                     id: 1,
-                    displayName: "顺序",
+                    displayName: "随机",
                 },
                 {
                     id: 2,
-                    displayName: "随机",
+                    displayName: "顺序",
                 },
             ],
             pondRules: {
@@ -444,7 +460,8 @@ export default {
     },
     components: {
         AddPrize,
-        AddCondition
+        AddCondition,
+        AddPondGetLimit
     },
 };
 </script>
@@ -471,7 +488,7 @@ export default {
             padding-bottom: 40px;
 
             .item {
-                width: 400px;
+                width: 500px;
                 margin: 5px;
                 background: #222831;
                 color: #fff;
@@ -497,7 +514,7 @@ export default {
                         margin-top: 5px;
                         border-top: 1px solid #e5e5e5;
                         display: flex;
-                        padding: 5px;
+                        padding: 10px;
                         & > span {
                             flex: 1;
                             text-align: center;

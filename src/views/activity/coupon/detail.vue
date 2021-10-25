@@ -31,7 +31,7 @@
                 label-width="100px" 
                 class="screen-form" 
                 :model="resData">
-                <el-form-item label="优惠券图片">
+                <el-form-item label="优惠券图片：">
                     <img :src="resData.image">
                 </el-form-item>
                 <el-form-item label="优惠券名称：">
@@ -39,6 +39,9 @@
                 </el-form-item>
                 <el-form-item label="优惠券类型：">
                     {{ resData.couponTypeName }}
+                </el-form-item>
+                <el-form-item label="有效期：">
+                    {{ resData.period ? resData.period : '活动期间'}}
                 </el-form-item>
                 <el-form-item label="商户名称：">
                     {{ resData.merchantName }}

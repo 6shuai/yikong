@@ -159,3 +159,13 @@ export function activityLimitList(data) { return get('/promotion/claimLimit', da
 
 //删除奖励领取限制规则
 export function activityLimitDelete(data) { return del(`/promotion/claimLimit${data}`) }
+
+
+//添加某个奖品的领取限制规则
+export function activityPondAddLimit(data) { return post('/promotion/itemClaimLimit', data) }
+
+//查询某个奖品的领取限制规则列表
+export function activityPondLimitList(data) { return get('/promotion/itemClaimLimit', data) }
+
+//查询某个奖品的领取限制规则列表
+export function activityPondLimitDelete(data) { return del(`/promotion/itemClaimLimit${data}`) }
