@@ -150,6 +150,7 @@
                         stripe
                         size="small"
                         :data="pondData"
+                        class="mt10"
                         style="width: 100%; margin-bottom: 20px"
                         row-key="id"
                         border

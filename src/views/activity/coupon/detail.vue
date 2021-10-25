@@ -19,7 +19,6 @@
                     @click="$router.push(`/activity/couponAdd/${$route.params.id}`)"
                 >
                     <i class="el-icon-edit" title="编辑"></i>编辑
-                    <el-divider direction="vertical"></el-divider>
                 </span>
             </div>
             <div class="title">
