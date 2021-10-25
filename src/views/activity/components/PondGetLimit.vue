@@ -8,7 +8,7 @@
         :close-on-click-modal="false"
         :close-on-press-escape="false"
     >   
-        <add-get-limit :ponId="ponId"></add-get-limit>
+        <add-get-limit :ponId="ponId" v-if="showPondLimitDialog"></add-get-limit>
         <span slot="footer" class="dialog-footer">
             <el-button @click="showPondLimitDialog = false">关 闭</el-button>
         </span>
