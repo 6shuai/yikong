@@ -290,7 +290,7 @@ export default {
 </style>
 
 <style>
-    .tangram-suggestion {
-    z-index: 99999999999999999999999999999;
+    .tangram-suggestion, .tangram-suggestion-main {
+        z-index: 99999999;
     }
 </style>
