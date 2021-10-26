@@ -49,7 +49,7 @@
                     {{ resData.condition }}
                 </el-form-item>
                 <el-form-item label="说明：">
-                    {{ resData.description }}
+                    <div v-html="resData.description"></div>
                 </el-form-item>
             </el-form>
         </div>

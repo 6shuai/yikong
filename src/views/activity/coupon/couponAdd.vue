@@ -98,6 +98,7 @@
                     </el-form-item>
                     <el-form-item label="说明">
                         <el-input
+                            :rows="5"
                             type="textarea"
                             v-model="couponParams.description"
                             placeholder="说明"
