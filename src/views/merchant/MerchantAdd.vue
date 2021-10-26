@@ -17,7 +17,7 @@
                         <el-form-item label="商户名称" prop="displayName">
                             <el-input v-model="placeForm.displayName" placeholder="商户名称"></el-input>
                         </el-form-item>
-                        <el-form-item label="地理位置" prop="proName">
+                        <el-form-item label="地理位置" class="is-required">
                             <el-input 
                                 @focus="showMap=true" 
                                 :value="`${placeForm.proName || ''}${placeForm.cityName ? ' - ' + placeForm.cityName : ''}${placeForm.areaName ? ' - ' + placeForm.areaName : ''}`" 

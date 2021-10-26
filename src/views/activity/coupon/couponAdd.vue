@@ -58,7 +58,7 @@
                             placeholder="请选择有效期类型"
                         >
                             <el-option
-                                v-for="item in [{ id: 1, name: '活动期间' }, { id: 2, name: '固定时间' }]"
+                                v-for="item in [{ id: 1, name: '固定截止日期' }, { id: 2, name: '固定过期时长' }]"
                                 :key="item.id"
                                 :label="item.name"
                                 :value="item.id"
@@ -67,17 +67,28 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item 
-                        label="有效期" 
-                        prop="period"
-                        v-if="couponParams.expirationType==2"
+                        label="截止日期" 
+                        v-if="couponParams.expirationType==1"
                     >
                         <el-date-picker
-                            v-model="couponParams.period"
+                            v-model="couponParams.expiration"
                             value-format="yyyy-MM-dd HH:mm:ss"
                             format="yyyy-MM-dd HH:mm:ss"
-                            placeholder="有效期"
+                            placeholder="截止日期"
                         >
                         </el-date-picker>
+                    </el-form-item>
+                    <el-form-item 
+                        label="固定过期时长" 
+                        v-if="couponParams.expirationType==2"
+                    >
+                        <el-input-number
+                            :min="1"
+                            v-model="couponParams.period"
+                            controls-position="right"
+                            placeholder="固定过期时长"
+                        ></el-input-number>
+                        <span class="ml10">天</span>
                     </el-form-item>
                     <el-form-item label="使用条件">
                         <el-input
@@ -169,7 +180,7 @@ export default {
                     {
                         required: true,
                         trigger: "blur",
-                        type: 'number',
+                        type: "number",
                         message: "请选择商户~",
                     },
                 ],
@@ -184,17 +195,10 @@ export default {
                     {
                         required: true,
                         trigger: "change",
-                        type: 'number',
+                        type: "number",
                         message: "请选择有效期类型~",
                     },
-                ],
-                period: [
-                    { 
-                        required: true, 
-                        trigger: "change", 
-                        message: "请选择过期时间~" 
-                    }
-                ],
+                ]
             },
         };
     },

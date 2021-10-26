@@ -54,6 +54,18 @@
 
         </div>
 
+        <el-pagination
+            background
+            hide-on-single-page
+            layout="total, prev, pager, next, sizes"
+            :page-size="Number(params.pageSize)"
+            :page-sizes="[48, 80, 100]"
+            :current-page="Number(params.pageNo)"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :total="totalCount">
+        </el-pagination>
+
         <div v-if="!resData || !resData.length" class="no-data">暂无数据~</div>
         
         <div 
@@ -128,6 +140,7 @@
             hide-on-single-page
             layout="total, prev, pager, next, sizes"
             :page-sizes="[48, 80, 100]"
+            :page-size="Number(params.pageSize)"
             :current-page="Number(params.pageNo)"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
