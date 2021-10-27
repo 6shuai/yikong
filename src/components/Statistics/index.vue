@@ -1,19 +1,13 @@
 <template>
 	<el-card class="template-card content-details statistics-list">
-		<div class="header-wrap detail-header-wrap mb30">
-			<el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="statistics-header-right">
-                <el-radio-group v-model="activeName">
-					<el-radio-button label="数据统计"></el-radio-button>
-					<el-radio-button label="奖励统计"></el-radio-button>
-					<el-radio-button label="行为统计"></el-radio-button>
-                    <el-radio-button label="留存统计"></el-radio-button>
-				</el-radio-group>
-            </div>
-			<div class="title">
-				<h2>{{ activeName }}</h2>
-			</div>
-		</div>
+        <page-header :title="activeName">
+            <el-radio-group slot="headerRight" v-model="activeName">
+                <el-radio-button label="数据统计"></el-radio-button>
+                <el-radio-button label="奖励统计"></el-radio-button>
+                <el-radio-button label="行为统计"></el-radio-button>
+                <el-radio-button label="留存统计"></el-radio-button>
+            </el-radio-group>
+        </page-header>
 
         <!-- 数据统计 -->
         <game-data-statistics v-if="activeName=='数据统计'"></game-data-statistics>
@@ -36,6 +30,7 @@ import gameDataStatistics from './game/index';
 import gameAwardStatistics from './award/index';
 import gameBehaviorStatistics from './charts/index';
 import gamePlayerKeepStatistics from './playerKeep/index';
+import PageHeader from '@/components/PageHeader'
 
 export default {
     data(){
@@ -47,7 +42,8 @@ export default {
         gameDataStatistics,
         gameAwardStatistics,
         gameBehaviorStatistics,
-        gamePlayerKeepStatistics
+        gamePlayerKeepStatistics,
+        PageHeader
     }
 }
 </script>

@@ -1,9 +1,7 @@
 <template>
     <el-card class="template-card content-details">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)">
-            </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span 
                     v-if="resData.authorize"
                     @click="$refs.pagePermission.showPermission({contentId: $route.params.id})"
@@ -33,10 +31,7 @@
                     <i class="el-icon-delete" title="删除"></i>删除
                 </span>
             </div>
-            <div class="title">
-                <h2>{{resData.displayName}}</h2>
-            </div>
-        </div>
+        </page-header>
         <div class="content">
             <div class="resource-wrap clearfix">
                 <div class="left">
@@ -190,6 +185,7 @@ import PlayLimit from '@/views/content/components/PlayLimit';
 import PlayPlan from '@/views/content/components/PlayPlan';
 import ContentPreview from '@/views/content/components/ContentPreview';
 import Permission from '@/components/permission';
+import PageHeader from '@/components/PageHeader';
 export default {
     mixins: [contentDetailData, contentIsFavorite],
     data(){
@@ -335,7 +331,8 @@ export default {
         PlayLimit,
         PlayPlan,
         ContentPreview,
-        Permission
+        Permission,
+        PageHeader
     }
 }
 </script>

@@ -1,8 +1,7 @@
 <template>
     <div class="timeline-details-wrap" v-loading="loading">
-        <div class="header-wrap detail-header-wrap">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
                     @click="$refs.pagePermission.showPermission({containerId: $route.params.id})"
@@ -29,10 +28,8 @@
                     ><i class="el-icon-delete" title="删除"></i>删除</span
                 >
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
+
         <div
             v-if="resData.id"
             class="timeline-content clearfix"
@@ -153,6 +150,7 @@ import LeftTabs from "@/views/timeline/components/DetailTabs";
 import Axis from "@/views/timeline/components/Axis";
 import ImportTimeline from "@/views/timeline/components/ImportTimeline";
 import Permission from '@/components/permission/index';
+import PageHeader from '@/components/PageHeader';
 import {
     timelineContainerDelete,
     timelineContainerDetail,
@@ -309,7 +307,8 @@ export default {
         LeftTabs,
         Axis,
         ImportTimeline,
-        Permission
+        Permission,
+        PageHeader
     },
 };
 </script>

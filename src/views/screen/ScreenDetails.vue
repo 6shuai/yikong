@@ -1,8 +1,8 @@
 <template>
     <el-card class="template-card screen-details" v-loading="loading">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right" v-if="resData">
+
+        <page-header :title="resData.displayName">
+            <div slot="headerRight" v-if="resData">
                 <span @click="$refs.pagePermission.showPermission({screenId: $route.params.id})"
                     v-if="resData.authorize"
                     ><i class="el-icon-lock" title="授权"></i>授权<el-divider
@@ -29,10 +29,9 @@
                     ><i class="el-icon-delete" title="删除"></i>删除</span
                 >
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
+
+
         <div class="content">
             <el-row :gutter="20">
                 <el-col :xs="24" :sm="12" :md="16" class="screen-info-left">
@@ -362,6 +361,7 @@ import {
 } from "@/api/screen";
 import { getScreenDetail, screenIsFavorite } from "@/views/screen/mixins";
 import Permission from '@/components/permission/index';
+import PageHeader from '@/components/PageHeader';
 
 export default {
     mixins: [getScreenDetail, screenIsFavorite],
@@ -528,7 +528,8 @@ export default {
         }
     },
     components: {
-        Permission
+        Permission,
+        PageHeader
     }
 };
 </script>

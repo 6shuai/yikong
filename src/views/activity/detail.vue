@@ -1,8 +1,7 @@
 <template>
     <el-card class="template-card content-details activity-detail">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
                     @click="
@@ -33,10 +32,7 @@
                     <i class="el-icon-delete" title="删除"></i>删除
                 </span>
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
         <div class="content" v-loading="loading">
             <el-form 
                 label-width="100px" 
@@ -289,6 +285,7 @@ import LinkList from './components/LinkList';
 import AddGetLimit from './components/AddGetLimit';
 import Clipboard from 'clipboard';
 import vueQr from 'vue-qr';
+import PageHeader from '@/components/PageHeader';
 
 export default {
     mixins: [getActivityDetail],
@@ -438,7 +435,8 @@ export default {
         AddPond,
         vueQr,
         LinkList,
-        AddGetLimit
+        AddGetLimit,
+        PageHeader
     },
 };
 </script>

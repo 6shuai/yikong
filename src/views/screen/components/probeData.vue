@@ -1,23 +1,19 @@
 <template>
     <el-card class="template-card screen-details" v-loading="loading">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="title">
-                <h2>{{ screenName }} - 探针数据统计图</h2>
-            </div>
-            <div class="filter-date">
-                <el-date-picker
-                    @change="search"
-                    v-model="datePicker"
-                    type="datetimerange"
-                    value-format="yyyy-MM-dd HH:mm:ss"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                >
-                </el-date-picker>
-            </div>
-        </div>
+
+        <page-header :title="`${screenName} - 探针数据统计图`">
+            <el-date-picker
+                slot="headerRight"
+                @change="search"
+                v-model="datePicker"
+                type="datetimerange"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+            >
+            </el-date-picker>
+        </page-header>
         
         <div id="chart" style="width: 100%; height: 500px;"></div>
 
@@ -26,8 +22,12 @@
 <script>
 import * as echarts from 'echarts';
 import { screenProbeData } from '@/api/screen';
+import PageHeader from '@/components/PageHeader';
 
 export default {
+    components: {
+        PageHeader
+    },
     data() {
         return {
             loading: false,
@@ -165,9 +165,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scope>
-    .filter-date{
-        float: right;
-    }
-</style>

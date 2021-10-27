@@ -1,11 +1,7 @@
 <template>
     <el-card class="template-card content-details statistics-list">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="title">
-                <h2>{{ title }}</h2>
-            </div>
-        </div>
+
+        <page-header :title="title"></page-header>
 
         <el-form label-width="110px" :inline="true">
             <el-form-item label="场所">
@@ -152,6 +148,7 @@
 <script>
 import qs from 'qs';
 import StatisticsDetail from "./components/StatisticsDetail";
+import PageHeader from '@/components/PageHeader';
 import { activityPlaceList, activityScreenList, activityConditionGameList, activityStatisticsList } from '@/api/activity';
 
 export default {
@@ -252,6 +249,7 @@ export default {
     },
     components: {
         StatisticsDetail,
+        PageHeader
     },
 };
 </script>

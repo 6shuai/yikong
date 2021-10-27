@@ -1,8 +1,7 @@
 <template>
     <el-card class="template-card content-details coupon-detail">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
                     @click="
@@ -21,10 +20,7 @@
                     <i class="el-icon-edit" title="编辑"></i>编辑
                 </span>
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
         <div class="content" v-loading="loading">
             <el-form 
                 label-width="100px" 
@@ -65,6 +61,7 @@
 
 <script>
 import Permission from "@/components/permission/index";
+import PageHeader from '@/components/PageHeader';
 import {
     activityCouponAuthority,
     activityCouponAuthorityUpdate,
@@ -88,11 +85,9 @@ export default {
             this.initDetail();
         }
     },
-    methods: {
-
-    },
     components: {
-        Permission
+        Permission,
+        PageHeader
     },
 };
 </script>

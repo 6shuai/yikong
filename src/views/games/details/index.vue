@@ -3,9 +3,8 @@
         class="template-card content-details games-details"
         v-loading="detailLoading"
     >
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
                     @click="$refs.pagePermission.showPermission({applicationId: $route.params.id})"
@@ -29,10 +28,7 @@
                     ><i class="el-icon-delete" title="删除"></i>删除</span
                 >
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
         <el-row :gutter="20">
             <el-col :span="4" class="left-menu">
                 <div class="game-info">
@@ -152,6 +148,7 @@
 import { gameDelete, gameUpdateSecret, gameFavorite, gameAuthority, gameAuthorityUpdate, gameAuthorityDelete } from "@/api/game";
 import { getScreenDetail } from "../mixins";
 import Permission from '@/components/permission/index';
+import PageHeader from '@/components/PageHeader';
 export default {
     mixins: [getScreenDetail],
     data() {
@@ -258,7 +255,8 @@ export default {
         }
     },
     components: {
-        Permission
+        Permission,
+        PageHeader
     },
     watch: {
         '$route.path' (n, o) {

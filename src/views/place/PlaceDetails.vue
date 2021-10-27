@@ -1,8 +1,7 @@
 <template>
     <el-card class="template-card place-detail" v-loading="loading">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     @click="
                         $refs.pagePermission.showPermission({
@@ -34,12 +33,8 @@
                     ><i class="el-icon-delete" title="删除"></i>删除</span
                 >
 
-
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
 
         <div class="place-info">
             <div class="place-photo left">
@@ -252,6 +247,7 @@ import TheMap from "@/components/BaiduMap/index";
 import ScreenList from "@/views/screen/components/ScreenList";
 import MapDialog from "@/components/BaiduMap/MapDialog";
 import Permission from "@/components/permission/index";
+import PageHeader from '@/components/PageHeader';
 
 export default {
     mixins: [screenSizeWatch, placeIsFavorite, placeDetailData],
@@ -376,6 +372,7 @@ export default {
         ScreenList,
         MapDialog,
         Permission,
+        PageHeader
     },
 };
 </script>

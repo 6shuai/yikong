@@ -1,8 +1,8 @@
 <template>
     <el-card class="template-card place-detail" v-loading="loading">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     @click="
                         $refs.pagePermission.showPermission({
@@ -25,13 +25,8 @@
                     @click="deletePlace"
                     ><i class="el-icon-delete" title="删除"></i>删除</span
                 >
-
-
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
 
 
         <h2 class="p-info-title mt20 mb20">商户信息</h2>
@@ -87,6 +82,7 @@
 import { merchantDetail, merchantDelete, merchantAuthority, merchantAuthorityUpdate, merchantAuthorityDelete } from '@/api/merchant';
 import ScreenList from "@/views/screen/components/ScreenList";
 import Permission from "@/components/permission/index";
+import PageHeader from '@/components/PageHeader';
 
 export default {
     data() {
@@ -142,7 +138,8 @@ export default {
     },
     components: {
         ScreenList,
-        Permission
+        Permission,
+        PageHeader
     },
 };
 </script>
@@ -151,10 +148,8 @@ export default {
 
     .merchant-info{
         display: flex;
-
         .el-image{
-            min-width: 400px;
-            max-width: 600px;
+            max-width: 400px;
         }
 
         .merchant-address{

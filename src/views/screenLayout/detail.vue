@@ -1,9 +1,7 @@
 <template>
     <el-card class="template-card content-details layout-detail">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)">
-            </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span 
                     @click="$router.push(`/screen/layout/edit/${$route.params.id}`)">
                     <i class="el-icon-edit" title="编辑"></i>编辑
@@ -14,10 +12,8 @@
                     <i class="el-icon-delete" title="删除"></i>删除
                 </span>
             </div>
-            <div class="title">
-                <h2>{{resData.displayName}}</h2>
-            </div>
-        </div>
+        </page-header>
+
         <div v-loading="dataLoading">
             <div class="content">
 
@@ -104,12 +100,13 @@
 </template>
 <script>
 
-import {
-    layoutTempDetail,
-    layoutTempDelete
-} from "@/api/screenLayout";
+import { layoutTempDetail, layoutTempDelete } from "@/api/screenLayout";
+import PageHeader from '@/components/PageHeader';
 
 export default {
+    components: {
+        PageHeader
+    },
     data() {
         return {
             dataLoading: false,

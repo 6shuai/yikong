@@ -1,8 +1,7 @@
 <template>
     <el-card class="template-card content-details layout-detail">
-        <div class="header-wrap detail-header-wrap mb30">
-            <el-page-header @back="$router.go(-1)"> </el-page-header>
-            <div class="header-right">
+        <page-header :title="resData.displayName">
+            <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
                     @click="
@@ -29,10 +28,7 @@
                     <i class="el-icon-delete" title="删除"></i>删除
                 </span>
             </div>
-            <div class="title">
-                <h2>{{ resData.displayName }}</h2>
-            </div>
-        </div>
+        </page-header>
         <div v-loading="dataLoading">
             <div class="content">
                 <el-form
@@ -109,6 +105,7 @@ import {
 } from "@/api/cutInAdver";
 import Permission from "@/components/permission/index";
 import ScreenList from './components/ScreenList';
+import PageHeader from '@/components/PageHeader';
 
 export default {
     data() {
@@ -165,7 +162,8 @@ export default {
     },
     components: {
         Permission,
-        ScreenList
+        ScreenList,
+        PageHeader
     },
 };
 </script>
