@@ -71,22 +71,21 @@ export default {
                 _this.location.lat = parseFloat(e.point.lat);
 
                 var pt = e.point;
-
                 geoc.getLocation(pt, function(rs) {
-                //addressComponents对象可以获取到详细的地址信息
-                var addComp = rs.addressComponents;
-                var site =
-                    addComp.province +
-                    " " +
-                    addComp.city +
-                    " " +
-                    addComp.district +
-                    " " +
-                    addComp.street +
-                    " " +
-                    addComp.streetNumber;
-                _this.location.address = site;
-                _this.$emit("getLocation", _this.location);
+                    //addressComponents对象可以获取到详细的地址信息
+                    var addComp = rs.addressComponents;
+                    var site =
+                        addComp.province +
+                        " " +
+                        addComp.city +
+                        " " +
+                        addComp.district +
+                        " " +
+                        addComp.street +
+                        " " +
+                        addComp.streetNumber;
+                    _this.location.address = site;
+                    _this.$emit("getLocation", _this.location);
                 });
             });
         },

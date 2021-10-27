@@ -386,7 +386,7 @@ export default {
         geocoding(){
             if(!this.placeForm.longitude) return
             let script = document.createElement("script")
-            script.src = `http://api.map.baidu.com/reverse_geocoding/v3/?ak=WpKtslGW53yQ5v1ehnCYKVqSlloS7R7p&output=json&coordtype=wgs84ll&location=${this.placeForm.latitude},${this.placeForm.longitude}&callback=showLocation`
+            script.src = `https://api.map.baidu.com/reverse_geocoding/v3/?ak=WpKtslGW53yQ5v1ehnCYKVqSlloS7R7p&output=json&coordtype=wgs84ll&location=${this.placeForm.latitude},${this.placeForm.longitude}&callback=showLocation`
             document.head.appendChild(script);
             window.showLocation = (res) => {
                 this.findCurrentAdressCode(res.result.addressComponent.adcode);
