@@ -5,38 +5,47 @@
         :visible.sync="dialogVisible"
         width="1200px"
     >
-        <el-select
-            v-model="params.state"
-            clearable
-            placeholder="请选择优惠券状态"
-            @change="handleSearch"
-            @clear="$delete(params, 'state')"
-            class="mb20"
-        >
-            <el-option
-                v-for="item in [{ id: 0, name: '未核销' }, { id: 1, name: '已核销' }, { id: 2, name: '已过期' }]"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+        <div class="filter-wrap">
+            <el-select
+                v-model="params.state"
+                clearable
+                placeholder="请选择优惠券状态"
+                @change="handleSearch"
+                @clear="$delete(params, 'state')"
+                class="mb20"
             >
-            </el-option>
-        </el-select>
-        <el-select
-            v-model="params.couponDefinitionId"
-            clearable
-            placeholder="请选择优惠券"
-            @change="handleSearch"
-            @clear="$delete(params, 'couponDefinitionId')"
-            class="mb20 ml20"
-        >
-            <el-option
-                v-for="item in couponData"
-                :key="item.id"
-                :label="item.displayName" 
-                :value="item.id"
+                <el-option
+                    v-for="item in [{ id: 0, name: '未核销' }, { id: 1, name: '已核销' }, { id: 2, name: '已过期' }]"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                >
+                </el-option>
+            </el-select>
+            <el-select
+                v-model="params.couponDefinitionId"
+                clearable
+                placeholder="请选择优惠券"
+                @change="handleSearch"
+                @clear="$delete(params, 'couponDefinitionId')"
+                class="mb20 ml20"
             >
-            </el-option>
-        </el-select>
+                <el-option
+                    v-for="item in couponData"
+                    :key="item.id"
+                    :label="item.displayName" 
+                    :value="item.id"
+                >
+                </el-option>
+            </el-select>
+
+            <div class="tag-wrap">
+                <el-tag type="primary">发券量: {{ couponInfo.couponCount }}</el-tag>
+                <el-tag type="primary">核销量: {{ couponInfo.writeOffCount }}</el-tag>
+                <el-tag type="primary">核销率: {{ couponInfo.writeOffRate}}</el-tag>
+            </div>
+
+        </div>
 
         <el-table
             class="mb20"
@@ -117,6 +126,7 @@ export default {
             totalCount: 0,
             statisticsDetailApi: undefined,
             couponData: [],    //优惠券列表
+            couponInfo: {}
         };
     },
     methods: {
@@ -138,9 +148,15 @@ export default {
             this.statisticsDetailApi(this.params).then(res => {
                 this.tableLoading = false;
                 if(res.code === this.$successCode){
-                    let { list, totalRecords } = res.obj;
+                    let { page, couponCount, writeOffCount, writeOffRate } = res.obj;
+                    let { list, totalRecords } = page;
                     this.resData = list;
                     this.totalCount = totalRecords;
+                    this.couponInfo = {
+                        couponCount,
+                        writeOffCount,
+                        writeOffRate
+                    }
                 }
             })
         },
@@ -186,6 +202,16 @@ export default {
         width: 60px; 
         height: 60px; 
         border-radius: 50%;
+    }
+
+    .filter-wrap{
+        .tag-wrap{
+            float: right;
+            
+            .el-tag{
+                margin-left: 5px;
+            }
+        }
     }
 }
 </style>

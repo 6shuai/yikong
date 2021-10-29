@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MessageBox, Message } from 'element-ui';
+import { Message } from 'element-ui';
 import { ajaxUrl } from '@/utils/index';
 import qs from 'qs';
 import store from '../store';

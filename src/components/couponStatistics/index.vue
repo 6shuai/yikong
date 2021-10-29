@@ -77,7 +77,11 @@
 					class="mb20"
 				>
 					<el-option
-						v-for="item in [{ id: 0, name: '未核销' }, { id: 1, name: '已核销' }, { id: 2, name: '已过期' }]"
+						v-for="item in [
+							{ id: 0, name: '未核销' },
+							{ id: 1, name: '已核销' },
+							{ id: 2, name: '已过期' },
+						]"
 						:key="item.id"
 						:label="item.name"
 						:value="item.id"
@@ -120,15 +124,15 @@
 				min-width="80"
 			></el-table-column>
 			<el-table-column
-                prop="writeOffCount"
-                label="核销量"
-                min-width="80"
-            ></el-table-column>
-            <el-table-column
-                prop="writeOffRate"
-                label="核销率"
-                min-width="80"
-            ></el-table-column>
+				prop="writeOffCount"
+				label="核销量"
+				min-width="80"
+			></el-table-column>
+			<el-table-column
+				prop="writeOffRate"
+				label="核销率"
+				min-width="80"
+			></el-table-column>
 			<el-table-column label="详情" width="110">
 				<template slot-scope="scope">
 					<el-button
@@ -156,16 +160,13 @@
 
 		<!-- 统计数据 详情 -->
 		<statistics-detail ref="statisticsDetail"></statistics-detail>
-
-
 	</el-card>
-		
 </template>
 
 <script>
 import qs from "qs";
 import StatisticsDetail from "./components/StatisticsDetail";
-import PageHeader from '@/components/PageHeader';
+import PageHeader from "@/components/PageHeader";
 import {
 	placeGameList,
 	placeScreenList,
@@ -193,7 +194,7 @@ export default {
 		return {
 			params: {
 				pageNo: 1,
-				pageSize: 48
+				pageSize: 48,
 			},
 			datePicker: [],
 			placeData: [], //场所列表
@@ -211,7 +212,7 @@ export default {
 			placeId: this.$route.query.placeId,
 			screenId: this.$route.query.screenId,
 			contentId: this.$route.query.contentId,
-			promotionId: this.$route.query.promotionId
+			promotionId: this.$route.query.promotionId,
 		};
 
 		let PlaceList = undefined;
@@ -254,7 +255,7 @@ export default {
 			ScreenList,
 			GameList,
 			StatisticsList,
-			StatisticsDetail
+			StatisticsDetail,
 		};
 
 		this.init();
@@ -316,7 +317,7 @@ export default {
 					placeId: this.params.placeId,
 					screenId: this.params.screenId,
 					contentId: this.params.contentId,
-					promotionId: this.$route.query.promotionId
+					promotionId: this.$route.query.promotionId,
 				},
 				this.api.StatisticsDetail,
 				this.params.state
@@ -354,7 +355,7 @@ export default {
 	},
 	components: {
 		StatisticsDetail,
-		PageHeader
+		PageHeader,
 	},
 };
 </script>
