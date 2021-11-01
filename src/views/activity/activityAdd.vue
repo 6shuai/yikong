@@ -32,6 +32,7 @@
                             v-model="activityParams.beginTime"
                             value-format="yyyy-MM-dd HH:mm:ss"
                             format="yyyy-MM-dd HH:mm:ss"
+                            type="datetime"
                             placeholder="开始时间"
                         >
                         </el-date-picker>
@@ -41,7 +42,9 @@
                             v-model="activityParams.endTime"
                             value-format="yyyy-MM-dd HH:mm:ss"
                             format="yyyy-MM-dd HH:mm:ss"
+                            type="datetime"
                             placeholder="结束时间"
+                            default-time="23:59:59"
                         >
                         </el-date-picker>
                     </el-form-item>
