@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 // 插播广告列表
 export function cutInAdverList(data) { return get('/spot/', data) }

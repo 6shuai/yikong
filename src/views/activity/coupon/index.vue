@@ -82,7 +82,7 @@
                 <el-table-column
                     prop="description"
                     label="说明"
-                    min-width="50"
+                    min-width="200"
                 >
                 </el-table-column>
                 <el-table-column label="操作" width="100">

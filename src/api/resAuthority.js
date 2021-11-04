@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, del } from '@/utils/request'
 
 //资源权限管理  权限父级列表
 export function resAuthorityParentList(data) { return get('/resourceAuthority/', data) }

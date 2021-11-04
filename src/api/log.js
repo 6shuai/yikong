@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get } from '@/utils/request'
 
 
 //操作日志 列表

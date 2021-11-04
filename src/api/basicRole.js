@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //基础角色  获取所有角色
 export function roleList(data) { return get('/basicRole/role', data) }

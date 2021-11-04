@@ -167,7 +167,6 @@ import {
 } from "@/api/screen";
 import {
 	contentPlaceList,
-	contentScreenList,
 	contentStatistics,
 	contentStatisticsDetail,
 } from "@/api/content";

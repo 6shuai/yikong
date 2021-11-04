@@ -1,4 +1,4 @@
-import { postKeyValueRequest, getKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
 
 //活动管理  列表
 export function activityList(data) { return get('/promotion/', data) }

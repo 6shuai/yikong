@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, del } from '@/utils/request'
 
 
 //屏幕布局模板 - 添加

@@ -1,4 +1,4 @@
-import { postKeyValueRequest, getKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //游戏管理  添加或修改
 export function gameCreated(data) { return post('/gameApplication/', data) }

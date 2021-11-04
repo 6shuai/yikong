@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //资源角色管理  列表
 export function resRoleList(data) { return get('/resourceRole/', data) }

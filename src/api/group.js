@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //权限群组管理  添加
 export function groupCreated(data) { return post('/resourceGroup/', data) }

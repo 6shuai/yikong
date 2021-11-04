@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //内容管理 资源类型列表
 export function getContentTypeList(data) { return get('/public/contentType', data) }

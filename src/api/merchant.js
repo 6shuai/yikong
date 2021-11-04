@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //商户管理  获取所有场所
 export function merchantPlaceList(data) { return get('/merchant/place/', data) }

@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //屏幕管理  获取所有点距规格数据
 export function screenDotPitchList(data) { return get('/public/dotPitch', data) }

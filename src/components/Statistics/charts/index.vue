@@ -125,7 +125,6 @@ import {
 } from "@/api/screen";
 import {
 	contentPlaceList,
-	contentScreenList,
 	contentStatisticsDetail,
 	contentPlayerBehavioralData,
 } from "@/api/content";
@@ -178,7 +177,7 @@ export default {
 				break;
 			case "content":
 				PlaceList = contentPlaceList;
-				ScreenList = contentScreenList;
+				ScreenList = placeScreenList;
 				PlayerBehaviorList = contentPlayerBehavioralData;
 				StatisticsDetail = contentStatisticsDetail;
 				break;

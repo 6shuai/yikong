@@ -1,4 +1,4 @@
-import { postKeyValueRequest, get, post, put, del } from '@/utils/request'
+import { get, post, put, del } from '@/utils/request'
 
 //时间轴 时间轴容器 添加或修改
 export function timelineContainerCreated(data) { return post('/timeline/timelineContainer', data) }
