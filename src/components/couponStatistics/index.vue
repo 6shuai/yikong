@@ -276,6 +276,7 @@ export default {
 			if (!this.params.promotionId) delete this.params.promotionId;
 			this.api.StatisticsList(this.params).then((res) => {
 				this.tableLoading = false;
+
 				if (res.code === this.$successCode) {
 					let { list, totalRecords } = res.obj.page;
 					this.resData = list;
