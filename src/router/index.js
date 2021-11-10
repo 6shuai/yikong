@@ -320,34 +320,49 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     meta: { title: '游戏管理' },
-    children: [{
-      path: '/games/details/:id',
-      name: 'Games--details',
-      component: () => import('@/views/games/details/index'),
-      meta: { title: '游戏信息' },
-      children: [
-        {
-          path: 'package',
-          name: 'Games--details-package',
-          component: () => import('@/views/games/details/package'),
-          meta: { title: '包管理' }
-        },
-        {
-          path: 'list',
-          name: 'Games--details-list',
-          component: () => import('@/views/games/details/gameList'),
-          meta: { title: '游戏列表' }
-        },
-        {
-          path: 'rank',
-          name: 'Games--details-rank',
-          component: () => import('@/views/games/details/rankTemp'),
-          meta: { title: '排行榜管理' }
-        }
-      ]
-    }],
+    children: [
+      {
+        path: '/games/details/:id',
+        name: 'Games--details',
+        component: () => import('@/views/games/details/index'),
+        meta: { title: '游戏信息' },
+        children: [
+          {
+            path: 'package',
+            name: 'Games--details-package',
+            component: () => import('@/views/games/details/package'),
+            meta: { title: '包管理' }
+          },
+          {
+            path: 'list',
+            name: 'Games--details-list',
+            component: () => import('@/views/games/details/gameList'),
+            meta: { title: '游戏列表' }
+          },
+          {
+            path: 'rank',
+            name: 'Games--details-rank',
+            component: () => import('@/views/games/details/rankTemp'),
+            meta: { title: '排行榜管理' }
+          }
+        ]
+      },
+      {
+        path: '/games/details/:id/gameData/:gameId',
+        name: 'Games--details-data-edit',
+        component: () => import('@/views/games/details/gameData'),
+        meta: { title: '编辑游戏' }
+      },
+      {
+        path: '/games/details/:id/gameData',
+        name: 'Games--details-data-add',
+        component: () => import('@/views/games/details/gameData'),
+        meta: { title: '添加游戏' }
+      },
+    ],
     hidden: true
   },
+  
 
 
   //屏幕布局 创建
@@ -462,7 +477,7 @@ export const constantRoutes = [
       {
         path: '/activity/add',
         name: 'Activity--add',
-        component: () => import('@/views/activity/activityAdd'),
+        component: () => import('@/views/activity/add'),
         meta: { title: '活动管理 - 创建' },
       }
     ],
@@ -478,7 +493,7 @@ export const constantRoutes = [
       {
         path: '/activity/edit/:id',
         name: 'Activity--edit',
-        component: () => import('@/views/activity/activityAdd'),
+        component: () => import('@/views/activity/add'),
         meta: { title: '活动管理 - 编辑' },
       }
     ],

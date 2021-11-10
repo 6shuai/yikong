@@ -58,6 +58,8 @@
                     v-model="limitParams.beginTime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     format="yyyy-MM-dd HH:mm:ss"
+                    type="datetime"
+                    default-time="23:59:59"
                     placeholder="开始时间"
                 >
                 </el-date-picker>
@@ -88,6 +90,8 @@
                     v-model="limitParams.endTime"
                     value-format="yyyy-MM-dd HH:mm:ss"
                     format="yyyy-MM-dd HH:mm:ss"
+                    type="datetime"
+                    default-time="23:59:59"
                     placeholder="结束时间"
                 >
                 </el-date-picker>
@@ -117,7 +121,7 @@
 import { activityAddLimit, activityPondAddLimit } from '@/api/activity';
 
 export default {
-    props: ['ponId'],
+    props: ['ponId', 'activityId'],
     data(){
         return{
             showLimitDialog: false,
@@ -194,7 +198,7 @@ export default {
                         addLimitApi = activityPondAddLimit;
                         this.limitParams.item = this.ponId;
                     }else{
-                        this.limitParams.promotion = this.$route.params.id;
+                        this.limitParams.promotion = this.activityId;
                     }
                     addLimitApi(this.limitParams).then(res => {
                         this.btnLoading = false;

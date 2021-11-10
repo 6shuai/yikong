@@ -149,23 +149,23 @@ export default {
         };
     },
     methods: {
-        showDialog(data, poolType, beginTime, endTime) {
+        showDialog(data, poolType, beginTime, endTime, promotionId) {
             var diff = new Date(endTime).getTime() / 1000 - new Date(beginTime).getTime() / 1000;
             var timeDay = parseInt(diff / 60 / 60 / 24);
             this.totalDayCount = timeDay;
             this.prizeParams = data ? JSON.parse(JSON.stringify(data)) : {};
             this.showPrizeDialog = true;
-            this.getCurrencyList(poolType);
+            this.getCurrencyList(poolType, promotionId);
             this.$nextTick(() => {
                 this.$refs["addPrizeForm"].clearValidate();
             });
         },
 
         //奖品数据列表
-        getCurrencyList(poolType) {
+        getCurrencyList(poolType, promotionId) {
             this.prizeLoading = true;
             this.currencyParams.currencyType = poolType;
-            this.currencyParams.promotionId = this.$route.params.id;
+            this.currencyParams.promotionId = promotionId;
             activityCurrencyList(this.currencyParams).then((res) => {
                 this.prizeLoading = false;
                 if (res.code === this.$successCode) {

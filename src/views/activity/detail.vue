@@ -1,6 +1,12 @@
 <template>
-    <el-card class="template-card content-details activity-detail">
-        <page-header :title="resData.displayName">
+    <el-card 
+        class="template-card content-details activity-detail"
+        :class="{ 'from-game': from }"
+    >
+        <page-header 
+            v-if="!from"
+            :title="resData.displayName"
+        >
             <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
@@ -114,7 +120,7 @@
                             <div class="generate-link">
                                 <div class="invite-link">
                                     <el-button type="primary" size="small" @click="handleGenerateLink">生成邀请链接</el-button>
-                                    <el-link type="primary" @click="$refs.linkList.showGenerateLinkList(currentMerchant)">已生成的链接列表</el-link>
+                                    <el-link type="primary" @click="$refs.linkList.showGenerateLinkList(currentMerchant, activityId)">已生成的链接列表</el-link>
                                 </div>
                                 <div 
                                     class="link tag-read" 
@@ -138,7 +144,7 @@
                         size="small"
                         type="primary"
                         plain
-                        @click="$refs.addPond.showAddPond()"
+                        @click="$refs.addPond.showAddPond({}, activityId)"
                         >添加奖池</el-button
                     >
                     <el-table
@@ -189,7 +195,7 @@
                                 <el-link
                                     type="primary"
                                     @click.stop="
-                                        $refs.addPond.showAddPond(scope.row)
+                                        $refs.addPond.showAddPond(scope.row, activityId)
                                     "
                                     >编辑</el-link
                                 >
@@ -242,6 +248,7 @@
                     <!-- 添加领取限制 -->
                     <add-get-limit
                         ref="addGetLimit"
+                        :activityId="activityId"
                     ></add-get-limit>
                 </el-form-item>
 
@@ -288,6 +295,7 @@ import vueQr from 'vue-qr';
 import PageHeader from '@/components/PageHeader';
 
 export default {
+    props: ['from', 'id'],
     mixins: [getActivityDetail],
     data() {
         return {
@@ -300,11 +308,13 @@ export default {
             pondLoading: false,
             generateLinkUrl: '',  //生成的邀请链接  https://static.xfengjing.com/writeoff_invitation/index.html?mid=123&pid=234&pm=2&t=xxxxwere
             currentMerchant: null,  //当前商户
+            activityId: null,       //活动id
         };
     },
     created() {
-        if (this.$route.params.id) {
-            this.initDetail().then(res => {
+        this.activityId = this.from === 'game' ? this.id : this.$route.params.id;
+        if (this.activityId) {
+            this.initDetail(this.activityId).then(res => {
                 this.currentMerchant = this.resData.merchants[0].merchant;
             });
             this.getPondList();
@@ -315,7 +325,7 @@ export default {
         //根据活动id 查询奖池列表
         getPondList() {
             this.pondLoading = true;
-            activityPondList({ promotionId: this.$route.params.id }).then(
+            activityPondList({ promotionId: this.activityId }).then(
                 (res) => {
                     this.pondLoading = false;
                     if (res.code === this.$successCode) {
@@ -337,7 +347,7 @@ export default {
                     center: true,
                 }
             ).then(() => {
-                activityDelete(`?id=${this.$route.params.id}`).then((res) => {
+                activityDelete(`?id=${this.activityId}`).then((res) => {
                     if (res.code === this.$successCode) {
                         this.$message.success({
                             message: "删除成功~",
@@ -420,7 +430,7 @@ export default {
                 path: '/game/couponStatisics',
                 query: {
                     source: 'activity',
-                    promotionId: this.$route.params.id,
+                    promotionId: this.activityId,
                 }
             });
         },
@@ -441,7 +451,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .activity-detail {
     .pond {
         width: 250px;
@@ -453,32 +463,38 @@ export default {
             }
         }
     }
-}
 
-.generate-link{
-    padding: 0 20px;
+    &.from-game{
+        box-shadow: none;
+        border: none;
+    }
+    
+    .generate-link{
+        padding: 0 20px;
 
-    .invite-link{
-        .el-link{
-            margin-left: 40px;
+        .invite-link{
+            .el-link{
+                margin-left: 40px;
+            }
+        }
+
+        .link{
+            display: block;
+            line-height: 40px;
+            cursor: pointer;
+            display: inline-block;
+            
+            &:hover{
+                color: #8484FF;
+            }
+        }
+
+        .invite-link-qr{
+            padding: 20px 0;
         }
     }
-
-    .link{
-        display: block;
-        line-height: 40px;
-        cursor: pointer;
-        display: inline-block;
-        
-        &:hover{
-            color: #8484FF;
-        }
-    }
-
-    .invite-link-qr{
-        padding: 20px 0;
-    }
 }
+
 </style>
 
 

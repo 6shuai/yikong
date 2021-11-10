@@ -1,3 +1,11 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2021-01-22 17:21:40
+ * @LastEditors: liushuai
+ * @LastEditTime: 2021-11-10 11:02:59
+ * @Description: file content
+ * @FilePath: \pclient\src\views\games\components\AdverList.vue
+-->
 <template>
     <el-select
         @change="changeSelectAdver"
@@ -14,11 +22,12 @@
             :value="item.id"
         >
         </el-option>
-
+        
         <el-pagination
             small
             hide-on-single-page
             @current-change="handleCurrentChange"
+            :page-size="Number(adverListParams.pageSize)"
             :current-page="Number(adverListParams.pageNo)"
             layout="prev, pager,next,total"
             :total="adverTotal">
@@ -72,6 +81,13 @@ export default {
         //选择插播广告
         changeSelectAdver(){
             this.$emit('selected', this.adverId);
+        },
+
+        //动态添加广告列表
+        addCutinAdver(data){
+            this.adverData.unshift(data);
+            this.adverId = data.id;
+            this.changeSelectAdver();
         }
         
     },

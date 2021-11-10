@@ -117,6 +117,7 @@
         <add-get-limit
             ref="addGetLimit"
             :ponId="ponId"
+            :activityId="activityId"
             @limitCreatedSuccess="getLimitList"
         ></add-get-limit>
         
@@ -127,7 +128,7 @@
 import AddGetLimit from './GetLimit';
 import { activityLimitList, activityPondLimitList, activityLimitDelete, activityPondLimitDelete } from '@/api/activity';
 export default {
-    props: ['ponId'],
+    props: ['ponId', 'activityId'],
     data(){
         return{
             limitData: [],           //领取限制 数据
@@ -142,7 +143,7 @@ export default {
         getLimitList() {
             this.limitLoading = true;
             if(!this.ponId){
-                activityLimitList({ promotionId: this.$route.params.id }).then(
+                activityLimitList({ promotionId: this.activityId }).then(
                     (res) => {
                         this.limitLoading = false;
                         if (res.code === this.$successCode) {

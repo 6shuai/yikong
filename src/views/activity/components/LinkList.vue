@@ -54,15 +54,15 @@ export default {
         }
     },
     methods: {
-        showGenerateLinkList(merchantId){
+        showGenerateLinkList(merchantId, activityId){
             this.showDialog = true;
-            this.init(merchantId);
+            this.init(merchantId, activityId);
         },
 
-        init(merchantId){
+        init(merchantId, activityId){
             this.loading = true;
             this.mid = merchantId;
-            activityGenerateLinkList({ id: this.$route.params.id, merchantId }).then(res => {
+            activityGenerateLinkList({ id: activityId, merchantId }).then(res => {
                 this.loading = false;
                 if(res.code == this.$successCode){
                     this.resData = res.obj;

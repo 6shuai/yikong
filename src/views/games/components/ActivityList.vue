@@ -73,12 +73,18 @@ export default {
         //选择活动
         handleSelected(){
             this.$emit('selected', this.activityId);
+        },
+
+        //动态添加活动
+        addActivity(data){
+            this.activityData.unshift(data);
+            this.activityId = data.id;
+            this.handleSelected();
         }
 
     },
     watch: {
         promotionId(){
-            console.log(this.activityId)
             this.activityId = this.promotionId;
         }
     }

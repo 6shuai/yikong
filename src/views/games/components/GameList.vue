@@ -6,7 +6,7 @@
         >
             <div class="place-img" 
                 :style="{height: imageH+'px'}"
-                @click.stop="$router.push(`/games/details/${item.id}`)">
+                @click.stop="$router.push(`/games/details/${item.id}/list`)">
                 <el-image fit="cover" :style="{height: imageH+'px'}" :src="item.image" class="image"></el-image>
                 <!-- 收藏 -->
                 <el-button 
@@ -22,7 +22,7 @@
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name" @click="$router.push(`/games/details/${item.id}`)">({{item.id}}){{item.displayName}}</span>
+                    <span class="name" @click="$router.push(`/games/details/${item.id}/list`)">({{item.id}}){{item.displayName}}</span>
                 </div>
             </div>                    
         </el-card>

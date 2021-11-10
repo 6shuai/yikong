@@ -1,6 +1,12 @@
 <template>
-    <el-card class="template-card content-details layout-detail">
-        <page-header :title="resData.displayName">
+    <el-card 
+        class="template-card content-details cutin-adver-detail"
+        :class="{ 'from-game': from }"
+    >
+        <page-header 
+            v-if="!from"
+            :title="resData.displayName"
+        >
             <div slot="headerRight">
                 <span
                     v-if="resData.authorize"
@@ -108,10 +114,12 @@ import ScreenList from './components/ScreenList';
 import PageHeader from '@/components/PageHeader';
 
 export default {
+    props: ['from', 'id'],
     data() {
         return {
             dataLoading: false,
             resData: {},
+            cutinAdverId: null,    //插播id
             premissionApi: {
                 list: cutInAdverAuthority,
                 update: cutInAdverAuthorityUpdate,
@@ -125,8 +133,9 @@ export default {
     methods: {
         //查询逻辑区域集合 屏幕布局集合
         init() {
+            this.cutinAdverId = this.from === 'game' ? this.id : this.$route.params.id;
             this.dataLoading = true;
-            cutInAdverDetail({ id: this.$route.params.id }).then((res) => {
+            cutInAdverDetail({ id: this.cutinAdverId }).then((res) => {
                 this.dataLoading = false;
                 if (res.code === this.$successCode) {
                     this.resData = res.obj;
@@ -146,7 +155,7 @@ export default {
                     center: true,
                 }
             ).then(() => {
-                cutInAdverDelete(this.$route.params.id).then((res) => {
+                cutInAdverDelete(this.cutinAdverId).then((res) => {
                     if (res.code === this.$successCode) {
                         this.$message.success({
                             message: "删除成功~",
@@ -168,3 +177,9 @@ export default {
 };
 </script>
 
+<style lang="scss" scoped>
+    .cutin-adver-detail.from-game{
+        box-shadow: none;
+        border: none;
+    }
+</style>

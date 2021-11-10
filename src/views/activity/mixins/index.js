@@ -10,10 +10,10 @@ export const getActivityDetail = {
         }
     },
     methods: {
-        initDetail(){
+        initDetail(id){
             return new Promise((resolve) => {
                 this.loading = true;
-                let data = { id: this.$route.params.id };
+                let data = { id };
                 activityDetail(data).then(res => {
                     this.loading = false;
                     if(res.code === this.$successCode){
@@ -35,10 +35,10 @@ export const getCouponDetail = {
         }
     },
     methods: {
-        initDetail(){
+        initDetail(id){
             return new Promise((resolve) => {
                 this.loading = true;
-                let data = { id: this.$route.params.id };
+                let data = { id };
                 activityCouponDetail(data).then(res => {
                     this.loading = false;
                     if(res.code === this.$successCode){

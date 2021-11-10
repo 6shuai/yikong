@@ -29,112 +29,110 @@
                 >
             </div>
         </page-header>
-        <el-row :gutter="20">
-            <el-col :span="4" class="left-menu">
-                <div class="game-info">
+
+
+        <el-tabs 
+            v-model="currentActive" 
+            @tab-click="tabsHandleClick"
+            class="mb20"
+        >
+            <el-tab-pane 
+                label="游戏列表" 
+                :name="`/games/details/${$route.params.id}/list`"
+            >
+            </el-tab-pane>
+            <el-tab-pane 
+                label="基本信息" 
+                :name="`/games/details/${$route.params.id}`"
+            >
+            </el-tab-pane>
+            <el-tab-pane 
+                label="包管理" 
+                :name="`/games/details/${$route.params.id}/package`"
+            >
+            </el-tab-pane>
+            <el-tab-pane 
+                label="排行榜管理" 
+                :name="`/games/details/${$route.params.id}/rank`"
+            >
+            </el-tab-pane>
+            <el-tab-pane 
+                :disabled="true"
+                label="皮肤" 
+                :name="`/games/details/${$route.params.id}/skin`"
+            >
+            </el-tab-pane>
+            <el-tab-pane 
+                label="插播广告" 
+                name="/cutInAdver"
+            >
+            </el-tab-pane>
+            <el-tab-pane 
+                label="活动管理" 
+                name="/activity"
+            >
+            </el-tab-pane>
+        </el-tabs>
+
+        <div
+            class="content"
+            v-if="currentActive == `/games/details/${$route.params.id}`"
+        >
+            <h2 class="info-title mt20 mb20">基本信息</h2>
+            <el-form label-width="120px">
+                <el-form-item label="游戏名称:">
+                    <span>{{ resData.displayName }}</span>
+                </el-form-item>
+                <el-form-item label="描述:">
+                    <span>{{ resData.description }}</span>
+                </el-form-item>
+                <el-form-item label="图标:">
                     <el-image
                         v-if="resData.image"
-                        class="game-icon"
+                        class="icon"
                         fit="cover"
                         :src="resData.image"
+                        :preview-src-list="previewIcon"
                     >
                     </el-image>
-                    <h3 class="title">{{ resData.displayName }}</h3>
-                    <p class="desc">{{ resData.description }}</p>
-
-                    <el-menu
-                        :default-active="currentActive"
-                        :router="true"
-                        class="el-menu-vertical-demo"
+                </el-form-item>
+                <el-form-item label="游戏截图:">
+                    <el-image
+                        class="screenshot"
+                        v-for="item in resData.applicationShowData"
+                        :key="item.id"
+                        fit="cover"
+                        :src="item.url"
+                        :preview-src-list="previewList"
                     >
-                        <el-menu-item
-                            :index="`/games/details/${$route.params.id}`"
-                        >
-                            <span slot="title">基本信息</span>
-                        </el-menu-item>
-                        <el-menu-item
-                            :index="`/games/details/${$route.params.id}/package`"
-                            :disabled="!resData.packageList"
-                        >
-                            <span slot="title">包管理</span>
-                        </el-menu-item>
-                        <el-menu-item
-                            :index="`/games/details/${$route.params.id}/list`"
-                            :disabled="!resData.assemblyList"
-                        >
-                            <span slot="title">游戏列表</span>
-                        </el-menu-item>
-                        <el-menu-item
-                            :index="`/games/details/${$route.params.id}/rank`"
-                        >
-                            <span slot="title">排行榜管理</span>
-                        </el-menu-item>
-                    </el-menu>
-                </div>
-            </el-col>
+                    </el-image>
+                </el-form-item>
+                <el-form-item label="游戏后台:" v-if="resData.backend">
+                    <el-link :href="resData.backend" target="_blank">{{ resData.backend }}</el-link>
+                </el-form-item>
+            </el-form>
 
-            <el-col :span="20" class="right-content">
-                <div
-                    class="content"
-                    v-if="currentActive == `/games/details/${$route.params.id}`"
-                >
-                    <h2 class="info-title mt20 mb20">基本信息</h2>
-                    <el-form label-width="120px">
-                        <el-form-item label="游戏名称:">
-                            <span>{{ resData.displayName }}</span>
-                        </el-form-item>
-                        <el-form-item label="描述:">
-                            <span>{{ resData.description }}</span>
-                        </el-form-item>
-                        <el-form-item label="图标:">
-                            <el-image
-                                v-if="resData.image"
-                                class="icon"
-                                fit="cover"
-                                :src="resData.image"
-                                :preview-src-list="previewIcon"
-                            >
-                            </el-image>
-                        </el-form-item>
-                        <el-form-item label="游戏截图:">
-                            <el-image
-                                class="screenshot"
-                                v-for="item in resData.applicationShowData"
-                                :key="item.id"
-                                fit="cover"
-                                :src="item.url"
-                                :preview-src-list="previewList"
-                            >
-                            </el-image>
-                        </el-form-item>
-                        <el-form-item label="游戏后台:" v-if="resData.backend">
-                            <el-link :href="resData.backend" target="_blank">{{ resData.backend }}</el-link>
-                        </el-form-item>
-                    </el-form>
+            <h2 class="info-title mt20 mb20">开发信息</h2>
+            <el-form label-width="120px">
+                <el-form-item label="AppID:">
+                    <span>{{ resData.appId }}</span>
+                </el-form-item>
+                <el-form-item label="AppSecret:">
+                    <div v-loading="upldateSecretLoading">
+                        <span>{{ resData.secret }}</span>
+                        <el-link 
+                            v-if="resData.updateSecret"
+                            class="ml20"
+                            type="primary"
+                            @click="updateSecret"
+                            >更新</el-link
+                        >
+                    </div>
+                </el-form-item>
+            </el-form>
+        </div>
 
-                    <h2 class="info-title mt20 mb20">开发信息</h2>
-                    <el-form label-width="120px">
-                        <el-form-item label="AppID:">
-                            <span>{{ resData.appId }}</span>
-                        </el-form-item>
-                        <el-form-item label="AppSecret:">
-                            <div v-loading="upldateSecretLoading">
-                                <span>{{ resData.secret }}</span>
-                                <el-link 
-                                    v-if="resData.updateSecret"
-                                    class="ml20"
-                                    type="primary"
-                                    @click="updateSecret"
-                                    >更新</el-link
-                                >
-                            </div>
-                        </el-form-item>
-                    </el-form>
-                </div>
-
-                <router-view v-else></router-view>
-            </el-col>
-        </el-row>
+        <router-view v-else></router-view>
 
         <!-- 授权 -->
         <permission 
@@ -251,7 +249,11 @@ export default {
                     this.$set(this.resData, "isFavorite", p.isFavorite);
                 }
             });
+        },
 
+        //选择tab
+        tabsHandleClick(tab){
+            this.$router.push(tab.name)
         }
     },
     components: {
@@ -274,20 +276,6 @@ export default {
         margin-right: -1px;
         .el-menu{
             border: none;
-        }
-    }
-
-    .game-info {
-        text-align: center;
-        .game-icon {
-            width: 60px;
-            height: 60px;
-        }
-        .desc {
-            font-size: 13px;
-            color: #999;
-            padding-top: 20px;
-            line-height: 24px;
         }
     }
     .el-image {

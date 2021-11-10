@@ -1,6 +1,6 @@
 <template>
     <div class="gameDetail-game-list">
-        <div class="game-list-top">
+        <div class="game-list-top mb20">
             <el-button
                 v-if="
                     hasPerm(
@@ -158,14 +158,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scope>
-.gameDetail-game-list {
-    .game-list-top {
-        margin-bottom: 10px;
-        .search-input {
-            width: 200px;
-        }
-    }
-}
-</style>

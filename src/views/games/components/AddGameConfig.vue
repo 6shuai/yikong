@@ -1,12 +1,16 @@
 <template>
-    <el-dialog
-        class="add-game-data"
-        :title="contentParams.id ? '编辑游戏数据' : '创建游戏数据'"
-        :visible.sync="dialogVisible"
-        width="600px"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+    <el-card
+        class="template-card content-details add-game-data"
+        v-loading="detailLoading"
     >
+        <page-header :title="contentParams.id ? '编辑游戏数据' : '创建游戏数据'">
+            <div slot="headerRight">
+                <span @click="deleteGame" v-if="resData.deleteApplication"
+                    ><i class="el-icon-delete" title="删除"></i>删除</span
+                >
+            </div>
+        </page-header>
+
         <el-form
             v-loading="loading"
             label-width="160px"
@@ -134,11 +138,10 @@
             </div>
         </el-form>
 
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" v-loading="btnLoading" @click="addGameData">确 定</el-button>
-        </span>
-    </el-dialog>
+        <el-button>取 消</el-button>
+        <el-button type="primary" v-loading="btnLoading" @click="addGameData">确 定</el-button>
+
+    </el-card>
 </template>
 
 <script>
@@ -148,8 +151,7 @@ import {
     packageList,
     gameDataConfigList,
     gameDataCreated,
-    gameDataDetail,
-    gameActivity
+    gameDataDetail
 } from "@/api/game";
 import UploadImg from "@/components/Upload/UploadImg";
 import AdverList from './AdverList';
@@ -160,7 +162,6 @@ export default {
     data() {
         return {
             isResouceShow: 0,    //解决 el-cascader组件   Cannot read property 'level' of null"
-            dialogVisible: false,
             loading: false,
             contentParams: {},
             packageData: {},
@@ -230,7 +231,6 @@ export default {
     methods: {
         showDialog(id) {
             this.packageData = {};
-            this.dialogVisible = true;
             this.contentParams = { newUpload: 0 };
 
             this.$nextTick(() => {
@@ -307,7 +307,6 @@ export default {
                         this.btnLoading = false;
                         if (res.code === this.$successCode) {
                             this.$message.success("创建成功~");
-                            this.dialogVisible = false;
                             this.$emit('createdSuccess');
                         }
                     });

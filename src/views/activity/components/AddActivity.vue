@@ -1,116 +1,115 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2021-11-10 11:14:06
+ * @LastEditors: liushuai
+ * @LastEditTime: 2021-11-10 11:16:05
+ * @Description: file content
+ * @FilePath: \pclient\src\views\activity\components\AddActivity.vue
+-->
 <template>
-    <el-card class="game-add-wrap">
-        <el-page-header @back="$router.go(-1)">
-            <div slot="content">
-                {{ $route.params.id ? "编辑活动" : "创建活动" }}
-            </div>
-        </el-page-header>
-        <el-row :gutter="10" class="mt30" v-loading="loading">
-            <el-col :xs="24" :sm="24" :md="12">
-                <el-form
-                    label-width="160px"
-                    ref="activityRef"
-                    :model="activityParams"
-                    :rules="activityRules"
+    <div v-loading="loading">
+        <el-form
+            label-width="160px"
+            ref="activityRef"
+            :model="activityParams"
+            :rules="activityRules"
+        >
+            <el-form-item label="活动名称" prop="displayName">
+                <el-input
+                    v-model="activityParams.displayName"
+                    placeholder="活动名称"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="活动描述">
+                <el-input
+                    type="textarea"
+                    :rows="3"
+                    v-model="activityParams.description"
+                    placeholder="活动描述"
+                ></el-input>
+            </el-form-item>
+            <el-form-item label="开始时间" prop="beginTime">
+                <el-date-picker
+                    v-model="activityParams.beginTime"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    type="datetime"
+                    placeholder="开始时间"
                 >
-                    <el-form-item label="活动名称" prop="displayName">
-                        <el-input
-                            v-model="activityParams.displayName"
-                            placeholder="活动名称"
-                        ></el-input>
-                    </el-form-item>
-                    <el-form-item label="活动描述">
-                        <el-input
-                            type="textarea"
-                            :rows="3"
-                            v-model="activityParams.description"
-                            placeholder="活动描述"
-                        ></el-input>
-                    </el-form-item>
-                    <el-form-item label="开始时间" prop="beginTime">
-                        <el-date-picker
-                            v-model="activityParams.beginTime"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            format="yyyy-MM-dd HH:mm:ss"
-                            type="datetime"
-                            placeholder="开始时间"
-                        >
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="结束时间" prop="endTime">
-                        <el-date-picker
-                            v-model="activityParams.endTime"
-                            value-format="yyyy-MM-dd HH:mm:ss"
-                            format="yyyy-MM-dd HH:mm:ss"
-                            type="datetime"
-                            placeholder="结束时间"
-                            default-time="23:59:59"
-                        >
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="商场模块" prop="moduleId">
-                        <el-select
-                            v-model="activityParams.moduleId"
-                            filterable
-                            placeholder="请选择商场模块"
-                            @change="handleChangeModule"
-                        >
-                            <el-option
-                                v-for="item in moduleData"
-                                :key="item.id"
-                                :label="item.displayName"
-                                :value="item.id"
-                            >
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="选择商户" prop="merchants">
-                        <div class="select-merchant mb20" @click="$refs.merchant.showMerchantList(activityParams.merchants)">
-                            {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
-                        </div>
-                        <el-tag
-                            v-for="(item, index) in activityParams.merchants"
-                            :key="index"
-                            class="mr10"
-                            type="primary"
-                            closable
-                            @close="handleDeleteMerchant(item.id, index)"
-                            >
-                            {{ item.merchantName }}
-                        </el-tag>
-                    </el-form-item>
-                    <group-list
-                        v-if="!activityParams.id"
-                        propValue="groupIds"
-                        @groupSelected="
-                            $set(activityParams, 'groupIds', $event)
-                        "
-                    ></group-list>
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="结束时间" prop="endTime">
+                <el-date-picker
+                    v-model="activityParams.endTime"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    format="yyyy-MM-dd HH:mm:ss"
+                    type="datetime"
+                    placeholder="结束时间"
+                    default-time="23:59:59"
+                >
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="商场模块" prop="moduleId">
+                <el-select
+                    v-model="activityParams.moduleId"
+                    filterable
+                    placeholder="请选择商场模块"
+                    @change="handleChangeModule"
+                >
+                    <el-option
+                        v-for="item in moduleData"
+                        :key="item.id"
+                        :label="item.displayName"
+                        :value="item.id"
+                    >
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="选择商户" prop="merchants">
+                <div class="select-merchant mb20" @click="$refs.merchant.showMerchantList(activityParams.merchants)">
+                    {{merchantName || '选择商户'}}<i class="el-icon-arrow-right"></i>
+                </div>
+                <el-tag
+                    v-for="(item, index) in activityParams.merchants"
+                    :key="index"
+                    class="mr10"
+                    type="primary"
+                    closable
+                    @close="handleDeleteMerchant(item.id, index)"
+                    >
+                    {{ item.merchantName }}
+                </el-tag>
+            </el-form-item>
+            <group-list
+                v-if="!activityParams.id"
+                propValue="groupIds"
+                @groupSelected="
+                    $set(activityParams, 'groupIds', $event)
+                "
+            ></group-list>
 
-                    <el-form-item label="">
-                        <el-button @click="$router.push(`/activity`)"
-                            >取 消</el-button
-                        >
-                        <el-button
-                            type="primary"
-                            icon="el-icon-check"
-                            :loading="btnLoading"
-                            @click="handleAddActivity"
-                            >提 交</el-button
-                        >
-                    </el-form-item>
-                </el-form>
-            </el-col>
-        </el-row>
+            <el-form-item label="">
+                <el-button @click="handleCancel"
+                    >取 消</el-button
+                >
+                <el-button
+                    type="primary"
+                    icon="el-icon-check"
+                    :loading="btnLoading"
+                    @click="handleAddActivity"
+                    >提 交</el-button
+                >
+            </el-form-item>
+        </el-form>
 
         <!-- 选择商户 -->
         <select-merchant 
             ref="merchant" 
             @merchantId="handleMerchant"
         ></select-merchant>
-
-    </el-card>
+    </div>
 </template>
+
 <script>
 import {
     activityPlaceModule,
@@ -118,12 +117,13 @@ import {
     activityCreated,
     actvityDeleteMerchant,
 } from "@/api/activity";
-import { getActivityDetail } from "./mixins/index";
+import { getActivityDetail } from "../mixins/index";
 import GroupList from "@/components/GroupList/index";
-import SelectMerchant from './components/ActivitySelectMerchant';
+import SelectMerchant from './ActivitySelectMerchant';
 
 export default {
     mixins: [getActivityDetail],
+    props: ['id', 'from'],
     data() {
         return {
             loading: false,
@@ -186,9 +186,9 @@ export default {
     },
     created() {
         this.getPlaceModule();
-        if (this.$route.params.id) {
+        if (this.id) {
             this.loading = true;
-            this.initDetail().then((res) => {
+            this.initDetail(id).then((res) => {
                 this.loading = false;
                 this.activityParams = {
                     ...this.resData
@@ -236,7 +236,8 @@ export default {
                                     ? "编辑成功~"
                                     : "添加成功~"
                             );
-                            this.$router.push("/activity");
+                            let { id, displayName } = res.obj;
+                            this.from === 'game' ? this.$emit('createdSuccess', { id, displayName })  : this.$router.push("/activity");
                         }
                     });
                 }
@@ -260,7 +261,12 @@ export default {
                     this.activityParams.merchants.splice(index, 1);
                 }
             })
-        }
+        },
+
+        //取消按钮
+        handleCancel(){
+            this.from == 'game' ? this.$emit('createdCancel') : this.$router.push('/activity');
+        },
     },
     components: {
         GroupList,
