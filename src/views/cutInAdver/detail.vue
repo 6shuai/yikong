@@ -176,10 +176,3 @@ export default {
     },
 };
 </script>
-
-<style lang="scss" scoped>
-    .cutin-adver-detail.from-game{
-        box-shadow: none;
-        border: none;
-    }
-</style>

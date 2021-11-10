@@ -198,19 +198,12 @@ export default {
             timelineTotal: 0,  //时间轴容器总数
             timelineData: [], //时间轴容器列表
             addTimelineArr: {},
-            gameStageParams: {
-                // hitCount: [],
-                // spotWay: []
-            },
+            gameStageParams: {},
             showAddRound: false,
-
             showAddAdvTimeline: false,
             spotContainerRelation: [],       //选择广告轴
             addStageRule: {
                 gameStage: [ { required: true, trigger: "blur", message: "请输入游戏阶段~" } ],
-                // spotWay: [ { required: true, trigger: "change", message: "请选择插播方式~" } ],
-                // interval: [ { required: true, trigger: "blur", message: "请输入插播前置时间~" } ],
-                // hitCount: [ { required: true, trigger: "blur", message: "请输入在第几次阶段插播~" } ],
             }
         };
     },
@@ -232,7 +225,6 @@ export default {
 
         //保存
         timelineSureBtn() {
-            console.log(this.params)
             this.$refs.addAdvForm.validate((valid) => {
                 if (valid) {
                     cutInAdverCreate(this.params).then((res) => {

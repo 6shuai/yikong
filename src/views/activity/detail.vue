@@ -463,11 +463,6 @@ export default {
             }
         }
     }
-
-    &.from-game{
-        box-shadow: none;
-        border: none;
-    }
     
     .generate-link{
         padding: 0 20px;

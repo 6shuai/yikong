@@ -88,6 +88,11 @@ li{
 	}
 	.template-card{
 		margin: 10px;
+		
+		&.from-game{
+			box-shadow: none;
+			border: none;
+		}
 	}
 } 
 
