@@ -59,7 +59,6 @@
                     value-format="yyyy-MM-dd HH:mm:ss"
                     format="yyyy-MM-dd HH:mm:ss"
                     type="datetime"
-                    default-time="23:59:59"
                     placeholder="开始时间"
                 >
                 </el-date-picker>
