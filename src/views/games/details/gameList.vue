@@ -24,6 +24,10 @@
         </div>
 
         <div class="place-content" v-loading="dataLoading">
+            <el-empty 
+                v-if="!resData.length"
+                description="还没有游戏">
+            </el-empty>
             <div class="place-box">
                 <div class="place-p" 
                     :style="{width: placeW}" 
@@ -57,6 +61,7 @@
 
         <el-pagination
             background
+            :hide-on-single-page="true"
             layout="total, prev, pager, next, sizes"
             :page-sizes="[40, 80, 100]"
             :current-page="Number(params.pageNo)"
