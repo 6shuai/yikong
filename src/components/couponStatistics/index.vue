@@ -67,6 +67,25 @@
 				</el-select>
 			</el-form-item>
 
+			<el-form-item label="优惠券">
+				<el-select
+					v-model="params.couponDefinitionId"
+					clearable
+					placeholder="请选择优惠券"
+					@change="search"
+					@clear="$delete(params, 'couponDefinitionId')"
+					class="mb20 ml20"
+				>
+					<el-option
+						v-for="item in couponData"
+						:key="item.id"
+						:label="item.displayName" 
+						:value="item.id"
+					>
+					</el-option>
+				</el-select>
+			</el-form-item>
+
 			<el-form-item label="状态">
 				<el-select
 					v-model="params.state"
@@ -104,6 +123,20 @@
 			</el-form-item>
 		</el-form>
 
+		<div class="statisics-tag">
+			<el-tag type="primary">发券量: {{ couponInfo.couponCount }}</el-tag>
+			<el-tag type="primary">核销量: {{ couponInfo.writeOffCount }}</el-tag>
+			<el-tag type="primary">核销率: {{ couponInfo.writeOffRate}}</el-tag>
+
+			<el-button
+				:disabled="!resData.length"
+				type="primary"
+				size="small"
+				icon="el-icon-download"
+				@click="download"
+				>导出</el-button
+			>
+		</div>
 		<el-table
 			class="mb20"
 			v-loading="tableLoading"
@@ -186,7 +219,7 @@ import {
 import {
 	couponStatistics,
 	couponStatisticsDetail,
-	couponStatisticsCouponList,
+	couponStatisticsDetailCouponList
 } from "@/api/activity";
 
 export default {
@@ -204,6 +237,8 @@ export default {
 			resData: [],
 			totalCount: 0,
 			api: {},
+			couponData: [],     //优惠券列表
+			couponInfo: {},     //优惠券汇总
 		};
 	},
 	created() {
@@ -274,6 +309,9 @@ export default {
 			if (!this.params.screenId) delete this.params.screenId;
 			if (!this.params.contentId) delete this.params.contentId;
 			if (!this.params.promotionId) delete this.params.promotionId;
+
+			this.getCouponList(this.params)
+
 			this.api.StatisticsList(this.params).then((res) => {
 				this.tableLoading = false;
 
@@ -281,6 +319,13 @@ export default {
 					let { list, totalRecords } = res.obj.page;
 					this.resData = list;
 					this.totalCount = totalRecords;
+
+					let { couponCount, writeOffCount, writeOffRate } = res.obj.couponCount;
+					this.couponInfo = {
+						couponCount,
+						writeOffCount,
+						writeOffRate
+					}
 				}
 			});
 		},
@@ -314,10 +359,10 @@ export default {
 			this.$refs.statisticsDetail.showDialog(
 				{
 					collectionTime: row.collectionTime,
-					couponDefinitionId: row.couponDefinitionId,
 					placeId: this.params.placeId,
 					screenId: this.params.screenId,
 					contentId: this.params.contentId,
+					couponDefinitionId: this.params.couponDefinitionId,
 					promotionId: this.$route.query.promotionId,
 				},
 				this.api.StatisticsDetail,
@@ -345,12 +390,19 @@ export default {
 			this.init();
 		},
 
+		//获取优惠券列表
+        getCouponList(data){
+            couponStatisticsDetailCouponList(data).then(res => {
+                if(res.code === this.$successCode){
+                    this.couponData = res.obj;
+                }
+            })
+        },
+
 		//导出
 		download() {
 			window.open(
-				`${document.location.origin}/${
-					this.$route.query.source
-				}/exportAwardCash?${qs.stringify(this.params)}`
+				`${document.location.origin}/promotion/exportCoupon?${qs.stringify(this.params)}`
 			);
 		},
 	},
@@ -363,9 +415,17 @@ export default {
 
 <style lang="scss" scope>
 .statistics-list {
-	.statistics-tool {
+	.statisics-tag{
 		text-align: right;
 		margin-bottom: 10px;
+
+		.el-tag{
+			margin-left: 5px;
+		}
+
+		.el-button{
+			margin-left: 20px;
+		}
 	}
 }
 </style>
