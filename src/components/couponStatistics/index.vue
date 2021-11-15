@@ -74,7 +74,6 @@
 					placeholder="请选择优惠券"
 					@change="search"
 					@clear="$delete(params, 'couponDefinitionId')"
-					class="mb20 ml20"
 				>
 					<el-option
 						v-for="item in couponData"
