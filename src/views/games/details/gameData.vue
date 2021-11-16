@@ -2,8 +2,8 @@
     <el-card
         class="template-card content-details add-game-data"
         v-loading="detailLoading"
-    >
-        <el-page-header @back="$router.go(-1)">
+    >   
+        <el-page-header @back="$router.push(`/games/details/${$route.params.id}/list`)">
             <div slot="content">
                 {{$route.params.gameId ? '编辑游戏数据' : '创建游戏数据'}}
             </div>
@@ -23,171 +23,13 @@
         <el-tabs 
             class="mt30"
             v-model="currentActive" 
-            type="border-card"
+            @tab-click="tabsHandleClick"
+            type="card"
         >
             <el-tab-pane 
                 label="游戏信息" 
-                name="game"
+                :name="`/games/details/${$route.params.id}/gameData/${$route.params.gameId}`"
             >
-
-                <el-row :gutter="10" class="mt20">
-                    <el-col :xs="24" :sm="24" :md="12">
-                        <el-form
-                            v-loading="loading"
-                            label-width="160px"
-                            ref="addGameForm"
-                            :model="contentParams"
-                            :rules="placeRules"
-                        >
-                            <el-form-item label="名称" prop="displayName">
-                                <el-input
-                                    v-model="contentParams.displayName"
-                                    placeholder="名称"
-                                ></el-input>
-                            </el-form-item>
-                            <el-form-item label="所属品牌" prop="contentOwner">
-                                <el-select
-                                    v-model="contentParams.contentOwner"
-                                    filterable
-                                    placeholder="请选择所属品牌"
-                                    style="width: 100%"
-                                >
-                                    <el-option
-                                        v-for="item in groupData"
-                                        :key="item.id"
-                                        :label="item.displayName"
-                                        :value="item.id"
-                                    >
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="展示图片" prop="image">
-                                <upload-img
-                                    :imgList="contentParams.image"
-                                    @uploadImgPath="$set(contentParams, 'image', $event); $set(contentParams, 'newUpload', 1)"
-                                ></upload-img>
-                            </el-form-item>
-                            <div v-if="contentParams.contentType !== 4">
-                                <el-form-item label="分辨率(像素)" class="is-required">
-                                    <el-row>
-                                        <el-col :span="11">
-                                            <el-form-item prop="width">
-                                                <el-input
-                                                    type="number"
-                                                    :min="1"
-                                                    v-model="contentParams.width"
-                                                    placeholder="宽"
-                                                ></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                        <el-col :span="2" style="text-align: center">
-                                            <span>x</span>
-                                        </el-col>
-                                        <el-col :span="11">
-                                            <el-form-item prop="height">
-                                                <el-input
-                                                    type="number"
-                                                    :min="1"
-                                                    v-model="contentParams.height"
-                                                    placeholder="高"
-                                                ></el-input>
-                                            </el-form-item>
-                                        </el-col>
-                                    </el-row>
-                                </el-form-item>
-                                <el-form-item label="分辨率(宽高比)" prop="aspectRatio">
-                                    <el-select
-                                        v-model="contentParams.aspectRatio"
-                                        placeholder="请选择分辨率(宽高比)"
-                                        style="width: 100%"
-                                    >
-                                        <el-option
-                                            v-for="item in aspectRatioData"
-                                            :key="item.id"
-                                            :label="item.width + ' : ' + item.height"
-                                            :value="item.id"
-                                        >
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="游戏包" prop="packageId">
-                                    <el-cascader 
-                                        @change="changePackage"
-                                        :key="isResouceShow"
-                                        v-model="contentParams.packageId"
-                                        :options="cascaderOptions" 
-                                        :show-all-levels="false"
-                                        :props="cascaderProps"
-                                        style="width: 100%"
-                                    >
-                                        <template slot-scope="{ node, data }">
-                                            <span>{{ data.overallVersion }}</span>
-                                            <span> {{ data.description }} </span>
-                                        </template>
-                                    </el-cascader>
-
-                                </el-form-item>
-                                <el-form-item label="游戏配置" prop="configId">
-                                    <el-select
-                                        filterable
-                                        v-model="contentParams.configId"
-                                        placeholder="请选择游戏配置"
-                                        style="width: 100%"
-                                    >
-                                        <el-option
-                                            v-for="item in configData"
-                                            :key="item.id"
-                                            :label="item.displayName"
-                                            :value="item.id"
-                                        >
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                                <el-form-item label="插播广告">
-                                    <adver-list 
-                                        ref="adverList"
-                                        @selected="$set(contentParams, 'spotId', $event)" 
-                                        :spotId="contentParams.spotId">
-                                    </adver-list>
-                                    <div class="el-link-add-btn">
-                                        <el-link 
-                                            type="primary"
-                                            @click="$refs.gameAddCutinAdver.showDialog()"
-                                        >
-                                            添加插播广告
-                                        </el-link>
-                                    </div>
-                                </el-form-item>
-
-                                <el-form-item label="活动">
-                                    <activity-list 
-                                        ref="activityList"
-                                        @selected="$set(contentParams, 'promotionId', $event)"
-                                        :promotionId="contentParams.promotionId"
-                                    ></activity-list>
-                                    <div class="el-link-add-btn">
-                                        <el-link 
-                                            type="primary"
-                                            @click="$refs.gameAddActivity.showDialog()"
-                                        >
-                                            添加活动
-                                        </el-link>
-                                    </div>
-                                </el-form-item>
-                                <el-form-item label="">
-                                    <el-button 
-                                        type="primary" 
-                                        v-loading="btnLoading" 
-                                        @click="addGameData"
-                                    >
-                                        提 交
-                                    </el-button>
-                                </el-form-item>
-                            </div>
-                        </el-form>
-                    </el-col>
-                </el-row>
-
             </el-tab-pane>
             <!-- <el-tab-pane 
                 label="排行" 
@@ -200,44 +42,183 @@
             >
             </el-tab-pane> -->
             <el-tab-pane 
+                :disabled="!contentParams.spotId"
                 label="插播广告" 
-                name="cutinAdver"
+                :name="`/games/details/${$route.params.id}/gameData/${$route.params.gameId}/adver/${contentParams.spotId}`"
             >
-                <div 
-                    class="activity"
-                    v-if="currentActive === 'cutinAdver'"
-                >
-                    <el-empty 
-                         v-if="!contentParams.spotId"
-                        description="未关联插播广告">
-                    </el-empty>
-                    <cutin-adver-detail
-                        v-else 
-                        from="game"
-                        :id="contentParams.spotId"
-                    ></cutin-adver-detail>
-                </div>
             </el-tab-pane>
             <el-tab-pane 
+                :disabled="!contentParams.promotionId"
                 label="活动" 
-                name="activity"
+                :name="`/games/details/${$route.params.id}/gameData/${$route.params.gameId}/activity/${contentParams.promotionId}`"
             >   
-                <div 
-                    class="activity" 
-                    v-if="currentActive === 'activity'"
-                >
-                    <el-empty 
-                         v-if="!contentParams.promotionId"
-                        description="未关联活动">
-                    </el-empty>
-                    <activity-detail
-                        v-else 
-                        from="game"
-                        :id="contentParams.promotionId"
-                    ></activity-detail>
-                </div>
             </el-tab-pane>
         </el-tabs>
+
+        <el-row 
+            :gutter="10" 
+            class="mt20"
+            v-if="currentActive == `/games/details/${$route.params.id}/gameData/${$route.params.gameId}`"
+        >
+            <el-col :xs="24" :sm="24" :md="12">
+                <el-form
+                    v-loading="loading"
+                    label-width="160px"
+                    ref="addGameForm"
+                    :model="contentParams"
+                    :rules="placeRules"
+                >
+                    <el-form-item label="名称" prop="displayName">
+                        <el-input
+                            v-model="contentParams.displayName"
+                            placeholder="名称"
+                        ></el-input>
+                    </el-form-item>
+                    <el-form-item label="所属品牌" prop="contentOwner">
+                        <el-select
+                            v-model="contentParams.contentOwner"
+                            filterable
+                            placeholder="请选择所属品牌"
+                            style="width: 100%"
+                        >
+                            <el-option
+                                v-for="item in groupData"
+                                :key="item.id"
+                                :label="item.displayName"
+                                :value="item.id"
+                            >
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="展示图片" prop="image">
+                        <upload-img
+                            :imgList="contentParams.image"
+                            @uploadImgPath="$set(contentParams, 'image', $event); $set(contentParams, 'newUpload', 1)"
+                        ></upload-img>
+                    </el-form-item>
+                    <div v-if="contentParams.contentType !== 4">
+                        <el-form-item label="分辨率(像素)" class="is-required">
+                            <el-row>
+                                <el-col :span="11">
+                                    <el-form-item prop="width">
+                                        <el-input
+                                            type="number"
+                                            :min="1"
+                                            v-model="contentParams.width"
+                                            placeholder="宽"
+                                        ></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span="2" style="text-align: center">
+                                    <span>x</span>
+                                </el-col>
+                                <el-col :span="11">
+                                    <el-form-item prop="height">
+                                        <el-input
+                                            type="number"
+                                            :min="1"
+                                            v-model="contentParams.height"
+                                            placeholder="高"
+                                        ></el-input>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </el-form-item>
+                        <el-form-item label="分辨率(宽高比)" prop="aspectRatio">
+                            <el-select
+                                v-model="contentParams.aspectRatio"
+                                placeholder="请选择分辨率(宽高比)"
+                                style="width: 100%"
+                            >
+                                <el-option
+                                    v-for="item in aspectRatioData"
+                                    :key="item.id"
+                                    :label="item.width + ' : ' + item.height"
+                                    :value="item.id"
+                                >
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="游戏包" prop="packageId">
+                            <el-cascader 
+                                @change="changePackage"
+                                :key="isResouceShow"
+                                v-model="contentParams.packageId"
+                                :options="cascaderOptions" 
+                                :show-all-levels="false"
+                                :props="cascaderProps"
+                                style="width: 100%"
+                            >
+                                <template slot-scope="{ node, data }">
+                                    <span>{{ data.overallVersion }}</span>
+                                    <span> {{ data.description }} </span>
+                                </template>
+                            </el-cascader>
+
+                        </el-form-item>
+                        <el-form-item label="游戏配置" prop="configId">
+                            <el-select
+                                filterable
+                                v-model="contentParams.configId"
+                                placeholder="请选择游戏配置"
+                                style="width: 100%"
+                            >
+                                <el-option
+                                    v-for="item in configData"
+                                    :key="item.id"
+                                    :label="item.displayName"
+                                    :value="item.id"
+                                >
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="插播广告">
+                            <adver-list 
+                                ref="adverList"
+                                @selected="$set(contentParams, 'spotId', $event)" 
+                                :spotId="contentParams.spotId">
+                            </adver-list>
+                            <div class="el-link-add-btn">
+                                <el-link 
+                                    type="primary"
+                                    @click="$refs.gameAddCutinAdver.showDialog()"
+                                >
+                                    添加插播广告
+                                </el-link>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="活动">
+                            <activity-list 
+                                ref="activityList"
+                                @selected="$set(contentParams, 'promotionId', $event)"
+                                :promotionId="contentParams.promotionId"
+                            ></activity-list>
+                            <div class="el-link-add-btn">
+                                <el-link 
+                                    type="primary"
+                                    @click="$refs.gameAddActivity.showDialog()"
+                                >
+                                    添加活动
+                                </el-link>
+                            </div>
+                        </el-form-item>
+                        <el-form-item label="">
+                            <el-button 
+                                type="primary" 
+                                v-loading="btnLoading" 
+                                @click="addGameData"
+                            >
+                                提 交
+                            </el-button>
+                        </el-form-item>
+                    </div>
+                </el-form>
+            </el-col>
+        </el-row>
+
+
+        <router-view v-else></router-view>
 
         <!-- 添加插播广告 -->
         <game-add-cutin-adver 
@@ -269,8 +250,6 @@ import AdverList from '../components/AdverList';
 import ActivityList from '../components/ActivityList';
 import GameAddCutinAdver from './components/GameAddCutinAdver';
 import GameAddActivity from './components/GameAddActivity';
-import ActivityDetail from '@/views/activity/detail';
-import CutinAdverDetail from '@/views/cutInAdver/detail';
 
 export default {
     mixins: [getOrganizationList, getAspectRatio],
@@ -346,6 +325,7 @@ export default {
         };
     },
     mounted() {
+        this.currentActive = this.$route.path;
         this.init();
     },
     methods: {
@@ -464,6 +444,12 @@ export default {
         //添加活动成功回调
         handleCreatedActivityCall(data){
             this.$refs.activityList.addActivity(data);
+        },
+
+        //选择tab
+        tabsHandleClick(tab){
+            this.currentActive = tab.name;
+            this.$router.push(tab.name)
         }
     },
     components: {
@@ -471,9 +457,7 @@ export default {
         AdverList,
         ActivityList,
         GameAddCutinAdver,
-        GameAddActivity,
-        ActivityDetail,
-        CutinAdverDetail
+        GameAddActivity
     },
 };
 </script>

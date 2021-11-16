@@ -66,7 +66,10 @@
             :total="totalCount">
         </el-pagination>
 
-        <div v-if="!resData || !resData.length" class="no-data">暂无数据~</div>
+        <el-empty 
+            v-if="!resData || !resData.length"
+            description="暂无数据"
+        ></el-empty>
         
         <div 
             class="mt20" 

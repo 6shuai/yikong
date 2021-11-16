@@ -1,10 +1,10 @@
 <template>
     <el-card 
         class="template-card content-details cutin-adver-detail"
-        :class="{ 'from-game': from }"
+        :class="{ 'from-game': $route.params.id }"
     >
         <page-header 
-            v-if="!from"
+            v-if="!$route.params.id"
             :title="resData.displayName"
         >
             <div slot="headerRight">
@@ -114,7 +114,6 @@ import ScreenList from './components/ScreenList';
 import PageHeader from '@/components/PageHeader';
 
 export default {
-    props: ['from', 'id'],
     data() {
         return {
             dataLoading: false,
@@ -133,7 +132,7 @@ export default {
     methods: {
         //查询逻辑区域集合 屏幕布局集合
         init() {
-            this.cutinAdverId = this.from === 'game' ? this.id : this.$route.params.id;
+            this.cutinAdverId = this.$route.params.adverId;
             this.dataLoading = true;
             cutInAdverDetail({ id: this.cutinAdverId }).then((res) => {
                 this.dataLoading = false;

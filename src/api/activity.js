@@ -27,6 +27,15 @@ export function activityDetail(data) { return get('/promotion/detail', data) }
 export function activityFavorite(data) { return put(`/promotion/isFavorite${data}`) }
 
 
+//活动管理  根据活动id查询屏幕列表
+export function activityDetailScreenList(data) { return get(`/promotion/screenInDetails?promotionId=${data}`) }
+
+//活动管理  根据活动id查询游戏列表
+export function activityDetailGameList(data) { return get(`/promotion/contentInDetails?promotionId=${data}`) }
+
+//活动管理  根据活动id查询商户列表
+export function activityDetailMerchantList(data) { return get(`/promotion/merchantInDetails?promotionId=${data}`) }
+
 
 
 

@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import gameRoutes from './game'
+import activityRoutes from './activity'
 Vue.use(Router)
 
 /* Layout */
@@ -287,83 +289,6 @@ export const constantRoutes = [
       hidden: true
   },
 
-  //游戏管理  创建
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '游戏管理' },
-    children: [{
-      path: '/games/add',
-      name: 'Games--add',
-      component: () => import('@/views/games/gameAdd'),
-      meta: { title: '创建游戏' },
-    }],
-    hidden: true
-  },
-
-  //游戏管理  编辑
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '游戏管理' },
-    children: [{
-      path: '/games/edit/:id',
-      name: 'Games--edit',
-      component: () => import('@/views/games/gameAdd'),
-      meta: { title: '编辑游戏' },
-    }],
-    hidden: true
-  },
-
-  //游戏管理  详情
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '游戏管理' },
-    children: [
-      {
-        path: '/games/details/:id',
-        name: 'Games--details',
-        component: () => import('@/views/games/details/index'),
-        meta: { title: '游戏信息' },
-        children: [
-          {
-            path: 'package',
-            name: 'Games--details-package',
-            component: () => import('@/views/games/details/package'),
-            meta: { title: '包管理' }
-          },
-          {
-            path: 'list',
-            name: 'Games--details-list',
-            component: () => import('@/views/games/details/gameList'),
-            meta: { title: '游戏列表' }
-          },
-          {
-            path: 'rank',
-            name: 'Games--details-rank',
-            component: () => import('@/views/games/details/rankTemp'),
-            meta: { title: '排行榜管理' }
-          }
-        ]
-      },
-      {
-        path: '/games/details/:id/gameData/:gameId',
-        name: 'Games--details-data-edit',
-        component: () => import('@/views/games/details/gameData'),
-        meta: { title: '编辑游戏' }
-      },
-      {
-        path: '/games/details/:id/gameData',
-        name: 'Games--details-data-add',
-        component: () => import('@/views/games/details/gameData'),
-        meta: { title: '添加游戏' }
-      },
-    ],
-    hidden: true
-  },
-  
-
 
   //屏幕布局 创建
   {
@@ -456,7 +381,7 @@ export const constantRoutes = [
   meta: { title: '插播广告' },
   children: [
     {
-      path: '/cutInAdver/:id',
+      path: '/cutInAdver/:adverId',
       name: 'CutInAdver--detail',
       component: () => import('@/views/cutInAdver/detail'),
       meta: { title: '插播广告 - 详情' },
@@ -468,133 +393,7 @@ export const constantRoutes = [
 
 
 
-   //活动管理  新建活动
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/add',
-        name: 'Activity--add',
-        component: () => import('@/views/activity/add'),
-        meta: { title: '活动管理 - 创建' },
-      }
-    ],
-    hidden: true
-  },
-
-   //活动管理  编辑活动
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/edit/:id',
-        name: 'Activity--edit',
-        component: () => import('@/views/activity/add'),
-        meta: { title: '活动管理 - 编辑' },
-      }
-    ],
-    hidden: true
-  },
-
-   //活动管理  详情
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/detail/:id',
-        name: 'Activity--detail',
-        component: () => import('@/views/activity/detail'),
-        meta: { title: '活动管理 - 详情' },
-      }
-    ],
-    hidden: true
-  },
-
-  //活动管理  新建优惠券
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/couponAdd',
-        name: 'Activity--addCoupon',
-        component: () => import('@/views/activity/coupon/couponAdd'),
-        meta: { title: '活动管理 - 创建优惠券' },
-      }
-    ],
-    hidden: true
-  },
-
-  //活动管理  编辑优惠券
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/couponAdd/:id',
-        name: 'Activity--editCoupon',
-        component: () => import('@/views/activity/coupon/couponAdd'),
-        meta: { title: '活动管理 - 编辑优惠券' },
-      }
-    ],
-    hidden: true
-  },
-
-  //活动管理  优惠券列表
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/coupon',
-        name: 'Activity--coupon',
-        component: () => import('@/views/activity/coupon/index'),
-        meta: { title: '活动管理 - 优惠券列表' },
-      }
-    ],
-    hidden: true
-  },
-
-  //活动管理  优惠券详情
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/coupon/:id',
-        name: 'Activity--couponDetail',
-        component: () => import('@/views/activity/coupon/detail'),
-        meta: { title: '活动管理 - 优惠券详情' },
-      }
-    ],
-    hidden: true
-  },
-
-   //活动管理  统计数据
-  {
-    path: '/',
-    component: Layout,
-    meta: { title: '活动管理' },
-    children: [
-      {
-        path: '/activity/statistics/:id',
-        name: 'Activity--statistics',
-        component: () => import('@/views/activity/statistics/statistics'),
-        meta: { title: '活动管理 - 统计数据' },
-      }
-    ],
-    hidden: true
-  },
+  
 
   // 商户管理 - 添加商户
   {
@@ -642,7 +441,10 @@ export const constantRoutes = [
       }
     ],
     hidden: true
-  }
+  },
+  
+  ...gameRoutes,      //游戏管理 路由
+  ...activityRoutes   //活动管理 路由
 
 ]
 

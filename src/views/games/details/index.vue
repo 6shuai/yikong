@@ -3,7 +3,10 @@
         class="template-card content-details games-details"
         v-loading="detailLoading"
     >
-        <page-header :title="resData.displayName">
+        <page-header 
+            :title="resData.displayName"
+            backPath="/games/index"
+        >
             <div slot="headerRight">
                 <span
                     v-if="resData.authorize"

@@ -160,6 +160,7 @@ export default {
         //显示上传游戏包 窗口
         showUploadDialog() {
             this.packageParams = {};
+            this.fileList = [];
             this.uploadDialog = true;
             this.uploadPackageSuccess = false;
             this.$nextTick(() => {
@@ -269,7 +270,6 @@ export default {
         background: #fff7f7;
     }
     .type-card {
-        cursor: pointer;
         margin-bottom: 10px;
         &:last-child {
             margin: 0;

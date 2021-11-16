@@ -1,6 +1,8 @@
 <template>
     <div class="header-wrap detail-header-wrap mb30">
-        <el-page-header @back="$router.go(-1)"> </el-page-header>
+        <el-page-header 
+            @back="backPath ? $router.push(backPath) : $router.go(-1)"
+        > </el-page-header>
         <div class="title">
             <h2>{{ title }}</h2>
         </div>
@@ -12,6 +14,6 @@
 
 <script>
 export default {
-    props: ['title']
+    props: ['title', 'backPath']
 }
 </script>

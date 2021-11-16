@@ -322,7 +322,7 @@ import {
 } from "@/api/activity";
 import AddPrize from "./AddPrize";
 import AddCondition from "./AddCondition";
-import AddPondGetLimit from "./PondGetLimit.vue";
+import AddPondGetLimit from "./PondGetLimit";
 
 export default {
 	props: ["detailData"],

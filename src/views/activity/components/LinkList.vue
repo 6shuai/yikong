@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="800px"
-        title="邀请链接"
+        title="已生成的邀请链接列表"
         class="link-list-dialog"
         :visible.sync="showDialog"
         :close-on-click-modal="false"
@@ -10,6 +10,10 @@
     >
 
         <div class="link-list" v-loading="loading">
+            <el-empty 
+                v-if="!resData.length"
+                description="暂无邀请链接"
+            ></el-empty>
             <div 
                 class="item" 
                 v-for="item in resData" 

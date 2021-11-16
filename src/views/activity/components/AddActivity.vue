@@ -188,7 +188,7 @@ export default {
         this.getPlaceModule();
         if (this.id) {
             this.loading = true;
-            this.initDetail(id).then((res) => {
+            this.initDetail(this.id).then((res) => {
                 this.loading = false;
                 this.activityParams = {
                     ...this.resData

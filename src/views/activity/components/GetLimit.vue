@@ -24,7 +24,7 @@
                 >
                         <!-- v-for="item in [{ id: 1, name: '单品限制' }, { id: 2, name: '总量限制' }]" -->
                     <el-option
-                        v-for="item in [{ id: 1, name: '默认类型' }]" 
+                        v-for="item in [{ id: ponId ? 1 : 2, name: '默认类型' }]" 
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
