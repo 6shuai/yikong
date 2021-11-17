@@ -21,6 +21,7 @@
                     <el-card 
                         class="place-list" 
                         shadow="always"
+                        @click.native="handleGoDetail(item.merchant || item.id)"
                     >
                         <div class="place-img" 
                             :style="{height: imageH+'px'}">
@@ -44,7 +45,14 @@
 import { screenSizeWatch } from '@/mixins';
 export default {
     mixins: [screenSizeWatch],
-    props: ['emptyMsg', 'resData', 'paramsName']
+    props: ['emptyMsg', 'resData', 'paramsName', 'detailPath'],
+    methods: {
+        //跳转详情
+        handleGoDetail(id){
+            console.log(id)
+            this.$router.push(this.detailPath + id);
+        }
+    },
 }
 </script>
 

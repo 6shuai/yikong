@@ -12,6 +12,7 @@
             emptyMsg="还没有商户"
             :paramsName="{image: 'image', name: 'merchantName' }"
             :resData="resData"
+            detailPath="/merchant/detail/"
             #card="{data}"
         >
             <div class="link-btn-wrap">
@@ -20,7 +21,7 @@
                         round 
                         type="primary" 
                         size="mini"
-                        @click="$refs.generateInviteLink.handleGenerateLink(data.merchant, $route.params.activityId)"
+                        @click.stop="$refs.generateInviteLink.handleGenerateLink(data.merchant, $route.params.activityId)"
                     >
                         生成邀请链接
                     </el-button></p>
@@ -29,7 +30,7 @@
                         round 
                         type="info" 
                         size="mini"
-                        @click="$refs.linkList.showGenerateLinkList(data.merchant, $route.params.activityId)"
+                        @click.stop="$refs.linkList.showGenerateLinkList(data.merchant, $route.params.activityId)"
                     >
                         已生成的链接
                     </el-button>
@@ -88,12 +89,7 @@ export default {
             right: 10px;
             top: 10px;
             z-index: 99;
-            opacity: 0;
             transition: all .3s ease-in;
-        }
-
-        .place-list:hover .link-btn-wrap{
-            opacity: 1;
         }
     }
 </style>

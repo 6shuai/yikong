@@ -21,18 +21,18 @@
             >   
                 <div 
                     class="link tag-read" 
-                    :data-clipboard-text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}`"
+                    :data-clipboard-text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.activityId}&pm=${3}&t=${item}`"
                     @click="copy"
                     title="点击复制链接"
                 >
-                    {{ `https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}` }}        
+                    {{ `https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.activityId}&pm=${3}&t=${item}` }}        
                 </div>
                 <div class="link-qrcode">
                     <el-popover
                         placement="right"
                         width="374"
                         trigger="click">
-                        <vue-qr :text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.id}&pm=${3}&t=${item}`" :margin="0" colorDark="#000" colorLight="#fff" :size="350"></vue-qr>
+                        <vue-qr :text="`https://static.xfengjing.com/writeoff_invitation/index.html?mid=${mid}&pid=${$route.params.activityId}&pm=${3}&t=${item}`" :margin="0" colorDark="#000" colorLight="#fff" :size="350"></vue-qr>
                         <svg-icon
                             slot="reference"
                             icon-class="qrcode"

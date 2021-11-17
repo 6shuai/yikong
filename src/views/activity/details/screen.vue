@@ -2,6 +2,7 @@
     <card-list 
         emptyMsg="还没有屏幕"
         :paramsName="{image: 'screenshotUri', name: 'displayName' }"
+        detailPath="/screen/details/"
         :resData="resData"
     ></card-list>
 </template>

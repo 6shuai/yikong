@@ -2,6 +2,7 @@
     <card-list 
         emptyMsg="还没有游戏"
         :paramsName="{image: 'image', name: 'displayName' }"
+        detailPath="/content/details/"
         :resData="resData"
     ></card-list>
 </template>
