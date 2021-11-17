@@ -41,7 +41,7 @@
                     placeholder="请选择开始时间类型"
                 >
                     <el-option
-                        v-for="item in [{ id: 1, name: '活动期间' }, { id: 2, name: '固定时间' }]"
+                        v-for="item in [{ id: 1, name: '当天' }, { id: 2, name: '指定时间' }]"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -72,7 +72,7 @@
                     placeholder="请选择结束时间类型"
                 >
                     <el-option
-                        v-for="item in [{ id: 1, name: '活动期间' }, { id: 2, name: '固定时间' }]"
+                        v-for="item in [{ id: 1, name: '当天' }, { id: 2, name: '指定时间' }]"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"

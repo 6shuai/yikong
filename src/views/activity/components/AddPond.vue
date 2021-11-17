@@ -219,7 +219,6 @@
 						</div>
 						<div class="operation">
 							<span
-								v-if="detailData.editAwardItem"
 								class="edit"
 								@click="
 									$refs.addPrize.showDialog(
@@ -233,14 +232,12 @@
 								>编辑</span
 							>
 							<span
-								v-if="detailData.editAwardItem"
 								class="edit"
 								@click="$refs.addGetLimit.showGetLimit(item.id)"
 								>领取限制</span
 							>
 							<span
 								class="delete"
-								v-if="detailData.deleteAwardItem"
 							>
 								<el-popover
 									placement="top"
