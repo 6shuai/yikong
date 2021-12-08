@@ -111,7 +111,7 @@ export default {
         return {
             tableLoading: false,
             params: {
-                appid: this.$route.params.id,
+                assemblyId: this.$route.params.gameId,
             },
             resData: [],
             rankTypeData: [],
@@ -123,9 +123,8 @@ export default {
         },
     },
     created() {
-        this.getRankTypeData().then((res) => {
-            this.init();
-        });
+        this.init();
+        this.getRankTypeData();
     },
     methods: {
         init() {

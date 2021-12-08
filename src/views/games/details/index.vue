@@ -54,11 +54,11 @@
                 :name="`/games/details/${$route.params.id}/package`"
             >
             </el-tab-pane>
-            <el-tab-pane 
+            <!-- <el-tab-pane 
                 label="排行榜管理" 
                 :name="`/games/details/${$route.params.id}/rank`"
             >
-            </el-tab-pane>
+            </el-tab-pane> -->
             <el-tab-pane 
                 :disabled="true"
                 label="皮肤" 

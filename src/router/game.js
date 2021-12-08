@@ -52,12 +52,6 @@ const gameRoutes = [
                         name: 'Games--details-list',
                         component: () => import('@/views/games/details/gameList'),
                         meta: { title: '游戏列表' }
-                    },
-                    {
-                        path: 'rank',
-                        name: 'Games--details-rank',
-                        component: () => import('@/views/games/details/rankTemp'),
-                        meta: { title: '排行榜管理' }
                     }
                 ]
             },
@@ -72,6 +66,12 @@ const gameRoutes = [
                         name: 'Games--details-data-adver',
                         component: () => import('@/views/cutInAdver/detail'),
                         meta: { title: '插播广告' },
+                    },
+                    {
+                        path: 'rank',
+                        name: 'Games--details-rank',
+                        component: () => import('@/views/games/details/rankTemp'),
+                        meta: { title: '排行榜管理' }
                     },
                     {
                         path: 'activity/:activityId',

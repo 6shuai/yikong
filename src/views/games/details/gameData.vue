@@ -31,12 +31,12 @@
                 :name="`/games/details/${$route.params.id}/gameData/${$route.params.gameId}`"
             >
             </el-tab-pane>
-            <!-- <el-tab-pane 
-                label="排行" 
-                name="rank"
+            <el-tab-pane 
+                label="排行榜管理" 
+                :name="`/games/details/${$route.params.id}/gameData/${$route.params.gameId}/rank`"
             >
             </el-tab-pane>
-            <el-tab-pane 
+            <!-- <el-tab-pane 
                 label="皮肤" 
                 name="skin"
             >

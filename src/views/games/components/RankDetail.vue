@@ -204,7 +204,7 @@ export default {
             this.params = {
                 border: 0,
                 queryNum: 10,
-                appid: this.$route.params.id,
+                assemblyId: this.$route.params.gameId,
                 rankingListTemp: id
             }
             this.init();

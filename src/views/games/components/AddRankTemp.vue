@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         class="add-game-data"
-        :title="$route.params.id ? '编辑排行榜模板' : '创建排行榜模板'"
+        :title="rankParams.id ? '编辑排行榜模板' : '创建排行榜模板'"
         :visible.sync="dialogVisible"
         width="600px"
         :close-on-click-modal="false"
@@ -134,7 +134,7 @@ export default {
 
             this.rankParams = {
                 maxCount: 1000,
-                appid: this.$route.params.id,
+                assemblyId: this.$route.params.gameId,
                 ...data,
             };
         },
