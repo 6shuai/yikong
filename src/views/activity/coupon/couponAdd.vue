@@ -98,7 +98,7 @@
                     </el-form-item>
                     <el-form-item label="说明">
                         <el-input
-                            :rows="5"
+                            :rows="6"
                             type="textarea"
                             v-model="couponParams.description"
                             placeholder="说明"
@@ -206,7 +206,7 @@ export default {
     mounted() {
         this.getCouponTypeList();
         if(this.$route.params.id){
-            this.initDetail().then((res) => {
+            this.initDetail(this.$route.params.id).then((res) => {
                 this.couponParams = this.resData;
                 this.merchantName = this.resData.merchantName;
             });
