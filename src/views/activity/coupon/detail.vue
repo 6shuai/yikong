@@ -82,7 +82,7 @@ export default {
     },
     created() {
         if (this.$route.params.id) {
-            this.initDetail();
+            this.initDetail(this.$route.params.id);
         }
     },
     components: {
