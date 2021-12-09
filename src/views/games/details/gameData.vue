@@ -11,6 +11,7 @@
 
         <div class="del-btn">
             <el-button 
+                plain
                 v-if="contentParams.id"
                 type="danger"
                 size="small"

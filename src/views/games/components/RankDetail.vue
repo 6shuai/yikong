@@ -10,28 +10,17 @@
         <div class="filter-item">
             <el-form
                 :inline="true" 
-                label-width="100px"
+                label-width="120px"
             >
                 <el-form-item label="大屏">
                     <el-select 
+                        clearable
                         @change="handleSearch"
+                        @clear="$delete(params, 'screenId')"
                         v-model="params.screenId" 
                         placeholder="请选择大屏">
                         <el-option
-                            v-for="item in cycleData"
-                            :key="item.id"
-                            :label="item.displayName"
-                            :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="活动">
-                    <el-select 
-                        @change="handleSearch"
-                        v-model="params.activityId" 
-                        placeholder="请选择活动">
-                        <el-option
-                            v-for="item in cycleData"
+                            v-for="item in screenData"
                             :key="item.id"
                             :label="item.displayName"
                             :value="item.id">
@@ -40,20 +29,31 @@
                 </el-form-item>
                 <el-form-item label="子周期">
                     <el-select 
+                        clearable
                         @change="handleSearch"
+                        @clear="$delete(params, 'subcycleId')"
                         v-model="params.subcycleId" 
                         placeholder="请选择子周期">
                         <el-option
                             v-for="item in cycleData"
                             :key="item.id"
-                            :label="item.label"
+                            :label="item.displayName"
                             :value="item.id">
-                            <span style="float: left">{{ item.displayName }}</span>
+                            <!-- <span style="float: left">{{ item.displayName }}</span>
                             <span style="float: right; color: #8492a6; font-size: 13px">
                                 {{ formatTime(item.startTime) }} - {{ formatTime(item.endTime) }}
-                            </span>
+                            </span> -->
                         </el-option>
                     </el-select>
+                </el-form-item>
+
+                <el-form-item label="是否调试数据">
+                    <el-switch 
+                        @change="handleSearch"
+                        v-model="params.isDebugging"
+                        :active-value="1"
+                        :inactive-value="0"
+                    ></el-switch>
                 </el-form-item>
 
                 <el-form-item label="查询边界">
@@ -74,25 +74,6 @@
                         :min="0" 
                     ></el-input-number>
                 </el-form-item>
-                <el-form-item label="是否调试数据">
-                    <el-switch 
-                        @change="handleSearch"
-                        v-model="params.isDebugging"
-                        :active-value="1"
-                        :inactive-value="0"
-                    ></el-switch>
-                </el-form-item>
-                <el-form-item label=" ">
-                    <el-button 
-                        type="primary"
-                        size="small"
-                        icon="el-icon-search"
-                        @click="handleSearch"
-                    >
-                        搜索
-                    </el-button>
-                </el-form-item>
-
             </el-form>
         </div>
 
@@ -100,27 +81,31 @@
             <div class="rank-table">
                 <el-table
                     v-loading="tableLoading"
+                    border
                     stripe
                     size="small"
                     :data="resData"
                     row-key="id"
-                    border
                 >   
                     <el-table-column prop="id" label="头像" width="70">
                         <template slot-scope="scope">
                             <el-image
                                 class="cover"
-                                :src="scope.row.image"
+                                :src="scope.row.xfjMember.headimgurl"
                                 fit="cover"
                             >
                             </el-image>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        prop="nickname"
+                        prop="name"
                         label="昵称"
                         min-width="60"
-                    ></el-table-column>
+                    >
+                        <template slot-scope="scope">
+                            {{ scope.row.xfjMember.name }}
+                        </template>
+                    </el-table-column>
                     <el-table-column
                         prop="rankingValue"
                         label="排名"
@@ -136,6 +121,9 @@
                         label="手机"
                         min-width="60"
                     >
+                        <template slot-scope="scope">
+                            {{ scope.row.xfjMember.mobile }}
+                        </template>
                     </el-table-column>
                     <el-table-column
                         prop="gender"
@@ -143,32 +131,18 @@
                         min-width="50"
                     >
                         <template slot-scope="scope">
-                            <el-tag
-                                :type="scope.row.gender == 1 ? 'success' : 'info'"
-                                effect="dark">
-                                {{ scope.row.gender }}
-                            </el-tag>
+                            {{ scope.row.xfjMember.gender == 1 ? '男' : '女' }}
                         </template>
                     </el-table-column>
                 </el-table>
-
-                <!-- <el-pagination
-                    background
-                    layout="total, prev, pager, next, sizes"
-                    :page-sizes="[40, 80, 100]"
-                    :current-page="Number(params.pageNo)"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :total="totalCount"
-                >
-                </el-pagination> -->
+                
             </div>
         </el-scrollbar>
     </el-drawer>
 </template>
 
 <script>
-import { rankTempData } from '@/api/game';
+import { rankTempData, rankTempScreenList } from '@/api/game';
 import { timeDisposeTool } from '@/mixins';
 
 export default {
@@ -182,17 +156,28 @@ export default {
             resData: [],
             params: {},
             totalCount: 0,
-            cycleData: []        //子周期
+            cycleData: [],        //子周期
+            rankId: null,         //排行榜id
+            screenData: [],       //大屏列表
         }
     },
     methods: {
+        //排行榜详情
         init(){
             this.tableLoading = true;
             rankTempData(this.params).then(res => {
                 this.tableLoading = false;
                 if(res.code === this.$successCode){
-                    this.resData = res.obj;
+                    let { list } = res.obj;
+                    this.resData = list;
                 }
+            })
+        },
+
+        //屏幕列表
+        getScreenList(){
+            rankTempScreenList({ id: this.rankId }).then(res => {
+                this.screenData = res.obj
             })
         },
 
@@ -200,14 +185,16 @@ export default {
             let { id, displayName } = rankData;
             this.rankTitle = displayName;
             this.showRankDataDrawer = true;
+            this.rankId = id;
             this.cycleData = rankData.subcycles || [];
             this.params = {
                 border: 0,
                 queryNum: 10,
                 assemblyId: this.$route.params.gameId,
-                rankingListTemp: id
+                rankingListTemp: this.rankId
             }
             this.init();
+            this.getScreenList()
         },
 
         //搜索
@@ -220,6 +207,10 @@ export default {
 
 <style lang="scss" scope>
     .rank-detail-data{
+        .el-input-number{
+            width: 200px;
+        }
+
         .cover{
             width: 50px;
             height: 50px;

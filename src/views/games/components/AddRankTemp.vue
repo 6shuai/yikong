@@ -26,6 +26,7 @@
                     filterable
                     placeholder="请选择排行榜类型"
                     style="width: 100%"
+                    :disabled="rankParams.id ? true : false"
                 >
                     <el-option
                         v-for="item in rankTypeData"
@@ -48,7 +49,7 @@
             <el-form-item label="描述">
                 <el-input
                     type="textarea"
-                    :rows="2"
+                    :rows="4"
                     v-model="rankParams.description"
                     placeholder="描述"
                 ></el-input>
@@ -67,6 +68,7 @@
             </el-form-item>
             <el-form-item label="小数位数">
                 <el-input-number
+                    :disabled="rankParams.id ? true : false"
                     v-model="rankParams.decimalPlaces"
                     controls-position="right"
                     :min="0"
@@ -76,6 +78,7 @@
             </el-form-item>
             <el-form-item label="最大记录数">
                 <el-input-number
+                    :disabled="rankParams.id ? true : false"
                     v-model="rankParams.maxCount"
                     controls-position="right"
                     :min="1"
@@ -133,6 +136,7 @@ export default {
             });
 
             this.rankParams = {
+                decimalPlaces: 0,
                 maxCount: 1000,
                 assemblyId: this.$route.params.gameId,
                 ...data,

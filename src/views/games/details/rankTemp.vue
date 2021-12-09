@@ -122,13 +122,14 @@ export default {
             return this.$store.state.game.details;
         },
     },
-    created() {
-        this.init();
-        this.getRankTypeData();
+    mounted() {
+        this.tableLoading = true;
+        this.getRankTypeData().then(res => {
+            this.init();
+        });
     },
     methods: {
         init() {
-            this.tableLoading = true;
             rankTempList(this.params).then((res) => {
                 this.tableLoading = false;
                 this.resData = res.obj;

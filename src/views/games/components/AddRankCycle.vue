@@ -107,7 +107,9 @@
                             v-model="cycleParams.endTime"
                             value-format="yyyy-MM-dd HH:mm:ss"
                             format="yyyy-MM-dd HH:mm:ss"
-                            placeholder="起始时间"
+                            placeholder="结束时间"
+                            type="datetime"
+                            default-time="23:59:59"
                         >
                         </el-date-picker>
                     </el-form-item>
@@ -256,8 +258,7 @@ export default {
                     }
 
                     &.head{
-                        background: #f38181;
-                        color: #fff;
+                        background: #eaeaea;
                         border-radius: 4px;
                     }
                 }

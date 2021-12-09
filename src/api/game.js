@@ -82,6 +82,9 @@ export function rankTempSubcycleDetele(data) { return del(`/rankingListTemp/subc
 //排行榜管理  排行榜数据
 export function rankTempData(data) { return get('/rankingListTemp/rankingListData', data) }
 
+//排行榜管理  屏幕列表
+export function rankTempScreenList(data) { return get('/rankingListTemp/screen', data) }
+
 
 
 //查询资源 与 群组 相关联列表
