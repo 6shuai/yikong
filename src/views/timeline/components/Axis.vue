@@ -445,6 +445,11 @@ export default {
     methods: {
         //放置被拖数据时
         onAdd(data, Pindex) {
+            //是否有发布权限
+            if(!this.timelineData.publish){
+                return
+            }
+            
             //拖拽到当前位置的下标
             let index = data.newIndex;
 

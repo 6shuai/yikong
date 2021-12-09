@@ -2,7 +2,7 @@
     <el-card class="template-card content-details layout-detail">
         <page-header :title="resData.displayName">
             <div slot="headerRight">
-                <span 
+                <!-- <span 
                     @click="$router.push(`/screen/layout/edit/${$route.params.id}`)">
                     <i class="el-icon-edit" title="编辑"></i>编辑
                     <el-divider direction="vertical"></el-divider>
@@ -10,7 +10,7 @@
                 <span 
                     @click="handleDelete">
                     <i class="el-icon-delete" title="删除"></i>删除
-                </span>
+                </span> -->
             </div>
         </page-header>
 

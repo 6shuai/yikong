@@ -111,12 +111,14 @@ export default {
 
         //添加游戏
         handleAddGame(){
-            this.$router.push(`/games/details/${this.$route.params.id}/gameData`)
+            this.$router.push(`/games/details/${this.$route.params.id}/gameData/0`)
         },
 
         //编辑
         handleEdit(id) {
-            this.$router.push(`/games/details/${this.$route.params.id}/gameData/${id}`)
+            if(this.gameDetail.editAssembly){
+                this.$router.push(`/games/details/${this.$route.params.id}/gameData/${id}`)
+            }
         },
 
         //每页条数
