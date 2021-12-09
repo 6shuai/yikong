@@ -92,7 +92,10 @@
         <add-rank-temp ref="addRankTemp" @createdSuccess="init"></add-rank-temp>
 
         <!-- 添加子周期 -->
-        <add-rank-cycle ref="subCycle"></add-rank-cycle>
+        <add-rank-cycle 
+            ref="subCycle"
+            @changeCycle="init()"
+        ></add-rank-cycle>
 
         <!-- 排行榜数据 -->
         <rank-detail ref="rankDetail"></rank-detail>

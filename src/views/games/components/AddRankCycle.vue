@@ -183,6 +183,7 @@ export default {
                             this.$message.success('创建成功~');
                             this.showCycleDialog = false;
                             this.detail.subcycles.push(res.obj);
+                            this.$emit('changeCycle')
                         }
                     })
                 }
@@ -196,6 +197,7 @@ export default {
                     this.$refs[id][0].doClose();
                     this.$message.success('删除成功~');
                     this.detail.subcycles.splice(index, 1);
+                    this.$emit('changeCycle')
                 }
             })
         }
