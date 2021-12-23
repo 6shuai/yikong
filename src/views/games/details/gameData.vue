@@ -33,6 +33,7 @@
             >
             </el-tab-pane>
             <el-tab-pane 
+                :disabled="!contentParams.id"
                 label="排行榜管理" 
                 :name="`/games/details/${$route.params.id}/gameData/${$route.params.gameId}/rank`"
             >
@@ -204,6 +205,27 @@
                                 </el-link>
                             </div>
                         </el-form-item>
+
+                        <el-form-item label="排行榜" v-if="contentParams.id">
+                            <el-tag 
+                                type="primary" 
+                                pain
+                                class="mr10"
+                                v-for="(item, index) in contentParams.rankingListTemps"
+                                :key="index"
+                            >
+                                {{ item.displayName }}
+                            </el-tag>
+                            <div class="el-link-add-btn">
+                                <el-link 
+                                    type="primary"
+                                    @click="$refs.addRankTemp.showDialog()"
+                                >
+                                    添加排行榜
+                                </el-link>
+                            </div>
+                        </el-form-item>
+
                         <el-form-item label="">
                             <el-button 
                                 type="primary" 
@@ -233,6 +255,12 @@
             @handleCreatedActivityCall="handleCreatedActivityCall"
         ></game-add-activity>
 
+        <!-- 添加排行榜模板 -->
+        <add-rank-temp
+            ref="addRankTemp"
+            @rankTemplateCreatedSuccsss="getDetail"
+        ></add-rank-temp>
+
     </el-card>
 </template>
 
@@ -251,6 +279,7 @@ import AdverList from '../components/AdverList';
 import ActivityList from '../components/ActivityList';
 import GameAddCutinAdver from './components/GameAddCutinAdver';
 import GameAddActivity from './components/GameAddActivity';
+import AddRankTemp from '@/views/games/components/AddRankTemp';
 
 export default {
     mixins: [getOrganizationList, getAspectRatio],
@@ -346,7 +375,7 @@ export default {
             });
 
             //获取详情
-            if (id) {
+            if (id > 0) {
                 this.loading = true;
                 this.getDetail(id);
             }
@@ -384,7 +413,7 @@ export default {
         },
 
         //游戏详情
-        getDetail(id) {
+        getDetail(id = this.$route.params.gameId) {
             gameDataDetail(id).then((res) => {
                 this.loading = false;
                 if (res.code === this.$successCode && res.obj) {
@@ -451,6 +480,9 @@ export default {
         tabsHandleClick(tab){
             this.currentActive = tab.name;
             this.$router.push(tab.name)
+            if(tab.name == `/games/details/${this.$route.params.id}/gameData/${this.$route.params.gameId}`){
+                this.init()
+            }
         }
     },
     components: {
@@ -458,7 +490,8 @@ export default {
         AdverList,
         ActivityList,
         GameAddCutinAdver,
-        GameAddActivity
+        GameAddActivity,
+        AddRankTemp
     },
 };
 </script>

@@ -89,7 +89,10 @@
         </el-table>
 
         <!-- 添加排行榜模板-->
-        <add-rank-temp ref="addRankTemp" @createdSuccess="init"></add-rank-temp>
+        <add-rank-temp 
+            ref="addRankTemp" 
+            @rankTemplateCreatedSuccsss="init"
+        ></add-rank-temp>
 
         <!-- 添加子周期 -->
         <add-rank-cycle 

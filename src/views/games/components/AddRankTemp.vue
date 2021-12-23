@@ -1,6 +1,5 @@
 <template>
     <el-dialog
-        class="add-game-data"
         :title="rankParams.id ? '编辑排行榜模板' : '创建排行榜模板'"
         :visible.sync="dialogVisible"
         width="600px"
@@ -100,7 +99,8 @@
 </template>
 
 <script>
-import { rankTempCreated } from "@/api/game";
+import { rankTempCreated, rankTempTypeList } from "@/api/game";
+
 export default {
     data() {
         return {
@@ -130,7 +130,11 @@ export default {
     methods: {
         showDialog(rankTypeList, data) {
             this.dialogVisible = true;
-            this.rankTypeData = rankTypeList;
+            if(rankTypeList){
+                this.rankTypeData = rankTypeList;
+            }else{
+                this.getRankTypeData()
+            }
             this.$nextTick(() => {
                 this.$refs["addRankTempForm"].clearValidate();
             });
@@ -155,12 +159,20 @@ export default {
                                 this.rankParams.id ? "创建成功~" : "编辑成功~"
                             );
                             this.dialogVisible = false;
-                            this.$parent.init();
+                            this.$emit('rankTemplateCreatedSuccsss')
                         }
                     });
                 }
             });
         },
-    },
+
+        //排行榜类型
+        getRankTypeData() {
+            if(this.rankTypeData.length) return
+            rankTempTypeList().then((res) => {
+                this.rankTypeData = res.obj;
+            });
+        }
+    }
 };
 </script>
