@@ -1,12 +1,12 @@
 import { get, post, put, del } from '@/utils/request'
 
-//内容管理 资源类型列表
+//内容管理 内容类型列表
 export function getContentTypeList(data) { return get('/public/contentType', data) }
 
-//内容管理 资源列表
+//内容管理 内容列表
 export function contentList(data) { return get('/content/', data) }
 
-//内容管理 添加资源
+//内容管理 添加内容
 export function contentCreated(data) { return post('/content/', data) }
 
 //内容管理  获取所有直播协议
@@ -19,7 +19,7 @@ export function contentDelete(data) { return del(`/content/${data}`) }
 //内容管理  收藏 或 取消收藏
 export function contentFavorite(data) { return put(`/content/isFavorite${data}`) }
 
-//内容管理  查询资源详情
+//内容管理  查询内容详情
 export function contentDetail(data) { return get(`/content/contentDetail/${data}`) }
 
 //内容管理  添加或修改播放限制
@@ -31,10 +31,10 @@ export function contentPlayLimitDelete(data) { return del(`/content/playbackRest
 //内容管理  添加或修改播放计划
 export function contentPlayPlanCreated(data) { return post('/content/playPlan', data) }
 
-//内容管理 添加图集 分页查询所有资源
+//内容管理 添加图集 分页查询所有内容
 export function contentListPage(data) { return get('/content/queryForPage', data) }
 
-//内容管理 删除图集 资源引用
+//内容管理 删除图集 内容引用
 export function atlasDeleteContent(data) { return del(`/content/atlas/${data}`) }
 
 //内容管理  游戏预览
@@ -43,13 +43,13 @@ export function contentGamePreview(data) { return get('/content/previewGame', da
 
 
 
-//查询资源 与 群组 相关联列表
+//查询内容 与 群组 相关联列表
 export function contentAuthority(data) { return get('/content/groupContent', data) }
 
-//添加资源 与 群组关联
+//添加内容 与 群组关联
 export function contentAuthorityUpdate(data) { return post('/content/groupContent', data) }
 
-//删除资源 与 群组关联
+//删除内容 与 群组关联
 export function contentAuthorityDelete(data) { return del(`/content/groupContent${data}`) }
 
 
@@ -90,3 +90,10 @@ export function contentCouponStatistics(data) { return get('/content/couponStati
 
 //优惠券统计详情
 export function contentCouponStatisticsDetail(data) { return get('/content/couponStatisticsDetail', data) }
+
+//内容播放数据统计
+export function contentPlayStatistics(data) { return get('/content/playStatisticsCountAndDuration', data) }
+
+//内容播放数据统计
+export function contentPlayStatisticsDetail(data) { return get('/content/playStatisticsDetail', data) }
+

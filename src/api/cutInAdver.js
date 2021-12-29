@@ -40,12 +40,12 @@ export function updateScreenAdvTimeline(data) { return put('/spot/spotStageMap',
 
 
 
-//查询资源 与 群组 相关联列表
+//查询内容 与 群组 相关联列表
 export function cutInAdverAuthority(data) { return get('/spot/groupSpot', data) }
 
-//添加资源 与 群组关联
+//添加内容 与 群组关联
 export function cutInAdverAuthorityUpdate(data) { return post('/spot/groupSpot', data) }
 
-//删除资源 与 群组关联
+//删除内容 与 群组关联
 export function cutInAdverAuthorityDelete(data) { return del(`/spot/groupSpot${data}`) }
 

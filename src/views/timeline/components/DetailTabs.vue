@@ -1,14 +1,14 @@
 <template>
     <div class="left-wrap">
         <el-tabs type="card" class="el-tabs" v-model="tabActive">
-            <el-tab-pane label="资源选择" name="1"></el-tab-pane>
+            <el-tab-pane label="内容选择" name="1"></el-tab-pane>
             <el-tab-pane label="投放屏幕" name="2"></el-tab-pane>
             <el-tab-pane label="定时发布" name="3"></el-tab-pane>
         </el-tabs>
 
         <div class="tabs-content">
 
-            <!-- 资源选择 -->
+            <!-- 内容选择 -->
             <content-list v-if="tabActive==1"></content-list>
             
             <!-- 投放屏幕 -->

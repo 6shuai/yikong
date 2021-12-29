@@ -1,4 +1,5 @@
-import { contentFavorite, contentDetail } from '@/api/content';
+import { contentFavorite, contentDetail, contentPlaceList } from '@/api/content'
+import store from '@/store/index'
 
 //收藏 或 取消收藏
 export const contentIsFavorite = {
@@ -14,7 +15,27 @@ export const contentIsFavorite = {
     },
 }
 
-//获取场所详情
+//获取场所列表
+export const contentPlaceData = {
+    data(){
+        return {
+            placeData: []
+        }
+    },
+    mounted() {
+        let data = store.state.user.placeData
+        if(data && data.length){
+            this.placeData = data
+            return
+        }
+        contentPlaceList().then(res => {
+            this.placeData = res.obj
+            store.state.user.placeData = res.obj
+        })
+    }
+}
+
+//获取内容详情
 export const contentDetailData = {
     data(){
         return{

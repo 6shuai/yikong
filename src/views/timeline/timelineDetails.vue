@@ -35,7 +35,7 @@
             class="timeline-content clearfix"
             :style="{ bottom: 366 }"
         >
-            <!-- 左侧tab栏 资源选择  投放屏幕 -->
+            <!-- 左侧tab栏 内容选择  投放屏幕 -->
             <div class="left-tabs">
                 <left-tabs :timeData="resData"></left-tabs>
             </div>
@@ -167,7 +167,7 @@ export default {
             startTime: "", //时间轴开始时间
             endTime: "", //时间轴结束时间
             dialogVisible: false,
-            previewData: {}, //点击资源  预览的数据
+            previewData: {}, //点击内容  预览的数据
             loading: false,
             ratio: 0, //与原始宽高比例
             rectangleW: 480, //编辑区域的宽

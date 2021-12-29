@@ -2,10 +2,10 @@
     <div class="template-card">
         <el-card shadow="never">
             <div slot="header" class="clearfix">
-                资源角色管理
+                内容角色管理
             </div>
             <div class="top-operation-wrap">
-                <el-button size="small" type="primary" icon="el-icon-plus" @click="$refs.addRole.showDialog({})">添加资源角色</el-button>
+                <el-button size="small" type="primary" icon="el-icon-plus" @click="$refs.addRole.showDialog({})">添加内容角色</el-button>
             </div>
             <el-table
                 v-loading="tLoading"
@@ -22,7 +22,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="displayName"
-                    label="资源角色名称"
+                    label="内容角色名称"
                     min-width="180">
                 </el-table-column>
                 <el-table-column
@@ -48,7 +48,7 @@
                             placement="top"
                             :ref="scope.row.id"
                             width="200">
-                            <p>此操作将永久删除此资源角色【{{scope.row.displayName}}】, 是否继续?</p>
+                            <p>此操作将永久删除此内容角色【{{scope.row.displayName}}】, 是否继续?</p>
                             <div style="text-align: right; margin: 0">
                                 <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
                                 <el-button type="primary" size="mini" @click="delCurrentRole(scope.row.id)">确定</el-button>
@@ -68,7 +68,7 @@
 
             <!-- 角色授权 -->
             <el-dialog
-                title="资源角色权限"
+                title="内容角色权限"
                 :visible.sync="roleAutDialog"
                 :close-on-click-modal="false"
                 :close-on-press-escape="false"

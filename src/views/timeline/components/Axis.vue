@@ -517,7 +517,7 @@ export default {
         //保存时间轴
         saveTimeline(Pindex, contentIndex) {
             let data = [];
-            //contentIndex  保存单个资源
+            //contentIndex  保存单个内容
             if (contentIndex) {
                 let obj = this.rectangleData[Pindex][contentIndex];
                 data = [
@@ -612,10 +612,10 @@ export default {
 
         },
 
-        //删除时间轴  资源
+        //删除时间轴  内容
         deleteCurrentTimeline(Pindex, index, id) {
             this.$confirm(
-                `此操作将删除资源【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`,
+                `此操作将删除内容【${this.rectangleData[Pindex][index].displayName}】, 是否继续?`,
                 "提示",
                 {
                     confirmButtonText: "确定",
@@ -637,7 +637,7 @@ export default {
                 .catch(() => {});
         },
 
-        //删除时间轴 资源 接口
+        //删除时间轴 内容 接口
         deleteTimelineContent(data, Pindex, index, type) {
             timelineDelete(data).then((res) => {
                 this.deleteLoading = false;
@@ -793,7 +793,7 @@ export default {
                 return;
             }
             this.$confirm(
-                `此操作将删除已选时间轴的全部资源, 是否继续?`,
+                `此操作将删除已选时间轴的全部内容, 是否继续?`,
                 "提示",
                 {
                     confirmButtonText: "确定",

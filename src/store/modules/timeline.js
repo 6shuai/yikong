@@ -1,6 +1,6 @@
 const state = {
-    dragData: {},               //资源选择 ， 正在拖拽的资源数据
-    screenLayoutData: [],       //资源布局 数据
+    dragData: {},               //内容选择 ， 正在拖拽的内容数据
+    screenLayoutData: [],       //内容布局 数据
     screenSize: {},             //屏幕尺寸  真实宽高
 }
 

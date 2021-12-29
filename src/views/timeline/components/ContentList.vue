@@ -18,7 +18,7 @@
         <el-input
           clearable
           size="small"
-          placeholder="资源名称"
+          placeholder="内容名称"
           v-model="params.displayName"
           @input="handleSearch"
         ></el-input>
@@ -178,7 +178,7 @@ export default {
     return {
       contentData: [],
       dialogVisible: false, //显示预览弹框
-      previewData: {}, //点击资源  预览的数据
+      previewData: {}, //点击内容  预览的数据
       loading: false,
       dragOption: {
         fallbackOnBody: false,
@@ -186,7 +186,7 @@ export default {
         scrollSpeed: 20,
       },
       contentType: 1,
-      contentTotal: 0, //资源总数
+      contentTotal: 0, //内容总数
       params: {
         pageNo: 1,
         pageSize: 50,
@@ -210,7 +210,7 @@ export default {
       });
     },
 
-    //选择资源类型
+    //选择内容类型
     handleClickTab() {
       if (this.params.contentType == 6) {
         this.clipboardList();

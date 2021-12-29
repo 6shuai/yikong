@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        :title="addParams.id ? '编辑资源角色' : '添加资源角色'"
+        :title="addParams.id ? '编辑内容角色' : '添加内容角色'"
         :visible.sync="addRoleDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"

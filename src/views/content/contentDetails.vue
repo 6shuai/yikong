@@ -1,6 +1,9 @@
 <template>
     <el-card class="template-card content-details">
-        <page-header :title="resData.displayName">
+        <page-header 
+            :title="resData.displayName"
+            backPath="/content/index"
+        >
             <div slot="headerRight">
                 <span 
                     v-if="resData.authorize"
@@ -32,7 +35,19 @@
                 </span>
             </div>
         </page-header>
-        <div class="content">
+
+        <el-tabs 
+            v-model="tabActiveName" 
+            class="mb20"
+            @tab-click="handleTab"
+        >
+            <el-tab-pane label="基本信息" :name="`/content/details/${$route.params.id}`"></el-tab-pane>
+            <!-- 监播数据 -->
+            <el-tab-pane label="次数统计" :name="`/content/details/${$route.params.id}/count`"></el-tab-pane>
+            <el-tab-pane label="时间统计" :name="`/content/details/${$route.params.id}/time`"></el-tab-pane>
+        </el-tabs>     
+    
+        <div class="content" v-show="tabActiveName === `/content/details/${$route.params.id}`">
             <div class="resource-wrap clearfix">
                 <div class="left">
                     <content-preview ref="contentPreview"></content-preview>
@@ -156,6 +171,8 @@
 
         </div>
 
+        <router-view v-if="tabActiveName != `/content/details/${$route.params.id}`"></router-view>
+
         <!-- 编辑播放限制 -->
         <play-limit 
             ref="playLimit" 
@@ -175,6 +192,8 @@
             ref="pagePermission" 
             :premissionApi="premissionApi"
         ></permission>
+
+
         
     </el-card>
 </template>
@@ -203,7 +222,8 @@ export default {
                 list: contentAuthority,
                 update: contentAuthorityUpdate,
                 delete: contentAuthorityDelete
-            }
+            },
+            tabActiveName: `/content/details/${this.$route.params.id}`
         }
     },
     computed: {
@@ -212,6 +232,7 @@ export default {
         }
     },
     mounted() {
+        this.tabActiveName = this.$route.path
         this.hasPagePerm('Content').then(res => {
             if(res){
                 new Promise((resolve) => {
@@ -325,6 +346,11 @@ export default {
                     contentId: this.$route.params.id
                 }
             });
+        },
+
+        //切换tab
+        handleTab(){
+            this.$router.push(this.tabActiveName)
         }
     },
     components: {

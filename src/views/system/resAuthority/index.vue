@@ -1,14 +1,14 @@
 <template>
     <div class="template-card">
         <el-card shadow="never">
-            <div slot="header" class="clearfix">资源权限</div>
+            <div slot="header" class="clearfix">内容权限</div>
             <div class="top-operation-wrap">
                 <el-button
                     size="small"
                     type="primary"
                     icon="el-icon-plus"
                     @click="$refs.addAuth.addAuthDialog = true"
-                    >添加资源权限</el-button
+                    >添加内容权限</el-button
                 >
             </div>
             <el-table

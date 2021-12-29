@@ -24,7 +24,7 @@ export function groupAddMember(data) { return post('/resourceGroup/resourceGroup
 export function groupMemberDelete(data) { return del(`/resourceGroup/resourceGroupUser${data}`) }
 
 
-//权限群组管理  查询所有资源角色
+//权限群组管理  查询所有内容角色
 export function groupResRole(data) { return get('/resourceGroup/resourceRole', data) }
 
 //权限群组管理  某个成员的角色列表

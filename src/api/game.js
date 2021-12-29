@@ -87,13 +87,13 @@ export function rankTempScreenList(data) { return get('/rankingListTemp/screen',
 
 
 
-//查询资源 与 群组 相关联列表
+//查询内容 与 群组 相关联列表
 export function gameAuthority(data) { return get('/gameApplication/groupApplication', data) }
 
-//添加资源 与 群组关联
+//添加内容 与 群组关联
 export function gameAuthorityUpdate(data) { return post('/gameApplication/groupApplication', data) }
 
-//删除资源 与 群组关联
+//删除内容 与 群组关联
 export function gameAuthorityDelete(data) { return del(`/gameApplication/groupApplication${data}`) }
 
 

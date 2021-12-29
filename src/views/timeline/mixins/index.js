@@ -1,6 +1,6 @@
 export const timelineFunc = {
     methods: {
-        //更新 查找资源的开始时间
+        //更新 查找内容的开始时间
         updateStartTime(time, duration) {
             duration = Math.ceil(duration)
             if(!time) return
@@ -81,7 +81,7 @@ export const timelineFunc = {
             return number < 10 ? "0" + number : number;
         },
 
-        //时间轴资源 自动寻位
+        //时间轴内容 自动寻位
         timelineForeachFind(resolve, Pindex, stageStarTime) {
             let obj = this.rectangleData[Pindex];
             let isOverlap = false;
@@ -96,27 +96,27 @@ export const timelineFunc = {
                 let item = obj[key];
                 let index = Number(key);
 
-                //当前资源的开始时间
+                //当前内容的开始时间
                 let currentStartTime = item.beginTime;
 
-                //当前资源的结束时间
+                //当前内容的结束时间
                 let currentEndTime = item.endTime;
 
-                //下一个资源
+                //下一个内容
                 let nextData = obj[index + 1];
 
-                //下一个资源的开始时间
+                //下一个内容的开始时间
                 let nextStarTime =
                     index === obj.length - 1 ? " " : nextData.beginTime;
 
-                //上一个资源
+                //上一个内容
                 let prevData = obj[index - 1];
 
-                //上一个资源的开始时间
+                //上一个内容的开始时间
                 let prevStartTime =
                     index == 0 ? stageStarTime : prevData.beginTime;
 
-                //上一个资源的结束时间
+                //上一个内容的结束时间
                 let prevEndTime =
                     index == 0 ?
                     stageStarTime :
@@ -128,7 +128,7 @@ export const timelineFunc = {
                 //相差时间 秒
                 let diffNum = 0;
 
-                //当前资源 开始时间 和 上一个资源时间重叠
+                //当前内容 开始时间 和 上一个内容时间重叠
                 if (
                     this.timeDifference(prevEndTime, currentStartTime) < 0
                 ) {
@@ -139,7 +139,7 @@ export const timelineFunc = {
                     // console.log("重叠---------,", diffNum, currentStartTime, prevEndTime);
                 }
 
-                //当前资源 开始时间 未紧跟上一个结束时间
+                //当前内容 开始时间 未紧跟上一个结束时间
                 if (
                     this.timeDifference(prevEndTime, currentStartTime) > 0
                 ) {
@@ -149,11 +149,11 @@ export const timelineFunc = {
                     );
                 }
 
-                //游戏资源
+                //游戏内容
                 // if (item.contentTypeId == this.contentTypeId.game) {
-                //     //游戏资源的开始时间 和 上一个资源重叠
+                //     //游戏内容的开始时间 和 上一个内容重叠
                 //     if (diffNum > 0) {
-                //         //把上一个资源的 结束时间改成 到当前游戏的开始时间
+                //         //把上一个内容的 结束时间改成 到当前游戏的开始时间
                 //         obj[index - 1] = {
                 //             ...prevData,
                 //             endTime: currentStartTime,
@@ -161,7 +161,7 @@ export const timelineFunc = {
                 //             duration: prevData.duration - diffNum,
                 //         };
 
-                //         //把上一个资源剩余的 时间 放到游戏的后面
+                //         //把上一个内容剩余的 时间 放到游戏的后面
                 //         let obj1 = obj;
                 //         let j = index + 1;
                 //         for (let i = 0; i < obj1.length; i++) {
@@ -200,7 +200,7 @@ export const timelineFunc = {
                 //     }
 
                 //     if (diffNum < 0 && index != obj.length - 1) {
-                //         //把下一个资源挪到 游戏资源的前面
+                //         //把下一个内容挪到 游戏内容的前面
                 //         let obj1 = obj;
                 //         let j = index;
                 //         for (let i = 0; i < obj1.length; i++) {
@@ -222,7 +222,7 @@ export const timelineFunc = {
                 //             currentStartTime
                 //         );
 
-                //         //时间段  小于 这个资源的秒数   修改这个资源的结束时间  和 秒数
+                //         //时间段  小于 这个内容的秒数   修改这个内容的结束时间  和 秒数
                 //         if (count <= obj[j].duration) {
                 //             obj[j] = {
                 //                 ...obj[j],
@@ -235,7 +235,7 @@ export const timelineFunc = {
                 //             };
                 //         }
 
-                //         //单独创建一个资源  插入到游戏资源前面
+                //         //单独创建一个内容  插入到游戏内容前面
                 //         console.log(obj[j], obj[j].duration)
                 //         obj.splice(index, 0, {
                 //             ...obj[j],

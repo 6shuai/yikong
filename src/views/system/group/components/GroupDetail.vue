@@ -150,7 +150,7 @@ export default {
             })
         },
 
-        //资源角色
+        //内容角色
         resRole(){
             return new Promise((resolve) => {
                 groupResRole().then(res => {

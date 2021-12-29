@@ -12,13 +12,13 @@ export function timelineContainerList(data) { return get('/timeline/timelineCont
 //时间轴 时间轴容器 删除
 export function timelineContainerDelete(data) { return del(`/timeline/timelineContainer/${data}`) }
 
-//时间轴 详情页 - 资源选择 - 获取所有资源
+//时间轴 详情页 - 内容选择 - 获取所有内容
 export function timelineContentList(data) { return get('/timeline/content', data) }
 
-//时间轴 详情页 - 资源选择 - 获取所有图集资源
+//时间轴 详情页 - 内容选择 - 获取所有图集内容
 export function timelineAtlasContentList(data) { return get('/timeline/atlasContent', data) }
 
-//时间轴 详情页 - 资源选择 - 获取所有游戏 列表
+//时间轴 详情页 - 内容选择 - 获取所有游戏 列表
 export function timelineGameList(data) { return get('/timeline/applicationContent', data) }
 
 //时间轴 详情页 - 投放屏幕 - 获取所有的屏幕列表
@@ -106,13 +106,13 @@ export function timelineRegionUpdate(data) { return put('/timeline/timelineRegio
 
 
 
-//查询资源 与 群组 相关联列表
+//查询内容 与 群组 相关联列表
 export function timelineAuthority(data) { return get('/timeline/groupTimeline', data) }
 
-//添加资源 与 群组关联
+//添加内容 与 群组关联
 export function timelineAuthorityUpdate(data) { return post('/timeline/groupTimeline', data) }
 
-//删除资源 与 群组关联
+//删除内容 与 群组关联
 export function timelineAuthorityDelete(data) { return del(`/timeline/groupTimeline${data}`) }
 
 

@@ -7,6 +7,9 @@ const state = {
 	name: "",
 	avatar: "",
 	loginData: localStorage.loginData ? JSON.parse(localStorage.loginData) : {},
+
+	//场所列表
+	placeData: []
 };
 
 const mutations = {

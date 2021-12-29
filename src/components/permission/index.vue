@@ -2,7 +2,7 @@
     <!-- 操作权限授权 -->
     <el-dialog
         class="res-auth-group-list"
-        title="资源所属权限群组列表"
+        title="内容所属权限群组列表"
         :visible.sync="dialogVisible"
         width="1200px"
     >   

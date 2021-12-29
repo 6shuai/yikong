@@ -50,13 +50,13 @@ export function unboundScreen(data) { return del(`/screen/bindScreen/${data}`) }
 
 
 
-//查询资源 与 群组 相关联列表
+//查询内容 与 群组 相关联列表
 export function screenAuthority(data) { return get('/screen/groupScreen', data) }
 
-//添加资源 与 群组关联
+//添加内容 与 群组关联
 export function screenAuthorityUpdate(data) { return post('/screen/groupScreen', data) }
 
-//删除资源 与 群组关联
+//删除内容 与 群组关联
 export function screenAuthorityDelete(data) { return del(`/screen/groupScreen${data}`) }
 
 

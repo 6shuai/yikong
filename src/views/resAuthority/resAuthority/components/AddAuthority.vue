@@ -1,7 +1,7 @@
 <template>
     <!-- 添加权限 编辑权限 -->
     <el-dialog
-        :title="addParams.id ? '编辑资源权限' : '添加资源权限'"
+        :title="addParams.id ? '编辑内容权限' : '添加内容权限'"
         :visible.sync="addAuthDialog"
         :before-close="handleClose"
         :close-on-click-modal="false"
@@ -103,8 +103,8 @@ export default {
                 this.handleClose();
                 this.$message.success(
                     this.addParams.id
-                        ? "编辑资源权限成功~"
-                        : "添加资源权限成功~"
+                        ? "编辑内容权限成功~"
+                        : "添加内容权限成功~"
                 );
             }
         },
