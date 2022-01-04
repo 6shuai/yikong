@@ -47,7 +47,7 @@ export function parseTime(time, cFormat) {
  * @returns {string}
  */
 export function formatTime(time, type) {
-	var date = new Date(time);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+	var date = new Date(time);    //时间戳为10位需*1000，时间戳为13位的话不需乘1000
 	var Y = date.getFullYear() + '-';
 	var M = addZero(date.getMonth()+1) + '-';
 	var D = addZero(date.getDate()) + ' ';

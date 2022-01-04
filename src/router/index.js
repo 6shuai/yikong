@@ -1,10 +1,16 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import placeRoutes  from './place'
 import screenRoutes from './screen'
 import contentRoutes from './content'
+import timelineRoutes from './timeline'
 import gameRoutes from './game'
 import activityRoutes from './activity'
+import merchantRoutes from './merchant'
+import layoutRoutes from './layout'
+import adverRoutes from './adver'
+
 Vue.use(Router)
 
 /* Layout */
@@ -129,270 +135,10 @@ export const constantRoutes = [{
 		hidden: true
 	},
 
-	//场所管理  创建场所
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '场所管理'
-		},
-		children: [{
-			path: '/place/add',
-			name: 'Place--add',
-			component: () => import('@/views/place/PlaceAdd'),
-			meta: {
-				title: '创建场所'
-			}
-		}],
-		hidden: true
-	},
-
-	//场所管理  编辑场所
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '场所管理'
-		},
-		children: [{
-			path: '/place/edit/:id',
-			name: 'Place--edit',
-			component: () => import('@/views/place/PlaceAdd'),
-			meta: {
-				title: '编辑场所'
-			}
-		}],
-		hidden: true
-	},
-
-	//场所管理  详情页
-	{
-		path: '/',
-		component: Layout,
-		children: [{
-			path: '/place/details/:id',
-			name: 'Place--details',
-			component: () => import('@/views/place/PlaceDetails'),
-			meta: {
-				title: '场所详情'
-			}
-		}],
-		hidden: true
-	},
-
-	//时间轴  创建
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '时间轴'
-		},
-		children: [{
-			path: '/timeline/add',
-			name: 'Timeline--add',
-			component: () => import('@/views/timeline/timelineAdd'),
-			meta: {
-				title: '创建时间轴'
-			}
-		}],
-		hidden: true
-	},
-
-	//时间轴  编辑
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '时间轴'
-		},
-		children: [{
-			path: '/timeline/edit/:id',
-			name: 'Timeline--edit',
-			component: () => import('@/views/timeline/timelineAdd'),
-			meta: {
-				title: '编辑时间轴'
-			}
-		}],
-		hidden: true
-	},
-
-	//时间轴  详情
-	{
-		path: '/timeline/details/:id',
-		name: 'Timeline--details',
-		component: () => import('@/views/timeline/timelineDetails'),
-		meta: {
-			title: '时间轴详情'
-		},
-		hidden: true
-	},
 
 
-	//屏幕布局 创建
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '屏幕布局'
-		},
-		children: [{
-			path: '/screen/layout/add',
-			name: 'Layout--add',
-			component: () => import('@/views/screenLayout/components/AddScreenLayout'),
-			meta: {
-				title: '屏幕布局 - 创建'
-			},
-		}],
-		hidden: true
-	},
-
-
-	//屏幕布局 编辑
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '屏幕布局'
-		},
-		children: [{
-			path: '/screen/layout/edit/:id',
-			name: 'Layout--edit',
-			component: () => import('@/views/screenLayout/components/AddScreenLayout'),
-			meta: {
-				title: '屏幕布局 - 编辑'
-			},
-		}],
-		hidden: true
-	},
-
-
-	//屏幕布局 详情
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '屏幕布局详情'
-		},
-		children: [{
-			path: '/screen/layout/detail/:id',
-			name: 'Layout--detail',
-			component: () => import('@/views/screenLayout/detail'),
-			meta: {
-				title: '屏幕布局 - 详情'
-			},
-		}],
-		hidden: true
-	},
-
-
-	//插播广告 创建
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '插播广告'
-		},
-		children: [{
-			path: '/cutInAdver/add',
-			name: 'CutInAdver--add',
-			component: () => import('@/views/cutInAdver/add'),
-			meta: {
-				title: '插播广告 - 创建'
-			},
-		}],
-		hidden: true
-	},
-
-	//插播广告 编辑
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '插播广告'
-		},
-		children: [{
-			path: '/cutInAdver/edit/:id',
-			name: 'CutInAdver--edit',
-			component: () => import('@/views/cutInAdver/add'),
-			meta: {
-				title: '插播广告 - 编辑'
-			},
-		}],
-		hidden: true
-	},
-
-
-	//插播广告 详情
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '插播广告'
-		},
-		children: [{
-			path: '/cutInAdver/:adverId',
-			name: 'CutInAdver--detail',
-			component: () => import('@/views/cutInAdver/detail'),
-			meta: {
-				title: '插播广告 - 详情'
-			},
-		}],
-		hidden: true
-	},
-
-	// 商户管理 - 添加商户
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '商户管理'
-		},
-		children: [{
-			path: '/merchant/add',
-			name: 'Merchant--add',
-			component: () => import('@/views/merchant/MerchantAdd'),
-			meta: {
-				title: '商户管理 - 添加商户'
-			},
-		}],
-		hidden: true
-	},
-
-	// 商户管理 - 编辑商户
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '商户管理'
-		},
-		children: [{
-			path: '/merchant/edit/:id',
-			name: 'Merchant--edit',
-			component: () => import('@/views/merchant/MerchantAdd'),
-			meta: {
-				title: '商户管理 - 编辑商户'
-			},
-		}],
-		hidden: true
-	},
-
-	// 商户管理 - 商户详情
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '商户管理'
-		},
-		children: [{
-			path: '/merchant/detail/:id',
-			name: 'Merchant--detail',
-			component: () => import('@/views/merchant/MerchantDetail'),
-			meta: {
-				title: '商户管理 - 商户详情'
-			},
-		}],
-		hidden: true
-	},
+	// 场所管理
+	...placeRoutes,
 
 	// 屏幕管理
 	...screenRoutes,
@@ -400,11 +146,23 @@ export const constantRoutes = [{
 	// 内容管理
 	...contentRoutes,
 
+	// 时间轴管理
+	...timelineRoutes, 
+
 	//游戏管理
 	...gameRoutes, 
 
 	//活动管理
-	...activityRoutes  
+	...activityRoutes,
+
+	//商户管理
+	...merchantRoutes,
+
+	// 屏幕布局
+	...layoutRoutes,
+
+	// 插播广告
+	...adverRoutes
 
 ]
 

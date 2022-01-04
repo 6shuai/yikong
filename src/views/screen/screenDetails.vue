@@ -1,7 +1,10 @@
 <template>
     <el-card class="template-card screen-details" v-loading="loading">
 
-        <page-header :title="resData.displayName">
+        <page-header 
+            :title="resData.displayName"
+            backPath="/screen/index"
+        >
             <div slot="headerRight" v-if="resData">
                 <span @click="$refs.pagePermission.showPermission({screenId: $route.params.id})"
                     v-if="resData.authorize"
