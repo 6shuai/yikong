@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import screenRoutes from './screen'
+import contentRoutes from './content'
 import gameRoutes from './game'
 import activityRoutes from './activity'
 Vue.use(Router)
@@ -178,145 +180,6 @@ export const constantRoutes = [{
 		hidden: true
 	},
 
-	//屏幕管理  创建大屏
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '屏幕管理'
-		},
-		children: [{
-			path: '/screen/add',
-			name: 'Screen--add',
-			component: () => import('@/views/screen/ScreenAdd'),
-			meta: {
-				title: '创建大屏'
-			}
-		}],
-		hidden: true
-	},
-
-	//屏幕管理  编辑大屏
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '屏幕管理'
-		},
-		children: [{
-			path: '/screen/edit/:id',
-			name: 'Screen--edit',
-			component: () => import('@/views/screen/ScreenAdd'),
-			meta: {
-				title: '编辑大屏'
-			}
-		}],
-		hidden: true
-	},
-
-	//屏幕管理  详情页
-	{
-		path: '/',
-		component: Layout,
-		children: [{
-			path: '/screen/details/:id',
-			name: 'Screen--details',
-			component: () => import('@/views/screen/ScreenDetails'),
-			meta: {
-				title: '屏幕详情'
-			}
-		}],
-		hidden: true
-	},
-
-	//屏幕管理  探针数据
-	{
-		path: '/',
-		component: Layout,
-		children: [{
-			path: '/screen/probeData/:id',
-			name: 'Screen--probeData',
-			component: () => import('@/views/screen/components/probeData'),
-			meta: {
-				title: '探针数据'
-			}
-		}],
-		hidden: true
-	},
-
-	//内容管理  创建内容
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '内容管理'
-		},
-		children: [{
-			path: '/content/add',
-			name: 'Content--add',
-			component: () => import('@/views/content/contentAdd'),
-			meta: {
-				title: '创建内容'
-			}
-		}],
-		hidden: true
-	},
-
-	//内容管理  编辑内容
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '内容管理'
-		},
-		children: [{
-			path: '/content/edit/:id',
-			name: 'Content--edit',
-			component: () => import('@/views/content/contentAdd'),
-			meta: {
-				title: '编辑内容'
-			}
-		}],
-		hidden: true
-	},
-
-	//内容管理  内容详情
-	{
-		path: '/',
-		component: Layout,
-		meta: {
-			title: '内容管理'
-		},
-		children: [{
-			path: '/content/details/:id',
-			name: 'Content--details',
-			component: () => import('@/views/content/contentDetails'),
-			meta: {
-				title: '基本信息'
-			},
-			children: [
-				{
-					path: 'count',
-					name: 'Content--details--count',
-					meta: {
-						title: '次数统计'
-					},
-					component: () => import('@/views/content/statistics/count')
-				},
-				{
-					path: 'time',
-					name: 'Content--details--time',
-					meta: {
-						title: '时间统计'
-					},
-					component: () => import('@/views/content/statistics/time')
-				}
-			]
-		}],
-		hidden: true
-	},
-
-
 	//时间轴  创建
 	{
 		path: '/',
@@ -477,11 +340,6 @@ export const constantRoutes = [{
 		hidden: true
 	},
 
-
-
-
-
-
 	// 商户管理 - 添加商户
 	{
 		path: '/',
@@ -536,8 +394,17 @@ export const constantRoutes = [{
 		hidden: true
 	},
 
-	...gameRoutes, //游戏管理 路由
-	...activityRoutes //活动管理 路由
+	// 屏幕管理
+	...screenRoutes,
+
+	// 内容管理
+	...contentRoutes,
+
+	//游戏管理
+	...gameRoutes, 
+
+	//活动管理
+	...activityRoutes  
 
 ]
 

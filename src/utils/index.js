@@ -43,45 +43,29 @@ export function parseTime(time, cFormat) {
 
 /**
  * @param {number} time
- * @param {string} option
+ * @param {string} type
  * @returns {string}
  */
-export function formatTime(time, option) {
-	if (('' + time).length === 10) {
-		time = parseInt(time) * 1000
-	} else {
-		time = +time
+export function formatTime(time, type) {
+	var date = new Date(time);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+	var Y = date.getFullYear() + '-';
+	var M = addZero(date.getMonth()+1) + '-';
+	var D = addZero(date.getDate()) + ' ';
+	var h = addZero(date.getHours()) + ':';
+	var m = addZero(date.getMinutes()) + ':';
+	var s = addZero(date.getSeconds());
+	if(type === 'time'){
+		return h + m + s;
+	}else if(type === 'date'){
+		return Y + M + D
+	}else{  
+		return Y + M + D + h + m + s
 	}
-	const d = new Date(time)
-	const now = Date.now()
+}
 
-	const diff = (now - d) / 1000
-
-	if (diff < 30) {
-		return '刚刚'
-	} else if (diff < 3600) {
-		// less 1 hour
-		return Math.ceil(diff / 60) + '分钟前'
-	} else if (diff < 3600 * 24) {
-		return Math.ceil(diff / 3600) + '小时前'
-	} else if (diff < 3600 * 24 * 2) {
-		return '1天前'
-	}
-	if (option) {
-		return parseTime(time, option)
-	} else {
-		return (
-			d.getMonth() +
-			1 +
-			'月' +
-			d.getDate() +
-			'日' +
-			d.getHours() +
-			'时' +
-			d.getMinutes() +
-			'分'
-		)
-	}
+//低于10 前面加0
+function addZero(data){
+	return data < 10 ? '0' + data : data
 }
 
 /**

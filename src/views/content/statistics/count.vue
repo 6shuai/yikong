@@ -85,7 +85,7 @@
                 min-width="200"
             >
                 <template slot-scope="scope">
-                    <div class="overflow" :title="scope.row.screenName">
+                    <div :title="scope.row.screenName">
                         {{ scope.row.screenName }}
                     </div>
                 </template>
@@ -129,7 +129,7 @@ export default {
             params: {
                 pageNo: 1,
                 pageSize: 40,
-                contentId: this.$route.params.id
+                contentId: Number(this.$route.params.id)
             },
 
             //起止日期

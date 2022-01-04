@@ -148,7 +148,7 @@ export default {
                 pageNo: 1,
                 pageSize: 20,
                 beginTime: date,
-                contentId: this.$route.params.id
+                contentId: Number(this.$route.params.id)
             }
             this.showPlayDetail = true
             this.getPlayDetail()

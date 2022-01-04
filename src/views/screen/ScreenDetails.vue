@@ -31,8 +31,21 @@
             </div>
         </page-header>
 
+        <el-tabs 
+            v-model="tabActiveName" 
+            class="mb20"
+            @tab-click="handleTab"
+        >
+            <el-tab-pane label="基本信息" :name="`/screen/details/${$route.params.id}`"></el-tab-pane>
+            <!-- 监播数据 -->
+            <el-tab-pane label="时间顺序" :name="`/screen/details/${$route.params.id}/timeline`"></el-tab-pane>
+            <el-tab-pane label="内容统计" :name="`/screen/details/${$route.params.id}/content`"></el-tab-pane>
+        </el-tabs>   
 
-        <div class="content">
+        <div 
+            class="content"
+            v-show="tabActiveName === `/screen/details/${$route.params.id}`"
+        >
             <el-row :gutter="20">
                 <el-col :xs="24" :sm="12" :md="16" class="screen-info-left">
                     <div class="screen-img">
@@ -345,6 +358,8 @@
             :premissionApi="premissionApi"
         ></permission>
 
+        <router-view v-if="tabActiveName != `/screen/details/${$route.params.id}`"></router-view>
+
     </el-card>
 </template>
 <script>
@@ -386,10 +401,12 @@ export default {
                 list: screenAuthority,
                 update: screenAuthorityUpdate,
                 delete: screenAuthorityDelete
-            }
+            },
+            tabActiveName: `/content/details/${this.$route.params.id}`
         };
     },
     mounted() {
+        this.tabActiveName = this.$route.path
         this.hasPagePerm('Screen').then(res => {
             if(res){
                 this.initDetail();
@@ -525,6 +542,11 @@ export default {
                     screenId: this.$route.params.id
                 }
             });
+        },
+
+        //切换tab
+        handleTab(){
+            this.$router.push(this.tabActiveName)
         }
     },
     components: {

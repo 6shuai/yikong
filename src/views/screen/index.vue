@@ -64,7 +64,7 @@ export default {
                 pageNo: 1,
                 pageSize: 48,
             },
-            totalCount: 0             
+            totalCount: 0
         }
     },
     mounted() {
