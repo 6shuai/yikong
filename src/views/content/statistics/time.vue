@@ -60,7 +60,7 @@
 			</el-form-item>
 
             <div class="total_count_and_download mb20">
-                <el-tag type="primary">总次数: {{ playTotalCount }}</el-tag>
+                <el-tag type="primary">总时长: {{ playTotalDuration }}</el-tag>
                 <el-button 
                     type="primary"
                     size="medium"
@@ -120,7 +120,7 @@
         <el-pagination
             v-if="resData.length"
             background
-            layout="total, prev, pager, next, sizes"
+            layout="total, prev, pager, next"
             :current-page="Number(params.pageNo)"
             :page-size="Number(params.pageSize)"
             @current-change="handleCurrentChange"
@@ -165,8 +165,8 @@ export default {
             //总条数
             totalCount: 0,
 
-            //播放总次数
-            playTotalCount: 0,
+            //播放总时长
+            playTotalDuration: 0,
 
             //屏幕列表
             screenData: []
@@ -185,7 +185,7 @@ export default {
                     let { list, totalRecords } = res.obj.page
                     this.resData = list
                     this.totalCount = totalRecords
-                    this.playTotalCount = res.obj.playNum
+                    this.playTotalDuration = res.obj.duration
                 }
             })
         },

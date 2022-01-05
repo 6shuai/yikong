@@ -68,7 +68,7 @@
         <el-pagination
             v-if="resData.length"
             background
-            layout="total, prev, pager, next, sizes"
+            layout="total, prev, pager, next"
             :current-page="Number(params.pageNo)"
             :page-size="Number(params.pageSize)"
             @current-change="handleCurrentChange"
