@@ -63,7 +63,7 @@
                             <span>{{resData.creationTime}}</span>
                         </el-form-item>
                         <el-form-item label="品牌">
-                            <span>{{resData.contentOwnerName}}</span>
+                            <span>{{resData.brandName}}</span>
                         </el-form-item>
                         <el-form-item label="分辨率">
                             <span v-if="resData.width">{{resData.width}} x {{resData.height}}</span>

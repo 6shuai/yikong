@@ -90,7 +90,7 @@ export function organizationType(data) { return get(`/public/organization_type/$
 export function organizationDelete(data) { return del(`/system/member/organization/?id=${data}`,); }
 
 //查询所有的组织  品牌
-export function organizationList(data) { return get('/public/organization', data); }
+export function organizationList(data) { return get('/public/brand', data); }
 
 
 //品牌管理  列表

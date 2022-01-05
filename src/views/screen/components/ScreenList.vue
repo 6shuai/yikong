@@ -53,7 +53,7 @@
                         <font-awesome-icon :icon="['fas', 'map-marker-alt']" />{{addressJoint(item)}}  {{item.address}}
                     </div>
                     <div class="place-logo">
-                        <span><font-awesome-icon :icon="['far', 'building']" />{{item.organizationName}}</span>
+                        <span><font-awesome-icon :icon="['far', 'building']" />{{item.brandName}}</span>
                     </div>
                 </div>
             </div>                    

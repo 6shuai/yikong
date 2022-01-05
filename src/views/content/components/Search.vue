@@ -22,15 +22,15 @@
                 <el-col :md="2" :sm="24"  class="title">品牌</el-col>
                 <el-col :md="22" :sm="24">
                     <el-button 
-                        :class="{focus: !searchParams.contentOwner}" 
-                        @click="$delete(searchParams, 'contentOwner');searchContent()" 
+                        :class="{focus: !searchParams.brand}" 
+                        @click="$delete(searchParams, 'brand');searchContent()" 
                         size="small">不限
                     </el-button>
                     <el-button 
                         v-for="item in groupData"
                         :key="item.id"
-                        @click="$set(searchParams, 'contentOwner', item.id);searchContent()"
-                        :class="{focus: searchParams.contentOwner == item.id}"
+                        @click="$set(searchParams, 'brand', item.id);searchContent()"
+                        :class="{focus: searchParams.brand == item.id}"
                         size="small">
                         {{item.displayName}}
                     </el-button>

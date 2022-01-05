@@ -289,68 +289,6 @@
                             </el-form-item>
                         </el-form>
                     </div>
-
-                    <el-divider
-                        >联系信息<i class="el-icon-caret-bottom"></i
-                    ></el-divider>
-                    <div class="info-item">
-                        <ul
-                            class="service"
-                            v-if="
-                                resData.screenContactData &&
-                                resData.screenContactData.length
-                            "
-                        >
-                            <li
-                                v-for="item in resData.screenContactData"
-                                :key="item.userId"
-                            >
-                                <el-image src="" fit="cover">
-                                    <div slot="error" class="image-slot">
-                                        <svg-icon
-                                            icon-class="defalut-header-img"
-                                        ></svg-icon>
-                                    </div>
-                                </el-image>
-                                <div class="desc">
-                                    <p class="nickname">
-                                        {{ item.accountName }}
-                                        <span class="role">{{
-                                            item.description
-                                        }}</span>
-                                    </p>
-
-                                    <p class="place-lx">
-                                        <label title="电话">
-                                            <span class="label"
-                                                ><font-awesome-icon
-                                                    :icon="[
-                                                        'fas',
-                                                        'mobile-alt',
-                                                    ]"
-                                            /></span>
-                                            <span>{{
-                                                item.mobile || "--"
-                                            }}</span>
-                                        </label>
-                                        <el-divider
-                                            direction="vertical"
-                                        ></el-divider>
-                                        <label title="微信">
-                                            <span class="label"
-                                                ><font-awesome-icon
-                                                    :icon="['fab', 'weixin']"
-                                            /></span>
-                                            <span>{{
-                                                item.wechat || "--"
-                                            }}</span>
-                                        </label>
-                                    </p>
-                                </div>
-                            </li>
-                        </ul>
-                        <div v-else>暂无信息~</div>
-                    </div>
                 </el-col>
             </el-row>
         </div>

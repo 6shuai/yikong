@@ -24,7 +24,7 @@
         ></el-input>
         <el-select
           v-if="params.contentType != 3"
-          v-model="params.contentOwner"
+          v-model="params.brand"
           size="small"
           clearable
           filterable

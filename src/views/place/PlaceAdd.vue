@@ -27,8 +27,8 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="所属品牌" prop="owner">
-                            <el-select v-model="placeForm.owner" filterable @change="groupUserList(placeForm.owner)" placeholder="请选择所属品牌" style="width:100%">
+                        <el-form-item label="所属品牌" prop="brand">
+                            <el-select v-model="placeForm.brand" filterable placeholder="请选择所属品牌" style="width:100%">
                                 <el-option 
                                     v-for="item in groupData" 
                                     :key="item.id"
@@ -68,18 +68,6 @@
                                 :imgList="placeForm.wechat"
                                 @uploadImgPath="uploadQrcodeSuccess"
                             ></upload-img>
-                        </el-form-item>
-                        <el-form-item label="联系人" v-if="userData && userData.length">
-                            <ul class="contact-wrap">
-                                <li class="clearfix" v-for="(item, index) in userData" :key="index" >
-                                    <div class="left" >
-                                        <el-checkbox :border="true" :value="isChecked(item)" @change="selectedContact($event, index)"><span class="name">{{item.accountName}}</span></el-checkbox>
-                                    </div>
-                                    <div class="right">
-                                        <el-input v-model="item.description" placeholder="备注"></el-input>
-                                    </div>
-                                </li>
-                            </ul>
                         </el-form-item>
 
                         <group-list 
@@ -161,21 +149,20 @@
     </div>
 </template>
 <script>
-import { placeCreated, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData, placeShowDelete, placeContactDelete, placeShowDefault } from '@/api/place';
+import { placeCreated, placeProvincesData, placeCitysData, placeAreasData, adcodeFindData, placeShowDelete, placeShowDefault } from '@/api/place';
 import TheMap from '@/components/BaiduMap/index';
 import UploadImg from '@/components/Upload/UploadImg';
-import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
+import { getOrganizationList, objsDifferMethod } from '@/mixins';
 import { getPlaceTypeList, placeDetailData } from '@/views/place/mixins';
 import GroupList from '@/components/GroupList/index';
 
 export default {
-    mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getPlaceTypeList, placeDetailData],
+    mixins: [getOrganizationList, objsDifferMethod, getPlaceTypeList, placeDetailData],
     data(){
         return {
             placeForm: {
                 placeShowData: []
             },
-            place_contact: [],               //联系人 【1,2】
             showMap: false,                  //显示百度地图
             region: {},                      //省市县
             btnLoading: false,               //确定按钮  loading
@@ -186,7 +173,7 @@ export default {
                 proName: [{ required: true, trigger: "blur", message: '请输入地理位置~' }],
                 address: [{ required: true, trigger: "blur", message: '请输入详细地址~' }],
                 placeType: [{ required: true, trigger: "change", message: '请选择场所类型~' }],
-                owner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
+                brand: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
                 placeShowData: [{ required: true, trigger: "change", message: '请至少上传一张展示图片~' }],
                 groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
@@ -210,24 +197,8 @@ export default {
                 }).then(res => {
                     this.loading = false;
                     this.placeForm = this.resData;
-                    this.contactList();
                 })
             }
-        },
-
-        //联系人列表
-        contactList(){
-            new Promise((resolve) => {
-                this.groupUserList(this.placeForm.owner, resolve);
-            }).then(res => {
-                this.placeForm.placeContactData.forEach(item => {
-                    item.placeId = Number(this.$route.params.id);
-                    this.place_contact.push(item.userId);
-                    var index = this.indexOf(item.userId, this.userData, 'userId');
-                    this.userData[index].description = item.description;
-                })
-                this.oldParams = JSON.parse(JSON.stringify(this.placeForm));
-            })
         },
 
         //添加 编辑 场所
@@ -235,7 +206,6 @@ export default {
             this.$refs.placeForm.validate((valid) => {
                 
                 if (valid) {
-                    this.placeForm.placeContactData = this.contactParams();
                     this.diffStatus = true;
                     if(this.placeForm.id && this.objsDiffer(this.oldParams, this.placeForm)){
                         this.$message.warning('你没有做任何更改~');
@@ -259,40 +229,6 @@ export default {
             }
         },
 
-        //联系人参数 整理
-        contactParams(){
-            let s = [];
-            for(let i = 0; i< this.place_contact.length; i++){
-                var index = this.indexOf(this.place_contact[i], this.userData, 'userId');
-                if(this.placeForm.placeContactData && this.placeForm.placeContactData[i]){
-                    this.placeForm.placeContactData[i].description = index>-1 ? this.userData[index].description : '';
-                    s.push(this.placeForm.placeContactData[i]);
-                }else{
-                    s.push({
-                        userId: this.place_contact[i],
-                        description: index>-1 ? this.userData[index].description : ''
-                    });
-                }
-            }
-            return s;
-        },
-
-        //选择联系人
-        selectedContact(value, index){
-            let userId = this.userData[index].userId;
-            if(value){
-                this.place_contact.push(userId);
-            }else{
-                this.place_contact.splice(this.indexOf(userId, this.place_contact), 1);
-                this.placeForm.placeContactData.forEach((item, index) => {
-                    if(item.userId === userId){
-                        this.contactDelete(item.id);
-                        this.placeForm.placeContactData.splice(index, 1);
-                    }
-                })
-            }
-        },
-
         //查询下标
         indexOf(val, arr, key){
             for(var i = 0; i < arr.length; i++){
@@ -301,19 +237,6 @@ export default {
                 }else if(arr[i] == val){return i;}
             }
             return -1;
-        },
-
-        isChecked(item){
-            return this.place_contact.includes(item.userId);
-        },
-
-        //删除联系人
-        contactDelete(value){
-            placeContactDelete(value).then(res =>{
-                if(res.code === this.$successCode){
-                    this.$message.success('删除成功~');
-                }
-            })
         },
 
         //上传图片成功

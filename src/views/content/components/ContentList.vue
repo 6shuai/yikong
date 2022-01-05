@@ -68,8 +68,8 @@
                             <span> {{item.currentTimes}}</span>
                         </li>
                     </ul>
-                    <div class="place-logo" v-if="item.contentOwnerName">
-                        <span :title="item.contentOwnerName"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.contentOwnerName}}</span>
+                    <div class="place-logo" v-if="item.brandName">
+                        <span :title="item.brandName"><font-awesome-icon :icon="['far', 'building']"></font-awesome-icon>{{item.brandName}}</span>
                     </div>
                     
                 </div>

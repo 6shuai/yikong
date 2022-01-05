@@ -19,7 +19,7 @@
             ></el-input>
 
             <el-select 
-                v-model="params.owner" 
+                v-model="params.brand" 
                 size="small" 
                 clearable 
                 filterable 
@@ -98,7 +98,7 @@ export default {
     mounted() {
         if(this.$route.query.pageNo){
             this.params = JSON.parse(JSON.stringify(this.$route.query));
-            if(this.params.owner) this.params.owner = Number(this.params.owner);
+            if(this.params.brand) this.params.brand = Number(this.params.brand);
         }else if(this.$store.state.app.timelineSearchParams){
             this.params = this.$store.state.app.timelineSearchParams;
         }

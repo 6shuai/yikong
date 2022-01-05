@@ -26,8 +26,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="品牌" prop="owner">
-                        <el-select v-model="screenParams.owner" @change="groupUserList(screenParams.owner)" placeholder="请选择所属品牌" style="width:100%">
+                    <el-form-item label="品牌" prop="brand">
+                        <el-select v-model="screenParams.brand" @change="groupUserList(screenParams.brand)" placeholder="请选择所属品牌" style="width:100%">
                             <el-option 
                                 v-for="item in groupData" 
                                 :key="item.id"
@@ -104,18 +104,6 @@
                             @uploadImgPath="uploadImgSuccess"
                         ></upload-img>
                     </el-form-item>
-                    <el-form-item label="联系人"  v-if="userData && userData.length">
-                        <ul class="contact-wrap">
-                            <li class="clearfix" v-for="(item, index) in userData" :key="index" >
-                                <div class="left" >
-                                    <el-checkbox :border="true" :value="isChecked(item)" @change="selectedContact($event, index)"><span class="name">{{item.accountName}}</span></el-checkbox>
-                                </div>
-                                <div class="right">
-                                    <el-input v-model="item.description" placeholder="备注"></el-input>
-                                </div>
-                            </li>
-                        </ul>
-                    </el-form-item>
                     <group-list 
                         v-if="!screenParams.id"
                         propValue="groupIds"
@@ -130,7 +118,7 @@
     </el-card>
 </template>
 <script>
-import { screenPlaceList, screenCreated, screenShowDelete, screenContactDelete, screenShowDefault } from '@/api/screen';
+import { screenPlaceList, screenCreated, screenShowDelete, screenShowDefault } from '@/api/screen';
 import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import uploadImg from '@/components/Upload/UploadImg';
@@ -138,20 +126,19 @@ import GroupList from '@/components/GroupList/index';
 
 
 export default {
-    mixins: [getOrganizationList, getOrganizationUserList, objsDifferMethod, getDotPitch, getAspectRatio, getScreenDetail],
+    mixins: [getOrganizationList, objsDifferMethod, getDotPitch, getAspectRatio, getScreenDetail],
     data(){
         return {
             screenParams: {
                 screenShowData: []
             },
-            screen_contact: [],           //联系人
             btnLoading: false,     
             placeData: [],                //场所列表         
             showUserInput: false,         //是否显示用户名密码框
             screenRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入大屏名称~' }],
                 place: [{ required: true, trigger: "change", message: '请选择场所~' }],
-                owner: [{ required: true, trigger: "change", message: '请选择品牌~' }],
+                brand: [{ required: true, trigger: "change", message: '请选择品牌~' }],
                 dotPitch: [{ required: true, trigger: "change", message: '请选择点距规格~' }],
                 resolutionWidth: [{ required: true, trigger: "blur", message: '请输入分辨率宽~' }],
                 resolutionHeight: [{ required: true, trigger: "blur", message: '请输入分辨率高~' }],
@@ -182,31 +169,14 @@ export default {
                     this.loading = false;
                     this.screenParams = this.resData;
                     this.screenParams.place = this.resData.placeId;
-                    this.contactList();
                 })
             }
-        },
-
-        //联系人列表
-        contactList(){
-            new Promise((resolve) => {
-                this.groupUserList(this.screenParams.owner, resolve);
-            }).then(res => {
-                this.screenParams.screenContactData.forEach(item => {
-                    item.screenId = Number(this.$route.params.id);
-                    this.screen_contact.push(item.userId);
-                    var index = this.indexOf(item.userId, this.userData, 'userId');
-                    this.userData[index].description = item.description;
-                })
-                this.oldParams = JSON.parse(JSON.stringify(this.screenParams));
-            })
         },
 
         //提交
         screenSureBtn(){
             this.$refs.screenParams.validate((valid) => {
                 if (valid) {
-                    this.screenParams.screenContactData = this.contactParams();
                     this.diffStatus = true;
                     if(this.screenParams.id && this.objsDiffer(this.oldParams, this.screenParams)){
                         this.$message.warning('你没有做任何更改~');
@@ -224,24 +194,6 @@ export default {
                     this.$message.warning('必填项未填写完整~');
                 }
             })
-        },
-
-        //联系人参数 整理
-        contactParams(){
-            let s = [];
-            for(let i = 0; i< this.screen_contact.length; i++){
-                var index = this.indexOf(this.screen_contact[i], this.userData, 'userId');
-                if(this.screenParams.screenContactData && this.screenParams.screenContactData[i]){
-                    this.screenParams.screenContactData[i].description = index>-1 ? this.userData[index].description : '';
-                    s.push(this.screenParams.screenContactData[i]);
-                }else{
-                    s.push({
-                        userId: this.screen_contact[i],
-                        description: index>-1 ? this.userData[index].description : ''
-                    });
-                }
-            }
-            return s;
         },
 
         //场所列表
@@ -302,22 +254,6 @@ export default {
             this.$refs.uploadImg.changeImgUri(this.screenParams.screenShowData);
         },
 
-        //选择联系人
-        selectedContact(value, index){
-            let userId = this.userData[index].userId;
-            if(value){
-                this.screen_contact.push(userId);
-            }else{
-                this.screen_contact.splice(this.indexOf(userId, this.screen_contact), 1);
-                this.screenParams.screenContactData.forEach((item, index) => {
-                    if(item.userId === userId){
-                        this.contactDelete(item.id);
-                        this.screenParams.screenContactData.splice(index, 1);
-                    }
-                })
-            }
-        },
-
         //查询下标
         indexOf(val, arr, key){
             for(var i = 0; i < arr.length; i++){
@@ -326,19 +262,6 @@ export default {
                 }else if(arr[i] == val){return i;}
             }
             return -1;
-        },
-
-        //删除联系人
-        contactDelete(id){
-            screenContactDelete(id).then(res =>{
-                if(res.code === this.$successCode){
-                    this.$message.success('操作成功~');
-                }
-            })
-        },
-
-        isChecked(item){
-            return this.screen_contact.includes(item.userId);
         },
 
         //用户名自动生成   Admin+6位随机数字

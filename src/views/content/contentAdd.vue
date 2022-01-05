@@ -18,8 +18,8 @@
                         <el-form-item label="内容名称" prop="displayName">
                             <el-input v-model="contentParams.displayName" placeholder="内容名称"></el-input>
                         </el-form-item>
-                        <el-form-item label="所属品牌" prop="contentOwner">
-                            <el-select v-model="contentParams.contentOwner" filterable placeholder="请选择所属品牌" style="width:100%">
+                        <el-form-item label="所属品牌" prop="brand">
+                            <el-select v-model="contentParams.brand" filterable placeholder="请选择所属品牌" style="width:100%">
                                 <el-option 
                                     v-for="item in groupData" 
                                     :key="item.id"
@@ -235,7 +235,7 @@ export default {
             placeRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入内容名称~' }],
                 contentType: [{ required: true, trigger: "change", message: '请选择场内容类型~' }],
-                contentOwner: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
+                brand: [{ required: true, trigger: "change", message: '请选择所属品牌~' }],
                 image: [{ required: true, trigger: "change", message: '请上传一张展示图片~' }],
                 width: [{ required: true, trigger: "blur", message: '请输入宽~' }],
                 height: [{ required: true, trigger: "blur", message: '请输入高~' }],
@@ -287,7 +287,7 @@ export default {
                     let data = this.resData;
                     this.contentParams = {
                         displayName: data.displayName,
-                        contentOwner: data.contentOwnerId,
+                        brand: data.brandId,
                         image: data.image,
                         contentType: data.contentTypeId,
                         contentPath: data.contentPath,

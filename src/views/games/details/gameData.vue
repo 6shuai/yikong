@@ -76,9 +76,9 @@
                             placeholder="名称"
                         ></el-input>
                     </el-form-item>
-                    <el-form-item label="所属品牌" prop="contentOwner">
+                    <el-form-item label="所属品牌" prop="brand">
                         <el-select
-                            v-model="contentParams.contentOwner"
+                            v-model="contentParams.brand"
                             filterable
                             placeholder="请选择所属品牌"
                             style="width: 100%"
@@ -297,7 +297,7 @@ export default {
                 displayName: [
                     { required: true, trigger: "blur", message: "请输入名称~" },
                 ],
-                contentOwner: [
+                brand: [
                     {
                         required: true,
                         trigger: "change",
@@ -435,7 +435,7 @@ export default {
                         this.btnLoading = false;
                         if (res.code === this.$successCode) {
                             this.$message.success("创建成功~");
-                            this.$router.go(-1);
+                            this.$router.push(`/games/details/${this.$route.params.id}/list`);
                         }
                     });
                 }

@@ -16,8 +16,8 @@
                     <el-form-item label="名称" prop="displayName">
                         <el-input v-model="timelineParams.displayName" placeholder="名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="品牌" prop="owner">
-                        <el-select v-model="timelineParams.owner" placeholder="请选择所属品牌" style="width:100%">
+                    <el-form-item label="品牌" prop="brand">
+                        <el-select v-model="timelineParams.brand" placeholder="请选择所属品牌" style="width:100%">
                             <el-option 
                                 v-for="item in groupData" 
                                 :key="item.id"
@@ -115,7 +115,7 @@ export default {
             btnLoading: false,     
             timelineRules: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入名称~' }],
-                owner: [{ required: true, trigger: "change", message: '请选择品牌~' }],
+                brand: [{ required: true, trigger: "change", message: '请选择品牌~' }],
                 width: [{ required: true, trigger: "change", message: '请输入宽~' }],
                 height: [{ required: true, trigger: "change", message: '请输入高~' }],
                 beginTime: [{ required: true, trigger: "change", message: '请选择起始时间~' }],
