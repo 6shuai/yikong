@@ -17,7 +17,8 @@
         width: 100%;
         min-width: 1200px;
         top: 48px;
-        bottom: 366px;
+        // bottom: 366px;
+        bottom: 243px;
         padding: 0 10px;
         display: flex;
         .left-tabs{
@@ -106,7 +107,8 @@
     .axis-wrap{
         width: 100%;
         min-width: 1200px;
-        min-height: 362px; 
+        // min-height: 362px; 
+        height: 243px;
         background: #f5f5f5;
         &>.el-scrollbar__wrap{
             overflow-x: auto;

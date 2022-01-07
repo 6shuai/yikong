@@ -95,8 +95,8 @@
         <div class="timeline-bottom" v-if="resData.id">
             <div
                 class="axis-wrap"
-                :style="{ height: screenLayout.length * timelineHeight.tool + timelineHeight.rotation + 'px' }"
             >
+                <!-- :style="{ height: screenLayout.length * timelineHeight.tool + timelineHeight.rotation + 'px' }" -->
                 <axis
                     @updateScreen="updateScreen"
                     @previewCover="previewCover"
