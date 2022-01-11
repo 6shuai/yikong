@@ -1,0 +1,106 @@
+<template>
+    <div class="contract_wrap app-main-wrap">
+            <el-card v-loading="dataLoading"> 
+
+            <div class="project_introduce">
+                <el-page-header 
+                    @back="$router.push('/')"
+                    title="项目列表"
+                > </el-page-header>
+                <div class="title">{{ resData.displayName }}</div>
+                <div class="desc">{{ resData.description }}</div>
+            </div>
+            <el-tabs 
+                v-model="tabActiveName" 
+                @tab-click="handleTab"
+                class="mb20"
+            >
+                <el-tab-pane label="合同" :name="`/project/${$route.params.id}/contract`"></el-tab-pane>
+                <el-tab-pane 
+                    label="物料" 
+                    :name="`/project/${$route.params.id}/material`"
+                ></el-tab-pane>
+                <el-tab-pane 
+                    label="财务" 
+                    :name="`/project/${$route.params.id}/finance`"
+                    :disabled="projectContractDetail && !projectContractDetail.id"
+                ></el-tab-pane>
+                <el-tab-pane 
+                    label="成员" 
+                    :name="`/project/${$route.params.id}/member`"
+                ></el-tab-pane>
+            </el-tabs>   
+            
+            <router-view v-if="!dataLoading"></router-view>
+        </el-card>
+
+    </div>
+</template>
+
+<script>
+import { projectDetail } from '@/api/project'
+
+export default {
+    data(){
+        return {
+            tabActiveName: '/project/contract',
+
+            // 项目详情数据
+            resData: [],
+
+            // 获取项目详情 loading
+            dataLoading: false
+        }
+    },
+    computed: {
+        projectContractDetail(){
+            return this.$store.state.user.projectContractDetail
+        }
+    },
+    mounted() {
+        this.tabActiveName = this.$route.path
+        this.getDetail()
+    },
+    methods: {
+
+        // 查询项目详情
+        getDetail(){
+            this.dataLoading = true
+            projectDetail({ id: this.$route.params.id }).then(res => {
+                this.dataLoading = false
+                if(res.code === this.$successCode){
+                    this.resData = res.obj
+                    this.$store.state.user.projectContractDetail = res.obj.publishedContract ? res.obj.publishedContract : {}
+                }
+            })
+        },
+
+        handleTab(tab, event){
+            this.$router.push(tab.name)
+        }
+    },
+}
+</script>
+
+<style lang="scss" scoped>
+    .contract_wrap{
+        .project_introduce{
+            text-align: center;
+            position: relative;
+
+            .el-page-header {
+                position: absolute;
+            }
+
+            .title{
+                padding-bottom: 20px;
+                font-size: 18px;
+            }
+
+            .desc{
+                font-size: 12px;
+                color: #999;
+            }
+        }
+    }
+</style>
