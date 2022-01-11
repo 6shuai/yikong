@@ -1,7 +1,7 @@
 <template>
     <div class="app-main-wrap layout-list-wrap" id="app-main-wrap">
         <el-card shadow="always">
-            <div class="content-top mb20 clearfix">
+            <div class="content-top mb20 add_and_search">
                 <el-button
                     v-if="hasPerm($route.meta.permission, 'AddAdver')"
                     class="created-btn"
@@ -13,15 +13,17 @@
                     新建插播广告
                 </el-button>
 
-                <el-input
-                    class="w200 ml20"
-                    prefix-icon="el-icon-search"
-                    clearable
-                    v-model="params.displayName"
-                    placeholder="插播广告名称"
-                    size="small"
-                    @input="search"
-                ></el-input>
+                <div class="search_input">
+                    <el-input
+                        class="w200 ml20"
+                        prefix-icon="el-icon-search"
+                        clearable
+                        size="small"
+                        v-model="params.displayName"
+                        placeholder="插播广告名称"
+                        @input="$(search)"
+                    ></el-input>
+                </div>
             </div>
 
             <!-- 屏幕布局模板列表 -->

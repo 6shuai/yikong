@@ -130,27 +130,6 @@ export const getOrganizationList = {
 }
 
 
-// 查询品牌组织下 的用户列表
-import { placeGroupUserList } from '@/api/place';
-export const getOrganizationUserList = {
-    data(){
-        return {
-            userData: []
-        }
-    },
-    methods: {
-        groupUserList(id, resolve){
-            placeGroupUserList(id, resolve).then(res =>{
-                res.obj.forEach(item => {
-                    item.description = '';
-                })
-                this.userData = res.obj;
-                if(resolve) return resolve('success');
-            })
-        }
-    },
-}
-
 
 //上传图片获取图片信息 宽高 大小
 export const getUploadImgInfo = {

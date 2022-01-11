@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import homeRoutes from './home'
 import placeRoutes  from './place'
 import screenRoutes from './screen'
 import contentRoutes from './content'
@@ -51,7 +52,7 @@ export const constantRoutes = [{
 		component: Layout,
 		children: [{
 			path: '/',
-			name: 'home',
+			name: 'Project',
 			component: () => import('@/views/home/index'),
 			meta: {
 				title: '首页',
@@ -135,7 +136,8 @@ export const constantRoutes = [{
 		hidden: true
 	},
 
-
+	// 我的项目
+	...homeRoutes,
 
 	// 场所管理
 	...placeRoutes,

@@ -1,6 +1,6 @@
 <template>
     <div class="app-main-wrap content-list-wrap" id="app-main-wrap">
-        <div class="content-top">
+        <div class="content-top add_and_search">
             <el-button 
                 v-if="hasPerm($route.meta.permission, 'AddTimeline')"
                 class="created-btn"
@@ -10,29 +10,33 @@
                 size="small">
                 创建时间轴
             </el-button>
-            <el-input 
-                prefix-icon="el-icon-search" 
-                clearable
-                v-model="params.name" 
-                placeholder="时间轴名称" size="small"
-                @input="search"
-            ></el-input>
 
-            <el-select 
-                v-model="params.brand" 
-                size="small" 
-                clearable 
-                filterable 
-                @change="search" 
-                placeholder="请选择品牌"
-            >
-                <el-option 
-                    v-for="item in groupData" 
-                    :key="item.id"
-                    :label="item.displayName" 
-                    :value="item.id">
-                </el-option>
-            </el-select>
+            <div class="search_input">
+                <el-input 
+                    prefix-icon="el-icon-search" 
+                    clearable
+                    size="small"
+                    v-model="params.name" 
+                    placeholder="时间轴名称"
+                    @input="$debounce(search)"
+                ></el-input>
+
+                <el-select 
+                    v-model="params.brand" 
+                    clearable 
+                    filterable 
+                    size="small"
+                    @change="search" 
+                    placeholder="请选择品牌"
+                >
+                    <el-option 
+                        v-for="item in groupData" 
+                        :key="item.id"
+                        :label="item.displayName" 
+                        :value="item.id">
+                    </el-option>
+                </el-select>
+            </div>
         </div>
 
         <el-pagination

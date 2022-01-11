@@ -259,7 +259,6 @@ export default {
 </script>
 
 <style lang="scss" scope>
-@import "../../../styles/variables.scss";
 .el-scrollbar__wrap{
     overflow-x: hidden;
 }
@@ -289,13 +288,13 @@ export default {
                 .delete{
                     float: right;
                     width: 80px;
-                    color: $--color-info;
+                    color: var(--color-info);
                     &:hover{
-                        color: $--color-danger;
+                        color: var(--color-danger);
                         text-decoration: underline;
                     }
                     &.add-btn{
-                        color: $--color-success;
+                        color: var(--color-success);
                         &:hover{
                             color: #5ee192;
                         }

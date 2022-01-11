@@ -297,7 +297,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../../styles/variables.scss";
 
 .time-interval-screen-wrap {
     height: 100%;
@@ -319,13 +318,13 @@ export default {
             .delete{
                 float: right;
                 width: 80px;
-                color: $--color-info;
+                color: var(--color-info);
                 &:hover{
-                    color: $--color-danger;
+                    color: var(--color-danger);
                     text-decoration: underline;
                 }
                 &.add-btn{
-                    color: $--color-success;
+                    color: var(--color-success);
                     &:hover{
                         color: #5ee192;
                     }

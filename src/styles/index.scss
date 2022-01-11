@@ -107,11 +107,11 @@ li{
 }
 
 .text-hover:hover{
-  	color: $--color-primary !important;
+  	color: var(--color-primary) !important;
 }
 
 .el-page-header__left:hover{
-  	color: $--color-primary;
+  	color: var(--color-primary);
 }
 
 .detail-header-wrap{
@@ -120,7 +120,7 @@ li{
 	.el-page-header__left{
 		align-items: center;
 		&:hover{
-			color: $--color-primary;
+			color: var(--color-primary);
 		}
 	}
 	.el-page-header{
@@ -134,9 +134,9 @@ li{
 		span{
 			cursor: pointer;
 			&:hover{
-				color: $--color-primary;
+				color: var(--color-primary);
 				& i{
-					color: $--color-primary;
+					color: var(--color-primary);
 				}
 			}
 			i{
@@ -195,11 +195,11 @@ li{
   margin-right: 30px;
 }
 
-.w220.el-input{
+.w220.el-input, .w220.el-input-number{
   width: 220px;
 }
 
-.w200.el-input{
+.w200.el-input, .w200.el-input-number{
   width: 200px;
 }
 
@@ -248,4 +248,16 @@ li{
 
 .text-hight{
   color: #ff2e63;
+}
+
+.add_and_search{
+	.el-input{
+		display: inline-block;
+		width: 220px;
+		margin: 0 10px;
+	}
+
+	.search_input{
+		float: right;
+	}
 }

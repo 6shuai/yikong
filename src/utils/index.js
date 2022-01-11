@@ -47,24 +47,24 @@ export function parseTime(time, cFormat) {
  * @returns {string}
  */
 export function formatTime(time, type) {
-	var date = new Date(time);    //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+	var date = new Date(time); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
 	var Y = date.getFullYear() + '-';
-	var M = addZero(date.getMonth()+1) + '-';
+	var M = addZero(date.getMonth() + 1) + '-';
 	var D = addZero(date.getDate()) + ' ';
 	var h = addZero(date.getHours()) + ':';
 	var m = addZero(date.getMinutes()) + ':';
 	var s = addZero(date.getSeconds());
-	if(type === 'time'){
+	if (type === 'time') {
 		return h + m + s;
-	}else if(type === 'date'){
+	} else if (type === 'date') {
 		return Y + M + D
-	}else{  
+	} else {
 		return Y + M + D + h + m + s
 	}
 }
 
 //低于10 前面加0
-function addZero(data){
+function addZero(data) {
 	return data < 10 ? '0' + data : data
 }
 
@@ -90,6 +90,32 @@ export function param2Obj(url) {
 
 export const ajaxUrl = process.env.NODE_ENV === 'development' ?
 	'/' : `${document.location.origin}/`;
+
+
+//  yyyy-MM-dd 日期 后面加上 HH:mm:ss  00:00:00
+export function dateAddHMS(date) {
+	if (!date) return
+	if (date.indexOf('00:00:00') > -1) {
+		return date.split(' 00:00:00')[0]
+	} else {
+		return date + ' 00:00:00'
+	}
+}
+
+//小数点精准计算
+export const accAdd = function (arg1 = 0, arg2 = 0) {
+	var m = 0,
+		s1 = arg1.toString(),
+		s2 = arg2.toString();
+	try {
+		m += s1.split(".")[1].length;
+	} catch (e) {}
+	try {
+		m += s2.split(".")[1].length;
+	} catch (e) {}
+	return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+}
+
 
 //上传路径
 export const uploadUrl = 'common/upload/';

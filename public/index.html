@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="icon" href="<%= BASE_URL %>favicon.png">
-    <title><%= webpackConfig.name %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=WpKtslGW53yQ5v1ehnCYKVqSlloS7R7p"></script>
-  </body>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="icon" href="<%= BASE_URL %>favicon.png">
+	<title><%= webpackConfig.name %></title>
+	<style>
+		:root{
+			--color-primary: #8484FF;
+			--color-success: #36D977;
+			--color-warning: #F2AA3D;
+			--color-danger: #E63939;
+			--color-info: #FF4066;
+		}
+	</style>
+</head>
+
+<body>
+	<noscript>
+		<strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please
+			enable it to continue.</strong>
+	</noscript>
+	<div id="app"></div>
+	<!-- built files will be auto injected -->
+	<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=WpKtslGW53yQ5v1ehnCYKVqSlloS7R7p">
+	</script>
+</body>
+
 </html>

@@ -87,7 +87,7 @@
                         padding-top: 6px;
                         cursor: pointer;
                         &:hover{
-                            color: $--color-primary;
+                            color: var(--color-primary);
                         }
                     }
                     .play-limit{
@@ -109,7 +109,7 @@
                     display: inline-block;
                     width: 40px;
                     text-align: right;
-                    color: $--color-primary;
+                    color: var(--color-primary);
                     line-height: 66px;
                 }
             }
@@ -158,10 +158,10 @@
                 &.del{
                     width: 50px;
                     border-left: 1px solid #adadad;
-                    color: $--color-danger;
+                    color: var(--color-danger);
                     cursor: pointer;
                     &:hover{
-                        color: $--color-info;
+                        color: var(--color-info);
                     }
                 }
             }

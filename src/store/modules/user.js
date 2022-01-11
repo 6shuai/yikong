@@ -8,8 +8,11 @@ const state = {
 	avatar: "",
 	loginData: localStorage.loginData ? JSON.parse(localStorage.loginData) : {},
 
-	//场所列表
-	placeData: []
+	// 场所列表
+	placeData: [],
+
+	// 项目 合同详情
+	projectContractDetail: {}
 };
 
 const mutations = {

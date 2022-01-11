@@ -58,6 +58,19 @@ Vue.prototype.$echarts = echarts
 window.eventBus = new Vue();
 
 
+//防抖处理
+let timer = null //借助闭包
+const debounce = function (fn, delay = 300){
+	if(timer){
+		clearTimeout(timer) 
+	}
+	timer = setTimeout(() => {
+		fn()
+	},delay)
+}
+
+Vue.prototype.$debounce = debounce
+
 
 /**
  * 按钮操作是否具有权限

@@ -27,7 +27,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="品牌" prop="brand">
-                        <el-select v-model="screenParams.brand" @change="groupUserList(screenParams.brand)" placeholder="请选择所属品牌" style="width:100%">
+                        <el-select v-model="screenParams.brand" placeholder="请选择所属品牌" style="width:100%">
                             <el-option 
                                 v-for="item in groupData" 
                                 :key="item.id"
@@ -119,7 +119,7 @@
 </template>
 <script>
 import { screenPlaceList, screenCreated, screenShowDelete, screenShowDefault } from '@/api/screen';
-import { getOrganizationList, getOrganizationUserList, objsDifferMethod } from '@/mixins';
+import { getOrganizationList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import uploadImg from '@/components/Upload/UploadImg';
 import GroupList from '@/components/GroupList/index';

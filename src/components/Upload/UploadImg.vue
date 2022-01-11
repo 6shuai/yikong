@@ -196,8 +196,9 @@ export default {
             if(this.imgList && this.imgList instanceof Array){
                 let s = JSON.parse(JSON.stringify(this.imgList));
                 s.forEach(item => {
-                    item.url = item.uri || item.url;
+                    item.url = item.uri || item.url || item.print;
                     delete item.uri;
+                    delete item.print
                 })
                 this.fileList = s;
             }else{
@@ -211,15 +212,12 @@ export default {
     },
     watch: {
         imgList(o, n){
-            if(this.fileList && !this.fileList.length){
-                this.changeImgUri();
-            }
+            this.changeImgUri()
         }
     },
 }
 </script>
 <style lang="scss" scope>
-    @import '../../styles/variables.scss';
     .upload-image-wrap{
         .header-img{
             width: 100%;
@@ -281,7 +279,7 @@ export default {
                 border-bottom: 25px #fff solid;
             }
             .top:before{
-                border-bottom: 25px $--color-info solid;
+                border-bottom: 25px var(--color-info) solid;
             }
         }
         .upload-btn{

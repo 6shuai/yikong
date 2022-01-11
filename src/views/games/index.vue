@@ -1,6 +1,6 @@
 <template>
     <div class="app-main-wrap games-list-wrap" id="app-main-wrap">
-        <div class="content-top mb20">
+        <div class="content-top mb20 add_and_search">
             <el-button 
                 v-if="hasPerm($route.meta.permission, 'AddGame')"
                 class="created-btn"
@@ -11,24 +11,27 @@
                 创建游戏
             </el-button>
             
-            <el-input 
-                class="ml20 w220"
-                prefix-icon="el-icon-search" 
-                clearable
-                v-model="params.displayName" 
-                placeholder="游戏名称" size="small"
-                @input="search"
-            ></el-input>
-
-            <el-radio-group 
-                class="ml20"
-                v-model="params.isFavorite" 
-                size="small"
-                @change="search"
-            >
-                <el-radio-button label="0">不限</el-radio-button>
-                <el-radio-button label="1">已收藏</el-radio-button>
-            </el-radio-group>
+            <div class="search_input">
+                <el-input 
+                    class="ml20 w220"
+                    prefix-icon="el-icon-search" 
+                    clearable
+                    size="small"
+                    v-model="params.displayName" 
+                    placeholder="游戏名称"
+                    @input="$debounce(search)"
+                ></el-input>
+    
+                <el-radio-group 
+                    class="ml20"
+                    size="small"
+                    v-model="params.isFavorite" 
+                    @change="search"
+                >
+                    <el-radio-button label="0">不限</el-radio-button>
+                    <el-radio-button label="1">已收藏</el-radio-button>
+                </el-radio-group>
+            </div>
             
         </div>
 

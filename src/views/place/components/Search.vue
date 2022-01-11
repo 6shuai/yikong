@@ -20,7 +20,7 @@
                         class="dispaly-name"
                         v-model="searchParams.displayName" 
                         placeholder="场所名"
-                        @input="searchPlace"
+                        @input="$debounce(searchPlace)"
                     ></el-input>
                 </el-col>
             </el-row>
