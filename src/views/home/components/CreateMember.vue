@@ -70,6 +70,7 @@ export default {
 
         // 获取用户列表
         getMemberData(keyword){
+            if(!keyword) return
             this.selectLoading = true
             projectMemberSearch({ name: keyword }).then(res => {
                 this.selectLoading = false
