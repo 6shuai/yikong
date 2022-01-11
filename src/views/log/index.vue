@@ -10,7 +10,7 @@
                 clearable
                 placeholder="用户名称"
                 v-model="params.accountName"
-                @input="search"
+                @input="$debounce(search)"
             ></el-input>
 
             <el-input  
@@ -18,7 +18,7 @@
                 clearable
                 placeholder="操作说明"
                 v-model="params.operation"
-                @input="search"
+                @input="$debounce(search)"
             ></el-input>
 
             <el-input  
@@ -26,7 +26,7 @@
                 clearable
                 placeholder="操作内容"
                 v-model="params.params"
-                @input="search"
+                @input="$debounce(search)"
             ></el-input>
 
             <el-date-picker
