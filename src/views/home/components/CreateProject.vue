@@ -80,6 +80,10 @@ export default {
         showCreateProjectDialog(data = {}){
             this.addParams = JSON.parse(JSON.stringify(data))
             this.showCreateProject = true
+
+            this.$nextTick(() => {
+                this.$refs["addForm"].clearValidate();
+            })
         },
 
         // 新建项目
