@@ -1078,12 +1078,12 @@ export default {
                     item.totalDuration = totalDuration;
                     stageTotalDuration = stageTotalDuration > totalDuration ? stageTotalDuration : totalDuration;
                 });
-                this.stagetContentDuration = this.accAdd(stageTotalDuration);
+                this.stagetContentDuration = this.accMul(stageTotalDuration);
             }, 500);
         },
 
         //小数点精准计算
-        accAdd(arg1 = 0, arg2 = 0) {
+        accMul(arg1 = 0, arg2 = 0) {
             var r1, r2, m;
             try {
                 r1 = arg1.toString().split(".")[1].length

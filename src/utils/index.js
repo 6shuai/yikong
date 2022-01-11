@@ -103,7 +103,7 @@ export function dateAddHMS(date) {
 }
 
 //小数点精准计算
-export const accAdd = function (arg1 = 0, arg2 = 0) {
+export const accMul = function (arg1 = 0, arg2 = 0) {
 	var m = 0,
 		s1 = arg1.toString(),
 		s2 = arg2.toString();

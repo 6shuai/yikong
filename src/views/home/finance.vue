@@ -48,7 +48,7 @@
 
 <script>
 import { projectFinanceInfo } from '@/api/project'
-import { accAdd } from '@/utils/index'
+import { accMul } from '@/utils/index'
 import FinanceDetail from './components/FinanceDetail'
 import FinancePayment from './components/FinancePayment'
 import CreatePaymentLog from './components/CreatePaymentLog'
@@ -94,7 +94,7 @@ export default {
                         // 折扣
                         discountRate: this.resData.discountRate
                     }
-                    this.resData.discountRate = accAdd(this.resData.discountRate, 100)
+                    this.resData.discountRate = accMul(this.resData.discountRate, 100)
 
                     // 付款记录
                     this.$refs.financePayment.resData = this.paymentInfo

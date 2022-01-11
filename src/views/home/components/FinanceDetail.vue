@@ -27,18 +27,25 @@
             min-width="60"
         >
             <template slot-scope="scope">
-                {{ scope.row.price * resData.discountRate }}
+                {{ salesPrice(scope.row.price) }}
             </template>
         </el-table-column>
     </el-table>
 </template>
 
 <script>
+import { accMul } from '@/utils/index'
+
 export default {
     data(){
         return {
             resData: []
         }
+    },
+    methods: {
+        salesPrice(price){
+            return accMul(price, this.resData.discountRate)
+        } 
     }
 }
 </script>
