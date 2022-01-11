@@ -57,7 +57,7 @@
 				placeholder="验证码"
 				tabindex="2"
 				auto-complete="on"
-				@keyup.enter.native="submitLogin"
+				@keyup.enter.native="$debounce(submitLogin)"
 			/>
 			<span class="code-img" @click="codeImg='';loginCodeImg()" v-loading="!codeImg">
 				<img :src="codeImg" />
@@ -68,7 +68,7 @@
 			:loading="loading"
 			type="primary"
 			style="width:100%;margin-bottom:30px;"
-			@click.native.prevent="submitLogin"
+			@click.native.prevent="$debounce(submitLogin)"
 			>{{loading ? '登录中' : '登录'}}</el-button
 		>
 
