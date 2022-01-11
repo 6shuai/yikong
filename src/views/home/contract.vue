@@ -84,8 +84,8 @@
                             :key="item.userId"
                             :label="item.nickname ? item.nickname : item.accountName" 
                             :value="item.userId">
-                            <span style="float: left">{{ item.accountName }}</span>
-                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.nickname }}</span>
+                            <span style="float: left">{{ item.nickname }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.accountName }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -124,8 +124,8 @@
                             :key="item.userId"
                             :label="item.nickname ? item.nickname : item.accountName" 
                             :value="item.userId">
-                            <span style="float: left">{{ item.accountName }}</span>
-                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.nickname }}</span>
+                            <span style="float: left">{{ item.nickname }}</span>
+                            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.accountName }}</span>
                         </el-option>
                     </el-select>
                 </el-form-item>
