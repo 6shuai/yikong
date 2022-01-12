@@ -24,7 +24,7 @@
             <el-descriptions-item label="乙方负责人">{{ contractParams.secondResponsibleName }}</el-descriptions-item>
             <el-descriptions-item label="合同金额">{{ contractParams.amount }}</el-descriptions-item>
             <el-descriptions-item label="签署日期">{{ contractParams.contractDate }}</el-descriptions-item>
-            <el-descriptions-item label="合同期">{{ contractParams.validBeginFormat }} - {{ contractParams.validEndFormat }}</el-descriptions-item>
+            <el-descriptions-item label="合同期">{{ formatTime(contractParams.validBeginFormat) }} - {{ formatTime(contractParams.validEndFormat) }}</el-descriptions-item>
             <el-descriptions-item label="回合同日">{{ contractParams.firstArchiveDate }}</el-descriptions-item>
             <el-descriptions-item label="合同图片">
                 <el-image 
@@ -355,6 +355,10 @@ export default {
             if(secondParty){
                 this.handleChangeSecondParty()
             }
+        },
+
+        formatTime(date){
+            return dateAddHMS(date)
         }
     }
 }
