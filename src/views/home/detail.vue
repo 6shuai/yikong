@@ -8,7 +8,7 @@
                     title="项目列表"
                 > </el-page-header>
                 <div class="title">{{ resData.displayName }}</div>
-                <div class="desc">{{ resData.description }}</div>
+                <div class="desc">{{ resData.clientName }}</div>
             </div>
             <el-tabs 
                 v-model="tabActiveName" 

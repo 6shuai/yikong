@@ -37,6 +37,11 @@
                     @editPayment="handleAddLog"
                 ></finance-payment>
             </el-tab-pane>
+
+            <el-tab-pane label="发票" name="invoice">
+                
+            </el-tab-pane>
+
         </el-tabs>
 
 
@@ -91,9 +96,11 @@ export default {
                     // 明细
                     this.$refs.financeDetail.resData = {
                         data: materialMedias,
+                        amount: this.resData.amount,
                         // 折扣
-                        discountRate: this.resData.discountRate
+                        discountRate: this.resData.amount / this.resData.totalPrice
                     }
+                    this.$refs.financeDetail.priceTotal()
                     this.resData.discountRate = accMul(this.resData.discountRate, 100)
 
                     // 付款记录

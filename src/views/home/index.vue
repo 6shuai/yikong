@@ -33,7 +33,14 @@
             >
                 <el-card shadow="hover">
                     <div class="name overflow">{{ item.displayName }}</div>
-                    <div class="desc">{{ item.description }}</div>
+                    <div class="desc" :title="item.description">{{ item.description }}</div>
+                    <el-tag 
+                        type="primary" 
+                        plain
+                        size="mini"
+                    >
+                        {{ item.clientName }}
+                    </el-tag>
 
                     <div class="edit" @click.stop="handleShowCreateProject(item)">
                         <i class="el-icon-edit"></i>编辑
@@ -147,16 +154,16 @@ export default {
 
                     .el-card__body{
                         padding: 0;
-                        margin: 20px;
+                        margin: 20px 20px 15px;
                     }
                     
                     .desc{
                         font-size: 12px;
                         color: #999;
                         line-height: 14px;
-                        height: 28px;
+                        height: 14px;
                         overflow: hidden;
-                        margin-top: 10px;
+                        margin: 10px 0;
                     }
 
                     .edit{

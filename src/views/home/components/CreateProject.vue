@@ -54,19 +54,18 @@
 </template>
 
 <script>
+import { organizationListProject } from '@/api/user'
 import { projectCreate } from '@/api/project'
-import { getOrganizationList } from '@/mixins/index'
 
 export default {
-    mixins: [getOrganizationList],
     data(){
         return {
             showCreateProject: false,
             createdLoading: false,
             addParams: {},
 
-            // 品牌列表
-            brandData: [],
+            // 组织品牌列表
+            groupData: [],
 
             // 表单验证
             addParamsRules: {
@@ -80,9 +79,16 @@ export default {
         showCreateProjectDialog(data = {}){
             this.addParams = JSON.parse(JSON.stringify(data))
             this.showCreateProject = true
-
+            this.getGroupList()
             this.$nextTick(() => {
                 this.$refs["addForm"].clearValidate();
+            })
+        },
+
+        // 组织列表
+        getGroupList(){
+            organizationListProject().then(res => {
+                this.groupData = res.obj
             })
         },
 

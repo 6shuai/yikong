@@ -70,7 +70,6 @@
                 </el-form-item>
                 <el-form-item 
                     label="甲方负责人" 
-                    prop="firstResponsible"
                     v-if="contractParams.firstParty"
                 >
                     <el-select 
@@ -80,8 +79,8 @@
                         placeholder="请选择甲方负责人"
                     >
                         <el-option 
-                            v-for="item in firstPartyMemberList" 
-                            :key="item.userId"
+                            v-for="(item, index) in firstPartyMemberList" 
+                            :key="index"
                             :label="item.nickname ? item.nickname : item.accountName" 
                             :value="item.userId">
                             <span style="float: left">{{ item.nickname }}</span>
@@ -110,7 +109,6 @@
                 </el-form-item>
                 <el-form-item 
                     label="乙方负责人" 
-                    prop="secondResponsible"
                     v-if="contractParams.secondParty"
                 >
                     <el-select 
@@ -120,8 +118,8 @@
                         placeholder="请选择乙方负责人"
                     >
                         <el-option 
-                            v-for="item in secondPartyMemberList" 
-                            :key="item.userId"
+                            v-for="(item, index) in secondPartyMemberList" 
+                            :key="index"
                             :label="item.nickname ? item.nickname : item.accountName" 
                             :value="item.userId">
                             <span style="float: left">{{ item.nickname }}</span>
@@ -198,7 +196,7 @@
 
 <script>
 import UploadImg from '@/components/Upload/UploadImg'
-import { getOrganizationList } from '@/mixins/index'
+import { organizationListProject } from '@/api/user'
 import { projectDetail, projectContractCreate, organizationUser } from '@/api/project'
 import { dateAddHMS } from '@/utils/index'
 
@@ -206,7 +204,6 @@ export default {
     components: { 
         UploadImg
     },
-    mixins: [getOrganizationList],
     data(){
         return {
             contractParams: {
@@ -216,10 +213,11 @@ export default {
             // 创建合同 表单验证
             contractRules: {
                 contractNumber: [{ required: true, message: '请输入合同号~', trigger: 'blur' }],
-                firstResponsible: [{ required: true, message: '请选择甲方负责人~', type: 'number', trigger: 'change' }],
-                secondResponsible: [{ required: true, message: '请选择乙方负责人~', type: 'number', trigger: 'change' }],
                 amount: [{ required: true, message: '请输入合同金额~', type: 'number', trigger: 'blur' }],
             },
+
+            // 组织列表
+            groupData: [],
 
             // 甲方联系人列表
             firstPartyMemberList: [],
@@ -250,8 +248,17 @@ export default {
     },
     mounted() {
         this.getContractDetail()
+        this.getGroupList()
     },
     methods: {
+        // 获取组织列表
+        getGroupList(){
+            organizationListProject().then(res => {
+                this.groupData = res.obj
+            })
+        },
+
+
         // 上传图片成功
         uploadImgSuccess(path){
             if(!this.contractParams.publishedContractPrints) this.contractParams.publishedContractPrints = []
