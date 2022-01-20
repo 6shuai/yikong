@@ -1,6 +1,6 @@
 <template>
-    <div class="material_wrap">
-        <div class="add_and_search">
+    <div class="material-wrap" id="app-main-wrap">
+        <div class="add-and-search">
             <el-button
                 icon="el-icon-plus"
                 type="primary"
@@ -10,14 +10,7 @@
                 新建物料
             </el-button>
 
-            <div class="search_input">
-                <el-input 
-                    clearable
-                    size="small"
-                    v-model="params.screenName"
-                    placeholder="屏幕名称"
-                    @input="$debounce(handleSearch)"
-                ></el-input>
+            <div class="search-input">
                 <el-input 
                     clearable
                     size="small"
@@ -29,59 +22,33 @@
 
         </div>
 
-        <el-table
-            class="mt20 mb20"
-            v-loading="tLoading"
-            stripe
-            size="small"
-            :data="resData"
-            row-key="id"
-            border>
-            <el-table-column 
-                prop="screenName" 
-                label="屏幕名称" 
-                min-width="120"
-            ></el-table-column>
-            <el-table-column 
-                prop="contentName" 
-                label="内容名称" 
-                min-width="60"
-            ></el-table-column>
-            <el-table-column 
-                prop="effectiveTime" 
-                label="上刊时间" 
-                min-width="60"
-            ></el-table-column>
-            <el-table-column 
-                prop="dueTime" 
-                label="下刊时间" 
-                min-width="60"
-            ></el-table-column>
-            <el-table-column 
-                prop="beginTime" 
-                label="操作" 
-                width="110"
-            >
-                <template slot-scope="scope">
-                    <el-popconfirm
-                        confirm-button-text='删除'
-                        cancel-button-text='取消'
-                        icon="el-icon-info"
-                        icon-color="red"
-                        title="此操作将删除此条数据, 是否继续?"
-                        @confirm="handleDelete(scope.row.id)"
-                    >
-                        <el-button 
-                            type="danger" 
-                            slot="reference"
-                            size="mini"
-                        >
-                            删除
-                        </el-button>
-                    </el-popconfirm>
-                </template>
-            </el-table-column>
-        </el-table>
+        
+        <div class="place-content mt20">
+            <div class="place-box" v-loading="tLoading">
+                <div 
+                    class="place-p" 
+                    :style="{width: placeW}" 
+                    v-for="(item, index) in resData" 
+                    :key="item.id"
+                    @click="$refs.materialScreen.showScreenListDialog(item.contentName, item.content)"
+                >
+                    <el-card 
+                        class="place-list" 
+                        shadow="always"
+                    >   
+                        <div class="place-img" 
+                            :style="{height: imageH+'px'}">
+                            <el-image fit="cover" :src="item.image" class="image" :style="{height: imageH+'px'}"></el-image>   
+                        </div>
+                        <div class="content-name overflow">
+                            {{ item.contentName }}
+                        </div>
+                    </el-card>
+                </div>
+            </div>
+        </div>
+
+        <el-empty v-if="!resData.length" description="暂无数据"></el-empty>
 
         <el-pagination
             v-if="resData.length"
@@ -95,19 +62,26 @@
 
         <!-- 新建物料 -->
         <create-material ref="createMaterial"></create-material>
+        
+        <!-- 内容投放的屏幕列表 -->
+        <material-screen ref="materialScreen"></material-screen>
 
     </div>
 </template>
 
 <script>
-import { projectMaterialList, projectMaterialDelete } from '@/api/project'
+import { projectMaterialList } from '@/api/project'
 import { dateAddHMS } from '@/utils/index'
+import { screenSizeWatch } from '@/mixins'
 import CreateMaterial from './components/CreateMaterial'
+import MaterialScreen from './components/MaterialScreen'
 
 export default {
     components: { 
-        CreateMaterial
+        CreateMaterial,
+        MaterialScreen
     },
+    mixins: [screenSizeWatch],
     data() {
         return {
             // 列表加载loading
@@ -164,17 +138,17 @@ export default {
         handleSearch(){
             this.params.pageNo = 1
             this.getMaterial()
-        },
-
-        // 删除
-        handleDelete(id){
-            projectMaterialDelete(id).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('删除成功~')
-                    this.getMaterial()
-                }
-            })
         }
     }
 }
 </script>
+<style lang="scss" scope>
+    @import '../place/style/place-card.scss';
+
+    .material-wrap{
+        .content-name{
+            padding: 10px;
+        }
+    }
+
+</style>

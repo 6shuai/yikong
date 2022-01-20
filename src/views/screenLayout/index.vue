@@ -1,7 +1,7 @@
 <template>
     <div class="app-main-wrap layout-list-wrap" id="app-main-wrap">
         <el-card shadow="always">
-            <div class="content-top mb20 clearfix add_and_search">
+            <div class="content-top mb20 clearfix add-and-search">
                 <el-button
                     class="created-btn"
                     type="primary"
@@ -12,7 +12,7 @@
                     新建布局
                 </el-button>
 
-                <div class="search_input">
+                <div class="search-input">
                     <el-input
                         class="w200 ml20"
                         prefix-icon="el-icon-search"

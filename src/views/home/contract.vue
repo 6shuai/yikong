@@ -1,5 +1,5 @@
 <template>
-    <div class="create_contract_wrap">
+    <div class="create-contract-wrap">
 
         <el-descriptions 
             title="合同信息"
@@ -174,7 +174,6 @@
                     ref="uploadImg"
                     :isArray="true" 
                     :imgList="contractParams.publishedContractPrints"
-                    :showCover="true"
                     @deleteImg="ShowDelete"
                     @uploadImgPath="uploadImgSuccess"
                 ></upload-img>
@@ -270,7 +269,6 @@ export default {
         // 删除图片
         ShowDelete(file){
             this.contractParams.publishedContractPrints.splice(file.index, 1)
-            console.log(this.contractParams.publishedContractPrints)
         },
 
         // 选择甲方
@@ -372,7 +370,7 @@ export default {
 </script>
 
 <style lang="scss">
-    .create_contract_wrap{
+    .create-contract-wrap{
         .horizontal{
             display: flex;
 

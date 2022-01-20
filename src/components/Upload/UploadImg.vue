@@ -15,7 +15,7 @@
                 :before-upload="beforeUpload"
                 :on-progress="progress"
                 :on-error="uploadError">
-                <img v-if="imgList" :src="imgList" class="avatar">
+                <img v-if="fileList" :src="fileList" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
         </div>

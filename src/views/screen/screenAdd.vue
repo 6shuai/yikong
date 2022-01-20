@@ -6,7 +6,7 @@
             </div>
         </el-page-header>
         <el-row :gutter="10" class="mt30" v-loading="$route.params.id && loading">
-            <el-col :xs="24" :sm="24" :md="12">
+            <el-col :xs="24" :sm="24" :md="18" :lg="16" :xl="12">
                 <el-form 
                     label-width="160px"
                     ref="screenParams"
@@ -109,20 +109,104 @@
                         propValue="groupIds"
                         @groupSelected="$set(screenParams, 'groupIds', $event)"
                     ></group-list>
+
+                    <el-form-item label="刊例价">
+                        <el-button
+                            type="primary"
+                            plain
+                            size="mini"
+                            @click="$refs.createScreenPric.showCreateScreenPriceDialog()"
+                        >
+                            添加
+                        </el-button>
+                        <el-table
+                            class="mb20"
+                            stripe
+                            size="small"
+                            :data="screenParams.publishedPrices"
+                        >
+                            <el-table-column 
+                                prop="price" 
+                                label="刊例价" 
+                                min-width="60"
+                            >
+                            </el-table-column>
+                            <el-table-column 
+                                prop="beginTimeFormat" 
+                                label="开始时间" 
+                                min-width="100"
+                            >
+                                <template slot-scope="scope">
+                                    {{ findTimeHasYtd(scope.row.beginTimeFormat) }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column 
+                                prop="endTimeFormat" 
+                                label="结束时间" 
+                                min-width="100"
+                            >
+                                <template slot-scope="scope">
+                                    {{ findTimeHasYtd(scope.row.endTimeFormat) }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column 
+                                prop="priceSystem" 
+                                label="价格体系" 
+                                min-width="100"
+                            >
+                                <template slot-scope="scope">
+                                    {{ findPriceType(scope.row.priceSystem) }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column 
+                                prop="beginTime" 
+                                label="操作" 
+                                width="100"
+                            >
+                                <template slot-scope="scope">
+                                    <a 
+                                        href="javascript:;"
+                                        class="price-edit"
+                                        @click="$refs.createScreenPric.showCreateScreenPriceDialog({...scope.row, index: scope.$index})"
+                                    >
+                                        编辑
+                                    </a>
+                                    <a 
+                                        href="javascript:;" 
+                                        class="ml10 price-delete"
+                                        @click="screenParams.publishedPrices.splice(scope.$index, 1)"
+                                    >
+                                        删除
+                                    </a>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-form-item>
+
                     <el-form-item label="">
                         <el-button type="primary" icon="el-icon-check" :loading="btnLoading" @click="screenSureBtn">提  交</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
+
+
+        <!-- 创建屏幕刊例价 -->
+        <create-screen-pric
+            ref="createScreenPric"
+            @handleCreatePriceSuccess="handleCreatePriceSuccess"
+        ></create-screen-pric>
+
     </el-card>
 </template>
 <script>
+import { getPriceTypeList } from '@/api/common';
 import { screenPlaceList, screenCreated, screenShowDelete, screenShowDefault } from '@/api/screen';
 import { getOrganizationList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import uploadImg from '@/components/Upload/UploadImg';
 import GroupList from '@/components/GroupList/index';
+import CreateScreenPric from './components/CreateScreenPrice';
 
 
 export default {
@@ -130,7 +214,10 @@ export default {
     data(){
         return {
             screenParams: {
-                screenShowData: []
+                screenShowData: [],
+
+                // 刊例价
+                publishedPrices: []
             },
             btnLoading: false,     
             placeData: [],                //场所列表         
@@ -154,7 +241,8 @@ export default {
     mounted() {
         this.hasPagePerm('Screen').then(res => {
             if(res){
-                this.init();
+                this.getPriceType()
+                this.init()
             }
         })
     },
@@ -268,11 +356,51 @@ export default {
         randomAccount(){
             let n = Math.random().toString().slice(-6);
             this.$set(this.screenParams, 'account', 'Admin' + n);
+        },
+
+        // 价格体系列表
+        getPriceType(){
+            let p = this.$store.state.user.priceTypeData
+            if(p.length) return
+            getPriceTypeList().then(res => {
+                this.$store.state.user.priceTypeData = res.obj
+            })
+        },
+
+        // 刊例价 创建或编辑成功
+        handleCreatePriceSuccess(data){
+            if(typeof data.index === 'number' && !isNaN(data.index)){
+                this.screenParams.publishedPrices[data.index] = data
+                this.$set(this.screenParams.publishedPrices, data.index, data)
+            }else{
+                this.screenParams.publishedPrices.push(data)
+            }
+        },
+
+        // 根据刊例价体系id 查找刊例价体系名称
+        findPriceType(id){
+            let p = this.$store.state.user.priceTypeData || []
+            let obj = {}
+            obj = p.find(item => {
+                return item.id == id
+            })
+            return obj.displayName
+        },
+
+        // 时间里是否包含 2022-01-01  有就删除  没有就添加
+        findTimeHasYtd(data){
+            let fixedValue = '2022-01-01 '
+            if(data.indexOf(fixedValue) > -1){
+                return data.split(fixedValue)[1]
+            }else{
+                return fixedValue + data
+            }
         }
     },
     components: {
         uploadImg,
-        GroupList
+        GroupList,
+        CreateScreenPric
     }
 }
 </script>
@@ -303,6 +431,14 @@ export default {
                     float: left;
                 }
             }
+        }
+
+        .price-edit:hover{
+            color: var(--color-success);
+        }
+
+        .price-delete:hover{
+            color: var(--color-danger);
         }
     }
 </style>

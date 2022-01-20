@@ -10,6 +10,14 @@ const homeRoutes = [
 			component: () => import('@/views/home/detail'),
             children: [
                 {
+                    path: '/project/:id',
+                    name: 'Project--contract',
+                    component: () => import('@/views/home/info'),
+                    meta: {
+                        title: '项目详情 - 基本信息'
+                    }
+                },
+                {
                     path: 'contract',
                     name: 'Project--contract',
                     component: () => import('@/views/home/contract'),

@@ -1,9 +1,9 @@
 <template>
     <div 
-        class="project_list_wrap app-main-wrap" 
+        class="project-list-wrap app-main-wrap" 
         id="app-main-wrap"
     >
-        <div class="add_and_search mb10">
+        <div class="add-and-search mb10">
             <el-button 
                 type="primary" 
                 icon="el-icon-plus" 
@@ -12,7 +12,7 @@
                 新建项目
             </el-button>
 
-            <div class="search_input">
+            <div class="search-input">
                 <el-input 
                     clearable
                     size="small"
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div class="project_list" v-loading="listLoading">
+        <div class="project-list" v-loading="listLoading">
             <div 
                 class="item" 
                 :style="{ width: placeW }" 
@@ -114,7 +114,7 @@ export default {
 
         // 跳转项目详情
         jumpProjectDetail(id){
-            this.$router.push(`/project/${id}/contract`)
+            this.$router.push(`/project/${id}`)
         },
 
         // 分页
@@ -139,8 +139,8 @@ export default {
 </script>
 
 <style lang="scss">
-    .project_list_wrap{
-        .project_list{
+    .project-list-wrap{
+        .project-list{
             display: flex;
             flex-wrap: wrap;
             margin-left: -10px;

@@ -1,6 +1,6 @@
 <template>
     <div class="app-main-wrap content-list-wrap" id="app-main-wrap">
-        <div class="content-top add_and_search">
+        <div class="content-top add-and-search">
             <el-button 
                 v-if="hasPerm($route.meta.permission, 'AddTimeline')"
                 class="created-btn"
@@ -11,7 +11,7 @@
                 创建时间轴
             </el-button>
 
-            <div class="search_input">
+            <div class="search-input">
                 <el-input 
                     prefix-icon="el-icon-search" 
                     clearable

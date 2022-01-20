@@ -1,3 +1,11 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2020-08-28 15:27:39
+ * @LastEditors: liushuai
+ * @LastEditTime: 2022-01-19 11:04:46
+ * @Description: file content
+ * @FilePath: \pclient\src\layout\components\TagsView\ScrollPane.vue
+-->
 <template>
 	<el-scrollbar ref="scrollContainer" :vertical="false" class="scroll-container" @wheel.native.prevent="handleScroll">
 		<slot />
@@ -73,13 +81,11 @@ export default {
   position: relative;
   overflow: hidden;
   width: 100%;
-  /deep/ {
-    .el-scrollbar__bar {
-      bottom: 0px;
-    }
-    .el-scrollbar__wrap {
-      height: 49px;
-    }
-  }
+.el-scrollbar__bar {
+	bottom: 0px;
+}
+.el-scrollbar__wrap {
+	height: 49px;
+}
 }
 </style>

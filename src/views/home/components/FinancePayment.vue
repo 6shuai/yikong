@@ -1,10 +1,18 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2022-01-07 17:46:11
+ * @LastEditors: liushuai
+ * @LastEditTime: 2022-01-19 11:53:18
+ * @Description: file content
+ * @FilePath: \pclient\src\views\home\components\FinancePayment.vue
+-->
 <template>
-    <div class="finance_payment_wrap">
+    <div class="finance-payment-wrap">
         <el-table
             class="mt20 mb20"
             stripe
             size="small"
-            :data="resData.contractPayments"
+            :data="paymentData"
             row-key="id"
             border>
             <el-table-column 
@@ -40,10 +48,8 @@
 
 <script>
 export default {
-    data(){
-        return {
-            resData: {}
-        }
+    props: {
+        paymentData: Array
     },
     methods: {
         handleEdit(data){

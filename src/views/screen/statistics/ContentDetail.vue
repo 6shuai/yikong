@@ -8,11 +8,22 @@
         :close-on-press-escape="false"
         @close="showContentDetail=false"
         append-to-body>
-
         <div 
             class="mb20"
             style="float: right;"
         >
+            <el-date-picker
+                v-if="showDatePicker"
+                class="mr20"
+                v-model="params.beginTime"
+                align="right"
+                type="date"
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+                @change="handleSearch"
+                :picker-options="pickerOptions">
+            </el-date-picker>
+
             <el-button 
                 type="primary"
                 size="medium"
@@ -80,6 +91,7 @@
 
 <script>
 import { screenPlayContentPlayDetail } from '@/api/screen'
+import { formatTime } from '@/utils/index'
 import qs from "qs"
 
 export default {
@@ -96,17 +108,33 @@ export default {
 
             //总条数
             totalCount: 0,
+
+            // 是否显示选择日期组件
+            showDatePicker: false,
+
+            // 禁止选择今天之后的日期
+            pickerOptions: {
+                disabledDate(time) {
+                    return time.getTime() > Date.now();
+                }
+            }
         }
     },
     methods: {
         showDialog(data){
-            console.log('data----------->' , data)
             this.params = {
                 ...data,
                 pageNo: 1,
                 pageSize: 40,
-                screenId: Number(this.$route.params.id)
+                screenId: data.screenId ? data.screenId : Number(this.$route.params.id),
+                beginTime: data.beginTime ? data.beginTime : formatTime(new Date(), 'date')
             }
+
+            // 没有日期  显示选择日期组件 并默认为当天
+            if(!data.beginTime){
+                this.showDatePicker = true
+            }
+
             this.showContentDetail = true
             this.getScreenTimeline()
         },
@@ -134,6 +162,7 @@ export default {
         handleSearch(){
             this.params.pageNo = 1
             this.getScreenTimeline()
+            console.log(this.params.beginTime)
         },
 
         //导出

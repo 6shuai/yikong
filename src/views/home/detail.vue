@@ -1,21 +1,28 @@
 <template>
-    <div class="contract_wrap app-main-wrap">
+    <div class="contract-wrap app-main-wrap">
             <el-card v-loading="dataLoading"> 
 
-            <div class="project_introduce">
+            <div class="project-introduce">
                 <el-page-header 
                     @back="$router.push('/')"
                     title="项目列表"
                 > </el-page-header>
                 <div class="title">{{ resData.displayName }}</div>
-                <div class="desc">{{ resData.clientName }}</div>
+                <!-- <div class="desc">{{ resData.clientName }}</div> -->
             </div>
             <el-tabs 
                 v-model="tabActiveName" 
                 @tab-click="handleTab"
                 class="mb20"
             >
-                <el-tab-pane label="合同" :name="`/project/${$route.params.id}/contract`"></el-tab-pane>
+                <el-tab-pane 
+                    label="基本信息" 
+                    :name="`/project/${$route.params.id}`"
+                ></el-tab-pane>
+                <el-tab-pane 
+                    label="合同" 
+                    :name="`/project/${$route.params.id}/contract`"
+                ></el-tab-pane>
                 <el-tab-pane 
                     label="物料" 
                     :name="`/project/${$route.params.id}/material`"
@@ -62,7 +69,6 @@ export default {
         this.getDetail()
     },
     methods: {
-
         // 查询项目详情
         getDetail(){
             this.dataLoading = true
@@ -70,6 +76,7 @@ export default {
                 this.dataLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj
+                    this.$store.state.user.projectDetail = res.obj
                     this.$store.state.user.projectContractDetail = res.obj.publishedContract ? res.obj.publishedContract : {}
                 }
             })
@@ -83,8 +90,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .contract_wrap{
-        .project_introduce{
+    .contract-wrap{
+        .project-introduce{
             text-align: center;
             position: relative;
 

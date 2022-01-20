@@ -1,6 +1,6 @@
 <template>
-    <div class="project_member_wrap">
-        <div class="add_and_search">
+    <div class="project-member-wrap">
+        <div class="add-and-search">
             <el-button
                 type="primary"
                 icon="el-icon-plus"
@@ -10,7 +10,7 @@
                 添加成员
             </el-button>
     
-            <div class="search_input">
+            <div class="search-input">
                 <el-input 
                     clearable
                     size="small"
@@ -63,6 +63,7 @@
                             type="danger" 
                             slot="reference"
                             size="mini"
+                            plain
                         >
                             删除
                         </el-button>
@@ -153,7 +154,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .project_member_wrap{
+    .project-member-wrap{
         .el-image{
             width: 40px;
             height: 40px;

@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="520px"
-        title="新建项目"
+        :title="addParams.id ? '编辑项目' : '新建项目'"
         :visible.sync="showCreateProject"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -32,6 +32,23 @@
                     </el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item label="价格体系" prop="priceSystem">
+                <el-select 
+                    v-model="addParams.priceSystem" 
+                    filterable 
+                    style="width: 100%"
+                    placeholder="请选择价格体系"
+                >   
+                    <el-option 
+                        v-for="item in priceTypeData" 
+                        :key="item.id"
+                        :label="item.displayName" 
+                        :value="item.id">
+                        <span style="float: left">{{ item.displayName }}</span>
+                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.description }}</span>
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="说明">
                 <el-input
                     v-model="addParams.description" 
@@ -55,6 +72,7 @@
 
 <script>
 import { organizationListProject } from '@/api/user'
+import { getPriceTypeList } from '@/api/common'
 import { projectCreate } from '@/api/project'
 
 export default {
@@ -67,10 +85,14 @@ export default {
             // 组织品牌列表
             groupData: [],
 
+            // 价格体系列表
+            priceTypeData: [],
+
             // 表单验证
             addParamsRules: {
                 displayName: [{ required: true, message: '请输入项目名称~', trigger: 'blur' }],
-                client: [{ required: true, message: '请选择客户~', trigger: 'change' }]
+                client: [{ required: true, message: '请选择客户~', trigger: 'change' }],
+                priceSystem: [{ required: true, message: '请选择价格体系~', trigger: 'change' }]
             }
         }
     },
@@ -80,6 +102,7 @@ export default {
             this.addParams = JSON.parse(JSON.stringify(data))
             this.showCreateProject = true
             this.getGroupList()
+            this.getPriceType()
             this.$nextTick(() => {
                 this.$refs["addForm"].clearValidate();
             })
@@ -89,6 +112,19 @@ export default {
         getGroupList(){
             organizationListProject().then(res => {
                 this.groupData = res.obj
+            })
+        },
+
+        // 价格体系列表
+        getPriceType(){
+            let p = this.$store.state.user.priceTypeData
+            if(p.length){
+                this.priceTypeData = p
+                return
+            }
+            getPriceTypeList().then(res => {
+                this.priceTypeData = res.obj
+                this.$store.state.user.priceTypeData = res.obj
             })
         },
 

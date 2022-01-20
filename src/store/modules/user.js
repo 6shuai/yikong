@@ -11,8 +11,14 @@ const state = {
 	// 场所列表
 	placeData: [],
 
+	// 项目详情
+	projectDetail: {},
+
 	// 项目 合同详情
-	projectContractDetail: {}
+	projectContractDetail: {},
+
+	// 价格体系列表
+	priceTypeData: []
 };
 
 const mutations = {

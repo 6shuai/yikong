@@ -289,6 +289,53 @@
                             </el-form-item>
                         </el-form>
                     </div>
+
+                     <el-divider
+                        v-if="resData.publishedPrices && resData.publishedPrices.length"
+                        >刊例价格<i class="el-icon-caret-bottom"></i
+                    ></el-divider>
+                    <el-table
+                        class="mb20"
+                        stripe
+                        size="small"
+                        v-if="resData.publishedPrices && resData.publishedPrices.length"
+                        :data="resData.publishedPrices"
+                    >
+                        <el-table-column 
+                            prop="price" 
+                            label="刊例价" 
+                            min-width="60"
+                        >
+                        </el-table-column>
+                        <el-table-column 
+                            prop="beginTimeFormat" 
+                            label="开始时间" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                {{ findTimeHasYtd(scope.row.beginTimeFormat) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                            prop="endTimeFormat" 
+                            label="结束时间" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                {{ findTimeHasYtd(scope.row.endTimeFormat) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                            prop="priceSystem" 
+                            label="价格体系" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                {{ findPriceType(scope.row.priceSystem) }}
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
                 </el-col>
             </el-row>
         </div>
@@ -316,6 +363,7 @@ import {
     screenAuthorityDelete
 } from "@/api/screen";
 import { getScreenDetail, screenIsFavorite } from "@/views/screen/mixins";
+import { getPriceTypeList } from '@/api/common';
 import Permission from '@/components/permission/index';
 import PageHeader from '@/components/PageHeader';
 
@@ -350,6 +398,7 @@ export default {
         this.tabActiveName = this.$route.path
         this.hasPagePerm('Screen').then(res => {
             if(res){
+                this.getPriceType()
                 this.initDetail();
             }
         })
@@ -488,6 +537,35 @@ export default {
         //切换tab
         handleTab(){
             this.$router.push(this.tabActiveName)
+        },
+
+        // 价格体系列表
+        getPriceType(){
+            let p = this.$store.state.user.priceTypeData
+            if(p.length) return
+            getPriceTypeList().then(res => {
+                this.$store.state.user.priceTypeData = res.obj
+            })
+        },
+
+        // 根据刊例价体系id 查找刊例价体系名称
+        findPriceType(id){
+            let p = this.$store.state.user.priceTypeData || []
+            let obj = {}
+            obj = p.find(item => {
+                return item.id == id
+            })
+            return obj.displayName
+        },
+
+        // 时间里是否包含 2022-01-01  有就删除  没有就添加
+        findTimeHasYtd(data){
+            let fixedValue = '2022-01-01 '
+            if(data.indexOf(fixedValue) > -1){
+                return data.split(fixedValue)[1]
+            }else{
+                return fixedValue + data
+            }
         }
     },
     components: {

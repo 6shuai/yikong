@@ -1,6 +1,6 @@
 <template>
     <div class="app-main-wrap games-list-wrap" id="app-main-wrap">
-        <div class="content-top mb20 add_and_search">
+        <div class="content-top mb20 add-and-search">
             <el-button 
                 v-if="hasPerm($route.meta.permission, 'AddGame')"
                 class="created-btn"
@@ -11,7 +11,7 @@
                 创建游戏
             </el-button>
             
-            <div class="search_input">
+            <div class="search-input">
                 <el-input 
                     class="ml20 w220"
                     prefix-icon="el-icon-search" 

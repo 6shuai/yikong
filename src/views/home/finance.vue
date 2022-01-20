@@ -1,21 +1,21 @@
 <template>
-    <div class="finance_wrap" v-loading="dataLoading">
+    <div class="finance-wrap" v-loading="dataLoading">
         <div class="statistics">
             <span>刊例价: {{ resData.totalPrice }}</span>
             <span>投放价: {{ resData.amount }}</span>
             <span>折扣: {{ resData.discountRate }} %</span>
         </div>
 
-        <el-tabs v-model="activeName" type="card" @tab-click="handleTabClick">
+        <el-tabs v-model="activeName" type="card">
             <el-tab-pane label="明细" name="detail">
                 <finance-detail 
-                    ref="financeDetail"
+                    :logData="resData.materialMedias"
                 ></finance-detail>
             </el-tab-pane>
 
             <el-tab-pane label="付款" name="payment">
 
-                <div class="payment_log_top">
+                <div class="payment-log-top">
                     <el-button 
                         type="primary"
                         size="small"
@@ -33,13 +33,20 @@
                 </div>
 
                 <finance-payment 
-                    ref="financePayment"
+                    :paymentData="paymentInfo.contractPayments"
                     @editPayment="handleAddLog"
                 ></finance-payment>
             </el-tab-pane>
 
             <el-tab-pane label="发票" name="invoice">
-                
+                <finance-invoice 
+                    :invoiceData="resData.publishedInvoices"
+                    @handleAddInvoice="handleAddInvoice"
+                ></finance-invoice>
+            </el-tab-pane>
+
+            <el-tab-pane label="权责" name="duty">
+                <finance-duty :dutyData="resData.accrualDetails"></finance-duty>
             </el-tab-pane>
 
         </el-tabs>
@@ -47,6 +54,9 @@
 
         <!-- 添加付款记录 -->
         <create-payment-log ref="createPaymentLog"></create-payment-log>
+
+        <!-- 添加发票 -->
+        <create-invoice ref="createInvoice"></create-invoice>
 
     </div>
 </template>
@@ -57,12 +67,18 @@ import { accMul } from '@/utils/index'
 import FinanceDetail from './components/FinanceDetail'
 import FinancePayment from './components/FinancePayment'
 import CreatePaymentLog from './components/CreatePaymentLog'
+import FinanceInvoice from './components/FinanceInvoice'
+import CreateInvoice from './components/CreateInvoice'
+import FinanceDuty from './components/FinanceDuty'
 
 export default {
     components: {
         FinanceDetail,
         FinancePayment,
-        CreatePaymentLog
+        CreatePaymentLog,
+        FinanceInvoice,
+        CreateInvoice,
+        FinanceDuty
     },
     data(){
         return {
@@ -93,18 +109,7 @@ export default {
                     this.resData = res.obj
                     this.paymentInfo = paymentInfo
 
-                    // 明细
-                    this.$refs.financeDetail.resData = {
-                        data: materialMedias,
-                        amount: this.resData.amount,
-                        // 折扣
-                        discountRate: this.resData.amount / this.resData.totalPrice
-                    }
-                    this.$refs.financeDetail.priceTotal()
                     this.resData.discountRate = accMul(this.resData.discountRate, 100)
-
-                    // 付款记录
-                    this.$refs.financePayment.resData = this.paymentInfo
                 }
             })
         },
@@ -113,10 +118,10 @@ export default {
         handleAddLog(data){
             this.$refs.createPaymentLog.showCreatePaymentLogDialog(data)
         },
-        
-        // 
-        handleTabClick(){
-            
+
+        // 显示添加发票窗口
+        handleAddInvoice(data){
+            this.$refs.createInvoice.showCreateInvoiceDialog(data)
         }
     },
     watch: {
@@ -128,7 +133,7 @@ export default {
 </script>
 
 <style lang="scss">
-    .finance_wrap{
+    .finance-wrap{
         .statistics{
             display: flex;
             margin-bottom: 20px;
@@ -138,7 +143,7 @@ export default {
             }
         }
 
-        .payment_log_top{
+        .payment-log-top{
     
             .statistics{
                 float: right;

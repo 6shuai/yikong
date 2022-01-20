@@ -250,14 +250,15 @@ li{
   color: #ff2e63;
 }
 
-.add_and_search{
+.add-and-search{
+	min-height: 30px;
 	.el-input{
 		display: inline-block;
 		width: 220px;
 		margin: 0 10px;
 	}
 
-	.search_input{
+	.search-input{
 		float: right;
 	}
 }

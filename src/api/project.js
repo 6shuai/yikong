@@ -19,6 +19,10 @@ export function projectContractCreate(data) { return post('/project/publishedCon
 // 物料列表
 export function projectMaterialList(data) { return get('/project/publishedMaterialMedia', data) }
 
+// 查询当前内容所投放的屏幕列表
+export function projectMaterialForScreenList(data) { return get('/project/publishedMaterialMediaByContent', data) }
+
+
 // 创建物料
 export function projectMaterialCreate(data) { return post('/project/publishedMaterialMedia', data) }
 
@@ -31,6 +35,13 @@ export function projectFinanceInfo(data) { return get('/project/publishedContrac
 
 // 添加或修改 付款记录
 export function projectFinanceCreateLog(data) { return post('/project/publishedContractPayment', data) }
+
+// 添加 修改 发票
+export function projectFinanceCreateInvoice(data) { return post('/project/publishedInvoice', data) }
+
+// 删除发票
+export function projectFinanceInvoiceDelete(data) { return del(`/project/publishedInvoice?id=${data}`) }
+
 
 
 // 查询成员列表
@@ -46,3 +57,8 @@ export function projectMemberDelete(data) { return del(`/project/publishedProjec
 export function projectMemberSearch(data) { return get('/project/platformUser', data) }
 
 
+// 添加 修改 受益人
+export function projectBeneficiaryCreate(data) { return post('/project/publishedBeneficiary', data) }
+
+// 删除受益人
+export function projectBeneficiaryDelete(data) { return del(`/project/publishedBeneficiary?id=${data}`) }

@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        class="create_material_wrap"
+        class="create-material-wrap"
         width="700px"
         title="新建物料"
         :visible.sync="showCreateMaterial"
@@ -229,7 +229,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .create_material_wrap{
+    .create-material-wrap{
         .el-select{
             width: 220px;
         }
