@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        width="1000px"
+        width="1100px"
         :title="contentName"
         :visible.sync="showScreenList"
         append-to-body
@@ -26,12 +26,12 @@
             <el-table-column 
                 prop="effectiveTime" 
                 label="上刊时间" 
-                min-width="60"
+                min-width="80"
             ></el-table-column>
             <el-table-column 
                 prop="dueTime" 
                 label="下刊时间" 
-                min-width="60"
+                min-width="80"
             ></el-table-column>
             <el-table-column 
                 prop="days" 
@@ -172,7 +172,6 @@ export default {
                 }
             })
         }
-
     }
 }
 </script>

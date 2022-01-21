@@ -1,59 +1,36 @@
 <template>
     <div class="create-contract-wrap">
 
-        <el-descriptions 
-            title="合同信息"
-            v-show="!showEdit"
-            v-loading="dataLoading"
-            border
-        >
-            <template slot="extra">
-                <el-button 
-                    type="primary" 
-                    size="small"
-                    icon="el-icon-edit"
-                    @click="showEdit = true"
-                >
-                    编辑合同
-                </el-button>
-            </template>
-            <el-descriptions-item label="合同号">{{ contractParams.contractNumber }}</el-descriptions-item>
-            <el-descriptions-item label="甲方">{{ contractParams.firstPartyName }}</el-descriptions-item>
-            <el-descriptions-item label="甲方负责人">{{ contractParams.firstResponsibleName }}</el-descriptions-item>
-            <el-descriptions-item label="乙方">{{ contractParams.secondPartyName }}</el-descriptions-item>
-            <el-descriptions-item label="乙方负责人">{{ contractParams.secondResponsibleName }}</el-descriptions-item>
-            <el-descriptions-item label="合同金额">{{ contractParams.amount }}</el-descriptions-item>
-            <el-descriptions-item label="签署日期">{{ contractParams.contractDate }}</el-descriptions-item>
-            <el-descriptions-item label="合同期">{{ formatTime(contractParams.validBeginFormat) }} - {{ formatTime(contractParams.validEndFormat) }}</el-descriptions-item>
-            <el-descriptions-item label="回合同日">{{ contractParams.firstArchiveDate }}</el-descriptions-item>
-            <el-descriptions-item label="合同图片">
-                <el-image 
-                    v-for="(item, index) in contractParams.publishedContractPrints"
-                    :key="index"
-                    style="width: 100px; height: 100px"
-                    :src="item.print" 
-                    :preview-src-list="imageSrcList">
-                </el-image>
-            </el-descriptions-item>
-        </el-descriptions>
+        <div class="edit-btn" v-show="!showEdit">
+            <el-button 
+                type="primary" 
+                size="small"
+                icon="el-icon-edit"
+                @click="showEdit = true"
+            >
+                编辑合同
+            </el-button>
+        </div>
 
         <el-form 
             label-width="100px"
             ref="contractForm"
             :model="contractParams"
             :rules="contractRules"
-            v-show="showEdit"
         >
-            <el-form-item label="合同号" prop="contractNumber">
+            <el-form-item label="合同号:" prop="contractNumber">
                 <el-input 
+                    v-show="showEdit"
                     v-model="contractParams.contractNumber" 
                     placeholder="合同号"
                 ></el-input>
+                <span v-show="!showEdit">{{ contractParams.contractNumber }}</span>
             </el-form-item>
     
             <div class="horizontal">
-                <el-form-item label="甲方">
+                <el-form-item label="甲方:">
                     <el-select 
+                        v-show="showEdit"
                         v-model="contractParams.firstParty" 
                         filterable
                         clearable 
@@ -67,12 +44,14 @@
                             :value="item.id">
                         </el-option>
                     </el-select>
+                    <span v-show="!showEdit">{{ contractParams.firstPartyName }}</span>
                 </el-form-item>
                 <el-form-item 
-                    label="甲方负责人" 
+                    label="甲方负责人:" 
                     v-if="contractParams.firstParty"
                 >
                     <el-select 
+                        v-show="showEdit"
                         v-model="contractParams.firstResponsible" 
                         filterable 
                         clearable
@@ -87,12 +66,14 @@
                             <span style="float: right; color: #8492a6; font-size: 13px">{{ item.accountName }}</span>
                         </el-option>
                     </el-select>
+                    <span v-show="!showEdit">{{ contractParams.firstResponsibleName }}</span>
                 </el-form-item>
             </div>
     
             <div class="horizontal">
-                <el-form-item label="乙方">
+                <el-form-item label="乙方:">
                     <el-select 
+                        v-show="showEdit"
                         v-model="contractParams.secondParty" 
                         filterable 
                         clearable
@@ -106,12 +87,14 @@
                             :value="item.id">
                         </el-option>
                     </el-select>
+                    <span v-show="!showEdit">{{ contractParams.secondPartyName }}</span>
                 </el-form-item>
                 <el-form-item 
-                    label="乙方负责人" 
+                    label="乙方负责人:" 
                     v-if="contractParams.secondParty"
                 >
                     <el-select 
+                        v-show="showEdit"
                         v-model="contractParams.secondResponsible" 
                         filterable 
                         clearable
@@ -126,30 +109,36 @@
                             <span style="float: right; color: #8492a6; font-size: 13px">{{ item.accountName }}</span>
                         </el-option>
                     </el-select>
+                    <span v-show="!showEdit">{{ contractParams.secondResponsibleName }}</span>
                 </el-form-item>
             </div>
     
             <div class="horizontal">
-                <el-form-item label="合同金额" prop="amount">
+                <el-form-item label="合同金额:" prop="amount">
                     <el-input-number 
+                        v-show="showEdit"
                         :controls="false"
                         v-model="contractParams.amount" 
                     ></el-input-number>
+                    <span v-show="!showEdit">{{ contractParams.amount }}</span>
                 </el-form-item>
                 
             </div>
-            <el-form-item label="签署日期">
+            <el-form-item label="签署日期:">
                 <el-date-picker
+                    v-show="showEdit"
                     v-model="contractParams.contractDate"
                     type="date"
                     placeholder="选择签署日期"
                     value-format="yyyy-MM-dd"
                 >
                 </el-date-picker>
+                <span v-show="!showEdit">{{ contractParams.contractDate }}</span>
             </el-form-item>
     
-            <el-form-item label="合同期">
+            <el-form-item label="合同期:">
                 <el-date-picker
+                    v-show="showEdit"
                     v-model="contractTime"
                     type="daterange"
                     value-format="yyyy-MM-dd"
@@ -158,28 +147,44 @@
                     end-placeholder="结束日期"
                 >
                 </el-date-picker>
+                <span v-show="!showEdit">{{ contractParams.contractTime }}</span>
             </el-form-item>
     
-            <el-form-item label="回合同日">
+            <el-form-item label="回合同日:">
                 <el-date-picker
+                    v-show="showEdit"
                     v-model="contractParams.firstArchiveDate"
                     type="date"
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd">
                 </el-date-picker>
+                <span v-show="!showEdit">{{ contractParams.firstArchiveDate }}</span>
             </el-form-item>
     
-            <el-form-item label="上传合同">
+            <el-form-item :label="showEdit ? '上传合同:' : '合同图片'">
                 <upload-img 
+                    v-show="showEdit"
                     ref="uploadImg"
                     :isArray="true" 
                     :imgList="contractParams.publishedContractPrints"
                     @deleteImg="ShowDelete"
                     @uploadImgPath="uploadImgSuccess"
                 ></upload-img>
+                <div 
+                    class="contract-image-list"
+                    v-show="!showEdit"
+                >
+                    <el-image 
+                        v-for="(item, index) in contractParams.publishedContractPrints"
+                        :key="index"
+                        style="width: 100px; height: 100px"
+                        :src="item.print" 
+                        :preview-src-list="imageSrcList">
+                    </el-image>
+                </div>
             </el-form-item>
             
-            <el-form-item>
+            <el-form-item v-if="showEdit">
                 <el-button @click="contractParams.id ? showEdit = false : $router.push('/')">取 消</el-button>
                 <el-button 
                     type="primary"
@@ -391,11 +396,20 @@ export default {
             }
         }
 
-        .el-descriptions {
+        .edit-btn{
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .contract-image-list {
             .el-image{
                 margin: 10px;
                 border-radius: 4px;
             }
+        }
+
+        .el-form-item__label{
+            font-weight: bold;
         }
     }
 </style>

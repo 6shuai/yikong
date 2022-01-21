@@ -36,6 +36,10 @@
                     label="成员" 
                     :name="`/project/${$route.params.id}/member`"
                 ></el-tab-pane>
+                <el-tab-pane 
+                    label="寻位" 
+                    :name="`/project/${$route.params.id}/locating`"
+                ></el-tab-pane>
             </el-tabs>   
             
             <router-view v-if="!dataLoading"></router-view>
@@ -50,7 +54,7 @@ import { projectDetail } from '@/api/project'
 export default {
     data(){
         return {
-            tabActiveName: '/project/contract',
+            tabActiveName: this.$route.path,
 
             // 项目详情数据
             resData: [],
@@ -65,7 +69,6 @@ export default {
         }
     },
     mounted() {
-        this.tabActiveName = this.$route.path
         this.getDetail()
     },
     methods: {
@@ -86,6 +89,11 @@ export default {
             this.$router.push(tab.name)
         }
     },
+    watch:{
+        $route(to, from) {
+            this.tabActiveName = to.path
+        }
+    }
 }
 </script>
 

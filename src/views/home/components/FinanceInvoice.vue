@@ -8,15 +8,23 @@
 -->
 <template>
     <div class="add_invoice">
-        <el-button 
-            type="primary"
-            size="small"
-            icon="el-icon-plus"
-            class="mt20"
-            @click="handleAddInvoice()"
-        >
-            添加发票
-        </el-button>
+        <div class="payment-log-top">
+            <el-button 
+                type="primary"
+                size="small"
+                icon="el-icon-plus"
+                class="mt20"
+                @click="handleAddInvoice()"
+            >
+                添加发票
+            </el-button>
+    
+            <div class="statistics">
+                <span>应开票金额: {{ 0 }}</span>
+                <span>已开票金额: {{ 0 }}</span>
+                <span>未开票金额: {{ 0 }}</span>
+            </div>
+        </div>
         
         <el-table
             class="mt20 mb20"

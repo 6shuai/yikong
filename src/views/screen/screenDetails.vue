@@ -568,6 +568,11 @@ export default {
             }
         }
     },
+    watch:{
+        $route(to, from) {
+            this.tabActiveName = to.path
+        }
+    },
     components: {
         Permission,
         PageHeader

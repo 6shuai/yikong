@@ -49,6 +49,14 @@ const homeRoutes = [
                         title: '项目详情 - 成员'
                     }
                 },
+                {
+                    path: 'locating',
+                    name: 'Project--locating',
+                    component: () => import('@/views/home/locating'),
+                    meta: {
+                        title: '项目详情 - 寻位'
+                    }
+                },
             ],
             redirect: '/project/contract'
 		}],

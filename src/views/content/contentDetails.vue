@@ -353,6 +353,11 @@ export default {
             this.$router.push(this.tabActiveName)
         }
     },
+    watch:{
+        $route(to, from) {
+            this.tabActiveName = to.path
+        }
+    },
     components: {
         PlayLimit,
         PlayPlan,

@@ -9,6 +9,7 @@
             <el-descriptions-item label="投放客户">
                 <el-tag size="small">{{ project.clientName }}</el-tag>
             </el-descriptions-item>
+            <el-descriptions-item label="价格体系">{{ project.priceSystemName }}</el-descriptions-item>
             <el-descriptions-item label="说明">{{ project.description }}</el-descriptions-item>
         </el-descriptions>
 
@@ -110,11 +111,12 @@ export default {
         }
     },
     mounted() {
-        let { displayName, description, clientName, publishedBeneficiaries } = this.$store.state.user.projectDetail
+        let { displayName, description, clientName, priceSystemName, publishedBeneficiaries } = this.$store.state.user.projectDetail
         this.project = {
             displayName,
             description,
-            clientName
+            clientName,
+            priceSystemName
         }
         this.resData = publishedBeneficiaries
     },
@@ -150,7 +152,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .project-member-wrap{
         .el-image{
             width: 40px;
@@ -158,6 +160,10 @@ export default {
             border-radius: 50%;
             vertical-align: middle;
             margin-right: 10px;
+        }
+
+        .el-descriptions-item__label{
+            font-weight: bold;
         }
     }
 </style>
