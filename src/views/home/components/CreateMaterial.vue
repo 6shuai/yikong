@@ -1,8 +1,8 @@
 <template>
     <el-dialog
         class="create-material-wrap"
-        width="700px"
-        title="新建物料"
+        width="740px"
+        :title="addParams.id ? '编辑物料' : '新建物料'"
         :visible.sync="showCreateMaterial"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -10,7 +10,7 @@
         append-to-body
     >
         <el-form 
-            label-width="80px"
+            label-width="110px"
             ref="addMaterialForm"
             :inline="true"
             :model="addParams"
@@ -87,6 +87,16 @@
                     value-format="yyyy-MM-dd">
                 </el-date-picker>
             </el-form-item>
+            <el-form-item label="每天播放次数" prop="publishedTimes">
+                <el-input-number 
+                    class="w220"
+                    :controls="false"
+                    v-model="addParams.publishedTimes" 
+                    :min="0"
+                    placeholder="每天播放次数"
+                ></el-input-number>
+            </el-form-item>
+            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="showCreateMaterial = false">取 消</el-button>
@@ -143,16 +153,17 @@ export default {
                 content: [{ required: true, message: '请选择内容', type: 'number', trigger: 'change' }],
                 effectiveTime: [{ required: true, message: '请选择上刊时间', trigger: 'change' }],
                 dueTime: [{ required: true, message: '请选择下刊时间', trigger: 'change' }],
+                publishedTimes: [{ required: true, message: '请输入每天播放次数', type: 'number', trigger: 'blur' }],
             }
         }
     },
     methods: {
         // 显示新建物料窗口
-        showCreateMaterialDialog(){
+        showCreateMaterialDialog(data = {}){
             this.showCreateMaterial = true
             this.getScreenData()
             this.getContentData()
-            this.addParams = {}
+            this.addParams = data
 
             this.$nextTick(() => {
                 this.$refs["addMaterialForm"].clearValidate();
@@ -218,7 +229,7 @@ export default {
                         if(res.code === this.$successCode){
                             this.$message.success('提交成功~')
                             this.showCreateMaterial = false
-                            this.$parent.getMaterial()
+                            this.$emit('createMaterialSuccess')
                         }
                     })
                 }

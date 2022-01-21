@@ -61,10 +61,16 @@
         </el-pagination>         
 
         <!-- 新建物料 -->
-        <create-material ref="createMaterial"></create-material>
+        <create-material 
+            ref="createMaterial"
+            @createMaterialSuccess="getMaterial"
+        ></create-material>
         
         <!-- 内容投放的屏幕列表 -->
-        <material-screen ref="materialScreen"></material-screen>
+        <material-screen 
+            ref="materialScreen"
+            @reloadData="getMaterial"
+        ></material-screen>
 
     </div>
 </template>

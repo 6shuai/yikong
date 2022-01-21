@@ -60,10 +60,22 @@
             </el-table-column>
             <el-table-column 
                 prop="beginTime" 
-                label="操作" 
-                width="100"
+                label="操作"
+                width="140"
             >
                 <template slot-scope="scope">
+                    <el-button 
+                        type="primary" 
+                        slot="reference"
+                        size="mini"
+                        plain
+                        @click="$refs.createMaterial.showCreateMaterialDialog({
+                            ...scope.row,
+                            content: contentId
+                        })"
+                    >
+                        编辑
+                    </el-button>
                     <el-popconfirm
                         confirm-button-text='删除'
                         cancel-button-text='取消'
@@ -84,16 +96,25 @@
                 </template>
             </el-table-column>
         </el-table>
+
+        <!-- 编辑物料 -->
+        <create-material 
+            ref="createMaterial"
+            @createMaterialSuccess="getScreenList"
+        ></create-material>
+
     </el-dialog>
 </template>
 
 <script>
 import { projectMaterialForScreenList, projectMaterialDelete } from '@/api/project'
 import ContentDetail from '@/views/screen/statistics/ContentDetail'
+import CreateMaterial from './CreateMaterial'
 
 export default {
     components: {
-        ContentDetail
+        ContentDetail,
+        CreateMaterial
     },
     data(){
         return {
@@ -129,6 +150,10 @@ export default {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj
+                    if(!this.resData.length){
+                        this.showScreenList = false
+                        this.$emit('reloadData')
+                    }
                 }
             })
         },
