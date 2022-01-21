@@ -39,6 +39,11 @@
                 min-width="60"
             ></el-table-column>
             <el-table-column 
+                prop="publishedTimes" 
+                label="每日播放次数" 
+                min-width="60"
+            ></el-table-column>
+            <el-table-column 
                 prop="currentTimes" 
                 label="已播放次数" 
                 min-width="60"

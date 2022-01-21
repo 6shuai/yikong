@@ -87,13 +87,13 @@
                     value-format="yyyy-MM-dd">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="每天播放次数" prop="publishedTimes">
+            <el-form-item label="每日播放次数" prop="publishedTimes">
                 <el-input-number 
                     class="w220"
                     :controls="false"
                     v-model="addParams.publishedTimes" 
                     :min="0"
-                    placeholder="每天播放次数"
+                    placeholder="每日播放次数"
                 ></el-input-number>
             </el-form-item>
             </el-form-item>
@@ -153,7 +153,7 @@ export default {
                 content: [{ required: true, message: '请选择内容', type: 'number', trigger: 'change' }],
                 effectiveTime: [{ required: true, message: '请选择上刊时间', trigger: 'change' }],
                 dueTime: [{ required: true, message: '请选择下刊时间', trigger: 'change' }],
-                publishedTimes: [{ required: true, message: '请输入每天播放次数', type: 'number', trigger: 'blur' }],
+                publishedTimes: [{ required: true, message: '请输入每日播放次数', type: 'number', trigger: 'blur' }],
             }
         }
     },
