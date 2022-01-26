@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         class="locating-result"
-        width="740px"
+        width="1200px"
         title="寻位结果"
         :visible.sync="showLocatingResult"
         :close-on-click-modal="false"
