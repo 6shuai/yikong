@@ -40,7 +40,10 @@
 
             <el-tab-pane label="发票" name="invoice">
                 <finance-invoice 
-                    :invoiceData="resData.publishedInvoices"
+                    :invoiceData="{
+                        ...resData.invoiceData,
+                        amount: resData.amount
+                    }"
                     @handleAddInvoice="handleAddInvoice"
                 ></finance-invoice>
             </el-tab-pane>

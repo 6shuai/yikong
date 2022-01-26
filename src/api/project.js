@@ -62,3 +62,24 @@ export function projectBeneficiaryCreate(data) { return post('/project/published
 
 // 删除受益人
 export function projectBeneficiaryDelete(data) { return del(`/project/publishedBeneficiary?id=${data}`) }
+
+
+// 寻位 - 获取屏幕列表
+export function projectLocationScreenList(data) { return get('/project/screen', data) }
+
+
+// 寻位
+export function projectLocation(data) { return post('/project/locating', data) }
+
+// 锁位
+export function projectLockPosition(data) { return post('/project/lockPosition', data) }
+
+
+// 查询锁位列表
+export function projectLockPositionList(data) { return get('/project/publishedPlaceholder', data) }
+
+
+// 删除锁位
+export function projectLockPositionDelete(data) { return del(`/project/publishedPlaceholder?id=${data}`) }
+
+

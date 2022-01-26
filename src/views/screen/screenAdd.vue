@@ -93,6 +93,24 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="开始时间" prop="beginTime">
+                        <el-time-picker
+                            v-model="screenParams.beginTime"
+                            type="datetime"
+                            placeholder="选择开始时间"
+                            value-format="HH:mm:ss"
+                        >
+                        </el-time-picker>
+                    </el-form-item>
+                    <el-form-item label="结束时间" prop="endTime">
+                        <el-time-picker
+                            v-model="screenParams.endTime"
+                            type="datetime"
+                            placeholder="选择结束时间"
+                            value-format="HH:mm:ss"
+                        >
+                        </el-time-picker>
+                    </el-form-item>
                     <el-form-item label="实景图片" prop="screenShowData">
                         <upload-img 
                             ref="uploadImg"
@@ -130,24 +148,6 @@
                                 label="刊例价" 
                                 min-width="60"
                             >
-                            </el-table-column>
-                            <el-table-column 
-                                prop="beginTimeFormat" 
-                                label="开始时间" 
-                                min-width="100"
-                            >
-                                <template slot-scope="scope">
-                                    {{ findTimeHasYtd(scope.row.beginTimeFormat) }}
-                                </template>
-                            </el-table-column>
-                            <el-table-column 
-                                prop="endTimeFormat" 
-                                label="结束时间" 
-                                min-width="100"
-                            >
-                                <template slot-scope="scope">
-                                    {{ findTimeHasYtd(scope.row.endTimeFormat) }}
-                                </template>
                             </el-table-column>
                             <el-table-column 
                                 prop="priceSystem" 
@@ -217,7 +217,11 @@ export default {
                 screenShowData: [],
 
                 // 刊例价
-                publishedPrices: []
+                publishedPrices: [],
+
+                beginTime: '10:00:00',
+
+                endTime: '22:00:00'
             },
             btnLoading: false,     
             placeData: [],                //场所列表         
@@ -232,7 +236,9 @@ export default {
                 physicalWidth: [{ required: true, trigger: "blur", message: '请输入物理尺寸宽~' }],
                 physicalHeight: [{ required: true, trigger: "blur", message: '请输入物理尺寸高~' }],
                 aspectRatio: [{ required: true, trigger: "change", message: '请选择分辨率(宽高比)~' }],
-                screenShowData: [{ required: true, trigger: "change", message: '请上传大屏截图~' }],
+                beginTime: [{ required: true, trigger: "change", message: '请选择开始时间~' }],
+                endTime: [{ required: true, trigger: "change", message: '请选择开始时间~' }],
+                screenShowData: [{ required: true, trigger: "change", message: '请选择结束时间~' }],
                 groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,          //编辑时获取详情  loading
@@ -266,12 +272,14 @@ export default {
             this.$refs.screenParams.validate((valid) => {
                 if (valid) {
                     this.diffStatus = true;
-                    if(this.screenParams.id && this.objsDiffer(this.oldParams, this.screenParams)){
-                        this.$message.warning('你没有做任何更改~');
-                        return
-                    }
                     this.btnLoading = true;
-                    screenCreated(this.screenParams).then(res => {
+
+                    let data = JSON.parse(JSON.stringify(this.screenParams))
+
+                    data.beginTime = this.findTimeHasYtd(data.beginTime)
+                    data.endTime = this.findTimeHasYtd(data.endTime)
+
+                    screenCreated(data).then(res => {
                         this.btnLoading = false;
                         if(res.code === this.$successCode){
                             this.$router.push('/screen/index');
@@ -387,13 +395,13 @@ export default {
             return obj.displayName
         },
 
-        // 时间里是否包含 2022-01-01  有就删除  没有就添加
+        // 时间里是否包含 2022-01-01  没有就添加
         findTimeHasYtd(data){
             let fixedValue = '2022-01-01 '
-            if(data.indexOf(fixedValue) > -1){
-                return data.split(fixedValue)[1]
-            }else{
+            if(data.indexOf(fixedValue) == -1){
                 return fixedValue + data
+            }else{
+                return data
             }
         }
     },

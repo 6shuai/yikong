@@ -1,13 +1,10 @@
 <template>
     <el-dialog
         width="1100px"
-        :title="contentName"
-        :visible.sync="showScreenList"
+        title="锁位列表"
+        :visible.sync="showLockPositionList"
         append-to-body
     >
-
-        <!-- 查看内容在当前屏幕的播放次数 -->
-        <content-detail ref="contentDetail"></content-detail>
 
         <el-table
             class="mt20 mb20"
@@ -24,45 +21,32 @@
             >
             </el-table-column>
             <el-table-column 
-                prop="effectiveTime" 
+                prop="materialDuration" 
+                label="物料时长" 
+                min-width="50"
+            >
+            </el-table-column>
+            <el-table-column 
+                prop="publishedTimes" 
+                label="播放次数" 
+                min-width="50"
+            >
+            </el-table-column>
+            <el-table-column 
+                prop="fromTimeFormat" 
                 label="上刊时间" 
                 min-width="80"
             ></el-table-column>
             <el-table-column 
-                prop="dueTime" 
+                prop="toTimeFormat" 
                 label="下刊时间" 
                 min-width="80"
             ></el-table-column>
             <el-table-column 
-                prop="days" 
-                label="天数" 
-                min-width="60"
+                prop="count" 
+                label="数量" 
+                min-width="50"
             ></el-table-column>
-            <el-table-column 
-                prop="publishedTimes" 
-                label="每日播放次数" 
-                min-width="60"
-            ></el-table-column>
-            <el-table-column 
-                prop="currentTimes" 
-                label="已播放次数" 
-                min-width="60"
-            >
-                <template slot-scope="scope">
-                    <el-tag
-                        class="material_screen_tag"
-                        size="mini"
-                        type="primary"
-                        plain
-                        @click="$refs.contentDetail.showDialog({
-                            contentId: contentId,
-                            screenId: scope.row.screen
-                        })"
-                    >
-                        {{ scope.row.currentTimes }}
-                    </el-tag>
-                </template>
-            </el-table-column>
             <el-table-column 
                 prop="beginTime" 
                 label="操作"
@@ -74,7 +58,7 @@
                         cancel-button-text='取消'
                         icon="el-icon-info"
                         icon-color="red"
-                        title="此操作将删除此条数据, 是否继续?"
+                        title="此操作将删除此锁位, 是否继续?"
                         @confirm="handleDelete(scope.row.id)"
                     >
                         <el-button 
@@ -94,60 +78,41 @@
 </template>
 
 <script>
-import { projectMaterialForScreenList, projectMaterialDelete } from '@/api/project'
-import ContentDetail from '@/views/screen/statistics/ContentDetail'
-import CreateMaterial from './CreateMaterial'
+import { projectLockPositionList, projectLockPositionDelete } from '@/api/project'
 
 export default {
-    components: {
-        ContentDetail,
-        CreateMaterial
-    },
     data(){
         return {
-            showScreenList: false,
-
-            // 内容名称
-            contentName: '',
-
-            // 内容id
-            contentId: null,
+            showLockPositionList: false,
 
             resData: [],
             tLoading: false
         }
     },
     methods: {
-        // 显示物料 对应的屏幕列表
-        showScreenListDialog(contentName, id){
-            this.contentName = contentName
-            this.contentId = id
-            this.showScreenList = true
+        // 显示锁位列表
+        showLockPositionListDialog(){
+            this.showLockPositionList = true
             this.getScreenList()
         },
 
-        // 获取屏幕列表
+        // 获取锁位列表
         getScreenList(){
             let data = {
-                project: this.$route.params.id,
-                contentId: this.contentId
+                project: this.$route.params.id
             }
             this.tLoading = true
-            projectMaterialForScreenList(data).then(res => {
+            projectLockPositionList(data).then(res => {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj
-                    if(!this.resData.length){
-                        this.showScreenList = false
-                        this.$emit('reloadData')
-                    }
                 }
             })
         },
 
         // 删除
         handleDelete(id){
-            projectMaterialDelete(id).then(res => {
+            projectLockPositionDelete(id).then(res => {
                 if(res.code === this.$successCode){
                     this.$message.success('删除成功~')
                     this.getScreenList()

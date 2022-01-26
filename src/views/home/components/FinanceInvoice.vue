@@ -7,7 +7,7 @@
  * @FilePath: \pclient\src\views\home\components\FinanceInvoice.vue
 -->
 <template>
-    <div class="add_invoice">
+    <div class="add-invoice">
         <div class="payment-log-top">
             <el-button 
                 type="primary"
@@ -20,9 +20,9 @@
             </el-button>
     
             <div class="statistics">
-                <span>应开票金额: {{ 0 }}</span>
-                <span>已开票金额: {{ 0 }}</span>
-                <span>未开票金额: {{ 0 }}</span>
+                <span>应开票金额: {{ invoiceData.amount }}</span>
+                <span>已开票金额: {{ invoiceData.sumInvoice }}</span>
+                <span>未开票金额: {{ invoiceData.nonInvoice }}</span>
             </div>
         </div>
         
@@ -30,7 +30,7 @@
             class="mt20 mb20"
             stripe
             size="small"
-            :data="invoiceData"
+            :data="invoiceData.publishedInvoices"
             row-key="id"
             border>
 
@@ -98,7 +98,7 @@
 import { projectFinanceInvoiceDelete } from '@/api/project'
 export default {
     props: {
-        invoiceData: Array
+        invoiceData: Object
     },
     methods: {
         // 添加 或 编辑 发票
@@ -120,7 +120,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .add_invoice{
+    .add-invoice{
         .el-image{
             width: 200px;
             height: 100px;

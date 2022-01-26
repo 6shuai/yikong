@@ -204,6 +204,12 @@
                     ></el-divider>
                     <div class="info-item">
                         <el-form label-width="85px">
+                            <el-form-item label="开始时间">
+                                <span>{{ findTimeHasYtd(resData.beginTime) }}</span>
+                            </el-form-item>
+                            <el-form-item label="结束时间">
+                                <span>{{ findTimeHasYtd(resData.endTime) }}</span>
+                            </el-form-item>
                             <el-form-item label="探针数据">
                                 <el-link
                                     v-if="resData.placeId"
@@ -306,24 +312,6 @@
                             label="刊例价" 
                             min-width="60"
                         >
-                        </el-table-column>
-                        <el-table-column 
-                            prop="beginTimeFormat" 
-                            label="开始时间" 
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                {{ findTimeHasYtd(scope.row.beginTimeFormat) }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column 
-                            prop="endTimeFormat" 
-                            label="结束时间" 
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                {{ findTimeHasYtd(scope.row.endTimeFormat) }}
-                            </template>
                         </el-table-column>
                         <el-table-column 
                             prop="priceSystem" 
