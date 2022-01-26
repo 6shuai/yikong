@@ -274,7 +274,7 @@ export default {
         }
 
         .screen-list{
-            flex: 1;
+            width: 500px;
             border-right: 1px solid #e5e5e5;
 
             .list{
@@ -303,6 +303,7 @@ export default {
             .form-screen{
                 display: flex;
                 flex-wrap: wrap;
+                margin-left: -20px;
             }
 
 

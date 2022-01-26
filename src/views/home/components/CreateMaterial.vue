@@ -66,7 +66,7 @@
                                 <el-option
                                     v-for="item in contentData"
                                     :key="item.id"
-                                    :label="item.displayName"
+                                    :label="`${item.displayName} ${item.duration ? `(${item.duration}s)` : ''}`"
                                     :value="item.id">
                                 </el-option>
             

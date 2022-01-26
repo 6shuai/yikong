@@ -46,6 +46,7 @@
                 type="primary"
                 :loading="btnLoading"
                 @click="handleLockPosition"
+                :disabled="resultHasFalse"
                 >锁 位</el-button
             >
         </span>
@@ -63,7 +64,10 @@ export default {
             resData: [],
 
             // 总刊例价
-            totalPrice: null
+            totalPrice: null,
+
+            // 寻位结果是否有  没有空位的
+            resultHasFalse: false
         }
     },
     methods: {
@@ -78,15 +82,20 @@ export default {
         // 数据格式化
         dataFormatting(data){
             let arr = []
+            this.resultHasFalse = false
             data.forEach((item, index) => {
                 arr[index] = {
                     screen: '',
                     date: {}
                 }
                 for(var i in item){
-                    console.log(i, item[i])
-                    if(i == '屏幕名称') arr[index].screen = item[i]
-                    else arr[index].date[i] = item[i]
+                    if(i == '屏幕名称') {
+                        arr[index].screen = item[i]
+                    }else {
+                        arr[index].date[i] = item[i]
+                        if(!item[i]) this.resultHasFalse = true
+                    }
+                    
                 }  
             })
 
