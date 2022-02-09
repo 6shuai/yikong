@@ -50,7 +50,7 @@
             <el-table-column 
                 prop="beginTime" 
                 label="操作"
-                width="140"
+                width="180"
             >
                 <template slot-scope="scope">
                     <el-popconfirm
@@ -59,6 +59,7 @@
                         icon="el-icon-info"
                         icon-color="red"
                         title="此操作将删除此锁位, 是否继续?"
+                        class="mr10"
                         @confirm="handleDelete(scope.row.id)"
                     >
                         <el-button 
@@ -70,17 +71,34 @@
                             删除
                         </el-button>
                     </el-popconfirm>
+
+                    <el-button
+                        type="primary"
+                        size="mini"
+                        plain
+                        v-if="scope.row.publishedLimitPlaceholders && scope.row.publishedLimitPlaceholders.length"
+                        @click="$refs.lockPositionPlayLimitList.showPlayLimitListDialog(scope.row.publishedLimitPlaceholders, scope.row.screenName)"
+                    >
+                        播放限制
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
+
+        <!-- 播放限制列表 -->
+        <lock-position-play-limit-list ref="lockPositionPlayLimitList"></lock-position-play-limit-list>
 
     </el-dialog>
 </template>
 
 <script>
 import { projectLockPositionList, projectLockPositionDelete } from '@/api/project'
+import LockPositionPlayLimitList from './LockPositionPlayLimitList'
 
 export default {
+    components: {
+        LockPositionPlayLimitList
+    },
     data(){
         return {
             showLockPositionList: false,

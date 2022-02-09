@@ -20,6 +20,10 @@
                     :name="`/project/${$route.params.id}`"
                 ></el-tab-pane>
                 <el-tab-pane 
+                    label="寻位" 
+                    :name="`/project/${$route.params.id}/locating`"
+                ></el-tab-pane>
+                <el-tab-pane 
                     label="合同" 
                     :name="`/project/${$route.params.id}/contract`"
                 ></el-tab-pane>
@@ -35,10 +39,6 @@
                 <el-tab-pane 
                     label="成员" 
                     :name="`/project/${$route.params.id}/member`"
-                ></el-tab-pane>
-                <el-tab-pane 
-                    label="寻位" 
-                    :name="`/project/${$route.params.id}/locating`"
                 ></el-tab-pane>
             </el-tabs>   
             
