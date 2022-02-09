@@ -102,6 +102,18 @@ export function dateAddHMS(date) {
 	}
 }
 
+// 时间里是否包含 1970-01-01  有就删除  没有就添加
+export function findTimeHasYtd(data){
+	let fixedValue = '1970-01-01 '
+	if(!data) return 
+	if(data.indexOf(fixedValue) > -1){
+		return data.split(fixedValue)[1]
+	}else{
+		return fixedValue + data
+	}
+}
+
+
 //小数点精准计算
 export const accMul = function (arg1 = 0, arg2 = 0) {
 	var m = 0,

@@ -123,6 +123,77 @@
                                 ></el-input-number>
                             </span>
                         </li>
+                        <li v-if="!item.publishedLimitPlaceholders || !item.publishedLimitPlaceholders.length">
+                            <span class="label">播放限制</span>
+                            <span class="value">
+                                <el-button 
+                                    type="primary"
+                                    size="mini"
+                                    @click="$set(item, 'publishedLimitPlaceholders', [{ limitType: 1 }])"
+                                >添 加</el-button>
+                            </span>
+                        </li>
+                        
+                        <!-- 播放限制开始 -->
+                        <div 
+                            class="add-play-limit"
+                            v-if="item.publishedLimitPlaceholders && item.publishedLimitPlaceholders.length"
+                        >
+                            <div
+                                v-for="(subLimit, lIndex) in item.publishedLimitPlaceholders"
+                                :key="lIndex"
+                                class="play-limit-item"
+                            >
+                                <div class="add-del">
+                                    <i 
+                                        class="el-icon-circle-plus-outline" 
+                                        title="添加"
+                                        @click="item.publishedLimitPlaceholders.push({ limitType: 1 })"
+                                    ></i>
+                                    <i 
+                                        class="el-icon-circle-close" 
+                                        title="删除"
+                                        @click="item.publishedLimitPlaceholders.splice(lIndex, 1)"
+                                    ></i>
+                                </div>
+                                <div class="title">播放限制{{ lIndex + 1 }}</div>
+                                <li>
+                                    <span class="label">规则</span>
+                                    <span class="value">
+                                        <el-radio-group v-model="subLimit.limitType">
+                                            <el-radio :label="1">限制播放</el-radio>
+                                            <el-radio :label="2">禁止播放</el-radio>
+                                        </el-radio-group>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span class="label">开始时间</span>
+                                    <span class="value">
+                                        <el-time-picker
+                                            class="w200"
+                                            v-model="subLimit.limitBegin"
+                                            type="datetime"
+                                            placeholder="选择开始时间"
+                                            value-format="HH:mm:ss">
+                                        </el-time-picker>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span class="label">结束时间</span>
+                                    <span class="value">
+                                        <el-time-picker
+                                            class="w200"
+                                            v-model="subLimit.limitEnd"
+                                            type="datetime"
+                                            placeholder="选择结束时间"
+                                            value-format="HH:mm:ss">
+                                        </el-time-picker>
+                                    </span>
+                                </li>
+                            </div>
+                        </div>
+                        <!-- 播放限制结束 -->
+
                     </ul>
                 </div>
             </el-scrollbar>
@@ -152,7 +223,7 @@
 <script>
 import { projectLocationScreenList, projectLocation } from '@/api/project'
 import SelectRegion from '@/components/SelectRegion/index'
-import { dateAddHMS } from '@/utils/index'
+import { dateAddHMS, findTimeHasYtd } from '@/utils/index'
 import LocatingResult from './components/LocatingResult'
 import LockPositionList from './components/LockPositionList'
 
@@ -233,6 +304,15 @@ export default {
                 item.toTime = dateAddHMS(item.toTime)
                 item.project = this.$route.params.id
                 delete item.id
+
+                if(!item.publishedLimitPlaceholders) break
+                for(let j = 0; j < item.publishedLimitPlaceholders.length; j++){
+                    let limit = item.publishedLimitPlaceholders[j]
+
+                    limit.limitBegin = limit.limitBegin ? findTimeHasYtd(limit.limitBegin) : ''
+                    limit.limitEnd = limit.limitEnd ? findTimeHasYtd(limit.limitEnd) : ''
+                }
+
             }
             this.btnLoading = true
             projectLocation(data).then(res => {
@@ -359,12 +439,44 @@ export default {
                         }
                     }
                 }
+
+                .add-play-limit{
+                    background: #f3f3f3;
+                    padding-bottom: 10px;
+                    border-radius: 6px;
+
+                    .play-limit-item{
+                        position: relative;
+
+                        .add-del{
+                            position: absolute;
+                            right: 10px;
+                            top: 5px;
+                            cursor: pointer;
+
+                            .el-icon-circle-plus-outline{
+                                color: var(--color-primary);
+                            }
+
+                            .el-icon-circle-close{
+                                color: var(--color-danger);
+                            }
+                        }
+
+                        .title{
+                            text-align: center;
+                            line-height: 40px;
+                        }
+                    }
+
+                }
             }
 
             .save-btn{
                 position: fixed;
                 bottom: 50px;
                 right: 30px;
+                z-index: 999;
             }
         }
     }

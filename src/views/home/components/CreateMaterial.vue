@@ -112,6 +112,51 @@
                         </el-form-item>
                     </div>
                 </el-form>
+
+                <!-- 播放限制 -->
+                <div 
+                    class="play-limit-wrap"
+                    v-if="selectedScreen.publishedLimitPlaceholders && selectedScreen.publishedLimitPlaceholders.length">
+                    
+                    <div class="title">播放限制</div>
+
+                    <el-table
+                        class="mt20 mb20"
+                        stripe
+                        size="small"
+                        :data="selectedScreen.publishedLimitPlaceholders"
+                        row-key="id"
+                        border>
+                        <el-table-column 
+                            prop="limitType" 
+                            label="限制类型" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                <span>{{ scope.row.limitType == 1 ? '限制播放' : '禁止播放' }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                            prop="limitBeginFormat" 
+                            label="开始时间" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                <span>{{ formDataLimit(scope.row.limitBeginFormat) }}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                            prop="limitEndFormat" 
+                            label="结束时间" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                <span>{{ formDataLimit(scope.row.limitEndFormat) }}</span>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+
             </el-col>
         </el-row>
         <span slot="footer" class="dialog-footer">
@@ -129,7 +174,8 @@
 <script>
 import { projectMaterialCreate, projectLockPositionList } from '@/api/project'
 import { contentList } from '@/api/content'
-import { dateAddHMS } from '@/utils/index'
+import { dateAddHMS, findTimeHasYtd } from '@/utils/index'
+import { directive } from 'vuedraggable'
 
 export default {
     data(){
@@ -250,6 +296,10 @@ export default {
 
         formDataEvent(val){
             return dateAddHMS(val)
+        },
+
+        formDataLimit(val){
+            return findTimeHasYtd(val)
         }
     }
 }
@@ -315,6 +365,14 @@ export default {
                         }
                     }
                 }
+            }
+        }
+
+        .play-limit-wrap{
+            padding: 10px;
+
+            .title{
+                padding-left: 32px;
             }
         }
     }

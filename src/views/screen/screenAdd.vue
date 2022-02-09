@@ -204,6 +204,7 @@ import { getPriceTypeList } from '@/api/common';
 import { screenPlaceList, screenCreated, screenShowDelete, screenShowDefault } from '@/api/screen';
 import { getOrganizationList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
+import { findTimeHasYtd } from '@/utils/index';
 import uploadImg from '@/components/Upload/UploadImg';
 import GroupList from '@/components/GroupList/index';
 import CreateScreenPric from './components/CreateScreenPrice';
@@ -276,8 +277,8 @@ export default {
 
                     let data = JSON.parse(JSON.stringify(this.screenParams))
 
-                    data.beginTime = this.findTimeHasYtd(data.beginTime)
-                    data.endTime = this.findTimeHasYtd(data.endTime)
+                    data.beginTime = findTimeHasYtd(data.beginTime)
+                    data.endTime = findTimeHasYtd(data.endTime)
 
                     screenCreated(data).then(res => {
                         this.btnLoading = false;
@@ -393,16 +394,6 @@ export default {
                 return item.id == id
             })
             return obj.displayName
-        },
-
-        // 时间里是否包含 2022-01-01  没有就添加
-        findTimeHasYtd(data){
-            let fixedValue = '2022-01-01 '
-            if(data.indexOf(fixedValue) == -1){
-                return fixedValue + data
-            }else{
-                return data
-            }
         }
     },
     components: {

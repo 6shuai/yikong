@@ -114,6 +114,7 @@ export default {
         }
     }
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -135,4 +136,7 @@ export default {
             text-align: right;
         }
     }
+    
 </style>
+
+

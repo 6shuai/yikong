@@ -205,10 +205,10 @@
                     <div class="info-item">
                         <el-form label-width="85px">
                             <el-form-item label="开始时间">
-                                <span>{{ findTimeHasYtd(resData.beginTime) }}</span>
+                                <span>{{ handleFindTimeHasYtd(resData.beginTime) }}</span>
                             </el-form-item>
                             <el-form-item label="结束时间">
-                                <span>{{ findTimeHasYtd(resData.endTime) }}</span>
+                                <span>{{ handleFindTimeHasYtd(resData.endTime) }}</span>
                             </el-form-item>
                             <el-form-item label="探针数据">
                                 <el-link
@@ -352,6 +352,7 @@ import {
 } from "@/api/screen";
 import { getScreenDetail, screenIsFavorite } from "@/views/screen/mixins";
 import { getPriceTypeList } from '@/api/common';
+import { findTimeHasYtd } from '@/utils/index';
 import Permission from '@/components/permission/index';
 import PageHeader from '@/components/PageHeader';
 
@@ -546,15 +547,10 @@ export default {
             return obj.displayName
         },
 
-        // 时间里是否包含 2022-01-01  有就删除  没有就添加
-        findTimeHasYtd(data){
-            let fixedValue = '2022-01-01 '
-            if(data.indexOf(fixedValue) > -1){
-                return data.split(fixedValue)[1]
-            }else{
-                return fixedValue + data
-            }
+        handleFindTimeHasYtd(data){
+            return findTimeHasYtd(data)
         }
+        
     },
     watch:{
         $route(to, from) {
