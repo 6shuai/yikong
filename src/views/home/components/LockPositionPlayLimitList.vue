@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        width="1100px"
+        width="700px"
         :title="`${screenName} - 播放限制`"
         :visible.sync="showPlayLimitList"
         append-to-body

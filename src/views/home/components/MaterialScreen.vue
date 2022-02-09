@@ -66,10 +66,11 @@
             <el-table-column 
                 prop="beginTime" 
                 label="操作"
-                width="140"
+                width="180"
             >
                 <template slot-scope="scope">
                     <el-popconfirm
+                        class="mr10"
                         confirm-button-text='删除'
                         cancel-button-text='取消'
                         icon="el-icon-info"
@@ -86,9 +87,23 @@
                             删除
                         </el-button>
                     </el-popconfirm>
+
+                    <el-button
+                        type="primary"
+                        size="mini"
+                        plain
+                        v-if="scope.row.publishedLimitMaterials && scope.row.publishedLimitMaterials.length"
+                        @click="$refs.lockPositionPlayLimitList.showPlayLimitListDialog(scope.row.publishedLimitMaterials, scope.row.screenName)"
+                    >
+                        播放限制
+                    </el-button>
+                    
                 </template>
             </el-table-column>
         </el-table>
+
+        <!-- 播放限制列表 -->
+        <lock-position-play-limit-list ref="lockPositionPlayLimitList"></lock-position-play-limit-list>
 
     </el-dialog>
 </template>
@@ -97,11 +112,13 @@
 import { projectMaterialForScreenList, projectMaterialDelete } from '@/api/project'
 import ContentDetail from '@/views/screen/statistics/ContentDetail'
 import CreateMaterial from './CreateMaterial'
+import LockPositionPlayLimitList from './LockPositionPlayLimitList'
 
 export default {
     components: {
         ContentDetail,
-        CreateMaterial
+        CreateMaterial,
+        LockPositionPlayLimitList
     },
     data(){
         return {
