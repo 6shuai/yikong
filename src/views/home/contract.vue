@@ -147,18 +147,18 @@
                     end-placeholder="结束日期"
                 >
                 </el-date-picker>
-                <span v-show="!showEdit">{{ contractParams.contractTime }}</span>
+                <span v-show="!showEdit">{{ contractParams.validBeginFormat ? `${contractParams.validBegin}  -  ${contractParams.validEnd}` : '' }}</span>
             </el-form-item>
     
             <el-form-item label="回合同日:">
                 <el-date-picker
                     v-show="showEdit"
-                    v-model="contractParams.firstArchiveDate"
+                    v-model="contractParams.secondArchiveDate"
                     type="date"
                     placeholder="选择日期"
                     value-format="yyyy-MM-dd">
                 </el-date-picker>
-                <span v-show="!showEdit">{{ contractParams.firstArchiveDate }}</span>
+                <span v-show="!showEdit">{{ contractParams.secondArchiveDate }}</span>
             </el-form-item>
     
             <el-form-item :label="showEdit ? '上传合同:' : '合同图片'">
@@ -306,7 +306,7 @@ export default {
                         contractDate: dateAddHMS(this.contractParams.contractDate),
                         validBegin: dateAddHMS(this.contractTime[0]),
                         validEnd: dateAddHMS(this.contractTime[1]),
-                        firstArchiveDate: dateAddHMS(this.contractParams.firstArchiveDate)
+                        secondArchiveDate: dateAddHMS(this.contractParams.secondArchiveDate)
                     }
                     projectContractCreate(data).then(res => {
                         this.btnLoading = false
@@ -334,7 +334,7 @@ export default {
         // 获取合同详情
         getContractDetail(){
             let newData = this.$store.state.user.projectContractDetail
-            let { contractDateFormat, validBeginFormat, validEndFormat, firstArchiveDateFormat, firstParty, secondParty } = newData
+            let { contractDateFormat, validBeginFormat, validEndFormat, secondArchiveDateFormat, firstParty, secondParty } = newData
             if(!newData.id) {
                 this.showEdit = true 
             }else{
@@ -346,7 +346,7 @@ export default {
                 contractDate: dateAddHMS(contractDateFormat),
                 validBegin: dateAddHMS(validBeginFormat),
                 validEnd: dateAddHMS(validEndFormat),
-                firstArchiveDate: dateAddHMS(firstArchiveDateFormat),
+                secondArchiveDate: dateAddHMS(secondArchiveDateFormat),
                 publishedContractPrints: newData.publishedContractPrints || []
             }
 

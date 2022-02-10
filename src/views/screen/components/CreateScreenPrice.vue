@@ -2,7 +2,7 @@
  * @Author: liushuai
  * @Date: 2022-01-19 17:23:06
  * @LastEditors: liushuai
- * @LastEditTime: 2022-02-10 10:48:33
+ * @LastEditTime: 2022-02-10 14:06:50
  * @Description: file content
  * @FilePath: \pclient\src\views\screen\components\CreateScreenPrice.vue
 -->
