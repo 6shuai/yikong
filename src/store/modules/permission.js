@@ -24,6 +24,8 @@ const moduleMap = {
 
 	'Merchant': 'merchant/index',				          //商户管理
 
+	'PriceSystem': 'priceSystem/index',                   //价格体系
+
 
 	'Log': 'log/index',									  //操作日志
 	'Authority': 'system/authority/index',                //权限管理

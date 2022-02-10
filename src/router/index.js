@@ -11,6 +11,7 @@ import activityRoutes from './activity'
 import merchantRoutes from './merchant'
 import layoutRoutes from './layout'
 import adverRoutes from './adver'
+import priceSystemRoutes from './priceSystem'
 
 Vue.use(Router)
 
@@ -164,8 +165,10 @@ export const constantRoutes = [{
 	...layoutRoutes,
 
 	// 插播广告
-	...adverRoutes
+	...adverRoutes,
 
+	// 屏幕刊例价
+	...priceSystemRoutes
 ]
 
 

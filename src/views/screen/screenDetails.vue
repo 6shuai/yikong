@@ -41,8 +41,8 @@
         >
             <el-tab-pane label="基本信息" :name="`/screen/details/${$route.params.id}`"></el-tab-pane>
             <!-- 监播数据 -->
-            <el-tab-pane label="时间顺序" :name="`/screen/details/${$route.params.id}/timeline`"></el-tab-pane>
-            <el-tab-pane label="内容统计" :name="`/screen/details/${$route.params.id}/content`"></el-tab-pane>
+            <el-tab-pane label="监播数据（时序）" :name="`/screen/details/${$route.params.id}/timeline`"></el-tab-pane>
+            <el-tab-pane label="监播数据（统计）" :name="`/screen/details/${$route.params.id}/content`"></el-tab-pane>
         </el-tabs>   
 
         <div 

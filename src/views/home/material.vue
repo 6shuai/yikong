@@ -35,7 +35,12 @@
                     <el-card 
                         class="place-list" 
                         shadow="always"
-                    >   
+                    >      
+                        <el-button
+                            class="info-btn"
+                            type="info"
+                            size="small"
+                        >上刊明细</el-button>
                         <div class="place-img" 
                             :style="{height: imageH+'px'}">
                             <el-image fit="cover" :src="item.image" class="image" :style="{height: imageH+'px'}"></el-image>   
@@ -154,6 +159,17 @@ export default {
     .material-wrap{
         .content-name{
             padding: 10px;
+        }
+
+        .place-list{
+            position: relative;
+
+            .info-btn{
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                z-index: 999;
+            }
         }
     }
 

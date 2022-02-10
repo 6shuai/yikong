@@ -195,11 +195,11 @@ li{
   margin-right: 30px;
 }
 
-.w220.el-input, .w220.el-input-number{
-  width: 220px;
+.w220.el-input, .w220.el-input-number, .w220.el-select{
+  width: 220px !important;
 }
 
-.w200.el-input, .w200.el-input-number{
+.w200.el-input, .w200.el-input-number, .w200.el-select{
   width: 200px !important;
 }
 
@@ -259,6 +259,6 @@ li{
 	}
 
 	.search-input{
-		float: right;
+		display: inline-block;
 	}
 }

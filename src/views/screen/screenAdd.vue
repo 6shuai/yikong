@@ -264,6 +264,8 @@ export default {
                     this.loading = false;
                     this.screenParams = this.resData;
                     this.screenParams.place = this.resData.placeId;
+                    this.screenParams.beginTime = findTimeHasYtd(this.screenParams.beginTime)
+                    this.screenParams.endTime = findTimeHasYtd(this.screenParams.endTime)
                 })
             }
         },
