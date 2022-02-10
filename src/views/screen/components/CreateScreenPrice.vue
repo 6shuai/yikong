@@ -1,3 +1,11 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2022-01-19 17:23:06
+ * @LastEditors: liushuai
+ * @LastEditTime: 2022-02-10 10:48:33
+ * @Description: file content
+ * @FilePath: \pclient\src\views\screen\components\CreateScreenPrice.vue
+-->
 <template>
     <el-dialog
         width="520px"
@@ -19,7 +27,7 @@
                     :controls="false"
                     v-model="addParams.price" 
                     :min="0"
-                    placeholder="付款额"
+                    placeholder="刊例价"
                 ></el-input-number>
             </el-form-item>
             <el-form-item label="价格体系" prop="priceSystem">
