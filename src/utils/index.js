@@ -47,20 +47,29 @@ export function parseTime(time, cFormat) {
  * @returns {string}
  */
 export function formatTime(time, type) {
-	var date = new Date(time); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-	var Y = date.getFullYear() + '-';
-	var M = addZero(date.getMonth() + 1) + '-';
-	var D = addZero(date.getDate());
-	var h = '' + addZero(date.getHours()) + ':';
-	var m = addZero(date.getMinutes()) + ':';
-	var s = addZero(date.getSeconds());
-	if (type === 'time') {
-		return h + m + s;
-	} else if (type === 'date') {
-		return Y + M + D
-	} else {
-		return Y + M + D + h + m + s
+	let date = new Date(time); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+	let Y = date.getFullYear() + '-';
+	let M = addZero(date.getMonth() + 1) + '-';
+	let D = addZero(date.getDate());
+	let h = '' + addZero(date.getHours()) + ':';
+	let m = addZero(date.getMinutes()) + ':';
+	let s = addZero(date.getSeconds());
+	let result = '';
+
+	switch (type) {
+		case 'year': 
+			result = Y;
+			break;
+		case 'time':
+			result = h + m + s;
+			break;
+		case 'data':
+			result = Y + M + D
+		default:
+			result = Y + M + D + h + m + s
+			break;
 	}
+	return result
 }
 
 //低于10 前面加0
@@ -116,7 +125,7 @@ export function findTimeHasYtd(data){
 
 //小数点精准计算
 export const accMul = function (arg1 = 0, arg2 = 0) {
-	var m = 0,
+	let m = 0,
 		s1 = arg1.toString(),
 		s2 = arg2.toString();
 	try {

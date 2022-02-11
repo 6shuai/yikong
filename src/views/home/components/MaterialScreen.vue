@@ -27,12 +27,20 @@
                 prop="effectiveTime" 
                 label="上刊时间" 
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ dateAddHMS(scope.row.effectiveTime) }}
+                </template>
+            </el-table-column>
             <el-table-column 
                 prop="dueTime" 
                 label="下刊时间" 
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ dateAddHMS(scope.row.dueTime) }}
+                </template>
+            </el-table-column>
             <el-table-column 
                 prop="days" 
                 label="天数" 
@@ -49,6 +57,7 @@
                 min-width="60"
             >
                 <template slot-scope="scope">
+                    <!-- 查询内容播放详情 这个地方要传入 开始和结束时间 -->
                     <el-tag
                         class="material_screen_tag"
                         size="mini"
@@ -56,7 +65,9 @@
                         plain
                         @click="$refs.contentDetail.showDialog({
                             contentId: contentId,
-                            screenId: scope.row.screen
+                            screenId: scope.row.screen,
+                            beginTime: dateAddHMS(scope.row.effectiveTime),
+                            endTime: dateAddHMS(scope.row.dueTime)
                         })"
                     >
                         {{ scope.row.currentTimes }}
@@ -110,6 +121,7 @@
 
 <script>
 import { projectMaterialForScreenList, projectMaterialDelete } from '@/api/project'
+import { dateAddHMS } from '@/utils/index'
 import ContentDetail from '@/views/screen/statistics/ContentDetail'
 import CreateMaterial from './CreateMaterial'
 import LockPositionPlayLimitList from './LockPositionPlayLimitList'
@@ -170,6 +182,10 @@ export default {
                     this.getScreenList()
                 }
             })
+        },
+
+        dateAddHMS(val){
+            return dateAddHMS(val)
         }
     }
 }

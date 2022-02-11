@@ -36,12 +36,20 @@
                 prop="fromTimeFormat" 
                 label="上刊时间" 
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ dateAddHMS(scope.row.fromTimeFormat) }}
+                </template>
+            </el-table-column>
             <el-table-column 
                 prop="toTimeFormat" 
                 label="下刊时间" 
                 min-width="80"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ dateAddHMS(scope.row.toTimeFormat) }}
+                </template>
+            </el-table-column>
             <el-table-column 
                 prop="count" 
                 label="数量" 
@@ -93,6 +101,7 @@
 
 <script>
 import { projectLockPositionList, projectLockPositionDelete } from '@/api/project'
+import { dateAddHMS } from '@/utils/index'
 import LockPositionPlayLimitList from './LockPositionPlayLimitList'
 
 export default {
@@ -136,6 +145,10 @@ export default {
                     this.getScreenList()
                 }
             })
+        },
+
+        dateAddHMS(val){
+            return dateAddHMS(val)
         }
     }
 }

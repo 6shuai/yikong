@@ -54,7 +54,24 @@
         <!-- 选中的屏幕列表 -->
         <div class="selected-screen-list">
             <el-scrollbar>
+                
                 <h3>请从左侧列表选择需要寻位的屏幕</h3>
+
+                <!-- 默认日期 -->
+                <div class="default-date">
+                    <span class="label">默认日期</span>
+                    <el-date-picker
+                        v-model="defaultDate"
+                        type="daterange"
+                        align="right"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        value-format="yyyy-MM-dd"
+                    >
+                    </el-date-picker>
+                </div>
     
                 <div class="form-screen">
                     <ul 
@@ -129,8 +146,9 @@
                                 <el-button 
                                     type="primary"
                                     size="mini"
+                                    plain
                                     @click="$set(item, 'publishedLimitPlaceholders', [{ limitType: 1 }])"
-                                >添 加</el-button>
+                                >添加播放限制</el-button>
                             </span>
                         </li>
                         
@@ -243,6 +261,9 @@ export default {
             // 屏幕列表加载中
             dataLoading: false,
 
+            // 屏幕开始结束 默认日期
+            defaultDate: [],
+
             // 选中的屏幕
             selectedScreen: [],
             addParams: {},
@@ -272,7 +293,9 @@ export default {
                 ...data,
                 materialDuration: 15,
                 publishedTimes: 120,
-                count: 1
+                count: 1,
+                fromTime: this.defaultDate[0],
+                toTime: this.defaultDate[1]
             })
         },
 
@@ -302,17 +325,17 @@ export default {
                 item.screen = item.id
                 item.fromTime = dateAddHMS(item.fromTime)
                 item.toTime = dateAddHMS(item.toTime)
-                item.project = this.$route.params.id
+                item.project = Number(this.$route.params.id)
                 delete item.id
 
-                if(!item.publishedLimitPlaceholders) break
-                for(let j = 0; j < item.publishedLimitPlaceholders.length; j++){
-                    let limit = item.publishedLimitPlaceholders[j]
-
-                    limit.limitBegin = limit.limitBegin ? findTimeHasYtd(limit.limitBegin) : ''
-                    limit.limitEnd = limit.limitEnd ? findTimeHasYtd(limit.limitEnd) : ''
+                if(item.publishedLimitPlaceholders && item.publishedLimitPlaceholders.length) {
+                    for(let j = 0; j < item.publishedLimitPlaceholders.length; j++){
+                        let limit = item.publishedLimitPlaceholders[j]
+    
+                        limit.limitBegin = limit.limitBegin ? findTimeHasYtd(limit.limitBegin) : ''
+                        limit.limitEnd = limit.limitEnd ? findTimeHasYtd(limit.limitEnd) : ''
+                    }
                 }
-
             }
             this.btnLoading = true
             projectLocation(data).then(res => {
@@ -340,7 +363,7 @@ export default {
 
         .lock-btn{
             position: absolute;
-            top: -20px;
+            top: 0px;
             right: 0px;
             z-index: 99;
         }
@@ -379,6 +402,14 @@ export default {
         .selected-screen-list{
             flex: 1;
             margin: 0 20px;
+
+            .default-date{
+                padding: 20px 0;
+
+                .label{
+                    padding-right: 10px;
+                }
+            }
 
             .form-screen{
                 display: flex;
