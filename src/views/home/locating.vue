@@ -77,7 +77,7 @@
                     <ul 
                         class="item" 
                         v-for="(item, index) in selectedScreen"
-                        :key="item.id"
+                        :key="index"
                     >
                         <li class="title">
                             {{ item.displayName }}
@@ -294,8 +294,8 @@ export default {
                 materialDuration: 15,
                 publishedTimes: 120,
                 count: 1,
-                fromTime: this.defaultDate[0],
-                toTime: this.defaultDate[1]
+                fromTime: (this.defaultDate && this.defaultDate.length) ? this.defaultDate[0] : '',
+                toTime: (this.defaultDate && this.defaultDate.length) ? this.defaultDate[1] : ''
             })
         },
 
