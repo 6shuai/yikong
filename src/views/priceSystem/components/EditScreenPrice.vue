@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="520px"
-        :title="addParams.id ? addParams.screenName : '新建屏幕刊例价'"
+        title="编辑屏幕刊例价"
         :visible.sync="showAddScreenPrice"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -14,20 +14,7 @@
             :rules="addParamsRules"
         >
             <el-form-item label="屏幕" prop="client">
-                <el-select 
-                    v-model="addParams.media" 
-                    filterable 
-                    class="w220"
-                    placeholder="请选择屏幕"
-                    :disabled="addParams.id ? true : false"
-                >   
-                    <el-option 
-                        v-for="item in screenData" 
-                        :key="item.id"
-                        :label="item.displayName" 
-                        :value="item.id">
-                    </el-option>
-                </el-select>
+                {{ addParams.displayName }}
             </el-form-item>
             <el-form-item label="刊例价">
                 <el-input-number 
@@ -53,7 +40,6 @@
 
 <script>
 import { addScreenPrice } from '@/api/priceSystem'
-import { projectLocationScreenList } from '@/api/project'
 
 export default {
     data(){
@@ -62,12 +48,8 @@ export default {
             createdLoading: false,
             addParams: {},
 
-            // 屏幕列表
-            screenData: [],
-
             // 表单验证
             addParamsRules: {
-                media: [{ required: true, message: '请选择屏幕~', trigger: 'change' }],
                 price: [{ required: true, message: '请输入刊例价~', trigger: 'blur' }]
             }
         }
@@ -75,9 +57,12 @@ export default {
     methods: {
         // 显示新建屏幕刊例价窗口
         showAddScreenPriceDialog(data = {}){
-            this.getScreenList()
+            let { displayName, media, price, id } = JSON.parse(JSON.stringify(data))
             this.addParams = {
-                ...JSON.parse(JSON.stringify(data)),
+                displayName,
+                media,
+                price,
+                id,
                 priceSystem: this.$route.params.id
             }
             this.showAddScreenPrice = true
@@ -86,15 +71,6 @@ export default {
             })
         },
 
-        // 获取屏幕列表
-        getScreenList(){
-            if(this.screenData.length) return
-            projectLocationScreenList().then(res => {
-                if(res.code === this.$successCode){
-                    this.screenData = res.obj
-                }
-            })
-        },
 
         // 创建屏幕刊例价
         handleCreate(){
@@ -106,6 +82,7 @@ export default {
                         if(res.code === this.$successCode){
                             this.showAddScreenPrice = false 
                             this.$parent.getDetail()
+                            this.$message.success('操作成功~')
                         }
                     })
                 }

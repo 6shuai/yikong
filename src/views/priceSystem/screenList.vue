@@ -1,74 +1,79 @@
 <template>
-    <div class="app-main-wrap price-system-screen-list">
-        <page-header 
-            :title="priceSystem.displayName"
-            backPath="/priceSystem"
-        >
-        </page-header>
+    <div class="app-main-wrap price-system-screen-list" id="app-main-wrap">
+        
+        <search 
+            @searchResult="handleSearch" 
+            ref="search"
+            :priceSystemName="priceSystem.displayName"
+        ></search>
 
-        <div class="add-and-search mb10">
-            <el-button 
-                type="primary" 
-                icon="el-icon-plus" 
-                @click="handleShowAddScreen()"
-                size="small">
-                新建屏幕刊例价
-            </el-button>
-
-            <div class="search-input">
-                <el-input 
-                    clearable
-                    size="small"
-                    v-model="params.displayName"
-                    placeholder="输入屏幕名称搜索"
-                    @input="$debounce(handleSearch)"
-                ></el-input>
-            </div>
-        </div>
-
-        <div class="list" v-loading="listLoading">
-            <el-card 
-                v-for="(item, index) in resData"
-                :key="index"
-            >
-                <p class="title">{{ item.screenName }}</p>
-                <p class="price">￥ {{ item.price }}</p>
-                <div class="edit" @click.stop="handleShowAddScreen(item)">
-                    <i class="el-icon-edit"></i>编辑
-                </div>
-            </el-card>
-        </div>
 
         <el-empty v-if="!resData.length && !listLoading" description="暂无数据"></el-empty>
 
-        <el-pagination
-            v-if="resData.length"
-            background
-            :hide-on-single-page="true"
-            layout="total, prev, pager, next, sizes"
-            :current-page="Number(params.pageNo)"
-            :page-size="Number(params.pageSize)"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
-            :total="totalCount">
-        </el-pagination>   
+        <div v-else class="place-content">
+            <div class="place-box" v-loading="listLoading">
+            
+                <div 
+                    class="place-p" 
+                    :style="{width: placeW}" 
+                    v-for="(item, index) in resData" 
+                    :key="item.id"
+                    @click="handleShowAddScreen(item)"
+                >
+                    <!-- media 是屏幕id -->
+                    <screen-list 
+                        name="screenPrice" 
+                        :item="item" 
+                        :index="index" 
+                        :imageH="imageH"
+                        @seeAddress="$refs.mapDialog.showMapDialog(item)"
+                    >
+                        <template v-slot:default>
+                            <p class="price">￥ {{ item.price ? item.price : '--' }}</p>
+                        </template>
+                    </screen-list>
+                </div>
 
-        <!-- 添加屏幕刊例价 -->
-        <add-screen ref="addScreen"></add-screen>
+            </div>
+
+            <el-pagination
+                v-if="resData.length"
+                background
+                layout="total, prev, pager, next, sizes"
+                :page-sizes="[48, 80, 100]"
+                :page-size="Number(params.pageSize)"
+                :current-page="Number(params.pageNo)"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :total="totalCount">
+            </el-pagination>
+        </div>
+
+        <!-- 修改屏幕刊例价 -->
+        <edit-screen-price ref="editScreenPrice"></edit-screen-price>
+
+        <!-- 查看地图位置 -->
+        <map-dialog ref="mapDialog"></map-dialog>
 
     </div>
 </template>
 
 <script>
-import PageHeader from '@/components/PageHeader'
-import AddScreen from './components/AddScreen'
+import EditScreenPrice from './components/EditScreenPrice'
+import ScreenList from '@/views/screen/components/ScreenList'
+import { screenSizeWatch } from '@/mixins'
 import { priceSystemDetail } from '@/api/priceSystem'
+import MapDialog from '@/components/BaiduMap/MapDialog'
+import Search from './components/Search'
 
 export default {
     components: {
-        PageHeader,
-        AddScreen
+        ScreenList,
+        EditScreenPrice,
+        MapDialog,
+        Search
     },
+    mixins: [screenSizeWatch],
     data(){
         return {
             showDrawer: true,
@@ -96,10 +101,10 @@ export default {
     methods: {
         // 添加或修改屏幕刊例价
         handleShowAddScreen(data){
-            this.$refs.addScreen.showAddScreenPriceDialog(data)
+            this.$refs.editScreenPrice.showAddScreenPriceDialog(data)
         },
 
-        // 获取价格体系详情
+        // 获取屏幕列表
         getDetail(){
             this.listLoading = true
             this.params.id = this.$route.params.id
@@ -128,61 +133,17 @@ export default {
         },
 
         // 搜索
-        handleSearch(){
-            this.params.pageNo = 1
+        handleSearch(data){
+            this.params = {
+                pageNo: 1,
+                ...data
+            }
             this.getDetail()
         }
     }
 }
 </script>
 
-<style lang="scss" scoped>
-    .price-system-screen-list{
-
-        .list{
-            display: flex;
-            flex-wrap: wrap;
-            margin-left: -10px;
-            
-            .el-card{
-                margin: 10px;
-                width: 300px;
-                position: relative;
-    
-                .title{
-                    font-size: 18px;
-                }
-
-                .price{
-                    margin-top: 15px;
-                    font-weight: bold;
-                }
-
-                .edit{
-                    font-size: 14px;
-                    position: absolute;
-                    right: 0;
-                    bottom: 0px;
-                    height: 30px;
-                    line-height: 30px;
-                    padding: 0 20px;
-                    text-align: center;
-                    color: #999;
-                    background: #f9fafcd1;
-                    cursor: pointer;
-                    display: none;
-
-                    &:hover{
-                        color: var(--color-primary);
-                    }
-                }
-
-                &:hover{
-                    .edit{
-                        display: block;
-                    }
-                }
-            }
-        }
-    }
+<style lang="scss">
+    @import '../place/style/place-card.scss';
 </style>
