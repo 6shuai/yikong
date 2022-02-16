@@ -9,14 +9,30 @@
         :show-close="false"
         append-to-body
     >
+
+        <!-- 选择内容 -->
+        <material-select-content 
+            ref="selectContent"
+            @selectResult="selectResult"
+        ></material-select-content>
+
+        <!-- 新建内容 -->
+        <material-add-content 
+            ref="addContent"
+            @selectResult="selectResult"
+        ></material-add-content>
+
         <el-empty 
-            v-if="!screenData || !screenData.length"
+            v-if="!screenData.publishedPlaceholders || !screenData.publishedPlaceholders.length"
             description="暂无锁位信息"
         ></el-empty>
         <el-row v-else>
             <el-col 
                 class="screen-list"
                 :span="15">
+                <div class="total-price mb20">
+                    <el-tag type="primary">总刊例价: {{ screenData.totalPrice }}</el-tag>
+                </div>
                 <div class="item list-head">
                     <span class="radio"></span>
                     <span class="screen">屏幕名称</span>
@@ -28,12 +44,17 @@
                 </div>
                 <div 
                     class="item"
-                    v-for="(item, index) in screenData"
+                    v-for="(item, index) in screenData.publishedPlaceholders"
                     :key="index"
-                    @click="selectedIndex = index; handleChangeScreen()"
-                    :class="{ active: selectedIndex === index }"
+                    @click.stop="item.selected = !item.selected;handleChangeScreen(item, index)"
+                    :class="{ active: item.selected }"
                 >
-                    <span class="radio"><el-radio v-model="selectedIndex" :label="index"></el-radio></span>
+                    <span class="radio">
+                        <el-checkbox 
+                            :value="item.selected"
+                            @change="item.selected = !item.selected;handleChangeScreen(item, index)"
+                        ></el-checkbox>
+                    </span>
                     <span class="screen">{{ item.screenName }}</span>
                     <span class="duration">{{ item.materialDuration }}</span>
                     <span class="play-count">{{ item.publishedTimes }}</span>
@@ -48,67 +69,18 @@
                 <el-form 
                     label-width="110px"
                     ref="addMaterialForm"
-                    :inline="true"
                 >
-                    <div v-if="selectedScreen && selectedScreen.count">
-                        <el-form-item 
-                            v-for="(item, index) in selectedScreen.count"
-                            :key="index"
-                            label="内容">
-                            <el-select
-                                v-model="addParams[index].content"
-                                filterable
-                                remote
-                                reserve-keyword
-                                placeholder="请输入内容名称"
-                                :remote-method="handleSearchContent"
-                            >
-                                <el-option
-                                    v-for="item in contentData"
-                                    :key="item.id"
-                                    :label="`${item.displayName} ${item.duration ? `(${item.duration}s)` : ''}`"
-                                    :value="item.id">
-                                </el-option>
-            
-                                <el-pagination
-                                    v-if="contentData.length"
-                                    :hide-on-single-page="false"
-                                    layout="total, prev, pager, next"
-                                    :current-page="Number(contentSearchParams.pageNo)"
-                                    :page-size="contentSearchParams.pageSize"
-                                    @current-change="contentSearchParams.pageNo=$event,getContentData()"
-                                    :total="contentTotalCount">
-                                </el-pagination>  
-            
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="上刊时间">
-                            <el-date-picker
-                                v-model="selectedScreen.fromTimeFormat"
-                                type="date"
-                                placeholder="选择日期"
-                                :disabled="true"
-                                value-format="yyyy-MM-dd">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="下刊时间">
-                            <el-date-picker
-                                v-model="selectedScreen.toTimeFormat"
-                                type="date"
-                                placeholder="选择日期"
-                                :disabled="true"
-                                value-format="yyyy-MM-dd">
-                            </el-date-picker>
-                        </el-form-item>
-                        <el-form-item label="每日播放次数">
-                            <el-input-number 
-                                class="w220"
-                                :controls="false"
-                                :disabled="true"
-                                v-model="selectedScreen.publishedTimes" 
-                                :min="0"
-                                placeholder="每日播放次数"
-                            ></el-input-number>
+                    <div v-if="selectedScreen && selectedScreen.length">
+                        <el-form-item label="内容">
+                            <div class="select-content">
+                                <span @click="handleSelectContent">选择内容</span>
+                                <span @click="handleAddContent">新建内容</span>
+                            </div>
+                            <div class="content-preview" v-show="addParams.content">
+                                <p>{{ addParams.displayName }}</p>
+                                <el-image fit="cover" :src="addParams.image"></el-image>
+                            </div>
+
                         </el-form-item>
                     </div>
                 </el-form>
@@ -116,45 +88,49 @@
                 <!-- 播放限制 -->
                 <div 
                     class="play-limit-wrap"
-                    v-if="selectedScreen.publishedLimitPlaceholders && selectedScreen.publishedLimitPlaceholders.length">
-                    
-                    <div class="title">播放限制</div>
+                    v-if="selectedScreen && selectedScreen.length">
 
-                    <el-table
-                        class="mt20 mb20"
-                        stripe
-                        size="small"
-                        :data="selectedScreen.publishedLimitPlaceholders"
-                        row-key="id"
-                        border>
-                        <el-table-column 
-                            prop="limitType" 
-                            label="限制类型" 
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                <span>{{ scope.row.limitType == 1 ? '限制播放' : '禁止播放' }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column 
-                            prop="limitBeginFormat" 
-                            label="开始时间" 
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                <span>{{ formDataLimit(scope.row.limitBeginFormat) }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column 
-                            prop="limitEndFormat" 
-                            label="结束时间" 
-                            min-width="100"
-                        >
-                            <template slot-scope="scope">
-                                <span>{{ formDataLimit(scope.row.limitEndFormat) }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                    <div v-for="item in selectedScreen" :key="item.id">
+                        <div 
+                            class="mt20"
+                            v-if="item.publishedLimitPlaceholders && item.publishedLimitPlaceholders.length">
+                            <h3 class="mb10">{{ item.screenName }}</h3>
+                            <el-table
+                                stripe
+                                size="small"
+                                :data="item.publishedLimitPlaceholders"
+                                row-key="id"
+                                border>
+                                <el-table-column 
+                                    prop="limitType" 
+                                    label="限制类型" 
+                                    min-width="100"
+                                >
+                                    <template slot-scope="scope">
+                                        <span>{{ scope.row.limitType == 1 ? '限制播放' : '禁止播放' }}</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column 
+                                    prop="limitBeginFormat" 
+                                    label="开始时间" 
+                                    min-width="100"
+                                >
+                                    <template slot-scope="scope">
+                                        <span>{{ formDataLimit(scope.row.limitBeginFormat) }}</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column 
+                                    prop="limitEndFormat" 
+                                    label="结束时间" 
+                                    min-width="100"
+                                >
+                                    <template slot-scope="scope">
+                                        <span>{{ formDataLimit(scope.row.limitEndFormat) }}</span>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </div>
+                    </div>
                 </div>
 
             </el-col>
@@ -173,48 +149,42 @@
 
 <script>
 import { projectMaterialCreate, projectLockPositionList } from '@/api/project'
-import { contentList } from '@/api/content'
 import { dateAddHMS, findTimeHasYtd } from '@/utils/index'
-import { directive } from 'vuedraggable'
+import MaterialSelectContent from './MaterialSelectContent'
+import MaterialAddContent from './MaterialAddContent'
 
 export default {
+    components: {
+        MaterialSelectContent,
+        MaterialAddContent
+    },
     data(){
         return {
             showCreateMaterial: false,
             createdLoading: false,
-            addParams: [],
+            addParams: {},
 
             // 屏幕列表
             screenData: [],
 
             // 选中的屏幕信息
-            selectedScreen: {},
+            selectedScreen: [],
 
             // 选中的屏幕index
-            selectedIndex: null,
+            selectedIndex: [],
 
-            // 内容列表
-            contentData: [],
-
-            // 选中的内容
-            selectedContent: [],
-
-            // 内容搜索项
-            contentSearchParams: {
-                pageNo: 1,
-                pageSize: 40
-            },
-
-            // 内容总数
-            contentTotalCount: 0
+            // 点击了第几个内容的   选择或新建内容
+            clickContentIndex: null,
         }
     },
     methods: {
         // 显示新建物料窗口
         showCreateMaterialDialog(){
             this.showCreateMaterial = true
+            this.selectedScreen = []
+            this.selectedIndex = []
+            this.addParams = {}
             this.getScreenData()
-            this.getContentData()
         },
 
         // 获取已锁位的屏幕列表
@@ -227,64 +197,45 @@ export default {
         },
 
         // 选择屏幕
-        handleChangeScreen(){
-            this.selectedScreen = this.screenData[this.selectedIndex]
-            let { screen, fromTimeFormat, toTimeFormat, publishedTimes, id } = this.selectedScreen
-            this.addParams = []
-            for(let i = 0; i < this.selectedScreen.count; i++){
-                this.addParams.push({
-                    screen,
-                    publishedTimes,
-                    effectiveTime: fromTimeFormat,
-                    dueTime: toTimeFormat,
-                    project: Number(this.$route.params.id),
-                    placeholderId: id
-                })
+        handleChangeScreen(data, index){
+            if(this.selectedIndex.includes(index)){
+                this.selectedScreen.splice(this.selectedIndex.indexOf(index), 1)
+                this.selectedIndex.splice(this.selectedIndex.indexOf(index), 1)
+            }else{
+                this.selectedScreen.push(data)
+                this.selectedIndex.push(index)
             }
             
-        },
-
-        // 获取内容列表
-        getContentData(){
-            contentList(this.contentSearchParams).then(res => {
-                if(res.code === this.$successCode){
-                    let { list, totalRecords } = res.obj
-                    this.contentData = list
-                    this.contentTotalCount = totalRecords
-                }
-            })
-        },
-
-        // 内容搜索
-        handleSearchContent(event){
-            this.contentSearchParams = {
-                ...this.contentSearchParams,
-                displayName: event,
-                pageNo: 1
-            }
-            this.getContentData()
         },
 
 
         // 新建物料
         handleCreate(){
-            this.createdLoading = true
-
-            if(!this.addParams.length){
+            
+            if(!this.selectedScreen.length){
                 this.$message.warning('还没选择屏幕呢~')
                 return
-            }   
-
-
-            for(let i = 0; i < this.addParams.length; i++){
-                let item = this.addParams[i]
-                if(!item.content){
-                    this.$message.warning('还有内容没选择~')
-                    return
-                }
+            }else if(!this.addParams.content){
+                this.$message.warning('还有内容没选择~')
+                return
             }
-            
-            projectMaterialCreate(this.addParams).then(res => {
+
+            let data = []
+            for(let i = 0; i < this.selectedScreen.length; i++){
+                let { screen, fromTimeFormat, toTimeFormat, publishedTimes, id } = this.selectedScreen[i]
+                data.push({
+                    screen,
+                    publishedTimes,
+                    effectiveTime: fromTimeFormat,
+                    dueTime: toTimeFormat,
+                    project: Number(this.$route.params.id),
+                    placeholderId: id,
+                    content: this.addParams.content
+                })
+            }
+
+            this.createdLoading = true
+            projectMaterialCreate(data).then(res => {
                 this.createdLoading = false
                 if(res.code === this.$successCode){
                     this.$message.success('提交成功~')
@@ -292,6 +243,27 @@ export default {
                     this.$emit('createMaterialSuccess')
                 }
             }) 
+        },
+
+
+        // 打开选择内容 窗口
+        handleSelectContent(){
+            this.$refs.selectContent.showSelectContent = true
+        },
+
+        // 显示选中的内容
+        selectResult({ id, displayName, image }){
+            this.addParams = {
+                ...this.addParams,
+                content: id,
+                displayName,
+                image
+            }
+        },
+
+        // 打开新建内容 窗口
+        handleAddContent(){
+            this.$refs.addContent.showCreateContent = true
         },
 
         formDataEvent(val){
@@ -373,6 +345,39 @@ export default {
 
             .title{
                 padding-left: 32px;
+            }
+        }
+
+        .select-content{
+            width: 200px;
+            display: flex;
+            border: 1px dashed var(--color-primary);
+            border-radius: 4px;
+            margin-top: 5px;
+
+            span{
+                width: 100px;
+                text-align: center;
+                line-height: 30px;
+                color: var(--color-primary);
+                cursor: pointer;
+
+                &:first-child{
+                    border-right: 1px dashed var(--color-primary);
+                }
+
+                &:hover{
+                    background: var(--color-primary);
+                    color: #fff;
+                }
+            }
+        }
+
+        .content-preview{
+            
+            .el-image{
+                width: 100%;
+                border-radius: 4px;
             }
         }
     }

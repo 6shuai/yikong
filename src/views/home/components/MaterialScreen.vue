@@ -68,7 +68,7 @@
                             screenId: scope.row.screen,
                             beginTime: dateAddHMS(scope.row.effectiveTime),
                             endTime: dateAddHMS(scope.row.dueTime)
-                        })"
+                        }, true)"
                     >
                         {{ scope.row.currentTimes }}
                     </el-tag>
