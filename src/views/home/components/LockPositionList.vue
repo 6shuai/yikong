@@ -6,11 +6,15 @@
         append-to-body
     >
 
+        <div class="mb20 text-align-right">
+            <el-tag type="primary">总刊例价: {{ resData.totalPrice }}</el-tag>
+        </div>
+
         <el-table
             class="mt20 mb20"
             stripe
             size="small"
-            :data="resData"
+            :data="resData.publishedPlaceholders"
             row-key="id"
             v-loading="tLoading"
             border>

@@ -53,7 +53,7 @@
 
         <!-- 选中的屏幕列表 -->
         <div class="selected-screen-list">
-            <el-scrollbar>
+            <el-scrollbar ref="scrollbar">
                 
                 <h3>请从左侧列表选择需要寻位的屏幕</h3>
 
@@ -61,15 +61,18 @@
                 <div class="default-date">
                     <span class="label">默认日期</span>
                     <el-date-picker
-                        v-model="defaultDate"
-                        type="daterange"
-                        align="right"
-                        unlink-panels
-                        range-separator="至"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd"
-                    >
+                        class="w200"
+                        v-model="defaultDate.startTime"
+                        type="date"
+                        placeholder="选择开始日期"
+                        value-format="yyyy-MM-dd">
+                    </el-date-picker>
+                    <el-date-picker
+                        class="w200"
+                        v-model="defaultDate.endTime"
+                        type="date"
+                        placeholder="选择结束日期"
+                        value-format="yyyy-MM-dd">
                     </el-date-picker>
                 </div>
     
@@ -220,6 +223,7 @@
                 type="primary"
                 class="save-btn"
                 :loading="btnLoading"
+                :disabled="selectedScreen.length ? false : true"
                 @click="handleLocating"
             >提 交</el-button>
 
@@ -262,7 +266,7 @@ export default {
             dataLoading: false,
 
             // 屏幕开始结束 默认日期
-            defaultDate: [],
+            defaultDate: {},
 
             // 选中的屏幕
             selectedScreen: [],
@@ -294,8 +298,14 @@ export default {
                 materialDuration: 15,
                 publishedTimes: 120,
                 count: 1,
-                fromTime: (this.defaultDate && this.defaultDate.length) ? this.defaultDate[0] : '',
-                toTime: (this.defaultDate && this.defaultDate.length) ? this.defaultDate[1] : ''
+                fromTime: this.defaultDate.startTime,
+                toTime: this.defaultDate.endTime
+            })
+
+            // scrollbar 滚动条位置 一直滚动到最底
+            this.$nextTick(() => {
+                let { scrollHeight, offsetHeight } = this.$refs.scrollbar.wrap
+                this.$refs.scrollbar.wrap.scrollTop = scrollHeight - offsetHeight
             })
         },
 
