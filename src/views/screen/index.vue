@@ -14,19 +14,40 @@
                 :total="totalCount">
             </el-pagination>
         </div>
-        <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">
-            暂无数据~
-        </div>
+        
+        <el-empty v-if="!resData.length && !tLoading" description="暂无数据"></el-empty>
+
         <div v-else class="place-content">
             <div class="place-box" v-loading="tLoading">
-                <div class="place-p" :style="{width: placeW}" v-for="(item, index) in resData" :key="item.id">
+                <div 
+                    class="place-p" 
+                    :style="{width: placeW}" 
+                    v-for="(item, index) in resData" :key="item.id"
+                    @click="$router.push(`/screen/details/${item.id}`)"
+                >
                     <screen-list 
                         name="screen" 
                         :item="item" 
                         :index="index" 
                         :imageH="imageH"
                         @seeAddress="$refs.mapDialog.showMapDialog(item)"
-                    ></screen-list>
+                    >
+                        <template v-slot:default>
+                            <div class="specification">
+                                <ul>
+                                    <li title="点距规格">
+                                        <span>{{item.dotPitchName}}</span>
+                                    </li>
+                                    <li title="分辨率">
+                                        <span>{{item.resolutionWidth}} x {{item.resolutionHeight}}</span>
+                                    </li>
+                                    <li title="宽高比">
+                                        <span>{{item.aspectRatioWidth}} : {{item.aspectRatioHeight}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </template>
+                    </screen-list>
                 </div>
 
             </div>
@@ -36,6 +57,7 @@
                 background
                 layout="total, prev, pager, next, sizes"
                 :page-sizes="[48, 80, 100]"
+                :page-size="Number(params.pageSize)"
                 :current-page="Number(params.pageNo)"
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"

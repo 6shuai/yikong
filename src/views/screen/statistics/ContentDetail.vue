@@ -121,19 +121,15 @@ export default {
         }
     },
     methods: {
-        showDialog(data){
+        showDialog(data, showDatePicker){
             this.params = {
                 ...data,
                 pageNo: 1,
                 pageSize: 40,
-                screenId: data.screenId ? data.screenId : Number(this.$route.params.id),
-                beginTime: data.beginTime ? data.beginTime : formatTime(new Date(), 'date')
+                screenId: data.screenId ? data.screenId : Number(this.$route.params.id)
             }
 
-            // 没有日期  显示选择日期组件 并默认为当天
-            if(!data.beginTime){
-                this.showDatePicker = true
-            }
+            this.showDatePicker = showDatePicker ? true : false
 
             this.showContentDetail = true
             this.getScreenTimeline()

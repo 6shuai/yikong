@@ -102,12 +102,12 @@ export function screenCouponStatistics(data) { return get('/screen/couponStatist
 export function screenCouponStatisticsDetail(data) { return get('/screen/couponStatisticsDetail', data) }
 
 
-
-//内容统计  内容播放的时间顺序
-export function screenPlayTimeline(data) { return get('/screen/playStatistics', data) }
-
 //内容统计  当前屏幕所选日期 都播放了哪些内容
 export function screenPlayContentData(data) { return get('/screen/playStatisticsGroupByContentId', data) }
 
 //内容统计  内容播放详情
 export function screenPlayContentPlayDetail(data) { return get('/screen/playStatisticsDetail', data) }
+
+//内容统计  查询屏幕下的时间轴数据
+export function screenTimelineData(data) { return get('/screen/timeline', data) }
+

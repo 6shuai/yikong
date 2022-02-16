@@ -3,7 +3,6 @@
 
         <div 
             class="mb20"
-            style="float: right;"
         >
             <el-date-picker
                 class="mr20"
@@ -51,20 +50,30 @@
                 min-width="120"
             ></el-table-column>
             <el-table-column 
+                prop="playNum" 
+                label="总次数" 
+                min-width="60"
+            ></el-table-column>
+            <el-table-column 
                 prop="duration" 
-                label="播放时长(秒)" 
-                min-width="50"
+                label="总时长(秒)" 
+                min-width="60"
             ></el-table-column>
             <el-table-column 
                 prop="beginTime" 
-                label="开始时间" 
-                min-width="100"
-            ></el-table-column>
-            <el-table-column 
-                prop="endTime" 
-                label="结束时间" 
-                min-width="100"
-            ></el-table-column>
+                label="查看明细" 
+                width="110"
+            >
+                <template slot-scope="scope">
+                    <el-button 
+                        type="primary" 
+                        size="mini"
+                        @click="handleContentDetail(scope.row.contentId)"
+                    >
+                        查看明细
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
 
         <el-pagination
@@ -77,15 +86,23 @@
             :total="totalCount">
         </el-pagination>
 
+
+        <!-- 内容详情 -->
+        <content-detail ref="contentDetail"></content-detail>
+
     </div>
 </template>
 
 <script>
-import { screenPlayTimeline } from '@/api/screen'
+import { screenPlayContentData } from '@/api/screen'
 import { formatTime } from '@/utils/index'
+import ContentDetail from './ContentDetail'
 import qs from "qs"
 
 export default {
+    components: {
+        ContentDetail
+    },
     data(){
         return {
             tLoading: false,
@@ -117,7 +134,7 @@ export default {
         //获取播放次数列表
         getScreenTimeline(){
             this.tLoading = true
-            screenPlayTimeline(this.params).then(res => {
+            screenPlayContentData(this.params).then(res => {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     let { list, totalRecords } = res.obj
@@ -139,10 +156,18 @@ export default {
             this.getScreenTimeline()
         },
 
+        //查看详情
+        handleContentDetail(contentId){
+            this.$refs.contentDetail.showDialog({ 
+                beginTime: this.params.beginTime || formatTime(new Date(), 'date'), 
+                contentId 
+            })
+        },
+
         //导出
 		handleDownload() {
 			window.open(
-				`${document.location.origin}/screen/exportPlayStatistics?${qs.stringify(this.params)}`
+				`${document.location.origin}/screen/exportPlayStatisticsGroupByContentId?${qs.stringify(this.params)}`
 			)
 		}
     }

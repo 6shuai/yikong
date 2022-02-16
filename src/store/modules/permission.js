@@ -6,40 +6,42 @@ import Layout from '@/layout';
 
 const moduleMap = {
 	'Home': 'home/index',
-	'Place': 'place/index',                          	  //场所管理 场所列表
+	'Place': 'place/index',                          	  // 场所管理 场所列表
 
-	'Screen': 'screen/index',                          	  //屏幕管理  
+	'Screen': 'screen/index',                          	  // 屏幕管理  
 
-	'Content': 'content/index',                           //内容管理  
+	'Content': 'content/index',                           // 内容管理  
 
-	'Games': 'games/index',                               //游戏管理
+	'Games': 'games/index',                               // 游戏管理
 
-	'Timeline': 'timeline/index',                         //时间轴  
+	'Timeline': 'timeline/index',                         // 时间轴  
 
-	'Layout': 'screenLayout/index',						  //屏幕布局 模板
+	'Layout': 'screenLayout/index',						  // 屏幕布局 模板
 
-	'Activity': 'activity/index',					      //活动管理
+	'Activity': 'activity/index',					      // 活动管理
 
-	'CutInAdver': 'cutInAdver/index',				      //插播广告
+	'CutInAdver': 'cutInAdver/index',				      // 插播广告
 
-	'Merchant': 'merchant/index',				          //商户管理
+	'Merchant': 'merchant/index',				          // 商户管理
 
-	'PriceSystem': 'priceSystem/index',                   //价格体系
+	'PriceSystem': 'priceSystem/index',                   // 价格体系
 
-
-	'Log': 'log/index',									  //操作日志
-	'Authority': 'system/authority/index',                //权限管理
-	'Role': 'system/role/index',						  //角色管理
-	'Member': 'system/member/index',				      //成员管理
-	'Organization': 'system/organizations/index',		  //品牌列表
-	'OrganizationType': 'system/organizationType/index',  //组织类型列表
-	'User': 'user/Center',							      //个人中心
-	'BasicRole': 'system/basicRole/index',			      //基础角色管理
+	'Finance': 'finance/index',                   		  // 财务权责
 
 
-	'ResAuthority': 'resAuthority/resAuthority/index',		  //内容权限管理
-	'ResRole': 'resAuthority/resRole/index',			      //内容角色管理
-	'Group': 'resAuthority/group/index',			      	  //权限群组
+	'Log': 'log/index',									  // 操作日志
+	'Authority': 'system/authority/index',                // 权限管理
+	'Role': 'system/role/index',						  // 角色管理
+	'Member': 'system/member/index',				      // 成员管理
+	'Organization': 'system/organizations/index',		  // 品牌列表
+	'OrganizationType': 'system/organizationType/index',  // 组织类型列表
+	'User': 'user/Center',							      // 个人中心
+	'BasicRole': 'system/basicRole/index',			      // 基础角色管理
+
+
+	'ResAuthority': 'resAuthority/resAuthority/index',		  // 内容权限管理
+	'ResRole': 'resAuthority/resRole/index',			      // 内容角色管理
+	'Group': 'resAuthority/group/index',			      	  // 权限群组
 }
 
 

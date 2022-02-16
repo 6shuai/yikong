@@ -6,8 +6,14 @@
         >
             <div class="place-img" 
                 :style="{height: imageH+'px'}"
-                @click.stop="$router.push(`/screen/details/${item.id}`)">
-                <el-image fit="cover" :src="item.defaultShow" class="image" :style="{height: imageH+'px'}"></el-image>
+            >
+                <el-image 
+                    fit="cover" 
+                    :src="item.defaultShow" 
+                    class="image" 
+                    :style="{height: imageH+'px'}"
+                ></el-image>
+
                 <!-- 屏幕状态 -->
                 <div class="screen-state" title="屏幕状态">
                     <el-tag v-if="!item.state" class="status ing" effect="dark">建设中</el-tag>
@@ -26,33 +32,29 @@
                 >
                 </el-button>
 
-                <div class="screen-code">{{ 10000 + Number(item.id) }}</div>
+                <!-- 屏幕编号  10000 + 屏幕id -->
+                <div 
+                    class="screen-code" 
+                    v-if="name != 'screenPrice'"
+                >
+                    {{ 10000 + Number(item.id) }}
+                </div>
             
             </div>
             <div style="padding: 14px;">
                 <div class="place-title">
-                    <span class="name full" @click="$router.push(`/screen/details/${item.id}`)">
+                    <span class="name full">
                         {{item.displayName}}
                     </span>
                 </div>
-                <div class="specification">
-                    <ul>
-                        <li title="点距规格">
-                            <span>{{item.dotPitchName}}</span>
-                        </li>
-                        <li title="分辨率">
-                            <span>{{item.resolutionWidth}} x {{item.resolutionHeight}}</span>
-                        </li>
-                        <li title="宽高比">
-                            <span>{{item.aspectRatioWidth}} : {{item.aspectRatioHeight}}</span>
-                        </li>
-                    </ul>
-                </div>
+                
+                <slot></slot>
+
                 <div class="bottom clearfix">
-                    <div class="adress overflow" :title="addressJoint(item) + item.address" @click="$emit('seeAddress')">
+                    <div class="adress overflow" :title="addressJoint(item) + item.address" @click.stop="$emit('seeAddress')">
                         <font-awesome-icon :icon="['fas', 'map-marker-alt']" />{{addressJoint(item)}}  {{item.address}}
                     </div>
-                    <div class="place-logo">
+                    <div class="place-logo" v-if="item.brandName">
                         <span><font-awesome-icon :icon="['far', 'building']" />{{item.brandName}}</span>
                     </div>
                 </div>

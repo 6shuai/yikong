@@ -41,8 +41,9 @@
         >
             <el-tab-pane label="基本信息" :name="`/screen/details/${$route.params.id}`"></el-tab-pane>
             <!-- 监播数据 -->
-            <el-tab-pane label="监播数据（时序）" :name="`/screen/details/${$route.params.id}/timeline`"></el-tab-pane>
-            <el-tab-pane label="监播数据（统计）" :name="`/screen/details/${$route.params.id}/content`"></el-tab-pane>
+            <el-tab-pane label="监播数据(时序)" :name="`/screen/details/${$route.params.id}/timeSeries`"></el-tab-pane>
+            <el-tab-pane label="监播数据(统计)" :name="`/screen/details/${$route.params.id}/statistics`"></el-tab-pane>
+            <el-tab-pane label="时间轴数据" :name="`/screen/details/${$route.params.id}/timeline`"></el-tab-pane>
         </el-tabs>   
 
         <div 
@@ -539,12 +540,16 @@ export default {
 
         // 根据刊例价体系id 查找刊例价体系名称
         findPriceType(id){
-            let p = this.$store.state.user.priceTypeData || []
-            let obj = {}
-            obj = p.find(item => {
-                return item.id == id
-            })
-            return obj.displayName
+            try {
+                let p = this.$store.state.user.priceTypeData || []
+                let obj = {}
+                obj = p.find(item => {
+                    return item.id == id
+                })
+                return obj.displayName
+            } catch (error) {
+                
+            }
         },
 
         handleFindTimeHasYtd(data){

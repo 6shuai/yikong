@@ -48,14 +48,13 @@ export function parseTime(time, cFormat) {
  */
 export function formatTime(time, type) {
 	let date = new Date(time); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-	let Y = date.getFullYear() + '-';
-	let M = addZero(date.getMonth() + 1) + '-';
+	let Y = date.getFullYear();
+	let M = '-' + addZero(date.getMonth() + 1) + '-';
 	let D = addZero(date.getDate());
-	let h = '' + addZero(date.getHours()) + ':';
+	let h = ' ' + addZero(date.getHours()) + ':';
 	let m = addZero(date.getMinutes()) + ':';
 	let s = addZero(date.getSeconds());
 	let result = '';
-
 	switch (type) {
 		case 'year': 
 			result = Y;
@@ -63,8 +62,9 @@ export function formatTime(time, type) {
 		case 'time':
 			result = h + m + s;
 			break;
-		case 'data':
+		case 'date':
 			result = Y + M + D
+			break;
 		default:
 			result = Y + M + D + h + m + s
 			break;

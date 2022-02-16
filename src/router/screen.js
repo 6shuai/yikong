@@ -50,20 +50,28 @@ const screenRoutes = [
 			},
             children: [
 				{
+					path: 'timeSeries',
+					name: 'Screen--details--timeSeries',
+					meta: {
+						title: '监播数据(时序)'
+					},
+					component: () => import('@/views/screen/statistics/timeSeries')
+				},
+				{
+					path: 'statistics',
+					name: 'Screen--details--statistics',
+					meta: {
+						title: '监播数据(统计)'
+					},
+					component: () => import('@/views/screen/statistics/statistics')
+				},
+				{
 					path: 'timeline',
 					name: 'Screen--details--timeline',
 					meta: {
-						title: '时间顺序'
+						title: '时间轴数据'
 					},
-					component: () => import('@/views/screen/statistics/timeline')
-				},
-				{
-					path: 'content',
-					name: 'Screen--details--content',
-					meta: {
-						title: '内容统计'
-					},
-					component: () => import('@/views/screen/statistics/content')
+					component: () => import('@/views/screen/statistics/timelineData')
 				}
 			]
 		}],
