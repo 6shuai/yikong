@@ -63,6 +63,7 @@
 <script>
 import ProjectPriceClearing from './ProjectPriceClearing'
 import { financeMemberMonthInfo } from '@/api/finance'
+import { Subtr } from '@/utils/index'
 
 export default {
     components: {
@@ -110,7 +111,7 @@ export default {
                 month: this.params.month,
                 beneficiary,
                 displayName,
-                noSettle: amountPaid - amountSettle
+                noSettle: Subtr(amountPaid, amountSettle)
             })
         }
 
