@@ -15,12 +15,12 @@
             <el-date-picker
                 v-if="showDatePicker"
                 class="mr20"
-                v-model="params.beginTime"
+                v-model="beginTime"
                 align="right"
                 type="date"
                 placeholder="选择日期"
                 value-format="yyyy-MM-dd"
-                @change="handleSearch"
+                @change="handleSelectDate"
                 :picker-options="pickerOptions">
             </el-date-picker>
 
@@ -91,7 +91,6 @@
 
 <script>
 import { screenPlayContentPlayDetail } from '@/api/screen'
-import { formatTime } from '@/utils/index'
 import qs from "qs"
 
 export default {
@@ -111,6 +110,9 @@ export default {
 
             // 是否显示选择日期组件
             showDatePicker: false,
+
+            // 日期
+            beginTime: '',
 
             // 禁止选择今天之后的日期
             pickerOptions: {
@@ -153,12 +155,17 @@ export default {
             this.params.pageNo = page
             this.getScreenTimeline()
         },
+
+        // 选择日期
+        handleSelectDate(){
+            this.params.beginTime = this.beginTime
+            this.handleSearch()
+        },
         
         //搜索
         handleSearch(){
             this.params.pageNo = 1
             this.getScreenTimeline()
-            console.log(this.params.beginTime)
         },
 
         //导出
