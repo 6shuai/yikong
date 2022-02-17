@@ -1,15 +1,18 @@
 <template>
-    <el-dialog
-        width="1100px"
-        title="锁位列表"
-        :visible.sync="showLockPositionList"
-        append-to-body
-    >
+    <div class="lock-position-list">
+        <div class="mb20">
+            <el-tag class="mr20" type="primary">总刊例价: {{ resData.totalPrice }}</el-tag>
 
-        <div class="mb20 text-align-right">
-            <el-tag type="primary">总刊例价: {{ resData.totalPrice }}</el-tag>
+            <el-button 
+                type="primary"
+                size="small"
+                @click="$refs.locating.showLoacting()"
+            >
+                寻 位
+            </el-button>
         </div>
-
+        
+        <h3 class="mb10">锁位列表</h3>
         <el-table
             class="mt20 mb20"
             stripe
@@ -100,33 +103,33 @@
         <!-- 播放限制列表 -->
         <lock-position-play-limit-list ref="lockPositionPlayLimitList"></lock-position-play-limit-list>
 
-    </el-dialog>
+        <!-- 寻位 -->
+        <locating ref="locating" @lockPositionSuccess="getScreenList"></locating>
+
+    </div>
 </template>
 
 <script>
 import { projectLockPositionList, projectLockPositionDelete } from '@/api/project'
 import { dateAddHMS } from '@/utils/index'
-import LockPositionPlayLimitList from './LockPositionPlayLimitList'
+import LockPositionPlayLimitList from '@/views/home/components/LockPositionPlayLimitList'
+import Locating from '@/views/home/components/Locating'
 
 export default {
     components: {
-        LockPositionPlayLimitList
+        LockPositionPlayLimitList,
+        Locating
     },
     data(){
         return {
-            showLockPositionList: false,
-
             resData: [],
             tLoading: false
         }
     },
+    mounted() {
+        this.getScreenList()
+    },
     methods: {
-        // 显示锁位列表
-        showLockPositionListDialog(){
-            this.showLockPositionList = true
-            this.getScreenList()
-        },
-
         // 获取锁位列表
         getScreenList(){
             let data = {
