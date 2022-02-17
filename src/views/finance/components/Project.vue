@@ -49,7 +49,6 @@
         </el-table>
 
         <el-pagination
-            v-if="resData.length"
             background
             hide-on-single-page
             layout="total, prev, pager, next, sizes"
@@ -101,13 +100,12 @@ export default {
     },
     mounted() {
         this.getProjectList()
-
         // 表格高度
-        this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 200;
+        this.tableHeight = window.innerHeight - 350;
 
         // 监听浏览器窗口缩放  改变表格高度
         window.addEventListener('resize', () => {
-            this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 200;
+            this.tableHeight = window.innerHeight - 350;
         })
     },
     methods: {
@@ -121,9 +119,11 @@ export default {
                     this.resData = projectAccrualData
                     this.totalCount = page.totalRecords
 
-                    // 40 = 表格行高  2 = 表格上下border高度
-                    let h = (this.resData.length > 0 ? this.resData.length + 1 : 2) * 40  + 2
-                    this.tableHeight = this.tableHeight > h ? h : this.tableHeight
+                    this.$nextTick(() => {
+                        // 40 = 表格行高  2 = 表格上下border高度
+                        let h = (this.resData.length > 0 ? this.resData.length + 1 : 2) * 40  + 2
+                        this.tableHeight = this.tableHeight > h ? h : this.tableHeight
+                    })
                 }
             })
         },

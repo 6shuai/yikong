@@ -27,10 +27,10 @@
          -->
         <el-table
             class="mt20 mb20"
+            :height="tableHeight"
             stripe
             size="small"
             :data="resData"
-            :header-cell-style="handerMethod"
             row-key="id"
             v-loading="dataLoading"
             border>
@@ -78,7 +78,6 @@
         </el-table>
 
         <el-pagination
-            v-if="resData.length"
             background
             hide-on-single-page
             layout="total, prev, pager, next, sizes"
@@ -100,7 +99,6 @@
 import MemberProjectDetail from "./MemberProjectDetail"
 import { financeMemberInfo } from '@/api/finance'
 import { formatTime } from '@/utils/index'
-import { registerTransform } from "echarts"
 
 export default {
     components: {
@@ -108,6 +106,9 @@ export default {
     },
     data() {
         return {
+            // 表格高度
+            tableHeight: null, 
+
             resData: [],
 
             // 总条数
@@ -126,15 +127,16 @@ export default {
     },
     mounted() {
         this.getMemberList()
+
+        // 表格高度
+        this.tableHeight = window.innerHeight - 350;
+
+        // 监听浏览器窗口缩放  改变表格高度
+        window.addEventListener('resize', () => {
+            this.tableHeight = window.innerHeight - 350;
+        })
     },
     methods: {
-        // 表头合并  隐藏table 表格第一列
-        handerMethod(data){
-            // if(data.rowIndex === 1){
-            //     return { display: 'none' }
-            // }
-        },
-
         // 获取员工权责列表
         getMemberList(){
             this.dataLoading = true
@@ -144,6 +146,12 @@ export default {
                     let { memberAccrualData, page } = res.obj
                     this.resData = memberAccrualData
                     this.totalCount = page.totalRecords
+
+                    this.$nextTick(() => {
+                        // 40 = 表格行高  2 = 表格上下border高度
+                        let h = (this.resData.length > 0 ? this.resData.length + 2 : 3) * 40  + 10
+                        this.tableHeight = this.tableHeight > h ? h : this.tableHeight
+                    })
                 }
             })
         },
