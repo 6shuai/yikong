@@ -52,9 +52,9 @@ const homeRoutes = [
                 {
                     path: 'locating',
                     name: 'Project--locating',
-                    component: () => import('@/views/home/locating'),
+                    component: () => import('@/views/home/lockPositionList'),
                     meta: {
-                        title: '项目详情 - 寻位'
+                        title: '项目详情 - 寻位锁位'
                     }
                 },
             ],

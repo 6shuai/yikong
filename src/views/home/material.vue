@@ -7,7 +7,7 @@
                 size="small"
                 @click="handleShowCreate"
             >
-                新建物料
+                物料投放
             </el-button>
 
             <div class="search-input">
@@ -15,7 +15,7 @@
                     clearable
                     size="small"
                     v-model="params.contentName"
-                    placeholder="内容名称"
+                    placeholder="物料名称"
                     @input="$debounce(handleSearch)"
                 ></el-input>
             </div>
@@ -71,7 +71,7 @@
             @createMaterialSuccess="getMaterial"
         ></create-material>
         
-        <!-- 内容投放的屏幕列表 -->
+        <!-- 物料投放的屏幕列表 -->
         <material-screen 
             ref="materialScreen"
             @reloadData="getMaterial"

@@ -81,6 +81,7 @@
         <span slot="footer" class="dialog-footer">
             <el-button @click="showSelectContent = false">取 消</el-button>
             <el-button
+                :disabled="selectedContent.id ? false : true"
                 type="primary"
                 @click="handleSaveContent"
                 >确 定</el-button
@@ -108,20 +109,25 @@ export default {
             selectedContent: {},
 
             // 内容搜索项
-            contentSearchParams: {
-                pageNo: 1,
-                pageSize: 40,
-                contentType: 1, //contentType 1 图片 2 视频 3 互动 4 图集
-            },
+            contentSearchParams: {},
 
             // 内容总数
             contentTotalCount: 0
         }
     },
-    mounted() {
-        this.getContentData()
-    },
     methods: {
+        // 显示选择内容窗口
+        showSelectContentDialog(){
+            this.showSelectContent = true
+            this.contentSearchParams = {
+                pageNo: 1,
+                pageSize: 40,
+                contentType: 1, //contentType 1 图片 2 视频 3 互动 4 图集
+            }
+            this.selectedContent = {}
+            this.getContentData()
+        },
+
         // 获取内容列表
         getContentData(){
             this.dataLoading = true

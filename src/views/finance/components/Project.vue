@@ -21,6 +21,8 @@
 
         <el-table
             class="mt20 mb20"
+            :height="tableHeight"
+            ref="table"
             stripe
             size="small"
             :data="resData"
@@ -29,6 +31,7 @@
             border>
             <el-table-column 
                 v-for="(item, index) in resData[0]"
+                v-if="index!='projectId'"
                 :key="index"
                 :prop="index" 
                 :label="index" 
@@ -36,7 +39,11 @@
             >
                 <template slot-scope="scope">
                     <span v-if="scope.row[index].constructor === Object">{{ scope.row[index].amountPaid }}</span>
-                    <span v-else>{{ scope.row[index] }}</span>
+                    <span 
+                        v-else 
+                        class="project-title"
+                        @click="$refs.projectDetail.showProjectPriceDetail(scope.row.projectId, scope.row['项目'])"
+                    >{{ scope.row[index] }}</span>
                 </template>
             </el-table-column>
         </el-table>
@@ -46,13 +53,16 @@
             background
             hide-on-single-page
             layout="total, prev, pager, next, sizes"
-            :page-sizes="[48, 80, 100]"
+            :page-sizes="[20, 40, 80, 100]"
             :page-size="Number(params.pageSize)"
             :current-page="Number(params.pageNo)"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :total="totalCount">
         </el-pagination>
+
+        <!-- 查看项目权责明细 -->
+        <project-detail ref="projectDetail"></project-detail>
 
     </div>
 </template>
@@ -61,10 +71,17 @@
 import { financeProjectInfo } from '@/api/finance'
 import { formatTime } from '@/utils/index'
 import { faClosedCaptioning } from '@fortawesome/free-regular-svg-icons'
+import ProjectDetail from '@/views/finance/components/ProjectDetail'
 
 export default {
+    components: {
+        ProjectDetail
+    },
     data() {
         return {
+            // 表格高度
+            tableHeight: null,
+
             // 项目权责列表
             resData: [],
 
@@ -74,7 +91,7 @@ export default {
             // 筛选条件
             params: {
                 pageNo: 1,
-                pageSize: 40,
+                pageSize: 20,
                 year: formatTime(new Date(), 'year').toString()
             },
 
@@ -84,6 +101,14 @@ export default {
     },
     mounted() {
         this.getProjectList()
+
+        // 表格高度
+        this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 200;
+
+        // 监听浏览器窗口缩放  改变表格高度
+        window.addEventListener('resize', () => {
+            this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 200;
+        })
     },
     methods: {
         // 获取项目权责列表
@@ -95,6 +120,10 @@ export default {
                     let { projectAccrualData, page } = res.obj
                     this.resData = projectAccrualData
                     this.totalCount = page.totalRecords
+
+                    // 40 = 表格行高  2 = 表格上下border高度
+                    let h = (this.resData.length > 0 ? this.resData.length + 1 : 2) * 40  + 2
+                    this.tableHeight = this.tableHeight > h ? h : this.tableHeight
                 }
             })
         },
@@ -119,3 +148,20 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+    .finance-project-wrap{
+        .project-title{
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            font-weight: bold;
+
+            &:hover{
+                color: var(--color-primary);
+                text-decoration: underline;
+            }
+        }
+    }
+</style>

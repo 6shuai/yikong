@@ -2,7 +2,7 @@
     <el-dialog
         class="create-material-wrap"
         width="1200px"
-        title="新建物料"
+        title="物料投放"
         :visible.sync="showCreateMaterial"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -27,63 +27,17 @@
             description="暂无锁位信息"
         ></el-empty>
         <el-row v-else>
-            <el-col 
-                class="screen-list"
-                :span="15">
-                <div class="total-price mb20">
-                    <el-tag type="primary">总刊例价: {{ screenData.totalPrice }}</el-tag>
-                </div>
-                <div class="item list-head">
-                    <span class="radio"></span>
-                    <span class="screen">屏幕名称</span>
-                    <span class="duration">物料时长</span>
-                    <span class="play-count">播放次数</span>
-                    <span class="start-time">上刊时间</span>
-                    <span class="end-time">下刊时间</span>
-                    <span class="count">数量</span>
-                </div>
-                <div 
-                    class="item"
-                    v-for="(item, index) in screenData.publishedPlaceholders"
-                    :key="index"
-                    @click.stop="item.selected = !item.selected;handleChangeScreen(item, index)"
-                    :class="{ active: item.selected }"
-                >
-                    <span class="radio">
-                        <el-checkbox 
-                            :value="item.selected"
-                            @change="item.selected = !item.selected;handleChangeScreen(item, index)"
-                        ></el-checkbox>
-                    </span>
-                    <span class="screen">{{ item.screenName }}</span>
-                    <span class="duration">{{ item.materialDuration }}</span>
-                    <span class="play-count">{{ item.publishedTimes }}</span>
-                    <span class="start-time">{{ formDataEvent(item.fromTimeFormat) }}</span>
-                    <span class="end-time">{{ formDataEvent(item.toTimeFormat) }}</span>
-                    <span class="count">{{ item.count }}</span>
-                </div>
 
-
-            </el-col>
             <el-col :span="9">
-                <el-form 
-                    label-width="110px"
-                    ref="addMaterialForm"
-                >
-                    <div v-if="selectedScreen && selectedScreen.length">
-                        <el-form-item label="内容">
-                            <div class="select-content">
-                                <span @click="handleSelectContent">选择内容</span>
-                                <span @click="handleAddContent">新建内容</span>
-                            </div>
-                            <div class="content-preview" v-show="addParams.content">
-                                <p>{{ addParams.displayName }}</p>
-                                <el-image fit="cover" :src="addParams.image"></el-image>
-                            </div>
-
-                        </el-form-item>
-                    </div>
-                </el-form>
+                <h3>物料</h3>
+                <div class="select-content">
+                    <span @click="handleSelectContent">选择物料</span>
+                    <span @click="handleAddContent">新建物料</span>
+                </div>
+                <div class="content-preview" v-show="addParams.content">
+                    <p>{{ addParams.displayName }}</p>
+                    <el-image fit="cover" :src="addParams.image"></el-image>
+                </div>
 
                 <!-- 播放限制 -->
                 <div 
@@ -134,10 +88,52 @@
                 </div>
 
             </el-col>
+
+            <el-col 
+                class="screen-list"
+                :span="15">
+                <h3>投放屏幕</h3>
+                <div class="total-price mb20">
+                    <el-tag type="primary">总刊例价: {{ screenData.totalPrice }}</el-tag>
+                </div>
+                <div class="item list-head">
+                    <span class="radio"></span>
+                    <span class="screen">屏幕名称</span>
+                    <span class="duration">物料时长</span>
+                    <span class="play-count">播放次数</span>
+                    <span class="start-time">上刊时间</span>
+                    <span class="end-time">下刊时间</span>
+                    <span class="count">数量</span>
+                </div>
+                <div 
+                    class="item"
+                    v-for="(item, index) in screenData.publishedPlaceholders"
+                    :key="index"
+                    @click.stop="item.selected = !item.selected;handleChangeScreen(item, index)"
+                    :class="{ active: item.selected }"
+                >
+                    <span class="radio">
+                        <el-checkbox 
+                            :value="item.selected"
+                            @change="item.selected = !item.selected;handleChangeScreen(item, index)"
+                        ></el-checkbox>
+                    </span>
+                    <span class="screen">{{ item.screenName }}</span>
+                    <span class="duration">{{ item.materialDuration }}</span>
+                    <span class="play-count">{{ item.publishedTimes }}</span>
+                    <span class="start-time">{{ formDataEvent(item.fromTimeFormat) }}</span>
+                    <span class="end-time">{{ formDataEvent(item.toTimeFormat) }}</span>
+                    <span class="count">{{ item.count }}</span>
+                </div>
+
+
+            </el-col>
+            
         </el-row>
         <span slot="footer" class="dialog-footer">
             <el-button @click="showCreateMaterial = false">取 消</el-button>
             <el-button
+                :disabled="(selectedScreen && selectedScreen.length && addParams.content) ? false : true"
                 type="primary"
                 :loading="createdLoading"
                 @click="handleCreate"
@@ -248,7 +244,7 @@ export default {
 
         // 打开选择内容 窗口
         handleSelectContent(){
-            this.$refs.selectContent.showSelectContent = true
+            this.$refs.selectContent.showSelectContentDialog()
         },
 
         // 显示选中的内容
@@ -279,12 +275,18 @@ export default {
 
 <style lang="scss">
     .create-material-wrap{
+        h3{
+            text-align: center;
+            padding-bottom: 10px;
+        }
+
         .el-select{
             width: 220px;
         }
 
         .screen-list{
-            border-right: 1px solid #e5e5e5;
+            border-left: 1px solid #e5e5e5;
+            padding-left: 10px;
 
             .item{
                 display: flex;
@@ -353,7 +355,7 @@ export default {
             display: flex;
             border: 1px dashed var(--color-primary);
             border-radius: 4px;
-            margin-top: 5px;
+            margin: 10px auto;
 
             span{
                 width: 100px;
@@ -374,6 +376,14 @@ export default {
         }
 
         .content-preview{
+            margin-right: 10px;
+            text-align: center;
+
+            p{
+                font-size: 16px;
+                line-height: 20px;
+                padding: 10px 0;
+            }
             
             .el-image{
                 width: 100%;

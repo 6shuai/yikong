@@ -82,7 +82,7 @@
             background
             hide-on-single-page
             layout="total, prev, pager, next, sizes"
-            :page-sizes="[48, 80, 100]"
+            :page-sizes="[20, 40, 80, 100]"
             :page-size="Number(params.pageSize)"
             :current-page="Number(params.pageNo)"
             @size-change="handleSizeChange"
@@ -119,7 +119,7 @@ export default {
             // 筛选条件
             params: {
                 pageNo: 1,
-                pageSize: 40,
+                pageSize: 20,
                 year: formatTime(new Date(), 'year').toString()
             }
         }

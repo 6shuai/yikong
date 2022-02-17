@@ -49,7 +49,10 @@
             </el-tab-pane>
 
             <el-tab-pane label="权责" name="duty">
-                <finance-duty :dutyData="resData.accrualDetails"></finance-duty>
+                <finance-duty 
+                    :dutyData="resData.accrualDetails"
+                    :projectId="Number($route.params.id)"
+                ></finance-duty>
             </el-tab-pane>
 
         </el-tabs>

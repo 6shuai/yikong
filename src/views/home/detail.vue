@@ -20,7 +20,7 @@
                     :name="`/project/${$route.params.id}`"
                 ></el-tab-pane>
                 <el-tab-pane 
-                    label="寻位" 
+                    label="寻位锁位" 
                     :name="`/project/${$route.params.id}/locating`"
                 ></el-tab-pane>
                 <el-tab-pane 
