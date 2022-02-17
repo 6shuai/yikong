@@ -54,7 +54,7 @@ export default {
     methods: {
         download(){
             window.open(
-				`${document.location.origin}/project/exportAccrualDetails?contract=${this.projectId}`
+				`${document.location.origin}/project/exportAccrualDetails?projectId=${this.projectId}`
 			)
         }
     }
