@@ -91,6 +91,16 @@
 				@click="download"
 				>导出</el-button
 			>
+			<el-button
+				:disabled="!resData.length"
+				class="right-btn"
+				plain
+				type="primary"
+				size="small"
+				icon="el-icon-upload2"
+				@click="downloadPlayAwardDetail"
+				>导出玩家奖励详情</el-button
+			>
 		</div>
 
 		<el-table
@@ -182,9 +192,9 @@ export default {
                 viewByDay: 1
 			},
 			datePicker: [],
-			placeData: [], //场所列表
-			screenData: [], //屏幕列表
-			gameData: [], //游戏列表
+			placeData: [], // 场所列表
+			screenData: [], // 屏幕列表
+			gameData: [], // 游戏列表
 			tableLoading: false,
 			resData: [],
 			totalCount: 0,
@@ -260,14 +270,14 @@ export default {
 			});
 		},
 
-		//场所列表
+		// 场所列表
 		getPlaceList() {
 			this.api.PlaceList().then((res) => {
 				this.placeData = res.obj;
 			});
 		},
 
-		//屏幕列表
+		// 屏幕列表
 		getScreen(placeId) {
 			let data = {
 				placeId: this.params.placeId || this.$route.query.placeId,
@@ -277,14 +287,14 @@ export default {
 			});
 		},
 
-		//游戏列表
+		// 游戏列表
 		getGameList() {
 			this.api.GameList().then((res) => {
 				this.gameData = res.obj;
 			});
 		},
 
-		//查看详情
+		// 查看详情
 		handleDetail(row) {
 			this.$refs.statisticsDetail.showDialog(
 				{
@@ -297,7 +307,7 @@ export default {
 			);
 		},
 
-		//搜索
+		// 搜索
 		search() {
 			this.params.pageNo = 1;
 			this.params.startTime = this.datePicker ? this.datePicker[0] : "";
@@ -305,19 +315,19 @@ export default {
 			this.init();
 		},
 
-		//分页
+		// 分页
 		handleCurrentChange(page) {
 			this.params.pageNo = page;
 			this.init();
 		},
 
-		//每页多少条
+		// 每页多少条
 		handleSizeChange(size) {
 			this.params.pageSize = size;
 			this.init();
 		},
 
-		//导出
+		// 导出
 		download() {
 			window.open(
 				`${document.location.origin}/${
@@ -325,6 +335,15 @@ export default {
 				}/exportAwardCash?${qs.stringify(this.params)}`
 			);
 		},
+
+		// 导出玩家 游戏奖励详情
+		downloadPlayAwardDetail(){
+			window.open(
+				`${document.location.origin}/${
+					this.$route.query.source
+				}/exportAwardCashDetail?${qs.stringify(this.params)}`
+			);
+		}
 	},
 	components: {
 		StatisticsDetail,
