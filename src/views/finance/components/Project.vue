@@ -101,11 +101,11 @@ export default {
     mounted() {
         this.getProjectList()
         // 表格高度
-        this.tableHeight = window.innerHeight - 350;
+        this.tableHeight = window.innerHeight - 350
 
         // 监听浏览器窗口缩放  改变表格高度
         window.addEventListener('resize', () => {
-            this.tableHeight = window.innerHeight - 350;
+            this.setTableHeight()
         })
     },
     methods: {
@@ -117,13 +117,9 @@ export default {
                 if(res.code === this.$successCode){
                     let { projectAccrualData, page } = res.obj
                     this.resData = projectAccrualData
-                    this.totalCount = page.totalRecords
 
-                    this.$nextTick(() => {
-                        // 40 = 表格行高  2 = 表格上下border高度
-                        let h = (this.resData.length > 0 ? this.resData.length + 1 : 2) * 40  + 2
-                        this.tableHeight = this.tableHeight > h ? h : this.tableHeight
-                    })
+                    this.totalCount = page.totalRecords
+                    this.setTableHeight()
                 }
             })
         },
@@ -144,6 +140,16 @@ export default {
         handleSearch(){
             this.params.pageNo = 1
             this.getProjectList()
+        },
+
+        // 表格高度
+        setTableHeight(){
+            this.$nextTick(() => {
+                let h = window.innerHeight - 350
+                // 40 = 表格行高  2 = 表格上下border高度
+                let _h = (this.resData.length > 0 ? this.resData.length + 1 : 2) * 40  + 2
+                this.tableHeight = h > _h ? _h : h
+            })
         }
     }
 }
