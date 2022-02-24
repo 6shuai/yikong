@@ -72,6 +72,14 @@ const screenRoutes = [
 						title: '时间轴数据'
 					},
 					component: () => import('@/views/screen/statistics/timelineData')
+				},
+				{
+					path: 'occupy',
+					name: 'Screen--details--occupy',
+					meta: {
+						title: '占位情况'
+					},
+					component: () => import('@/views/screen/statistics/occupy')
 				}
 			]
 		}],

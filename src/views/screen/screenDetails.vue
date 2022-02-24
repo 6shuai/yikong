@@ -44,6 +44,7 @@
             <el-tab-pane label="监播数据(时序)" :name="`/screen/details/${$route.params.id}/timeSeries`"></el-tab-pane>
             <el-tab-pane label="监播数据(统计)" :name="`/screen/details/${$route.params.id}/statistics`"></el-tab-pane>
             <el-tab-pane label="时间轴数据" :name="`/screen/details/${$route.params.id}/timeline`"></el-tab-pane>
+            <el-tab-pane label="占位情况" :name="`/screen/details/${$route.params.id}/occupy`"></el-tab-pane>
         </el-tabs>   
 
         <div 
