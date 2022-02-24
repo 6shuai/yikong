@@ -17,26 +17,9 @@
                 {{ resData.leisure }} 秒
             </el-form-item>
             <el-form-item label="详情">
-                <el-button
-                    type="primary"
-                    size="mini"
-                    plain
-                    @click="showProjectOccupyDetail = true"
-                >
-                    详情
-                </el-button>
             </el-form-item>
-        </el-form>
-
-        <!-- 项目占用详情 -->
-        <el-dialog
-            width="700px"
-            :visible.sync="showProjectOccupyDetail"
-            append-to-body
-            title="占位项目列表"
-        >
             <el-table
-                class="mt20 mb20"
+                class="occupy-detail"
                 stripe
                 size="small"
                 :data="resData.details"
@@ -60,7 +43,7 @@
                 >
                 </el-table-column>
             </el-table>
-        </el-dialog>
+        </el-form>
 
     </div>
 
@@ -74,10 +57,7 @@ export default {
     data(){
         return {
             resData: [],
-            tLoading: false,
-
-            // 显示项目占用详情
-            showProjectOccupyDetail: false
+            tLoading: false
         }
     },
     mounted() {
@@ -103,7 +83,12 @@ export default {
 </script>
 
 <style lang="scss">
-    .material_screen_tag{
+    .screen-occupy-detail{
         cursor: pointer;
+
+        .occupy-detail{
+            width: 90%;
+            margin-left: 40px;
+        }
     }
 </style>
