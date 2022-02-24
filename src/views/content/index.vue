@@ -16,9 +16,7 @@
         </el-pagination>
 
         <!-- 内容列表 -->
-        <div v-if="!dataLoading && !resData.length" style="margin: 20px;text-align:center">
-            暂无数据~
-        </div>
+        <el-empty v-if="!dataLoading && !resData.length"></el-empty>
         <div v-else class="place-content" v-loading="dataLoading">
             <div class="place-box">
                 <div class="place-p" :style="{width: placeW}" v-for="(item, index) in resData" :key="index">

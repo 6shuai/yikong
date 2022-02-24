@@ -111,3 +111,7 @@ export function screenPlayContentPlayDetail(data) { return get('/screen/playStat
 //内容统计  查询屏幕下的时间轴数据
 export function screenTimelineData(data) { return get('/screen/timeline', data) }
 
+
+// 按照时段查询屏幕 刊挂率
+export function screenOccupyRate(data) { return get('/screen/occupancyRate', data) }
+

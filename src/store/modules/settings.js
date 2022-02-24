@@ -1,12 +1,13 @@
 import defaultSettings from '@/settings'
 
-const { showSettings, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const { showSettings, tagsView, fixedHeader, sidebarLogo, showMenu } = defaultSettings
 
 const state = {
 	showSettings: showSettings,
 	tagsView: tagsView,
 	fixedHeader: fixedHeader,
-	sidebarLogo: sidebarLogo
+	sidebarLogo: sidebarLogo,
+	showMenu: showMenu
 }
 
 const mutations = {
@@ -14,6 +15,11 @@ const mutations = {
 		if (state.hasOwnProperty(key)) {
 		state[key] = value
 		}
+	},
+
+	SET_SHOW_MENU: (state, data) => {
+		state.showMenu = data
+		localStorage.showMenu = data
 	}
 }
 

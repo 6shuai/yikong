@@ -30,6 +30,11 @@
                     label="组织类型名称"
                     min-width="180">
                 </el-table-column>
+                <el-table-column
+                    prop="homePageName"
+                    label="主页"
+                    min-width="180">
+                </el-table-column>
                 
                 <el-table-column
                     label="操作"
@@ -103,12 +108,14 @@
 
         <!-- 添加  编辑  角色 -->
         <add-role ref="addRole"></add-role>
+        
     </div>
 </template>
 
 <script>
 import { getRoleList, roleDelete, roleAllAuthList, currentRoleAuthList, roleAuthUpdate } from '@/api/user';
 import AddRole from './AddRole';
+
 export default {
     data(){
         return {
@@ -131,7 +138,7 @@ export default {
         this.initAuthList();
     },
     methods: {
-        //初始化角色列表
+        // 初始化角色列表
         init(){
             this.tLoading = true;
             getRoleList().then(res => {
@@ -142,7 +149,7 @@ export default {
             })
         },
 
-        //删除角色
+        // 删除角色
         delCurrentRole(id){
             roleDelete(id).then(res => {
                  this.$refs[id].doClose()
@@ -153,7 +160,7 @@ export default {
             })
         },
 
-        //加载权限列表
+        // 加载权限列表
         initAuthList(){
             roleAllAuthList().then(res => {
                 if(res.code === this.$successCode){
@@ -162,7 +169,7 @@ export default {
             })
         },
 
-        //显示当前选中的角色权限
+        // 显示当前选中的角色权限
         showRoleAuthModal(id){
             this.roleAutDialog = true;
             this.roleListLoading = true;
@@ -180,7 +187,7 @@ export default {
             })
         },
 
-        //更新权限
+        // 更新权限
         updateRoleSureBtn(){
             let data = `?rid=${this.currentRoleId}`;
             let halfKeys = this.$refs.menu.getHalfCheckedKeys();

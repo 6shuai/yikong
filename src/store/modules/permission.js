@@ -5,7 +5,7 @@ import {
 import Layout from '@/layout';
 
 const moduleMap = {
-	'Home': 'home/index',
+	'Home': 'project/index',
 	'Place': 'place/index',                          	  // 场所管理 场所列表
 
 	'Screen': 'screen/index',                          	  // 屏幕管理  

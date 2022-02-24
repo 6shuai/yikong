@@ -4,7 +4,7 @@
 
             <div class="project-introduce">
                 <el-page-header 
-                    @back="$router.push('/')"
+                    @back="$router.push('/project')"
                     title="项目列表"
                 > </el-page-header>
                 <div class="title">{{ resData.displayName }}</div>

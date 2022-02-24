@@ -8,6 +8,20 @@
         :close-on-press-escape="false"
         append-to-body
     >
+
+        <!-- 上刊详情 -->
+        <el-dialog
+            width="520px"
+            :visible.sync="showScreenContentOccupyList"
+            append-to-body
+        >
+            <screen-content-occupy-detail
+                v-if="showScreenContentOccupyList"
+                :data="screenParams"
+            ></screen-content-occupy-detail>
+        </el-dialog>
+
+
         <div class="total-price mb20">
             <el-tag type="primary">总刊例价: {{ totalPrice }}</el-tag>
         </div>
@@ -30,11 +44,19 @@
                     :prop="lIndex" 
                     :key="lIndex"
                     :label="lIndex" 
-                    min-width="60"
+                    min-width="80"
                 >
                     <template slot-scope="scope">
                         <i v-if="list" class="el-icon-success"></i>
-                        <i v-else class="el-icon-error"></i>
+                        <div v-else>
+                            <i class="el-icon-error"></i>
+                            <el-button 
+                                type="danger" 
+                                plain
+                                size="mini"
+                                @click="handleShowOccupyDetail(lIndex, item.screenId, item.screen)"
+                            >占位详情</el-button>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -55,7 +77,12 @@
 
 <script>
 import { projectLockPosition } from '@/api/project'
+import ScreenContentOccupyDetail from './ScreenContentOccupyDetail'
+
 export default {
+    components: {
+        ScreenContentOccupyDetail
+    },
     data(){
         return {
             showLocatingResult: false,
@@ -67,7 +94,13 @@ export default {
             totalPrice: null,
 
             // 寻位结果是否有  没有空位的
-            resultHasFalse: false
+            resultHasFalse: false,
+
+            // 显示上刊详情
+            showScreenContentOccupyList: false,
+
+            // 查询上刊详情 传递的参数
+            screenParams: {}
         }
     },
     methods: {
@@ -89,8 +122,10 @@ export default {
                     date: {}
                 }
                 for(var i in item){
-                    if(i == '屏幕名称') {
+                    if(i === '屏幕名称') {
                         arr[index].screen = item[i]
+                    }else if(i === 'screenId') {
+                        arr[index].screenId = item[i]
                     }else {
                         arr[index].date[i] = item[i]
                         if(!item[i]) this.resultHasFalse = true
@@ -111,6 +146,16 @@ export default {
                     this.$emit('lockPositionSuccess')
                 }
             })
+        },
+
+        // 查询屏幕占位详情
+        handleShowOccupyDetail(date, screenId, screenName){
+            this.screenParams = {
+                date, 
+                screenId,
+                screenName
+            }
+            this.showScreenContentOccupyList = true
         }
     }
 }
@@ -120,15 +165,21 @@ export default {
 <style lang="scss" scoped>
     .locating-result{
 
-        .cell>i{
-            font-size: 20px;
+        .cell {
+            i{
+                font-size: 20px;
 
-            &.el-icon-success{
-                color: var(--color-success);
+                &.el-icon-success{
+                    color: var(--color-success);
+                }
+
+                &.el-icon-error{
+                    color: var(--color-danger);
+                }
             }
 
-            &.el-icon-error{
-                color: var(--color-danger);
+            .el-button{
+                padding: 5px;
             }
         }
 

@@ -22,16 +22,40 @@ router.beforeEach((to, from, next) => {
 		if (to.path === '/login' || to.path === '/register') {
 			next({ path: '/' })
 			NProgress.done()
+		}if(to.path === '/' && store.state.settings.showMenu){
+			next({ path: '/project' })
+			NProgress.done()
 		}else {
 			if(!store.state.permission.addRoutes.length){
 				getAuthMenu().then(res => {
 					if(res.code === 0){
-						// 无访问权限
-						const asyncRouter = filterAsyncRouter(res.obj)
+						// 主页数据
+						store.state.user.homePageData = res.obj
+
+						// 只有一个角色时 直接显示首页    多个角色要选选择角色进入
+						if(res.obj.length === 1){
+							localStorage.currentRoleHomePageData = JSON.stringify(res.obj[0].authorities)
+
+							// id === 1 老用户  显示左侧菜单栏
+							if(res.obj[0].id === 1){
+								store.commit('settings/SET_SHOW_MENU', true)
+							}
+						}
+						
+						
+						let currentRoleHomePageData = localStorage.currentRoleHomePageData ? JSON.parse(localStorage.currentRoleHomePageData) : []
+						const asyncRouter = filterAsyncRouter(currentRoleHomePageData)
+						
 						asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
-						store.dispatch('permission/GenerateRoutes', asyncRouter).then(() => { // 存储路由
-							router.addRoutes(asyncRouter) // 动态添加可访问路由表
-							next({ ...to, replace: true })// hack方法 确保addRoutes已完成
+
+						
+						// 存储路由
+						store.dispatch('permission/GenerateRoutes', asyncRouter).then(() => { 
+							// 动态添加可访问路由表
+							router.addRoutes(asyncRouter) 
+
+							// hack方法 确保addRoutes已完成
+							next({ ...to, replace: true })
 						})
 					}
 				})

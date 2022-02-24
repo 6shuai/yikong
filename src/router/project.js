@@ -1,18 +1,18 @@
 import Layout from '@/layout'
 
-const homeRoutes = [
+const projectRoutes = [
     {
 		path: '/',
 		component: Layout,
 		children: [{
 			path: '/project/:id',
 			name: 'Project--detail',
-			component: () => import('@/views/home/detail'),
+			component: () => import('@/views/project/detail'),
             children: [
                 {
                     path: '/project/:id',
                     name: 'Project--contract',
-                    component: () => import('@/views/home/info'),
+                    component: () => import('@/views/project/info'),
                     meta: {
                         title: '项目详情 - 基本信息'
                     }
@@ -20,7 +20,7 @@ const homeRoutes = [
                 {
                     path: 'contract',
                     name: 'Project--contract',
-                    component: () => import('@/views/home/contract'),
+                    component: () => import('@/views/project/contract'),
                     meta: {
                         title: '项目详情 - 合同'
                     }
@@ -28,7 +28,7 @@ const homeRoutes = [
                 {
                     path: 'material',
                     name: 'Project--material',
-                    component: () => import('@/views/home/material'),
+                    component: () => import('@/views/project/material'),
                     meta: {
                         title: '项目详情 - 物料'
                     }
@@ -36,7 +36,7 @@ const homeRoutes = [
                 {
                     path: 'finance',
                     name: 'Project--finance',
-                    component: () => import('@/views/home/finance'),
+                    component: () => import('@/views/project/finance'),
                     meta: {
                         title: '项目详情 - 财务'
                     }
@@ -44,7 +44,7 @@ const homeRoutes = [
                 {
                     path: 'member',
                     name: 'Project--member',
-                    component: () => import('@/views/home/member'),
+                    component: () => import('@/views/project/member'),
                     meta: {
                         title: '项目详情 - 成员'
                     }
@@ -52,7 +52,7 @@ const homeRoutes = [
                 {
                     path: 'locating',
                     name: 'Project--locating',
-                    component: () => import('@/views/home/lockPositionList'),
+                    component: () => import('@/views/project/lockPositionList'),
                     meta: {
                         title: '项目详情 - 寻位锁位'
                     }
@@ -64,4 +64,4 @@ const homeRoutes = [
 	}
 ]
 
-export default homeRoutes
+export default projectRoutes

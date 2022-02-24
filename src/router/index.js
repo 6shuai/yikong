@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import homeRoutes from './home'
+import projectRoutes from './project'
 import placeRoutes  from './place'
 import screenRoutes from './screen'
 import contentRoutes from './content'
@@ -14,6 +14,9 @@ import adverRoutes from './adver'
 import priceSystemRoutes from './priceSystem'
 
 Vue.use(Router)
+
+
+
 
 /* Layout */
 import Layout from '@/layout'
@@ -31,7 +34,8 @@ import Layout from '@/layout'
  */
 
 
-export const constantRoutes = [{
+export const constantRoutes = [
+	{
 		path: '/login',
 		component: () => import('@/views/login/index'),
 		hidden: true
@@ -48,15 +52,34 @@ export const constantRoutes = [{
 		hidden: true
 	},
 
+
+	// 首页
 	{
 		path: '/',
 		component: Layout,
 		children: [{
 			path: '/',
-			name: 'Project',
+			name: 'Home',
 			component: () => import('@/views/home/index'),
 			meta: {
 				title: '首页',
+				icon: 'home'
+			}
+		}],
+		hidden: true
+	},
+
+	
+	// 项目
+	{
+		path: '/',
+		component: Layout,
+		children: [{
+			path: '/project',
+			name: 'Project',
+			component: () => import('@/views/project/index'),
+			meta: {
+				title: '项目列表',
 				icon: 'home'
 			}
 		}]
@@ -138,7 +161,7 @@ export const constantRoutes = [{
 	},
 
 	// 我的项目
-	...homeRoutes,
+	...projectRoutes,
 
 	// 场所管理
 	...placeRoutes,

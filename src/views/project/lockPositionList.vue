@@ -112,8 +112,8 @@
 <script>
 import { projectLockPositionList, projectLockPositionDelete } from '@/api/project'
 import { dateAddHMS } from '@/utils/index'
-import LockPositionPlayLimitList from '@/views/home/components/LockPositionPlayLimitList'
-import Locating from '@/views/home/components/Locating'
+import LockPositionPlayLimitList from '@/views/project/components/LockPositionPlayLimitList'
+import Locating from '@/views/project/components/Locating'
 
 export default {
     components: {

@@ -8,6 +8,12 @@ const state = {
 	avatar: "",
 	loginData: localStorage.loginData ? JSON.parse(localStorage.loginData) : {},
 
+	// 主页数据
+	homePageData: [],
+
+	// 选择的主页
+	currentRoleHomePageData: [],
+
 	// 场所列表
 	placeData: [],
 

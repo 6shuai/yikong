@@ -240,7 +240,7 @@
 import { projectLocationScreenList, projectLocation } from '@/api/project'
 import SelectRegion from '@/components/SelectRegion/index'
 import { dateAddHMS, findTimeHasYtd } from '@/utils/index'
-import LocatingResult from '@/views/home/components/LocatingResult'
+import LocatingResult from '@/views/project/components/LocatingResult'
 
 export default {
     components: {

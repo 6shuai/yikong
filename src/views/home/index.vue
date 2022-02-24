@@ -1,195 +1,159 @@
 <template>
-    <div 
-        class="project-list-wrap app-main-wrap" 
-        id="app-main-wrap"
-    >
-        <div class="add-and-search mb10">
-            <el-button 
-                type="primary" 
-                icon="el-icon-plus" 
-                @click="handleShowCreateProject()"
-                size="small">
-                新建项目
-            </el-button>
+    <div class="home-wrap">
+        <div class="role" v-if="!currentRoleHomePageData.length">
+            <!-- 多个角色情况  要先选择角色进入 -->
 
-            <div class="search-input">
-                <el-input 
-                    clearable
-                    size="small"
-                    v-model="params.displayName"
-                    placeholder="输入项目名称搜索"
-                    @input="$debounce(handleSearch)"
-                ></el-input>
-            </div>
-        </div>
-
-        <div class="project-list" v-loading="listLoading">
-            <div 
-                class="item" 
-                :style="{ width: placeW }" 
-                v-for="item in resData"
-                :key="item.id"
-                @click="jumpProjectDetail(item.id)"
-            >
-                <el-card shadow="hover">
-                    <div class="name overflow">{{ item.displayName }}</div>
-                    <div class="desc" :title="item.description">{{ item.description }}</div>
-                    <el-tag 
-                        type="primary" 
-                        plain
-                        size="mini"
-                    >
-                        {{ item.clientName }}
-                    </el-tag>
-
-                    <div class="edit" @click.stop="handleShowCreateProject(item)">
-                        <i class="el-icon-edit"></i>编辑
-                    </div>
-                    
+            <h3 class="role-tip">请选择一个角色进入首页</h3>
+            <div class="role-list">
+                <el-card 
+                    v-for="(item, index) in homePageData"
+                    :key="index"
+                    @click.native="handleSelectRole(item)"
+                >
+                    {{ item.displayName }}
                 </el-card>
             </div>
         </div>
-        <el-empty v-if="!resData.length && !listLoading" description="暂无项目"></el-empty>
 
-        <el-pagination
-            v-if="resData.length"
-            background
-            :hide-on-single-page="true"
-            layout="total, prev, pager, next, sizes"
-            :current-page="Number(params.pageNo)"
-            :page-size="Number(params.pageSize)"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
-            :total="totalCount">
-        </el-pagination>   
-        
-
-        <create-project ref="createProject"></create-project>
+        <!-- 根据角色显示对应的权限页面 入口列表 -->
+        <div class="entrance" v-else>
+            <el-card class="entrance-list">
+                <div 
+                    class="entrance-page"
+                    @click="handleClickPageBtn('/project')"
+                >  
+                    项目
+                </div>
+            </el-card>
+            <el-card 
+                class="entrance-list"
+                v-for="(item, index) in currentRoleHomePageData"
+                v-show="item.children.length"
+                :key="index"
+            >
+                <div slot="header" class="clearfix">
+                    <span>{{ item.displayName }}</span>
+                </div>
+                <div 
+                    class="entrance-page"
+                    v-for="(sub, sIndex) in item.children"
+                    :key="sIndex"
+                    @click="handleClickPageBtn(sub.route)"
+                >  
+                    {{ sub.displayName }}
+                </div>
+            </el-card>
+        </div>
 
     </div>
 </template>
 
 <script>
-import { screenSizeWatch } from '@/mixins'
-import { projectList } from '@/api/project'
-import CreateProject from './components/CreateProject'
+import { filterAsyncRouter } from '@/store/modules/permission'
+import router from '@/router'
 
 export default {
-    components: { 
-        CreateProject
+    computed: {
+        homePageData(){
+            return this.$store.state.user.homePageData
+        }
     },
-    mixins: [screenSizeWatch],
     data(){
-        return{
-            resData: [],
-            totalCount: 0,
-            listLoading: false,
-            params: {
-                pageNo: 1,
-                pageSize: 40
-            }
+        return {
+            currentRoleHomePageData: []
         }
     },
     mounted() {
-        this.getList()
+        let currentRoleHomePageData = localStorage.currentRoleHomePageData ? JSON.parse(localStorage.currentRoleHomePageData) : []
+        this.currentRoleHomePageData = currentRoleHomePageData
     },
     methods: {
-        // 项目列表
-        getList(){
-            this.listLoading = true
-            projectList(this.params).then(res => {
-                this.listLoading = false
-                if(res.code === this.$successCode){
-                    let { list, totalRecords } = res.obj
-                    this.resData = list
-                    this.totalCount = totalRecords
-                }
+        // 选择角色 注册对应的路由
+        handleSelectRole(data){
+            const asyncRouter = filterAsyncRouter(data.authorities || [])
+            asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
+            
+            // 存储路由
+            this.$store.dispatch('permission/GenerateRoutes', asyncRouter).then(() => { 
+                router.addRoutes(asyncRouter) // 动态添加可访问路由表
             })
+
+            // id =1  老用户 显示左侧菜单栏
+            if(data.id === 1){
+                this.$store.commit('settings/SET_SHOW_MENU', true)
+                this.$router.push('/project')
+            }
+            
+            this.$store.state.user.currentRoleHomePageData = data.authorities
+            this.currentRoleHomePageData = data.authorities
+            localStorage.currentRoleHomePageData = JSON.stringify(data.authorities)
         },
 
-        // 显示创建项目
-        handleShowCreateProject(item){
-            this.$refs.createProject.showCreateProjectDialog(item)
-        },
-
-        // 跳转项目详情
-        jumpProjectDetail(id){
-            this.$router.push(`/project/${id}`)
-        },
-
-        // 分页
-        handleCurrentChange(page){
-            this.params.pageNo = page
-            this.getList()
-        },
-
-        // 每页多少条
-        handleSizeChange(size){
-            this.params.pageSize = size
-            this.getList()
-        },
-
-        // 搜索
-        handleSearch(){
-            this.params.pageNo = 1
-            this.getList()
+        // 点击跳转页面按钮
+        handleClickPageBtn(path){
+            this.$router.push(path)
         }
-    }
+
+    },
 }
 </script>
 
-<style lang="scss">
-    .project-list-wrap{
-        .project-list{
-            display: flex;
-            flex-wrap: wrap;
-            margin-left: -10px;
+<style lang="scss" scoped>
+    .home-wrap{
+        width: 100%;
 
-            .item{
-                cursor: pointer;
-
+        .role{
+            padding-top: 100px;
+            
+            &-tip{
+                text-align: center;
+                padding: 40px 0;
+            }
+            
+            &-list{
+                display: flex;
+                justify-content: center;
+                
                 .el-card{
-                    margin: 10px;
-                    position: relative;
+                    width: 300px;
+                    height: 100px;
+                    line-height: 60px;
+                    font-size: 24px;
+                    text-align: center;
+                    background: rgb(194, 192, 192);
+                    margin: 20px;
+                    cursor: pointer;
 
-                    .el-card__body{
-                        padding: 0;
-                        margin: 20px 20px 15px;
+                    &:hover{
+                        box-shadow: 0 2px 12px 0 rgba(83, 59, 59, 0.5);
                     }
-                    
-                    .desc{
-                        font-size: 12px;
-                        color: #999;
-                        line-height: 14px;
-                        height: 14px;
-                        overflow: hidden;
-                        margin: 10px 0;
-                    }
-
-                    .edit{
-                        font-size: 14px;
-                        position: absolute;
-                        right: 0;
-                        bottom: 0px;
-                        height: 30px;
-                        line-height: 30px;
-                        padding: 0 20px;
-                        text-align: center;
-                        color: #999;
-                        background: #f9fafcd1;
-                        display: none;
-
-                        &:hover{
-                            color: var(--color-primary);
-                        }
-                    }
-
                 }
+            }
+        }
+
+        .entrance{
+            max-width: 80%;
+            margin: 0 auto;
+
+            &-list{
+                margin-top: 20px;
+            }
+
+            &-page{
+                width: 150px;
+                height: 80px;
+                line-height: 80px;
+                display: inline-block;
+                text-align: center;
+                border: 1px solid #f0f0f0;
+                margin: 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                background: #8484ff1a;
 
                 &:hover{
-                    .edit{
-                        display: block;
-                    }
+                    background: #8484ff36;
+                    box-shadow: 0 2px 12px 0 rgba(83, 59, 59, 0.5);
                 }
             }
         }
