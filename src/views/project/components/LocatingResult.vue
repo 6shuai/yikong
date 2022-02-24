@@ -9,10 +9,11 @@
         append-to-body
     >
 
-        <!-- 上刊详情 -->
+        <!-- 占位详情 -->
         <el-dialog
             width="520px"
             :visible.sync="showScreenContentOccupyList"
+            :title="screenName"
             append-to-body
         >
             <screen-content-occupy-detail
@@ -100,7 +101,10 @@ export default {
             showScreenContentOccupyList: false,
 
             // 查询上刊详情 传递的参数
-            screenParams: {}
+            screenParams: {},
+
+            // 占位详情屏幕名称
+            screenName: ''
         }
     },
     methods: {
@@ -152,9 +156,9 @@ export default {
         handleShowOccupyDetail(date, screenId, screenName){
             this.screenParams = {
                 date, 
-                screenId,
-                screenName
+                screenId
             }
+            this.screenName = screenName + ' - ' + date
             this.showScreenContentOccupyList = true
         }
     }
