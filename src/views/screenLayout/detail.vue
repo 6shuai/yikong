@@ -214,6 +214,7 @@ export default {
             border-radius: 4px;
             position: relative;
             overflow: hidden;
+            box-sizing: content-box;
             .rectangle{
                 position: absolute;
                 border: 1px solid #f6f6f6;
@@ -222,6 +223,7 @@ export default {
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                box-sizing: border-box;
             }
         }
     }
