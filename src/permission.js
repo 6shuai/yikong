@@ -44,6 +44,9 @@ router.beforeEach((to, from, next) => {
 							if(res.obj[0].id === 1){
 								store.commit('settings/SET_SHOW_MENU', true)
 							}
+
+							localStorage.homeRoute = res.obj[0].frontRoute
+
 						}
 						
 						
