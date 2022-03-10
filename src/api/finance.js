@@ -1,5 +1,9 @@
 import { postKeyValueRequest, get, post, put, del } from '@/utils/request';
 
+// 查询回款列表
+export function financeReturnMoneyList(data) { return get('/finance/projectAmount', data); }
+
+
 // 获取项目权责  
 export function financeProjectInfo(data) { return get('/finance/project', data); }
 
@@ -17,4 +21,11 @@ export function financeMemberMonthInfo(data) { return get('/finance/memberFinanc
 // 结算员工提成
 export function financeMemberSettle(data) { return post('/finance/settleCommission', data); }
 
+
+
+// 获取提成体系列表
+export function financeCommissionSystemList(data) { return get('/finance/commissionSystem', data); }
+
+// 创建或编辑  提成体系
+export function financeCommissionSystemCreate(data) { return post('/finance/commissionSystem', data); }
 

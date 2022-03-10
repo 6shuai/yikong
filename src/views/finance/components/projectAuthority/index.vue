@@ -31,7 +31,7 @@
             border>
             <el-table-column 
                 v-for="(item, index) in resData[0]"
-                v-if="index!='projectId'"
+                v-if="index!='projectId' && index!='percent'"
                 :key="index"
                 :prop="index" 
                 :label="index" 

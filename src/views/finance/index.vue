@@ -11,47 +11,58 @@
         <el-tabs 
             v-model="tabActiveName" 
             class="mb20"
+            @tab-click="handleTab"
         >
             <el-tab-pane 
-                label="项目权责" 
-                name="project"
+                label="项目视图" 
+                name="projectView"
             ></el-tab-pane>
             <el-tab-pane 
-                label="员工权责" 
-                name="staff"
+                label="合同" 
+                name="contract"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="回款" 
+                name="returnMoney"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="发票" 
+                name="invoice"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="项目权责" 
+                name="projectAuthority"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="员工提成" 
+                name="employeeCommission"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="提成体系" 
+                name="commissionSystem"
             ></el-tab-pane>
         </el-tabs> 
 
-        <!-- 项目权责 -->
-        <project-list
-            v-if="tabActiveName === 'project'"
-        ></project-list>
-
-        <!-- 员工职责 -->
-        <staff-list
-            v-if="tabActiveName === 'staff'"
-        ></staff-list>
+        <router-view></router-view>
 
     </el-card>
     
 </template>
 
 <script>
-import ProjectList from './components/Project'
-import StaffList from './components/Staff'
-
 export default {
-    components: {
-        ProjectList,
-        StaffList
-    },
     data() {
         return {
-            tabActiveName: 'project'
+            tabActiveName: 'projectView'
         }
     },
+    mounted() {
+        if(this.$route.path.split('finance/')) this.tabActiveName = this.$route.path.split('finance/')[1]
+    },
     methods: {
-
+        handleTab(){
+            this.$router.push(`/finance/${this.tabActiveName}`)
+        }
     }
 }
 </script>
