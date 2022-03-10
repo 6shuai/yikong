@@ -586,7 +586,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .content-add-wrap{
         .el-input-group__append{
             width: 55px;

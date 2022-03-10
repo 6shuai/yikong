@@ -92,7 +92,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .coupon-detail {
     img{
         width: 120px;

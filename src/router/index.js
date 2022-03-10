@@ -12,6 +12,7 @@ import merchantRoutes from './merchant'
 import layoutRoutes from './layout'
 import adverRoutes from './adver'
 import priceSystemRoutes from './priceSystem'
+import financeRoutes from './finance'
 
 Vue.use(Router)
 
@@ -84,6 +85,7 @@ export const constantRoutes = [
 			}
 		}]
 	},
+	
 
 	//个人中心
 	{
@@ -191,7 +193,10 @@ export const constantRoutes = [
 	...adverRoutes,
 
 	// 屏幕刊例价
-	...priceSystemRoutes
+	...priceSystemRoutes,
+
+	// 财务权责
+	...financeRoutes
 ]
 
 

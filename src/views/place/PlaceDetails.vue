@@ -376,7 +376,7 @@ export default {
     },
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
 @import "../../styles/variables.scss";
 @import "./style/place-card.scss";
 @import "./style/place-detail.scss";

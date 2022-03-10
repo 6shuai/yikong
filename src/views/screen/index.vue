@@ -153,6 +153,6 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     @import '../place/style/place-card.scss';
 </style>

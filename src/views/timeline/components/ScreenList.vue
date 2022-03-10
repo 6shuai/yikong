@@ -216,7 +216,7 @@ export default {
     },
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
 @import "../../../styles/variables.scss";
 .screen-wrap {
     height: 100%;

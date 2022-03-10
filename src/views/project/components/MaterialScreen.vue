@@ -1,7 +1,6 @@
 <template>
     <el-dialog
         width="1100px"
-        :title="contentName"
         :visible.sync="showScreenList"
         append-to-body
     >
@@ -75,6 +74,19 @@
                 </template>
             </el-table-column>
             <el-table-column 
+                prop="currentTimes" 
+                label="审核状态" 
+                min-width="60"
+            >
+                <template slot-scope="scope">
+                    <el-tag
+                        :type="scope.row.censor == 1 ? '' : scope.row.censor == 2 ? 'success' : 'warning'" 
+                        size="mini"
+                        effect="plain"
+                    >{{ scope.row.censor == 1 ? '待审核' : scope.row.censor == 2 ? '已通过' : '已拒绝' }}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column 
                 prop="beginTime" 
                 label="操作"
                 width="180"
@@ -123,24 +135,19 @@
 import { projectMaterialForScreenList, projectMaterialDelete } from '@/api/project'
 import { dateAddHMS } from '@/utils/index'
 import ContentDetail from '@/views/screen/statistics/ContentDetail'
-import CreateMaterial from './CreateMaterial'
 import LockPositionPlayLimitList from './LockPositionPlayLimitList'
 
 export default {
     components: {
         ContentDetail,
-        CreateMaterial,
         LockPositionPlayLimitList
     },
     data(){
         return {
             showScreenList: false,
 
-            // 内容名称
-            contentName: '',
-
-            // 内容id
-            contentId: null,
+            // 物料包id
+            contenPackagetId: null,
 
             resData: [],
             tLoading: false
@@ -148,9 +155,8 @@ export default {
     },
     methods: {
         // 显示物料 对应的屏幕列表
-        showScreenListDialog(contentName, id){
-            this.contentName = contentName
-            this.contentId = id
+        showScreenListDialog(id){
+            this.contenPackagetId = id
             this.showScreenList = true
             this.getScreenList()
         },
@@ -159,7 +165,7 @@ export default {
         getScreenList(){
             let data = {
                 project: this.$route.params.id,
-                contentId: this.contentId
+                packageId: this.contenPackagetId
             }
             this.tLoading = true
             projectMaterialForScreenList(data).then(res => {

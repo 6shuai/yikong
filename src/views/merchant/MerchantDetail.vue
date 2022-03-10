@@ -143,7 +143,7 @@ export default {
     },
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     @import url('../place/style/place-detail.scss');
 
     .merchant-info{

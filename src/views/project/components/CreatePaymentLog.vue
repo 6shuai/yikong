@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="520px"
-        :title="addParams.id ? '编辑付款记录' : '添加付款记录'"
+        :title="addParams.nonPayment ? '付款' : addParams.id ? '编辑付款记录' : '添加付款记录'"
         :visible.sync="showCreatePaymentLog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -19,6 +19,7 @@
                     :controls="false"
                     v-model="addParams.payment" 
                     :min="0"
+                    :max="addParams.nonPayment"
                     placeholder="付款额"
                 ></el-input-number>
             </el-form-item>
@@ -46,7 +47,6 @@
 
 <script>
 import { projectFinanceCreateLog } from '@/api/project'
-import { dateAddHMS } from '@/utils/index'
 
 export default {
     data(){
@@ -77,13 +77,8 @@ export default {
             this.$refs.addForm.validate((valid) => {
                 if(valid){
                     this.createdLoading = true
-                    let { paymentTime } = this.addParams
-                    let data = {
-                        ...JSON.parse(JSON.stringify(this.addParams)),
-                        paymentTime: dateAddHMS(paymentTime),
-                        contract: this.$store.state.user.projectContractDetail.id
-                    }
-                    projectFinanceCreateLog(data).then(res => {
+                    if(!this.addParams.contract) this.addParams.contract = this.$store.state.user.projectContractDetail.id
+                    projectFinanceCreateLog(this.addParams).then(res => {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showCreatePaymentLog = false 

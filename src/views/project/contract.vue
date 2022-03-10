@@ -135,7 +135,7 @@
                 </el-date-picker>
                 <span v-show="!showEdit">{{ contractParams.contractDate }}</span>
             </el-form-item>
-    
+
             <el-form-item label="合同期:">
                 <el-date-picker
                     v-show="showEdit"
@@ -159,6 +159,47 @@
                     value-format="yyyy-MM-dd">
                 </el-date-picker>
                 <span v-show="!showEdit">{{ contractParams.secondArchiveDate }}</span>
+            </el-form-item>
+
+
+            <el-form-item label="价格体系:">
+                <el-select 
+                    class="w220"
+                    v-show="showEdit"
+                    v-model="contractParams.priceSystem" 
+                    filterable 
+                    style="width: 100%"
+                    placeholder="请选择价格体系"
+                >   
+                    <el-option 
+                        v-for="item in priceTypeData" 
+                        :key="item.id"
+                        :label="item.displayName" 
+                        :value="item.id">
+                        <span style="float: left">{{ item.displayName }}</span>
+                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.description }}</span>
+                    </el-option>
+                </el-select>
+                <span v-show="!showEdit">{{ contractParams.priceSystemName }}</span>
+            </el-form-item>
+
+            <el-form-item label="提成体系:">
+                <el-select 
+                    class="w220"
+                    v-show="showEdit"
+                    v-model="contractParams.commissionSystem" 
+                    filterable 
+                    style="width: 100%"
+                    placeholder="请选择提成体系"
+                >   
+                    <el-option 
+                        v-for="item in CommissionSystemData" 
+                        :key="item.id"
+                        :label="item.displayName" 
+                        :value="item.id">
+                    </el-option>
+                </el-select>
+                <span v-show="!showEdit">{{ contractParams.commissionSystemName }}</span>
             </el-form-item>
     
             <el-form-item :label="showEdit ? '上传合同:' : '合同图片'">
@@ -202,6 +243,8 @@
 import UploadImg from '@/components/Upload/UploadImg'
 import { organizationListProject } from '@/api/user'
 import { projectDetail, projectContractCreate, organizationUser } from '@/api/project'
+import { getPriceTypeList } from '@/api/common'
+import { financeCommissionSystemList } from '@/api/finance'
 import { dateAddHMS } from '@/utils/index'
 
 export default {
@@ -232,6 +275,12 @@ export default {
             // 合同期
             contractTime: [],
 
+            // 价格体系列表
+            priceTypeData: [],
+
+            // 提成体系列表
+            CommissionSystemData: [],
+
             // 提交按钮 loading
             btnLoading: false,
 
@@ -253,6 +302,8 @@ export default {
     mounted() {
         this.getContractDetail()
         this.getGroupList()
+        this.getPriceType()
+        this.getCommissionSystemList()
     },
     methods: {
         // 获取组织列表
@@ -292,6 +343,28 @@ export default {
                 organizationUser({ organizationId: id }).then(res =>{
                     resolve(res.obj)
                 })
+            })
+        },
+
+        // 查询价格体系列表
+        getPriceType(){
+            let p = this.$store.state.user.priceTypeData
+            if(p.length){
+                this.priceTypeData = p
+                return
+            }
+            getPriceTypeList().then(res => {
+                this.priceTypeData = res.obj
+                this.$store.state.user.priceTypeData = res.obj
+            })
+        },
+
+        // 查询提成体系列表
+        getCommissionSystemList(){
+            financeCommissionSystemList().then(res => {
+                if(res.code === this.$successCode){
+                    this.CommissionSystemData = res.obj
+                }
             })
         },
 

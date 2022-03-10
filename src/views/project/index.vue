@@ -1,6 +1,6 @@
 <template>
     <div 
-        class="project-list-wrap app-main-wrap" 
+        class="app-main-wrap" 
         id="app-main-wrap"
     >
         <div class="add-and-search mb10">
@@ -23,45 +23,15 @@
             </div>
         </div>
 
-        <div class="project-list" v-loading="listLoading">
-            <div 
-                class="item" 
-                :style="{ width: placeW }" 
-                v-for="item in resData"
-                :key="item.id"
-                @click="jumpProjectDetail(item.id)"
-            >
-                <el-card shadow="hover">
-                    <div class="name overflow">{{ item.displayName }}</div>
-                    <div class="desc" :title="item.description">{{ item.description }}</div>
-                    <el-tag 
-                        type="primary" 
-                        plain
-                        size="mini"
-                    >
-                        {{ item.clientName }}
-                    </el-tag>
-
-                    <div class="edit" @click.stop="handleShowCreateProject(item)">
-                        <i class="el-icon-edit"></i>编辑
-                    </div>
-                    
-                </el-card>
-            </div>
-        </div>
-        <el-empty v-if="!resData.length && !listLoading" description="暂无项目"></el-empty>
-
-        <el-pagination
-            v-if="resData.length"
-            background
-            :hide-on-single-page="true"
-            layout="total, prev, pager, next, sizes"
-            :current-page="Number(params.pageNo)"
-            :page-size="Number(params.pageSize)"
-            @current-change="handleCurrentChange"
-            @size-change="handleSizeChange"
-            :total="totalCount">
-        </el-pagination>   
+        <!-- 项目列表 -->
+        <project-list
+            :listLoading="listLoading"
+            :resData="resData"
+            :totalCount="totalCount"
+            @getList="getList"
+            @handleShowCreateProject="handleShowCreateProject"
+            @jumpPage="jumpProjectDetail"
+        ></project-list>
         
 
         <create-project ref="createProject"></create-project>
@@ -70,15 +40,15 @@
 </template>
 
 <script>
-import { screenSizeWatch } from '@/mixins'
 import { projectList } from '@/api/project'
+import ProjectList from './components/ProjectList'
 import CreateProject from './components/CreateProject'
 
 export default {
-    components: { 
+    components: {
+        ProjectList, 
         CreateProject
     },
-    mixins: [screenSizeWatch],
     data(){
         return{
             resData: [],
@@ -95,7 +65,13 @@ export default {
     },
     methods: {
         // 项目列表
-        getList(){
+        getList(data){
+            if(data) {
+                this.params = {
+                    ...data,
+                    ...this.params
+                }
+            }
             this.listLoading = true
             projectList(this.params).then(res => {
                 this.listLoading = false
@@ -113,21 +89,9 @@ export default {
         },
 
         // 跳转项目详情
-        jumpProjectDetail(id){
+        jumpProjectDetail({id}){
             this.$router.push(`/project/${id}`)
-        },
-
-        // 分页
-        handleCurrentChange(page){
-            this.params.pageNo = page
-            this.getList()
-        },
-
-        // 每页多少条
-        handleSizeChange(size){
-            this.params.pageSize = size
-            this.getList()
-        },
+        },  
 
         // 搜索
         handleSearch(){
@@ -137,61 +101,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-    .project-list-wrap{
-        .project-list{
-            display: flex;
-            flex-wrap: wrap;
-            margin-left: -10px;
-
-            .item{
-                cursor: pointer;
-
-                .el-card{
-                    margin: 10px;
-                    position: relative;
-
-                    .el-card__body{
-                        padding: 0;
-                        margin: 20px 20px 15px;
-                    }
-                    
-                    .desc{
-                        font-size: 12px;
-                        color: #999;
-                        line-height: 14px;
-                        height: 14px;
-                        overflow: hidden;
-                        margin: 10px 0;
-                    }
-
-                    .edit{
-                        font-size: 14px;
-                        position: absolute;
-                        right: 0;
-                        bottom: 0px;
-                        height: 30px;
-                        line-height: 30px;
-                        padding: 0 20px;
-                        text-align: center;
-                        color: #999;
-                        background: #f9fafcd1;
-                        display: none;
-
-                        &:hover{
-                            color: var(--color-primary);
-                        }
-                    }
-
-                }
-
-                &:hover{
-                    .edit{
-                        display: block;
-                    }
-                }
-            }
-        }
-    }
-</style>

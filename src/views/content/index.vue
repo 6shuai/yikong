@@ -122,7 +122,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .content-list-wrap{
         .content-top{
             padding-bottom: 20px;

@@ -159,7 +159,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .res-auth-group-list{
         .el-table{
             width: 100%;

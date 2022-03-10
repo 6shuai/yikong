@@ -504,7 +504,7 @@ export default {
 	},
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
 .add-pond-drawer {
 	.el-drawer__body {
 		height: calc(100% - 80px);

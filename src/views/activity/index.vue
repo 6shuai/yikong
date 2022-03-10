@@ -227,7 +227,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .activity-list {
     .coupon-right{
         float: right;

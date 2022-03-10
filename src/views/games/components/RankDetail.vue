@@ -205,7 +205,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .rank-detail-data{
         .el-input-number{
             width: 200px;

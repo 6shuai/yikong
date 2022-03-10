@@ -207,7 +207,7 @@ export default {
     }
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .layout-detail{
         .rectangle-wrap{
             border: 5px solid #000;

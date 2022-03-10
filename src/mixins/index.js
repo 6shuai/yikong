@@ -28,6 +28,7 @@ export const screenSizeWatch = {
     data(){
         return {
             placeW: '25%',                      //卡片宽度
+            cardWidth: null,
             imageH: 170,                        //卡片 图片高度
         }
     },
@@ -66,6 +67,7 @@ export const screenSizeWatch = {
                 _this.placeW = '100%';
                 _this.imageH = parseInt((width / 1) / 1.7);
             }
+            _this.cardWidth = Number(_this.placeW.split('%')[0]) / 100 * width - 20
         });
     },
 }

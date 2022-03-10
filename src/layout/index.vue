@@ -62,7 +62,7 @@ export default {
 		}
 	},
 	created() {
-		this.$store.state.settings.showMenu = localStorage.showMenu
+		this.$store.state.settings.showMenu = JSON.parse(localStorage.showMenu)
 	},
 	methods: {
 		handleClickOutside() {

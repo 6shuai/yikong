@@ -118,7 +118,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .timeline-content-edit{
         .screen-item{
             width: 100%;

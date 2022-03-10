@@ -216,7 +216,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .timeline-add-wrap{
         .el-input{
             width: 100%;

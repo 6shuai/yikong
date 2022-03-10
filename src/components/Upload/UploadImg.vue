@@ -217,7 +217,7 @@ export default {
     },
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .upload-image-wrap{
         .header-img{
             width: 100%;

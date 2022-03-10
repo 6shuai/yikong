@@ -58,7 +58,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .left-wrap{
         height: 100%;
         overflow: hidden;

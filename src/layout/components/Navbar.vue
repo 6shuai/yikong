@@ -2,23 +2,28 @@
 	<div 
 		class="navbar"
 		:class="{ 'navbar-dark': !showMenu }"
-	>
-		<hamburger 
-			v-if="showMenu"
-			:is-active="sidebar.opened" 
-			class="hamburger-container" 
-			@toggleClick="toggleSideBar" 
-		/>
+	>	
+		<span v-if="showMenu">
+			<hamburger 
+				:is-active="sidebar.opened" 
+				class="hamburger-container" 
+				@toggleClick="toggleSideBar" 
+			/>
 
-		<img 
-			v-else 
-			class="miniview-logo" 
-			src="../../assets/images/login_logo.png" 
-			alt="小风景"
-			@click="$router.push('/')"
-		>
+			<breadcrumb class="breadcrumb-container" />
+		</span>
 
-		<breadcrumb class="breadcrumb-container" />
+		<span class="page-title" v-else>
+			<img  
+				class="miniview-logo" 
+				src="../../assets/images/login_logo.png" 
+				alt="小风景"
+				@click="goToHomePage"
+			>
+			<span>{{ $route.meta.title }}</span>
+		</span>
+
+
 
 		<div class="right-menu">
 			<el-dropdown class="avatar-container" trigger="click">
@@ -73,6 +78,11 @@ export default {
 			this.$router.push(`/login?redirect=${this.$route.fullPath}`);
 			location.reload()
 		},
+
+		// 跳转到首页
+		goToHomePage(){
+			this.$router.push(localStorage.homeRoute)
+		}
 	},
 };
 </script>
@@ -94,6 +104,12 @@ export default {
 
 		.el-breadcrumb__inner a {
 			color: #fff;
+		}
+
+		.page-title{
+			line-height: 72px;
+			color: #fff;
+
 		}
 	}
 

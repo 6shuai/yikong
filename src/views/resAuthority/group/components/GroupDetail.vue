@@ -221,7 +221,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .group-member-list{
         .el-drawer__header{
             margin-bottom: 10px;

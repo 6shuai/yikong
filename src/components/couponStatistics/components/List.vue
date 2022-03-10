@@ -410,7 +410,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .statistics-list {
 	.statisics-tag{
 		text-align: right;

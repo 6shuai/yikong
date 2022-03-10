@@ -1,3 +1,11 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2020-11-18 17:44:12
+ * @LastEditors: liushuai
+ * @LastEditTime: 2022-03-01 15:36:15
+ * @Description: file content
+ * @FilePath: \pclient\src\views\timeline\components\CreatedStep.vue
+-->
 <template>
     <!-- 新建步骤 -->
     <el-dialog
@@ -11,45 +19,8 @@
     >
         <el-form label-width="80px">
             <el-form-item label="选择屏幕布局模板" class="is-required">
-                <ul class="temp-list clearfix" v-loading="tempLoading">
-                    <li 
-                        v-for="(item, index) in tempList" 
-                        :key="index"
-                        :class="{active: item.id==tempId}"
-                        @click="handleSelected(item)"
-                        :title="item.displayName"
-                    >
-                        <div class="layout-warp">
-                            <div 
-                                class="temp-layout"
-                                :style="{
-                                    width: item.height > item.width ? item.width / item.height * 100 + 'px' : '100px',
-                                    height: item.height > item.width ? '100px' : item.height / item.width * 100 + 'px'
-                                }"
-                            >
-                                <div 
-                                    class="item" 
-                                    v-for="sub in item.logicRegionSubs" 
-                                    :key="sub.id"
-                                    :style="{
-                                        width: sub.percentageWidth + '%',
-                                        height: sub.percentageHeight + '%',
-                                        top: sub.percentageY + '%',
-                                        left: sub.percentageX + '%'
-                                    }"
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="title">{{item.displayName}}</div>
-                    </li>
-                    <li 
-                        class="created-temp"
-                        @click="$router.push('/screen/layout/add')"
-                    >   
-                        <i class="el-icon-right"></i>
-                        <p>去创建布局模板</p>
-                    </li>
-                </ul>
+
+                <screen-layout-template-list @layoutTemplateSelected="layoutTemplateSelected"></screen-layout-template-list>
 
             </el-form-item>
         </el-form>
@@ -65,49 +36,29 @@
     </el-dialog>
 </template>
 <script>
-import { timelineStageTempList, timelineStageStepCreated } from '@/api/timeline';
+import { timelineStageStepCreated } from '@/api/timeline';
+import ScreenLayoutTemplateList from '@/views/screenLayout/components/ScreenLayoutTemplateList'
+
 export default {
+    components: {
+        ScreenLayoutTemplateList
+    },
     data(){
         return{
             showCreatedStep: false,
             stepParams: {},
             createdLoading: false,
-            tempId: undefined,
-            tempList: [],
-            tempLoading: true
         }
     },
     methods: {
         showDialog(id){
-            this.tempId = undefined;
             this.stepParams.phaseId = id;
             this.showCreatedStep = true;
-            this.layoutTempList();
         },
 
-        //屏幕布局模板
-        layoutTempList(){
-            this.tempLoading = true;
-            timelineStageTempList().then(res => {
-                this.tempLoading = false;
-                if(res.code === this.$successCode){
-                    this.tempList = res.obj;
-                }
-            })
-        },
         
         //选择模板
-        handleSelected(data){
-            this.tempId = data.id;
-            let timelineRegions = [];
-            let { width, height } = this.$store.state.timeline.screenSize;
-
-            data.logicRegionSubs.forEach((item, index) => {
-                timelineRegions.push({
-                    regionSubId: item.id
-                })
-            })
-
+        layoutTemplateSelected(timelineRegions){
             this.stepParams = {
                 ...this.stepParams,
                 timelineRegions
@@ -133,64 +84,11 @@ export default {
     },
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .created-step-wrap{
         .el-radio{
             margin-top: 15px;
             display: block;
-        }
-        .temp-list{
-            display: flex;
-            flex-wrap: nowrap;
-            li{
-                margin-right: 10px;
-                margin-bottom: 20px;
-                width: 120px;
-                height: 140px;
-                padding: 10px;
-                text-align: center;
-                border: 1px solid #e5e5e5;
-                border-radius: 4px;
-                cursor: pointer;
-
-                &.created-temp{
-                    color: #fc5185;
-                    i{
-                        font-size: 22px;
-                    }
-                }
-
-                &:hover{
-                    border-color: #6a2c70;
-                }
-
-                &.active{
-                    border-color: #6a2c70;
-                }
-
-                .layout-warp{
-                    width: 100px;
-                    height: 100px;
-                    .temp-layout{
-                        display: block;
-                        height: 100px;
-                        position: relative;
-                        border: 1px solid #ffdc93;
-                        margin: 0 auto;
-                        .item{
-                            position: absolute;
-                            border: 1px solid #ff2e63;
-                        }
-                    }
-                }
-
-                .title{
-                    line-height: 20px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-            }
         }
     }
 </style>

@@ -249,7 +249,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .game-add-wrap{
         .select-merchant{
             width: 200px;

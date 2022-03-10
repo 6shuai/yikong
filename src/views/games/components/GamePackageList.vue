@@ -262,7 +262,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .game-desc-search {
     float: right;
 }

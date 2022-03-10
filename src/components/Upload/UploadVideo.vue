@@ -132,7 +132,7 @@ export default {
     },
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .upload-video-wrap{
         position: relative;
 

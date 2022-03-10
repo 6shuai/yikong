@@ -270,7 +270,7 @@ export default {
     }
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
 @import "../../../styles/variables.scss";
 @import "../../content/style/content-details.scss";
 .games-details {

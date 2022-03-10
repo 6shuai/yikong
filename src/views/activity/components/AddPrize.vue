@@ -210,7 +210,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .add-prize-dialog {
         .symbol {
             color: #d92027;

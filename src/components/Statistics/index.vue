@@ -49,7 +49,7 @@ export default {
 </script>
 
 
-<style lang="scss" scope>
+<style lang="scss">
     .statistics-list{
         .statistics-header-right{
             float: right;

@@ -86,6 +86,9 @@ export default {
         CreateInvoice,
         FinanceDuty
     },
+    props: {
+        contract: Number
+    },
     data(){
         return {
             activeName: 'detail',
@@ -105,7 +108,7 @@ export default {
     methods: {
         // 获取财务信息
         getFinanceInfo(){
-            let id = this.$store.state.user.projectContractDetail.id
+            let id = this.contract || this.$store.state.user.projectContractDetail.id
             if(!id) return
             this.dataLoading = true
             projectFinanceInfo({ contract: id }).then(res => {

@@ -511,7 +511,7 @@ export default {
     },
 };
 </script>
-<style lang="scss" scope>
+<style lang="scss">
 .screen-layout {
     height: 100%;
     padding-bottom: 10px;

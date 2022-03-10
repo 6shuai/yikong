@@ -405,7 +405,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .screen-add-wrap{
         .edit-btn{
             line-height: 1;

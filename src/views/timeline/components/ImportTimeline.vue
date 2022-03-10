@@ -236,7 +236,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 @import "../../../styles/variables.scss";
 .import-timeline-list {
 	&.timeline-wrap {

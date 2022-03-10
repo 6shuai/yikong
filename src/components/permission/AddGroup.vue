@@ -101,7 +101,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .add-auth-group-wrap{
         .el-checkbox{
             margin-bottom: 10px;

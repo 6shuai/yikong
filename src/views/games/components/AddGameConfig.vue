@@ -330,7 +330,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .add-game-data {
     .el-form-item__content {
         // width: 200px;

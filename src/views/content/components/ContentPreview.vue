@@ -90,7 +90,7 @@ export default {
     },
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .content-preview{
         width: 100%;
         height: 100%;

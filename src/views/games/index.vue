@@ -125,7 +125,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .games-list-wrap{
         .place-content{
             min-height: 100px;

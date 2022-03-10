@@ -91,9 +91,13 @@
 
 <script>
 import { screenPlayContentPlayDetail } from '@/api/screen'
+import { projectMaterialPlayDetail } from '@/api/project'
 import qs from "qs"
 
 export default {
+    props: {
+        source: String
+    },
     data(){
         return {
             tLoading: false,
@@ -119,7 +123,16 @@ export default {
                 disabledDate(time) {
                     return time.getTime() > Date.now();
                 }
-            }
+            },
+
+            // 获取播放明细 接口
+            getPlayDetail: screenPlayContentPlayDetail
+        }
+    },
+    mounted() {
+        // 项目物料 查看播放详情 用这个接口
+        if(this.source == 'project'){
+            this.getPlayDetail = projectMaterialPlayDetail
         }
     },
     methods: {
@@ -140,7 +153,7 @@ export default {
         //获取播放次数列表
         getScreenTimeline(){
             this.tLoading = true
-            screenPlayContentPlayDetail(this.params).then(res => {
+            this.getPlayDetail(this.params).then(res => {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     let { list, totalRecords } = res.obj

@@ -112,7 +112,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .atlas-content-list{
         .search-wrap{
             margin-bottom: 10px;

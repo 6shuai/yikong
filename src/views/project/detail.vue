@@ -1,6 +1,6 @@
 <template>
     <div class="contract-wrap app-main-wrap">
-            <el-card v-loading="dataLoading"> 
+        <el-card v-loading="dataLoading"> 
 
             <div class="project-introduce">
                 <el-page-header 

@@ -290,7 +290,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .system-member-wrap{
         .card-header-right{
             float: right; 

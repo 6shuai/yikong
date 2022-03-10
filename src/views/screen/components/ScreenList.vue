@@ -87,18 +87,7 @@ export default {
             }
         }
         .place-img{
-            .status{
-                position: absolute;
-                top: 0;
-                left: 0;
-                border-radius: 0;
-                border-bottom-right-radius: 6px;
-                &.ing{
-                    background-color: #adadad;
-                    border-color: #adadad;
-                }
-            }
-
+            
             .screen-code{
                 position: absolute;
                 bottom: 0;

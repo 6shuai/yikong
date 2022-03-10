@@ -172,7 +172,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .organizations-list-wrap{
         .operation-item{
             display: inline-block;

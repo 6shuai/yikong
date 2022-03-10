@@ -53,7 +53,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
     .search-list-wrap{
         .search-list{
             padding-bottom: 10px;

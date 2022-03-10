@@ -324,7 +324,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     .place-add-wrap{
         .contact-wrap{
             li{

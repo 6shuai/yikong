@@ -196,7 +196,7 @@ export default {
 </script>
 
 
-<style lang="scss" scope>
+<style lang="scss">
     .log_detail{
         max-width: 100%;
         cursor: pointer;

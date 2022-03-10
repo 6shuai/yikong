@@ -1,6 +1,6 @@
 <template>
     <div class="home-wrap">
-        <div class="role" v-if="!currentRoleHomePageData.length">
+        <div class="role">
             <!-- 多个角色情况  要先选择角色进入 -->
 
             <h3 class="role-tip">请选择一个角色进入首页</h3>
@@ -16,7 +16,7 @@
         </div>
 
         <!-- 根据角色显示对应的权限页面 入口列表 -->
-        <div class="entrance" v-else>
+        <!-- <div class="entrance" v-else>
             <el-card class="entrance-list">
                 <div 
                     class="entrance-page"
@@ -43,7 +43,7 @@
                     {{ sub.displayName }}
                 </div>
             </el-card>
-        </div>
+        </div> -->
 
     </div>
 </template>
@@ -82,11 +82,14 @@ export default {
             if(data.id === 1){
                 this.$store.commit('settings/SET_SHOW_MENU', true)
                 this.$router.push('/project')
+            }else{
+                this.$router.push(data.frontRoute)
             }
             
             this.$store.state.user.currentRoleHomePageData = data.authorities
             this.currentRoleHomePageData = data.authorities
             localStorage.currentRoleHomePageData = JSON.stringify(data.authorities)
+            localStorage.homeRoute = data.frontRoute.replace(/(^[\s\n\t]+|[\s\n\t]+$)/g, "" )
         },
 
         // 点击跳转页面按钮
@@ -112,6 +115,7 @@ export default {
             
             &-list{
                 display: flex;
+                flex-wrap: wrap;
                 justify-content: center;
                 
                 .el-card{

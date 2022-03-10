@@ -74,21 +74,35 @@
             <el-table-column 
                 prop="image" 
                 label="缩略图" 
-                min-width="100"
+                width="200"
             >
                 <template slot-scope="scope">
-                    <el-image 
-                        fit="cover" 
-                        :src="scope.row.image"
-                        style="height: 50px"
-                    ></el-image>
+
+                    <screen-layout 
+                        :screen="scope.row" 
+                        :maxWidth="180"
+                        :showBorder="false"
+                    >
+                        <template v-slot="dataDefalut">
+                        
+                            <img 
+                                class="content-image"
+                                :src="dataDefalut.data.image" 
+                            >
+                        </template>
+                    </screen-layout>
+
                 </template>
             </el-table-column>
             <el-table-column 
                 prop="displayName" 
                 label="内容" 
                 min-width="120"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    <p v-for="(item, index) in scope.row.materialInfo">{{ item.displayName }}</p>
+                </template>
+            </el-table-column>
             <el-table-column 
                 prop="begin" 
                 label="播放时间" 
@@ -117,8 +131,12 @@
 <script>
 import { screenTimelineData } from '@/api/screen'
 import { projectList } from '@/api/project'
+import ScreenLayout from '@/views/screenLayout/components/ScreenLayout'
 
 export default {
+    components: {
+        ScreenLayout
+    },
     data(){
         return {
             tLoading: false,

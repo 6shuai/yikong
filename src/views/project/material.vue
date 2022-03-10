@@ -22,6 +22,16 @@
 
         </div>
 
+        <el-pagination
+            v-if="resData.length"
+            background
+            layout="total, prev, pager, next"
+            :current-page="Number(params.pageNo)"
+            :page-size="Number(params.pageSize)"
+            @current-change="handleCurrentChange"
+            :total="totalCount">
+        </el-pagination>    
+
         
         <div class="place-content mt20">
             <div class="place-box" v-loading="tLoading">
@@ -30,23 +40,54 @@
                     :style="{width: placeW}" 
                     v-for="(item, index) in resData" 
                     :key="item.id"
-                    @click="$refs.materialScreen.showScreenListDialog(item.contentName, item.content)"
+                    @click="$refs.materialScreen.showScreenListDialog(item.packageId)"
                 >
                     <el-card 
                         class="place-list" 
                         shadow="always"
                     >      
+
                         <el-button
                             class="info-btn"
                             type="info"
                             size="small"
+                            title="点击查看上刊明细"
                         >上刊明细</el-button>
                         <div class="place-img" 
                             :style="{height: imageH+'px'}">
-                            <el-image fit="cover" :src="item.image" class="image" :style="{height: imageH+'px'}"></el-image>   
-                        </div>
-                        <div class="content-name overflow">
-                            {{ item.contentName }}
+                            <!-- <el-image fit="cover" :src="item.image" class="image" :style="{height: imageH+'px'}"></el-image>    -->
+
+                            <!-- 审核状态 -->
+                            <div class="screen-state" title="审核状态">
+                                <el-tag
+                                    class="status" 
+                                    :class="{ing: item.state == '待审核'}"
+                                    :type="item.state == '待审核' ? '' : item.state == '已通过'|| item.state =='部分通过' ? 'success' : 'warning'" 
+                                    effect="dark"
+                                >{{ item.state }}</el-tag>
+                            </div>
+
+
+                            <screen-layout 
+                                :screen="item" 
+                                :maxWidth="cardWidth"
+                                :showBorder="false"
+                            >
+                                <template v-slot="dataDefalut">
+                                
+                                    <img 
+                                        class="content-image"
+                                        :src="dataDefalut.data.image" 
+                                        :title="dataDefalut.data.displayName"
+                                    >
+
+                                    <div class="content-detail" :title="dataDefalut.data.displayName">
+                                        <p>{{ dataDefalut.data.displayName }}</p>
+                                    </div>
+
+                                </template>
+                            </screen-layout>
+
                         </div>
                     </el-card>
                 </div>
@@ -86,11 +127,13 @@ import { dateAddHMS } from '@/utils/index'
 import { screenSizeWatch } from '@/mixins'
 import CreateMaterial from './components/CreateMaterial'
 import MaterialScreen from './components/MaterialScreen'
+import ScreenLayout from '@/views/screenLayout/components/ScreenLayout'
 
 export default {
     components: { 
         CreateMaterial,
-        MaterialScreen
+        MaterialScreen,
+        ScreenLayout
     },
     mixins: [screenSizeWatch],
     data() {
@@ -153,7 +196,7 @@ export default {
     }
 }
 </script>
-<style lang="scss" scope>
+<style lang="scss">
     @import '../place/style/place-card.scss';
 
     .material-wrap{
@@ -169,6 +212,12 @@ export default {
                 right: 10px;
                 top: 10px;
                 z-index: 999;
+            }
+
+            .place-img{
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
     }

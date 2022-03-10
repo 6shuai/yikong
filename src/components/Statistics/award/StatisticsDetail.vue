@@ -127,7 +127,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss">
 .statistics-detail {
     .statistics-tool {
         text-align: right;

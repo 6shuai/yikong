@@ -21,27 +21,13 @@
                         @click="handleSelected(item)"
                         :title="item.displayName"
                     >
-                        <div class="layout-warp">
-                            <div 
-                                class="temp-layout"
-                                :style="{
-                                    width: item.height > item.width ? item.width / item.height * 100 + 'px' : '100px',
-                                    height: item.height > item.width ? '100px' : item.height / item.width * 100 + 'px'
-                                }"
-                            >
-                                <div 
-                                    class="item" 
-                                    v-for="sub in item.logicRegionSubs" 
-                                    :key="sub.id"
-                                    :style="{
-                                        width: sub.percentageWidth + '%',
-                                        height: sub.percentageHeight + '%',
-                                        top: sub.percentageY + '%',
-                                        left: sub.percentageX + '%'
-                                    }"
-                                ></div>
-                            </div>
-                        </div>
+
+                        <screen-layout 
+                            :screen="item" 
+                            :maxWidth="100"
+                        >
+                        </screen-layout>
+
                         <div class="title">{{item.displayName}}</div>
                     </li>
                     <li 
@@ -107,9 +93,14 @@
 </template>
 
 <script>
-import { timeDisposeTool } from '@/mixins';
-import { timelineStageTempList, timelineStageCreated } from '@/api/timeline';
+import { timeDisposeTool } from '@/mixins'
+import { timelineStageTempList, timelineStageCreated } from '@/api/timeline'
+import ScreenLayout from '@/views/screenLayout/components/ScreenLayout'
+
 export default {
+    components: {
+        ScreenLayout
+    },
     mixins: [timeDisposeTool],
     props: ['startTime'],
     data() {
@@ -229,7 +220,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
     .timeline-create-stage{
         .temp-list{
             display: flex;
@@ -258,22 +249,6 @@ export default {
 
                 &.active{
                     border-color: #6a2c70;
-                }
-
-                .layout-warp{
-                    width: 100px;
-                    height: 100px;
-                    .temp-layout{
-                        display: block;
-                        height: 100px;
-                        position: relative;
-                        border: 1px solid #ffdc93;
-                        margin: 0 auto;
-                        .item{
-                            position: absolute;
-                            border: 1px solid #ff2e63;
-                        }
-                    }
                 }
 
                 .title{

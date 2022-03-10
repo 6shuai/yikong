@@ -3,6 +3,7 @@
         class="create-material-wrap"
         width="1200px"
         title="物料投放"
+        v-if="showCreateMaterial"
         :visible.sync="showCreateMaterial"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -10,34 +11,20 @@
         append-to-body
     >
 
-        <!-- 选择内容 -->
-        <material-select-content 
-            ref="selectContent"
-            @selectResult="selectResult"
-        ></material-select-content>
-
-        <!-- 新建内容 -->
-        <material-add-content 
-            ref="addContent"
-            @selectResult="selectResult"
-        ></material-add-content>
-
         <el-empty 
             v-if="!screenData.publishedPlaceholders || !screenData.publishedPlaceholders.length"
             description="暂无锁位信息"
         ></el-empty>
         <el-row v-else>
-
-            <el-col :span="9">
+            
+            <el-col :span="24">
                 <h3>物料</h3>
-                <div class="select-content">
-                    <span @click="handleSelectContent">选择物料</span>
-                    <span @click="handleAddContent">新建物料</span>
-                </div>
-                <div class="content-preview" v-show="addParams.content">
-                    <p>{{ addParams.displayName }}</p>
-                    <el-image fit="cover" :src="addParams.image"></el-image>
-                </div>
+
+                <!-- 选择屏幕布局模板 -->
+                <material-select-screen-layout
+                    @setScreenLayoutData="setScreenLayoutData"
+                    :selectedScreenDuration="selectedScreen[0] ? selectedScreen[0].materialDuration : null"
+                ></material-select-screen-layout>
 
                 <!-- 播放限制 -->
                 <div 
@@ -91,7 +78,7 @@
 
             <el-col 
                 class="screen-list"
-                :span="15">
+                :span="24">
                 <h3>投放屏幕</h3>
                 <div class="total-price mb20">
                     <el-tag type="primary">总刊例价: {{ screenData.totalPrice }}</el-tag>
@@ -108,7 +95,8 @@
                 <div 
                     class="item"
                     v-for="(item, index) in screenData.publishedPlaceholders"
-                    :key="index"
+                    :key="item.id"
+                    v-show="(!selectedScreen[0] ? true : selectedScreen[0].materialDuration == item.materialDuration ?  true : false) && (item.materialDuration == contentDuration || !contentDuration)"
                     @click.stop="item.selected = !item.selected;handleChangeScreen(item, index)"
                     :class="{ active: item.selected }"
                 >
@@ -133,7 +121,6 @@
         <span slot="footer" class="dialog-footer">
             <el-button @click="showCreateMaterial = false">取 消</el-button>
             <el-button
-                :disabled="(selectedScreen && selectedScreen.length && addParams.content) ? false : true"
                 type="primary"
                 :loading="createdLoading"
                 @click="handleCreate"
@@ -146,13 +133,11 @@
 <script>
 import { projectMaterialCreate, projectLockPositionList } from '@/api/project'
 import { dateAddHMS, findTimeHasYtd } from '@/utils/index'
-import MaterialSelectContent from './MaterialSelectContent'
-import MaterialAddContent from './MaterialAddContent'
+import MaterialSelectScreenLayout from './MaterialSelectScreenLayout'
 
 export default {
     components: {
-        MaterialSelectContent,
-        MaterialAddContent
+        MaterialSelectScreenLayout
     },
     data(){
         return {
@@ -169,8 +154,8 @@ export default {
             // 选中的屏幕index
             selectedIndex: [],
 
-            // 点击了第几个内容的   选择或新建内容
-            clickContentIndex: null,
+            // 已选择的物料时长
+            contentDuration: null
         }
     },
     methods: {
@@ -201,66 +186,56 @@ export default {
                 this.selectedScreen.push(data)
                 this.selectedIndex.push(index)
             }
-            
+        },
+
+        // 设置屏幕逻辑区域内容
+        setScreenLayoutData(data, contentDuration){
+            // 已选择的物料时长
+            this.contentDuration = contentDuration
+            this.addParams = data
         },
 
 
         // 新建物料
         handleCreate(){
-            
             if(!this.selectedScreen.length){
                 this.$message.warning('还没选择屏幕呢~')
                 return
-            }else if(!this.addParams.content){
-                this.$message.warning('还有内容没选择~')
+            }else if(!this.addParams.publishedMaterialRegions || !this.addParams.publishedMaterialRegions.length){
+                this.$message.warning('你咋没投放物料呢~')
                 return
             }
 
-            let data = []
+            for(let j = 0; j < this.addParams.publishedMaterialRegions.length; j++){
+                if(!this.addParams.publishedMaterialRegions[j].contentId){
+                    this.$message.warning('你咋没投放物料呢~')
+                    return
+                }
+            }
+
+            
+            // 已选择的屏幕 id
+            let publishedMaterialMedias = []
             for(let i = 0; i < this.selectedScreen.length; i++){
-                let { screen, fromTimeFormat, toTimeFormat, publishedTimes, id } = this.selectedScreen[i]
-                data.push({
-                    screen,
-                    publishedTimes,
-                    effectiveTime: fromTimeFormat,
-                    dueTime: toTimeFormat,
-                    project: Number(this.$route.params.id),
-                    placeholderId: id,
-                    content: this.addParams.content
+                let { id } = this.selectedScreen[i]
+                publishedMaterialMedias.push({
+                    placeholderId: id
                 })
             }
 
+            this.addParams.publishedMaterialMedias = publishedMaterialMedias
+
             this.createdLoading = true
-            projectMaterialCreate(data).then(res => {
+            projectMaterialCreate(this.addParams).then(res => {
                 this.createdLoading = false
                 if(res.code === this.$successCode){
-                    this.$message.success('提交成功~')
+                    this.$message.success(res.message)
                     this.showCreateMaterial = false
                     this.$emit('createMaterialSuccess')
                 }
             }) 
         },
 
-
-        // 打开选择内容 窗口
-        handleSelectContent(){
-            this.$refs.selectContent.showSelectContentDialog()
-        },
-
-        // 显示选中的内容
-        selectResult({ id, displayName, image }){
-            this.addParams = {
-                ...this.addParams,
-                content: id,
-                displayName,
-                image
-            }
-        },
-
-        // 打开新建内容 窗口
-        handleAddContent(){
-            this.$refs.addContent.showCreateContent = true
-        },
 
         formDataEvent(val){
             return dateAddHMS(val)
@@ -285,8 +260,9 @@ export default {
         }
 
         .screen-list{
-            border-left: 1px solid #e5e5e5;
-            padding-left: 10px;
+            padding-top: 20px;
+            margin-top: 40px;
+            border-top: 1px solid #e5e5e5;
 
             .item{
                 display: flex;
@@ -316,7 +292,7 @@ export default {
                     text-align: center;
 
                     &.screen{
-                        width: 200px;
+                        width: 300px;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
@@ -324,11 +300,11 @@ export default {
                     }
 
                     &.duration, &.play-count, &.count{
-                        width: 80px;
+                        width: 150px;
                     }
 
                     &.start-time, &.end-time{
-                        width: 100px;
+                        width: 180px;
                     }
 
                     &.radio{
@@ -350,44 +326,32 @@ export default {
             }
         }
 
+
+        .select-screen-layout{
+            text-align: center;
+            cursor: pointer;
+        }
+
         .select-content{
-            width: 200px;
-            display: flex;
-            border: 1px dashed var(--color-primary);
+            line-height: 30px;
+            border: 1px dashed var(--color-danger);
             border-radius: 4px;
-            margin: 10px auto;
 
             span{
                 width: 100px;
+                display: block;
                 text-align: center;
-                line-height: 30px;
-                color: var(--color-primary);
+                color: var(--color-danger);
                 cursor: pointer;
 
                 &:first-child{
-                    border-right: 1px dashed var(--color-primary);
+                    border-bottom: 1px dashed var(--color-danger);
                 }
 
                 &:hover{
-                    background: var(--color-primary);
+                    background: var(--color-danger);
                     color: #fff;
                 }
-            }
-        }
-
-        .content-preview{
-            margin-right: 10px;
-            text-align: center;
-
-            p{
-                font-size: 16px;
-                line-height: 20px;
-                padding: 10px 0;
-            }
-            
-            .el-image{
-                width: 100%;
-                border-radius: 4px;
             }
         }
     }

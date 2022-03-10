@@ -6,6 +6,7 @@ import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 import { getAuthMenu } from "@/api/user";
 import { filterAsyncRouter } from './store/modules/permission'
+import nprogress from 'nprogress'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -22,9 +23,12 @@ router.beforeEach((to, from, next) => {
 		if (to.path === '/login' || to.path === '/register') {
 			next({ path: '/' })
 			NProgress.done()
-		}if(to.path === '/' && store.state.settings.showMenu){
+		}else if(to.path === '/' && store.state.settings.showMenu){
 			next({ path: '/project' })
 			NProgress.done()
+		}else if(to.path === '/' && localStorage.homeRoute){
+			next(localStorage.homeRoute)
+			nprogress.done()
 		}else {
 			if(!store.state.permission.addRoutes.length){
 				getAuthMenu().then(res => {
