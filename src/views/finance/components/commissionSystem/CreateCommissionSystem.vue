@@ -16,8 +16,8 @@
 
         <div class="system-rule-list">
             <div class="item">
-                <span>折扣下线</span>
-                <span>折扣上线</span>
+                <span>折扣下限</span>
+                <span>折扣上限</span>
                 <span>提成</span>
                 <span>操作</span>
             </div>
@@ -28,7 +28,7 @@
             >
                 <span>
                     <el-input
-                        placeholder="折扣下线"
+                        placeholder="折扣下限"
                         type="number"
                         v-model="item.discountLowerLimit"
                     >
@@ -39,7 +39,7 @@
                 </span>
                 <span>
                     <el-input
-                        placeholder="折扣上线"
+                        placeholder="折扣上限"
                         type="number"
                         v-model="item.discountUpperLimit"
                     >

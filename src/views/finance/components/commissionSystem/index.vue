@@ -28,55 +28,66 @@
         </div>
 
         <div class="commission-system-detail">
+            <div v-if="resData.length">
+                <div class="add-and-search mb10">
+                    <el-button 
+                        type="primary" 
+                        icon="el-icon-edit" 
+                        @click="handleEditCommissionSystem"
+                        size="small">
+                        编辑提成体系
+                    </el-button>
 
-            <div class="add-and-search mb10">
-                <el-button 
-                    type="primary" 
-                    icon="el-icon-edit" 
-                    @click="handleEditCommissionSystem"
-                    size="small">
-                    编辑提成体系
-                </el-button>
+                    <el-button 
+                        type="danger" 
+                        icon="el-icon-delete" 
+                        @click="handleDeleteCommissionSystem"
+                        size="small">
+                        删除
+                    </el-button>
+                </div>
+    
+                <el-table
+                    class="mt20 mb20"
+                    v-if="resData[currentIndex]"
+                    stripe
+                    size="small"
+                    :data="resData[currentIndex].commissionRules"
+                    row-key="id"
+                    v-loading="tLoading"
+                    border>
+                    <el-table-column 
+                        prop="discountLowerLimit" 
+                        label="折扣下限(包含此值)" 
+                        min-width="100"
+                    >
+                        <template slot-scope="scope">
+                            {{ scope.row.discountLowerLimit }} %
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                        prop="discountUpperLimit" 
+                        label="折扣上限(不包含此值)" 
+                        min-width="100"
+                    >
+                        <template slot-scope="scope">
+                            {{ scope.row.discountUpperLimit }} %
+                        </template>
+                    </el-table-column>
+                    <el-table-column 
+                        prop="percentage" 
+                        label="提成" 
+                        min-width="100"
+                    >
+                        <template slot-scope="scope">
+                            {{ scope.row.percentage }} %
+                        </template>
+                    </el-table-column>
+                    
+                </el-table>
             </div>
 
-            <el-table
-                class="mt20 mb20"
-                v-if="resData[currentIndex]"
-                stripe
-                size="small"
-                :data="resData[currentIndex].commissionRules"
-                row-key="id"
-                v-loading="tLoading"
-                border>
-                <el-table-column 
-                    prop="discountLowerLimit" 
-                    label="折扣下线" 
-                    min-width="100"
-                >
-                    <template slot-scope="scope">
-                        {{ scope.row.discountLowerLimit || '-' }} %
-                    </template>
-                </el-table-column>
-                <el-table-column 
-                    prop="discountUpperLimit" 
-                    label="折扣上线" 
-                    min-width="100"
-                >
-                    <template slot-scope="scope">
-                        {{ scope.row.discountUpperLimit || '-' }} %
-                    </template>
-                </el-table-column>
-                <el-table-column 
-                    prop="percentage" 
-                    label="提成" 
-                    min-width="100"
-                >
-                    <template slot-scope="scope">
-                        {{ scope.row.percentage || '-' }} %
-                    </template>
-                </el-table-column>
-                
-            </el-table>
+            <el-empty v-else></el-empty>
         </div>
 
 
@@ -92,7 +103,7 @@
 </template>
 
 <script>
-import { financeCommissionSystemList } from '@/api/finance'
+import { financeCommissionSystemList, financeCommissionSystemDelete } from '@/api/finance'
 import CreateCommissionSystem from './CreateCommissionSystem'
 
 export default {
@@ -123,6 +134,26 @@ export default {
         // 编辑提成体系
         handleEditCommissionSystem(){
             this.$refs.createCommissionSystem.showCreateSystem(this.resData[this.currentIndex])
+        },
+
+        // 删除提成体系
+        handleDeleteCommissionSystem(){
+            let { displayName, id } = this.resData[this.currentIndex]
+            this.$confirm(`确定要删除[${displayName}]吗?`, '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+            }).then(() => {
+                financeCommissionSystemDelete(`?id=${id}`).then(res => {
+                    if(res.code === this.$successCode){
+                        this.$message.success('删除成功~')
+                        this.$delete(this.resData, this.currentIndex)
+                        this.currentIndex = 0
+                    }
+                })
+            }).catch(() => {
+            })
+            
         },
 
         // 编辑或创建提成体系  成功 有id为编辑  否则为创建
