@@ -9,8 +9,6 @@
             @getList="getList"
             @jumpPage="handleGoMaterialAudit"
         ></project-list>
-
-        <el-empty v-if="!resData.length && !listLoading"></el-empty>
     </div>
 </template>
 

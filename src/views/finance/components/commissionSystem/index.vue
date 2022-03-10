@@ -18,6 +18,7 @@
                 <li 
                     v-for="(item, index) in resData" 
                     :key="item.id"
+                    :title="item.displayName"
                     :class="{ active: index === currentIndex }"
                     @click="currentIndex = index"
                 >
