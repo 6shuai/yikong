@@ -54,7 +54,7 @@
                     min-width="100"
                 >
                     <template slot-scope="scope">
-                        {{ scope.row.discountLowerLimit }} %
+                        {{ scope.row.discountLowerLimit || '-' }} %
                     </template>
                 </el-table-column>
                 <el-table-column 
@@ -63,7 +63,7 @@
                     min-width="100"
                 >
                     <template slot-scope="scope">
-                        {{ scope.row.discountUpperLimit }} %
+                        {{ scope.row.discountUpperLimit || '-' }} %
                     </template>
                 </el-table-column>
                 <el-table-column 
@@ -72,7 +72,7 @@
                     min-width="100"
                 >
                     <template slot-scope="scope">
-                        {{ scope.row.percentage }} %
+                        {{ scope.row.percentage || '-' }} %
                     </template>
                 </el-table-column>
                 
