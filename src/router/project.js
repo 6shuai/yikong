@@ -61,7 +61,37 @@ const projectRoutes = [
             redirect: '/project/contract'
 		}],
 		hidden: true
-	}
+	},
+
+    // 物料投放 审核
+	{
+		path: '/',
+		component: Layout,
+		children: [{
+			path: '/materialAudit',
+			name: 'MaterialAudit',
+			component: () => import('@/views/materialAudit/index'),
+			meta: {
+				title: '物料投放审核'
+			}
+		}],
+		hidden: true
+	},
+
+    // 物料投放 项目视图 -> 物料列表
+	{
+		path: '/',
+		component: Layout,
+		children: [{
+			path: '/materialAudit/list',
+			name: 'MaterialAudit--list',
+			component: () => import('@/views/materialAudit/components/materialList'),
+			meta: {
+				title: '物料投放列表'
+			}
+		}],
+		hidden: true
+	},
 ]
 
 export default projectRoutes
