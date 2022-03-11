@@ -97,7 +97,7 @@ export default {
 <style lang="scss" scoped>
     .temp-list{
         display: flex;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         li{
             margin-right: 10px;
             margin-bottom: 20px;
