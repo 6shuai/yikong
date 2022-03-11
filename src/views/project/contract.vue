@@ -161,6 +161,17 @@
                 <span v-show="!showEdit">{{ contractParams.secondArchiveDate }}</span>
             </el-form-item>
 
+            <el-form-item label="付款截止日期:">
+                <el-date-picker
+                    v-show="showEdit"
+                    v-model="contractParams.paymentDue"
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd">
+                </el-date-picker>
+                <span v-show="!showEdit">{{ contractParams.paymentDue }}</span>
+            </el-form-item>
+
 
             <el-form-item label="价格体系:">
                 <el-select 
