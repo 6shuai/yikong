@@ -165,9 +165,10 @@
                 <el-date-picker
                     v-show="showEdit"
                     v-model="contractParams.paymentDue"
-                    type="date"
+                    type="datetime"
                     placeholder="选择日期"
-                    value-format="yyyy-MM-dd">
+                    format="yyyy-MM-dd HH:mm:ss"
+                    value-format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
                 <span v-show="!showEdit">{{ contractParams.paymentDue }}</span>
             </el-form-item>
@@ -390,7 +391,7 @@ export default {
                         contractDate: dateAddHMS(this.contractParams.contractDate),
                         validBegin: dateAddHMS(this.contractTime[0]),
                         validEnd: dateAddHMS(this.contractTime[1]),
-                        secondArchiveDate: dateAddHMS(this.contractParams.secondArchiveDate)
+                        secondArchiveDate: dateAddHMS(this.contractParams.secondArchiveDate),
                     }
                     projectContractCreate(data).then(res => {
                         this.btnLoading = false
@@ -418,7 +419,7 @@ export default {
         // 获取合同详情
         getContractDetail(){
             let newData = this.$store.state.user.projectContractDetail
-            let { contractDateFormat, validBeginFormat, validEndFormat, secondArchiveDateFormat, firstParty, secondParty } = newData
+            let { contractDateFormat, validBeginFormat, validEndFormat, secondArchiveDateFormat, paymentDueFormat, firstParty, secondParty } = newData
             if(!newData.id) {
                 this.showEdit = true 
             }else{
@@ -431,6 +432,7 @@ export default {
                 validBegin: dateAddHMS(validBeginFormat),
                 validEnd: dateAddHMS(validEndFormat),
                 secondArchiveDate: dateAddHMS(secondArchiveDateFormat),
+                paymentDue: paymentDueFormat,
                 publishedContractPrints: newData.publishedContractPrints || []
             }
 
