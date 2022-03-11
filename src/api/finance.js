@@ -28,8 +28,3 @@ export function financeCommissionSystemList(data) { return get('/finance/commiss
 
 // 创建或编辑  提成体系
 export function financeCommissionSystemCreate(data) { return post('/finance/commissionSystem', data); }
-
-// 删除提成体系
-export function financeCommissionSystemDelete(data) { return del(`/finance/commissionSystem${data}`); }
-
-
