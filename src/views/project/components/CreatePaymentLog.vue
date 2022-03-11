@@ -19,7 +19,7 @@
                     :controls="false"
                     v-model="addParams.payment" 
                     :min="0"
-                    :max="addParams.nonPayment"
+                    :max="nonPayment"
                     placeholder="付款额"
                 ></el-input-number>
             </el-form-item>
@@ -55,6 +55,9 @@ export default {
             createdLoading: false,
             addParams: {},
 
+            // 未付款金额
+            nonPayment: null,
+
             // 表单验证
             addParamsRules: {
                 payment: [{ required: true, message: '请输入付款额~', type: 'number', trigger: 'blur' }],
@@ -64,9 +67,12 @@ export default {
     },
     methods: {
         // 显示新建付款记录窗口
-        showCreatePaymentLogDialog(data = {}){
+        showCreatePaymentLogDialog(data = {}, nonPayment){
             this.addParams = JSON.parse(JSON.stringify(data))
-            console.log(this.addParams)
+            this.nonPayment = nonPayment
+
+            if(data.id) this.nonPayment = this.addParams.payment + this.nonPayment
+            
             this.showCreatePaymentLog = true
             this.$nextTick(() => {
                 this.$refs["addForm"].clearValidate();

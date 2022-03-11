@@ -68,7 +68,7 @@
                         type="primary"
                         size="mini"
                         plain
-                        :disabled="scope.row.nonPayment ? false : true"
+                        :disabled="scope.row.nonPayment > 0 ? false : true"
                         @click="$refs.createPaymentLog.showCreatePaymentLogDialog({
                             contract: scope.row.contract,
                             nonPayment: scope.row.nonPayment

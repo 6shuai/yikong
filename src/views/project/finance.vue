@@ -122,8 +122,8 @@ export default {
         },
 
         // 显示添加付款记录窗口
-        handleAddLog(){
-            this.$refs.createPaymentLog.showCreatePaymentLogDialog({ contract: this.contractId })
+        handleAddLog(data = { contract: this.contractId }){
+            this.$refs.createPaymentLog.showCreatePaymentLogDialog(data, this.paymentInfo.nonPayment)
         },
 
         // 显示添加发票窗口
