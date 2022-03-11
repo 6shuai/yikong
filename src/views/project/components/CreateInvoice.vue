@@ -55,7 +55,6 @@
 
 <script>
 import { projectFinanceCreateInvoice } from '@/api/project'
-import { dateAddHMS } from '@/utils/index'
 import UploadImg from '@/components/Upload/UploadImg'
 
 export default {
@@ -78,6 +77,7 @@ export default {
 
         // 显示新建发票
         showCreateInvoiceDialog(data = {}){
+            console.log('显示新建发票--------->', data)
             this.addParams = JSON.parse(JSON.stringify(data))
             if(data.billingTimeFormat){
                 this.addParams.billingTime = data.billingTimeFormat
@@ -100,11 +100,7 @@ export default {
             this.$refs.addForm.validate((valid) => {
                 if(valid){
                     this.createdLoading = true
-                    let data = {
-                        ...JSON.parse(JSON.stringify(this.addParams)),
-                        contract: this.$store.state.user.projectContractDetail.id
-                    }
-                    projectFinanceCreateInvoice(data).then(res => {
+                    projectFinanceCreateInvoice(this.addParams).then(res => {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showCreateInvoiceLog = false 

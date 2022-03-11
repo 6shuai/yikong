@@ -111,7 +111,7 @@ export default {
             projectFinanceInvoiceDelete(id).then(res => {
                 if(res.code === this.$successCode){
                     this.$message.success('删除成功~')
-                    this.invoiceData.splice(index, 1)
+                    this.invoiceData.publishedInvoices.splice(index, 1)
                 }
             })
         }

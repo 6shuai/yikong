@@ -91,7 +91,7 @@
 </template>
 
 <script>
-import { timelineContentList } from "@/api/timeline"
+import { projectScreenContentList } from "@/api/project"
 
 
 export default {
@@ -131,7 +131,7 @@ export default {
         // 获取内容列表
         getContentData(){
             this.dataLoading = true
-            timelineContentList(this.contentSearchParams).then(res => {
+            projectScreenContentList(this.contentSearchParams).then(res => {
                 this.dataLoading = false
                 if(res.code === this.$successCode){
                     let { list, totalRecords } = res.obj

@@ -125,7 +125,9 @@ export default {
     },
     methods: {
         getCommissionSystemList(){
+            this.tLoading = true
             financeCommissionSystemList().then(res => {
+                this.tLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj
                 }

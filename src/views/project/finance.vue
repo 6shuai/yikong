@@ -51,7 +51,7 @@
             <el-tab-pane label="权责" name="duty">
                 <finance-duty 
                     :dutyData="resData.accrualDetails"
-                    :projectId="Number($route.params.id)"
+                    :projectId="Number(contractId)"
                 ></finance-duty>
             </el-tab-pane>
 
@@ -94,12 +94,10 @@ export default {
             activeName: 'detail',
             resData: {},
             paymentInfo: {},
-            dataLoading: false
-        }
-    },
-    computed: {
-        contractId(){
-            return this.$store.state.user.projectContractDetail.id
+            dataLoading: false,
+
+            // 合同id
+            contractId: null
         }
     },
     mounted() {
@@ -108,10 +106,10 @@ export default {
     methods: {
         // 获取财务信息
         getFinanceInfo(){
-            let id = this.contract || this.$store.state.user.projectContractDetail.id
-            if(!id) return
+            this.contractId = this.contract || this.$store.state.user.projectContractDetail.id
+            if(!this.contractId) return
             this.dataLoading = true
-            projectFinanceInfo({ contract: id }).then(res => {
+            projectFinanceInfo({ contract: this.contractId }).then(res => {
                 this.dataLoading = false
                 if(res.code === this.$successCode){
                     let { materialMedias, paymentInfo } = res.obj
@@ -124,19 +122,14 @@ export default {
         },
 
         // 显示添加付款记录窗口
-        handleAddLog(data){
-            this.$refs.createPaymentLog.showCreatePaymentLogDialog(data)
+        handleAddLog(){
+            this.$refs.createPaymentLog.showCreatePaymentLogDialog({ contract: this.contractId })
         },
 
         // 显示添加发票窗口
-        handleAddInvoice(data){
+        handleAddInvoice(data = { contract: this.contractId }){
             this.$refs.createInvoice.showCreateInvoiceDialog(data)
         }
-    },
-    watch: {
-        contractId(newData, oldData){
-            if(newData) this.getFinanceInfo()
-        }   
     }
 }
 </script>

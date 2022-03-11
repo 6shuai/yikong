@@ -50,6 +50,8 @@
 
 <script>
 import { timelineStageTempList } from '@/api/timeline'
+import { projectScreenLayoutTempList } from '@/api/project'
+
 export default {
     data() {
         return {
@@ -60,10 +62,14 @@ export default {
     },
     methods: {
         // 获取模板列表
-        getScreenTemplateList(){
+        getScreenTemplateList(source){
             this.tempId = null
             this.tempLoading = true
-            timelineStageTempList().then(res => {
+
+            let getScreenTempApi = timelineStageTempList
+            if(source === 'project') getScreenTempApi = projectScreenLayoutTempList
+
+            getScreenTempApi().then(res => {
                 this.tempLoading = false
                 if(res.code === this.$successCode){
                     this.tempList = res.obj

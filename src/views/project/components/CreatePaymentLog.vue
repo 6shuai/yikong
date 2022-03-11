@@ -66,6 +66,7 @@ export default {
         // 显示新建付款记录窗口
         showCreatePaymentLogDialog(data = {}){
             this.addParams = JSON.parse(JSON.stringify(data))
+            console.log(this.addParams)
             this.showCreatePaymentLog = true
             this.$nextTick(() => {
                 this.$refs["addForm"].clearValidate();

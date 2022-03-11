@@ -143,7 +143,9 @@ export default {
 
         // 锁位
         handleLockPosition(){
+            this.btnLoading = true
             projectLockPosition(this.lockPositionParams).then(res => {
+                this.btnLoading = false
                 if(res.code === this.$successCode){
                     this.$message.success('锁位成功~')
                     this.showLocatingResult = false

@@ -112,7 +112,7 @@ export default {
             this.showScreenLayoutList = true
 
             this.$nextTick(() => {
-                this.$refs.screenLayoutTemplateList.getScreenTemplateList()
+                this.$refs.screenLayoutTemplateList.getScreenTemplateList('project')
             })
         },
         

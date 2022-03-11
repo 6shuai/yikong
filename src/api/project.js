@@ -114,4 +114,8 @@ export function materialAuditAll(data) { return put(`/user/auditor/examineMateri
 
 
 
+// 获取屏幕布局模板
+export function projectScreenLayoutTempList(data) { return get('/user/project/logicRegionTemp', data); }
 
+// 获取内容物料列表
+export function projectScreenContentList(data) { return get('/user/project/content', data); }
