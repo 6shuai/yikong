@@ -1,7 +1,16 @@
 <template>
     <div class="create-contract-wrap">
 
-        <div class="edit-btn" v-show="!showEdit">
+        <div class="edit-btn">
+            <el-tag type="warning" v-if="contractParams.approval == 2">审批中</el-tag>
+            <el-tag type="success" v-if="contractParams.approval == 3">审批通过</el-tag>
+            <el-tag type="info" v-if="contractParams.approval == 4">审批已被拒绝</el-tag>
+        </div>
+
+        <div 
+            class="edit-btn" 
+            v-if="contractParams.approval == 1 || contractParams.approval == 4"
+            v-show="!showEdit">
             <el-button 
                 type="primary" 
                 size="small"
@@ -10,9 +19,19 @@
             >
                 编辑合同
             </el-button>
+            <el-button 
+                type="primary" 
+                size="small"
+                icon="el-icon-s-check"
+                :loading="submitApprovalBtnLoading"
+                @click="submitApproval"
+            >
+                提交审核
+            </el-button>
         </div>
 
         <el-form 
+            v-loading="dataLoading"
             label-width="100px"
             ref="contractForm"
             :model="contractParams"
@@ -151,14 +170,17 @@
             </el-form-item>
     
             <el-form-item label="回合同日:">
-                <el-date-picker
-                    v-show="showEdit"
-                    v-model="contractParams.secondArchiveDate"
-                    type="date"
-                    placeholder="选择日期"
-                    value-format="yyyy-MM-dd">
-                </el-date-picker>
-                <span v-show="!showEdit">{{ contractParams.secondArchiveDate }}</span>
+                {{ contractParams.secondArchiveDate }}
+
+                <el-button 
+                    type="primary"
+                    size="mini"
+                    plain
+                    v-if="!contractParams.secondArchiveDate"
+                    :disabled="contractParams.approval != 3"
+                    @click="handleReturnContractDate"
+                >回合同</el-button>
+
             </el-form-item>
 
             <el-form-item label="付款截止日期:">
@@ -171,28 +193,6 @@
                     value-format="yyyy-MM-dd HH:mm:ss">
                 </el-date-picker>
                 <span v-show="!showEdit">{{ contractParams.paymentDue }}</span>
-            </el-form-item>
-
-
-            <el-form-item label="价格体系:">
-                <el-select 
-                    class="w220"
-                    v-show="showEdit"
-                    v-model="contractParams.priceSystem" 
-                    filterable 
-                    style="width: 100%"
-                    placeholder="请选择价格体系"
-                >   
-                    <el-option 
-                        v-for="item in priceTypeData" 
-                        :key="item.id"
-                        :label="item.displayName" 
-                        :value="item.id">
-                        <span style="float: left">{{ item.displayName }}</span>
-                        <span style="float: right; color: #8492a6; font-size: 13px">{{ item.description }}</span>
-                    </el-option>
-                </el-select>
-                <span v-show="!showEdit">{{ contractParams.priceSystemName }}</span>
             </el-form-item>
 
             <el-form-item label="提成体系:">
@@ -214,12 +214,13 @@
                 <span v-show="!showEdit">{{ contractParams.commissionSystemName }}</span>
             </el-form-item>
     
-            <el-form-item :label="showEdit ? '上传合同:' : '合同图片'">
+            <el-form-item :label="showEdit ? '上传合同:' : '合同文件'">
                 <upload-img 
                     v-show="showEdit"
                     ref="uploadImg"
                     :isArray="true" 
                     :imgList="contractParams.publishedContractPrints"
+                    accept="image/*,.pdf"
                     @deleteImg="ShowDelete"
                     @uploadImgPath="uploadImgSuccess"
                 ></upload-img>
@@ -227,14 +228,38 @@
                     class="contract-image-list"
                     v-show="!showEdit"
                 >
-                    <el-image 
+                    <span 
+                        class="item"
                         v-for="(item, index) in contractParams.publishedContractPrints"
                         :key="index"
-                        style="width: 100px; height: 100px"
-                        :src="item.print" 
-                        :preview-src-list="imageSrcList">
-                    </el-image>
+                    >
+                        <a 
+                            class="pdf-file"
+                            v-if="item.print.substr(item.print.lastIndexOf('.')) == '.pdf'"
+                            :href="item.print"
+                            target="_blank"
+                        >
+                        </a>
+                        <el-image 
+                            fit="cover"
+                            v-else
+                            :src="item.print"
+                            :preview-src-list="[item.print]"
+                        >
+                        </el-image>
+                    </span>
                 </div>
+            </el-form-item>
+
+            <el-form-item label="说明:">
+                <el-input 
+                    v-show="showEdit"
+                    type="textarea"
+                    :rows="3"
+                    v-model="contractParams.description" 
+                    placeholder="说明"
+                ></el-input>
+                <span v-show="!showEdit">{{ contractParams.description }}</span>
             </el-form-item>
             
             <el-form-item v-if="showEdit">
@@ -254,8 +279,7 @@
 <script>
 import UploadImg from '@/components/Upload/UploadImg'
 import { organizationListProject } from '@/api/user'
-import { projectDetail, projectContractCreate, organizationUser } from '@/api/project'
-import { getPriceTypeList } from '@/api/common'
+import { projectDetail, projectContractCreate, organizationUser, projectContractSubmitApproval, projectContractSubmitReturnDate } from '@/api/project'
 import { financeCommissionSystemList } from '@/api/finance'
 import { dateAddHMS } from '@/utils/index'
 
@@ -287,9 +311,6 @@ export default {
             // 合同期
             contractTime: [],
 
-            // 价格体系列表
-            priceTypeData: [],
-
             // 提成体系列表
             CommissionSystemData: [],
 
@@ -299,22 +320,16 @@ export default {
             // 是否显示编辑状态
             showEdit: false,
 
-            dataLoading: false
-        }
-    },
-    computed: {
-        imageSrcList(){
-            let arr = []
-            this.contractParams.publishedContractPrints.forEach(item => {
-                arr.push(item.print)
-            })
-            return arr
+            dataLoading: false,
+
+            // 提交审批按钮loading
+            submitApprovalBtnLoading: false
         }
     },
     mounted() {
+        this.getDetail()
         this.getContractDetail()
         this.getGroupList()
-        this.getPriceType()
         this.getCommissionSystemList()
     },
     methods: {
@@ -358,19 +373,6 @@ export default {
             })
         },
 
-        // 查询价格体系列表
-        getPriceType(){
-            let p = this.$store.state.user.priceTypeData
-            if(p.length){
-                this.priceTypeData = p
-                return
-            }
-            getPriceTypeList().then(res => {
-                this.priceTypeData = res.obj
-                this.$store.state.user.priceTypeData = res.obj
-            })
-        },
-
         // 查询提成体系列表
         getCommissionSystemList(){
             financeCommissionSystemList().then(res => {
@@ -380,7 +382,7 @@ export default {
             })
         },
 
-        // 提交合同
+        // 保存合同
         handleSaveContract(){
             this.$refs.contractForm.validate((valid) => {
                 if(valid){
@@ -400,6 +402,30 @@ export default {
                             this.getDetail()
                         }
                     })
+                }
+            })
+        },
+
+        // 合同提交审批
+        submitApproval(){
+            this.submitApprovalBtnLoading = true
+            projectContractSubmitApproval(this.contractParams.id).then(res => {
+                this.submitApprovalBtnLoading = false
+                if(res.code === this.$successCode){
+                    this.$message.success('合同审批提交成功~')
+
+                    // 审批状态 变成审批中
+                    this.contractParams.approval = 2
+                }
+            })
+        },
+
+        // 提交回合同日
+        handleReturnContractDate(){
+            projectContractSubmitReturnDate(this.contractParams.id).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~')
+                    this.getDetail()
                 }
             })
         },
@@ -487,10 +513,26 @@ export default {
             margin-bottom: 20px;
         }
 
-        .contract-image-list {
-            .el-image{
-                margin: 10px;
-                border-radius: 4px;
+        .contract-image-list{
+            display: flex;
+            flex-wrap: wrap;
+
+            .item{
+                cursor: pointer;
+                margin: 0 10px 10px 0;
+
+                .el-image, a{
+                    width: 100px; 
+                    height: 100px;
+                    border-radius: 4px;
+                    border: 1px solid #e5e5e5;
+                    display: block;
+                }
+
+                a.pdf-file{
+                    text-align: center;
+                    background: url('../../assets/images/pdf.png') no-repeat center;
+                }
             }
         }
 

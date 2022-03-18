@@ -16,6 +16,15 @@ export function projectDetail(data) { return get('/user/project/publishedProject
 // 新建或修改合同
 export function projectContractCreate(data) { return post('/user/project/publishedContract', data) }
 
+// 提交合同审批
+export function projectContractSubmitApproval(data) { return put(`/user/project/contractApproval?contract=${data}`); }
+
+// 提交回合同日
+export function projectContractSubmitReturnDate(data) { return put(`/user/project/archiveDate?contract=${data}`); }
+
+
+
+
 // 物料列表
 export function projectMaterialList(data) { return get('/user/project/publishedMaterialMedia', data) }
 
@@ -119,3 +128,5 @@ export function projectScreenLayoutTempList(data) { return get('/user/project/lo
 
 // 获取内容物料列表
 export function projectScreenContentList(data) { return get('/user/project/content', data); }
+
+

@@ -81,7 +81,6 @@ export default {
                     this.resData = res.obj
                     this.$store.state.user.projectDetail = res.obj
                     this.$store.state.user.projectContractDetail = res.obj.publishedContract ? res.obj.publishedContract : {}
-                    console.log(this.$store.state.user.projectContractDetail)
                 }
             })
         },

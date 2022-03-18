@@ -9,6 +9,7 @@
             <el-descriptions-item label="投放客户">
                 <el-tag size="small">{{ project.clientName }}</el-tag>
             </el-descriptions-item>
+            <el-descriptions-item label="价格体系">{{ project.priceSystemName }}</el-descriptions-item>
             <el-descriptions-item label="说明">{{ project.description }}</el-descriptions-item>
         </el-descriptions>
 

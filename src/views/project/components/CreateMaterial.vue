@@ -7,7 +7,6 @@
         :visible.sync="showCreateMaterial"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
-        :show-close="false"
         append-to-body
     >
 
@@ -16,9 +15,12 @@
             description="暂无锁位信息"
         ></el-empty>
         <el-row v-else>
-            
-            <el-col :span="24">
-                <h3>物料</h3>
+            <el-steps :active="stepActive" simple>
+                <el-step title="物料" icon="el-icon-document-add"></el-step>
+                <el-step title="投放屏幕" icon="el-icon-monitor"></el-step>
+            </el-steps>
+
+            <el-col :span="24" v-show="stepActive==1">
 
                 <!-- 选择屏幕布局模板 -->
                 <material-select-screen-layout
@@ -77,14 +79,19 @@
             </el-col>
 
             <el-col 
+                v-show="stepActive==2"
                 class="screen-list"
                 :span="24">
-                <h3>投放屏幕</h3>
                 <div class="total-price mb20">
                     <el-tag type="primary">总刊例价: {{ screenData.totalPrice }}</el-tag>
                 </div>
                 <div class="item list-head">
-                    <span class="radio"></span>
+                    <span class="radio">
+                        <el-checkbox 
+                            :value="selectedScreen.length === publishedPlaceholders.length"
+                            @change="handleSelectAll"
+                        >全选</el-checkbox>
+                    </span>
                     <span class="screen">屏幕名称</span>
                     <span class="duration">物料时长</span>
                     <span class="play-count">播放次数</span>
@@ -94,9 +101,8 @@
                 </div>
                 <div 
                     class="item"
-                    v-for="(item, index) in screenData.publishedPlaceholders"
+                    v-for="(item, index) in publishedPlaceholders"
                     :key="item.id"
-                    v-show="(!selectedScreen[0] ? true : selectedScreen[0].materialDuration == item.materialDuration ?  true : false) && (item.materialDuration == contentDuration || !contentDuration)"
                     @click.stop="item.selected = !item.selected;handleChangeScreen(item, index)"
                     :class="{ active: item.selected }"
                 >
@@ -118,9 +124,29 @@
             </el-col>
             
         </el-row>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="showCreateMaterial = false">取 消</el-button>
+        <span 
+            v-if="screenData.publishedPlaceholders && screenData.publishedPlaceholders.length"
+            slot="footer" 
+            class="dialog-footer"
+        >
+            <el-button 
+                type="primary"
+                plain
+                v-show="stepActive==2" 
+                @click="stepActive=1"
+            >
+                上一步
+            </el-button>
+            <el-button 
+                type="primary"
+                plain
+                v-show="stepActive==1" 
+                @click="handleClickNextStep"
+            >
+                下一步
+            </el-button>
             <el-button
+                v-show="stepActive==2"
                 type="primary"
                 :loading="createdLoading"
                 @click="handleCreate"
@@ -146,7 +172,8 @@ export default {
             addParams: {},
 
             // 屏幕列表
-            screenData: [],
+            screenData: {},
+            publishedPlaceholders: [],
 
             // 选中的屏幕信息
             selectedScreen: [],
@@ -155,7 +182,10 @@ export default {
             selectedIndex: [],
 
             // 已选择的物料时长
-            contentDuration: null
+            contentDuration: null,
+
+            // 步骤条 当前激活的步骤
+            stepActive: 1
         }
     },
     methods: {
@@ -165,6 +195,7 @@ export default {
             this.selectedScreen = []
             this.selectedIndex = []
             this.addParams = {}
+            this.stepActive = 1
             this.getScreenData()
         },
 
@@ -188,6 +219,27 @@ export default {
             }
         },
 
+        // 选择屏幕 全选
+        handleSelectAll(){
+            let isAllSelect = true
+
+            if(this.selectedScreen.length === this.publishedPlaceholders.length){
+                isAllSelect = false
+            }
+
+            this.selectedIndex = []
+            this.selectedScreen = []
+
+            for(let i = 0; i < this.publishedPlaceholders.length; i++){
+                let item = this.publishedPlaceholders[i]
+                item.selected = isAllSelect
+                if(isAllSelect){
+                    this.selectedIndex.push(i)
+                    this.selectedScreen.push(item)
+                }
+            }
+        },
+
         // 设置屏幕逻辑区域内容
         setScreenLayoutData(data, contentDuration){
             // 已选择的物料时长
@@ -196,23 +248,34 @@ export default {
         },
 
 
-        // 新建物料
-        handleCreate(){
-            if(!this.selectedScreen.length){
-                this.$message.warning('还没选择屏幕呢~')
-                return
-            }else if(!this.addParams.publishedMaterialRegions || !this.addParams.publishedMaterialRegions.length){
+        // 点击下一步
+        handleClickNextStep(){
+            if(!this.addParams.publishedMaterialRegions || !this.addParams.publishedMaterialRegions.length){
                 this.$message.warning('你咋没投放物料呢~')
                 return
             }
 
             for(let j = 0; j < this.addParams.publishedMaterialRegions.length; j++){
-                if(!this.addParams.publishedMaterialRegions[j].contentId){
+                if(!this.addParams.publishedMaterialRegions[j] || !this.addParams.publishedMaterialRegions[j].contentId){
                     this.$message.warning('你咋没投放物料呢~')
                     return
                 }
             }
 
+            this.publishedPlaceholders = this.screenData.publishedPlaceholders.filter((item) => {
+                return item.materialDuration == this.contentDuration
+            })
+            
+            this.stepActive = 2
+        },
+
+
+        // 新建物料
+        handleCreate(){
+            if(!this.selectedScreen.length){
+                this.$message.warning('还没选择屏幕呢~')
+                return
+            }
             
             // 已选择的屏幕 id
             let publishedMaterialMedias = []
@@ -308,7 +371,9 @@ export default {
                     }
 
                     &.radio{
-                        width: 40px;
+                        width: 100px;
+                        text-align: left;
+                        padding-left: 20px;
 
                         .el-radio__label{
                             display: none;
@@ -353,6 +418,10 @@ export default {
                     color: #fff;
                 }
             }
+        }
+
+        .el-steps--simple{
+            padding: 13px 20%;
         }
     }
 </style>

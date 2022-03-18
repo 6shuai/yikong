@@ -37,6 +37,7 @@ const moduleMap = {
 	'OrganizationType': 'system/organizationType/index',  // 组织类型列表
 	'User': 'user/Center',							      // 个人中心
 	'BasicRole': 'system/basicRole/index',			      // 基础角色管理
+	'Page': 'system/home/index',                          // 主页管理
 
 
 	'ResAuthority': 'resAuthority/resAuthority/index',		  // 内容权限管理
@@ -102,33 +103,34 @@ function getUserPerm(data){
 export const filterAsyncRouter = (data) => {
 	let result = [];
 	if(!data) return result;
-    data.forEach(one => {
+    data.forEach(item => {
         // 先格式化子路由
         let formattedChildren = null;
-        if (one.children != null && one.children instanceof Array) {
-            formattedChildren = filterAsyncRouter(one.children);
+        if (item.children != null && item.children instanceof Array) {
+            formattedChildren = filterAsyncRouter(item.children);
 		}
-        let oneRouter = {
-            path: one.route, 
-            name: one.moduleName, 
+        let pageRouter = {
+            path: item.route, 
+            name: item.moduleName, 
 			children: formattedChildren || [], 
 			// 路由懒加载
-			component: one.parentID === 1 ? Layout : (resolve) => require(['@/views/' + moduleMap[one.moduleName] + '.vue'], resolve),
+			component: item.parentID === 1 ? Layout : (resolve) => require(['@/views/' + moduleMap[item.moduleName] + '.vue'], resolve),
 			meta: {
-				title: one.displayName,
-				icon: one.moduleName,
-				permission: getUserPerm(one.subContent),
-			}
+				title: item.displayName,
+				icon: item.moduleName,
+				permission: getUserPerm(item.subContent),
+			},
+			hidden: item.hidden
 		}
 
-		if(one.route == '/timeline/index'){
-			state.timelinePrem = oneRouter.meta.permission;
-		}else if(one.route == '/games/index'){
-			state.gamesPrem = oneRouter.meta.permission;
+		if(item.route == '/timeline/index'){
+			state.timelinePrem = pageRouter.meta.permission;
+		}else if(item.route == '/games/index'){
+			state.gamesPrem = pageRouter.meta.permission;
 		}
 
 
-        result.push(oneRouter);
+        result.push(pageRouter);
 	})
     return result;
 }

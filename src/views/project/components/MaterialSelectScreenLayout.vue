@@ -8,7 +8,7 @@
 -->
 <template>
     <div class="materal-select-screen-layout">
-        <div class="select-screen-layout mb20" @click="handleShowDialog">
+        <div class="select-screen-layout mt20 mb20" @click="handleShowDialog">
             <el-button type="primary" plain size="small">选择屏幕布局模板</el-button>
         </div>
 
@@ -157,8 +157,6 @@ export default {
                 // 内容id
                 contentId: id
             })
-
-            console.log('this.screenLayoutImage------------>', this.screenLayoutImage)
             
             this.$emit('setScreenLayoutData', {
                 screenLayout: this.screenTemplateInfo.id,

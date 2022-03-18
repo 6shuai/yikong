@@ -51,6 +51,7 @@ router.beforeEach((to, from, next) => {
 						
 						
 						let currentRoleHomePageData = localStorage.currentRoleHomePageData ? JSON.parse(localStorage.currentRoleHomePageData) : []
+						store.state.user.currentRoleHomePageData = currentRoleHomePageData
 						const asyncRouter = filterAsyncRouter(currentRoleHomePageData)
 						
 						asyncRouter.push({ path: '*', redirect: '/404', hidden: true })

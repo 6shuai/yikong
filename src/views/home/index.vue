@@ -52,6 +52,12 @@
 import { filterAsyncRouter } from '@/store/modules/permission'
 import router from '@/router'
 
+const roleHome = {
+    '/project': '项目管理',
+    '/finance': '财务管理',
+    '/materialAudit': '物料投放审核'
+}
+
 export default {
     computed: {
         homePageData(){
@@ -70,7 +76,16 @@ export default {
     methods: {
         // 选择角色 注册对应的路由
         handleSelectRole(data){
-            const asyncRouter = filterAsyncRouter(data.authorities || [])
+            let routes = [
+                {
+                    displayName: roleHome[data.frontRoute],
+                    route: data.frontRoute,
+                    hidden: true
+                },
+                ...data.authorities
+            ]
+
+            const asyncRouter = filterAsyncRouter(routes)
             asyncRouter.push({ path: '*', redirect: '/404', hidden: true })
             
             // 存储路由
@@ -86,9 +101,9 @@ export default {
                 this.$router.push(data.frontRoute)
             }
             
-            this.$store.state.user.currentRoleHomePageData = data.authorities
-            this.currentRoleHomePageData = data.authorities
-            localStorage.currentRoleHomePageData = JSON.stringify(data.authorities)
+            this.$store.state.user.currentRoleHomePageData = routes
+            this.currentRoleHomePageData = routes
+            localStorage.currentRoleHomePageData = JSON.stringify(routes)
             localStorage.homeRoute = data.frontRoute.replace(/(^[\s\n\t]+|[\s\n\t]+$)/g, "" )
         },
 
@@ -97,7 +112,7 @@ export default {
             this.$router.push(path)
         }
 
-    },
+    }
 }
 </script>
 

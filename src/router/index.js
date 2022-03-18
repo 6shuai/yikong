@@ -162,6 +162,25 @@ export const constantRoutes = [
 		hidden: true
 	},
 
+
+	// 合同审批
+	{
+		path: '/contract',
+		component: Layout,
+		children: [
+			{
+				path: 'approval',
+				name: 'contractApproval',
+				component: () => import('@/views/contractApproval/index'),
+				meta: {
+					title: '合同审批'
+				}
+			}
+		],
+		hidden: true
+	},
+
+
 	// 我的项目
 	...projectRoutes,
 
@@ -177,13 +196,13 @@ export const constantRoutes = [
 	// 时间轴管理
 	...timelineRoutes, 
 
-	//游戏管理
+	// 游戏管理
 	...gameRoutes, 
 
-	//活动管理
+	// 活动管理
 	...activityRoutes,
 
-	//商户管理
+	// 商户管理
 	...merchantRoutes,
 
 	// 屏幕布局
