@@ -25,7 +25,7 @@
                 style="width: 100%;margin-bottom: 20px;"
                 row-key="id"
                 border>
-                <el-table-column label="头像" min-width="50">
+                <el-table-column label="头像" width="80">
                     <template slot-scope="scope">
                         <el-image
                             class="member-header-img"
@@ -41,13 +41,13 @@
                 <el-table-column prop="wechat" label="微信" min-width="80"></el-table-column>
                 <el-table-column prop="address" label="地址" min-width="80"></el-table-column>
                 <el-table-column
-                    prop="name"
-                    label="用户角色"
+                    prop="homePages"
+                    label="主页"
                     min-width="180">
                     <template slot-scope="scope">
                         <el-tag 
-                            v-for="(item, index) in scope.row.roles" 
-                            :key="index+item.name" 
+                            v-for="(item, index) in scope.row.homePages" 
+                            :key="index" 
                             size="mini"
                             style="margin-right: 5px"
                         >{{item.displayName}}</el-tag>
@@ -55,7 +55,7 @@
                 </el-table-column>
                 <el-table-column
                     label="操作"
-                    min-width="180">
+                    width="150">
                     <template slot-scope="scope">
                         <el-button 
                             size="mini"
@@ -86,69 +86,6 @@
                 </el-table-column>
             </el-table>
 
-            <!-- 编辑用户角色 -->
-            <el-dialog
-                title="编辑用户"
-                :visible.sync="editMemberDialog"
-                :close-on-click-modal="false"
-                :close-on-press-escape="false"
-                width="850px">
-                <el-form 
-                    label-width="80px"
-                >
-                    <el-row>
-                        <el-col :span="12">
-                            <el-form-item label="登录名">
-                                {{currentParams.accountName}}
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="昵称">
-                                {{currentParams.nickname}}
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="email">
-                                {{currentParams.email}}
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="手机号">
-                                {{currentParams.mobile}}
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="QQ">
-                                {{currentParams.qq}}
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="微信">
-                                {{currentParams.wechat}}
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="角色">
-                                <template slot-scope="scope">
-                                    <el-select v-model="currentParams.roles" multiple placeholder="请选择角色" style="width:100%">
-                                        <el-option
-                                            v-for="item in roleData"
-                                            :key="item.id"
-                                            :label="item.displayName"
-                                            :value="item.id">
-                                        </el-option>
-                                    </el-select>
-                                </template>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="editMemberDialog=false">取 消</el-button>
-                    <el-button type="primary" :loading="editBtnLoading" @click="editMemeberSureBtn">确 定</el-button>
-                </span>
-            </el-dialog>
-
         </el-card>
         <!-- 创建组织 -->
         <created-group 
@@ -158,24 +95,27 @@
 
         <!-- 添加成员 -->
         <add-member ref="addMember" :groupId="this.groupData.id"></add-member>
+
+        <!-- 编辑用户对应的主页 -->
+        <update-member-home-page ref="updateMemberHomePage"></update-member-home-page>
+
     </div>
 </template>
 
 <script>
-import { groupMemberList, getAllRoleList, memberDelete, memberRoleUpdate, organizationSearchId, organizationDelete } from '@/api/user';
+import { groupMemberList, memberDelete, organizationSearchId, organizationDelete } from '@/api/user';
 import CreatedGroup from '@/views/system/organizations/components/CreatedOrganizations';
-import AddMember from './AddMember';
+import AddMember from './components/AddMember';
+import UpdateMemberHomePage from './components/UpdateMemberHomePage'
+
 export default {
     data(){
         return {
             resData: [],
             tLoading: false,
-            editMemberDialog: false,      //编辑用户 modal   
             currentParams: {},            //选中的用户 参数
-            roleData: [],                 //角色列表
-            editBtnLoading: false,
             groupData: {},                //组织信息
-            pageLoad: false,
+            pageLoad: false
         }
     },
     computed: {
@@ -197,42 +137,9 @@ export default {
             })
         },
 
-        //更新用户角色
-        editMemeberSureBtn(){
-            let data = `?uid=${this.currentParams.id}`;
-            this.currentParams.roles.forEach(key => {
-                data += '&rid=' + key;
-            })
-            this.editBtnLoading = true;
-            memberRoleUpdate(data).then(res => {
-                this.editBtnLoading = false;
-                if(res.code === this.$successCode){
-                    this.editMemberDialog = false;
-                    this.$message.success('更新成功~');
-                    this.init();
-                }
-            })
-        },
-
-        //点击编辑用户  更新用户角色
+        // 点击编辑用户  更新用户主页
         editCurrentMember(data){
-            this.currentParams = JSON.parse(JSON.stringify(data));
-            let ids = [];
-            this.currentParams.roles.forEach(item => {
-                ids.push(item.id);
-            })
-            this.currentParams.roles = ids;
-            this.editMemberDialog = true;
-        },
-
-
-        //所有角色列表
-        roleList(){
-            getAllRoleList(this.groupData.organizationType).then(res => {
-                if(res.code === this.$successCode){
-                    this.roleData = res.obj;
-                }
-            })
+            this.$refs.updateMemberHomePage.showDialog(data)
         },
 
         //将用户移除  组织
@@ -260,7 +167,6 @@ export default {
                 }else{
                     this.groupData = res.obj;
                     this.init();
-                    this.roleList();
                 }
             })
         },
@@ -285,7 +191,8 @@ export default {
     },
     components: {
         CreatedGroup,
-        AddMember
+        AddMember,
+        UpdateMemberHomePage
     }
 }
 </script>

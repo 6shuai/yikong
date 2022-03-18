@@ -27,16 +27,6 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="选择主页" prop="homePage">
-                <el-select v-model="addParams.homePage" placeholder="请选择主页" style="width:100%">
-                    <el-option 
-                        v-for="item in homePageData" 
-                        :key="item.id" 
-                        :label="item.displayName" 
-                        :value="item.id"
-                    ></el-option>
-                </el-select>
-            </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
             <el-button @click="addRoleDialog=false">取 消</el-button>
@@ -48,7 +38,6 @@
 
 <script>
 import { roleCreated, roleUpdate, organizationType } from '@/api/user';
-import { getHomePageList } from '@/api/common';
 
 export default {
     data(){
@@ -65,31 +54,17 @@ export default {
             // 组织类型列表
             groupTypeList: [],
 
-            // 主页列表
-            homePageData: [],
-
             addRoleRule: {
                 displayName: [{ required: true, trigger: "blur", message: '请输入角色名称~' }],
                 name: [{ required: true, trigger: "blur", message: '请输入角色标识~' }],
-                organizationType: [{ required: true, type: 'number', trigger: "blur", message: '请选择组织类型~' }],
-                homePage: [{ required: true, type: 'number', trigger: "blur", message: '请选择主页~' }]
+                organizationType: [{ required: true, type: 'number', trigger: "blur", message: '请选择组织类型~' }]
             }
         }
     },
     created() {
         this.initGroupTypeList();
-        this.getHomePageList();
     },
     methods: {
-        // 获取主页列表
-        getHomePageList(){
-            getHomePageList().then(res => {
-                if(res.code === this.$successCode){
-                    this.homePageData = res.obj
-                }
-            })
-        },
-
         //添加 编辑  角色
         addRoleSureBtn(){
             this.$refs.addRoleForm.validate((valid) => {

@@ -74,9 +74,6 @@ export function memberDelete(data) { return del(`/system/member/?oid=${data.oid}
 //成员管理   搜索用户
 export function memberSearch(data) { return get(`/system/member/search_user/${data}`,); }
 
-//成员管理   更新成员拥有的角色
-export function memberRoleUpdate(data) { return put(`/system/member/role${data}`); }
-
 //成员管理   查询自己的组织  获取组织id去查询组织下的成员
 export function organizationSearchId(data) { return get(`/system/member/organization/${data}`); }
 
@@ -88,6 +85,11 @@ export function organizationType(data) { return get(`/public/organization_type/$
 
 //成员管理   删除组织
 export function organizationDelete(data) { return del(`/system/member/organization/?id=${data}`,); }
+
+//成员管理   更新用户主页
+export function memberHomePageUpdate(data) { return put(`/system/member/homePage${data}`,); }
+
+
 
 //查询所有的 品牌
 export function organizationList(data) { return get('/public/brand', data); }
@@ -127,3 +129,13 @@ export function groupDelete(data) { return del(`/group/${data}`); }
 export function groupCreated(data) { return post('/group/', data); }
 
 
+
+
+//主页管理    创建 或 编辑
+export function homePageCreate(data) { return post('/homePage/', data); }
+
+//主页管理    角色列表
+export function homePageRoleList(data) { return get('/homePage/role', data); }
+
+//主页管理    更新主页绑定的角色
+export function homePageRoleUpdate(data) { return put(`/homePage/role${data}`); }
