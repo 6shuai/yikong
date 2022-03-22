@@ -1,27 +1,43 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2022-03-14 11:25:09
+ * @LastEditors: liushuai
+ * @LastEditTime: 2022-03-22 11:49:15
+ * @Description: file content
+ * @FilePath: \pclient\src\layout\components\HomeTabs.vue
+-->
 <template>
-    <el-tabs 
-        class="home-page-tabs-wrap"
-        v-if="currentRoleHomePageData && currentRoleHomePageData.length > 1"
-        v-model="activeName" 
-        type="card" 
-        @tab-click="handleTabClick"
-    >
-        <el-tab-pane 
-            v-for="(item, index) in currentRoleHomePageData"
-            :key="index"
-            :label="item.displayName" 
-            :name="item.route"
-        >
-        </el-tab-pane>
-        
-    </el-tabs>
+    <div class="home-page-tabs-wrap">
+        <div class="home-page-tabs">
+            <div 
+                v-for="(item, index) in currentRoleHomePageData"
+                :key="index"
+                class="item"
+                :class="{ 'active': item.route == activeName }"
+                @click="handleTabClick(item)"
+            >
+                <div>{{ item.displayName }}</div>
+            </div>
+        </div>
+
+        <div class="ml20">
+            <home-tabs v-if="currentTab.children && currentTab.children.length" :childTabs="currentTab.children"></home-tabs>
+        </div>
+
+    </div>
+    
 </template>
 
 <script>
 export default { 
+    name: 'HomeTabs',
+    props: {
+        childTabs: Array
+    },
     data() {
         return {
-            activeName: undefined
+            activeName: undefined,
+            currentTab: {}
         }
     },
     mounted() {
@@ -33,7 +49,11 @@ export default {
 
             let data = []
 
-            this.$store.state.user.currentRoleHomePageData.forEach(element => {
+            let tabsData = this.childTabs ? this.childTabs : this.$store.state.user.currentRoleHomePageData
+
+            if(tabsData.length == 1 && !tabsData[0].children.length) return data
+
+            tabsData.forEach(element => {
                 if(element.children && element.children.length){
                     for(let i = 0; i < element.children.length; i++){
                         if(element.children[i].moduleName != 'User') data.push(element.children[i])
@@ -44,23 +64,35 @@ export default {
             })  
             
             if(data.length) this.activeName = data[0].route
-
             return data
-
         }
     },
 
     methods: {
-        handleTabClick(){
-            this.$router.push(this.activeName)
+        handleTabClick(item){
+            this.currentTab = item
+            this.activeName = item.route
+            this.$router.push(item.children && item.children.length ? item.children[0].route : item.route)
         }
     }
 }
 </script>
 <style lang="scss">
     .home-page-tabs-wrap{
-        &.el-tabs--card>.el-tabs__header{
-            background: #fff;
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+
+        .home-page-tabs{
+            display: flex;
+    
+            .item{
+                padding: 20px;
+                cursor: pointer;
+
+                &.active{
+                    color: var(--color-primary);
+                }
+            }
         }
     }
 </style>

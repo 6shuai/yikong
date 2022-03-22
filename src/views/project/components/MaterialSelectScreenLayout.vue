@@ -103,7 +103,10 @@ export default {
             screenLayoutImage: [],
 
             // 选择的屏幕分区 index
-            splitScreenIndex: null
+            splitScreenIndex: null,
+
+            // 时长最长的内容
+            maxContentDuration: null
         }
     },
     methods: {
@@ -132,12 +135,16 @@ export default {
         selectResult({ id, displayName, duration, image }){
             
             for(let i = 0; i < this.screenLayoutImage.length; i++){
-                if(this.screenLayoutImage[i] && this.screenLayoutImage[i].duration != duration && i != this.splitScreenIndex){
+                // 
+                if(this.screenLayoutImage[i] && Math.abs(Math.ceil(this.screenLayoutImage[i].duration) - Math.ceil(duration)) > 1 && i != this.splitScreenIndex){
                     this.$message.warning('投放的物料时长不一致, 请重新投放~')
                     return false
-                }else if(this.selectedScreenDuration && this.selectedScreenDuration != duration){
-                    this.$message.warning('投放的物料时长和投放屏幕物料时长不一致, 请重新投放~')
-                    return false
+                }
+
+                try {
+                    this.maxContentDuration = duration > this.screenLayoutImage[i].duration ? duration : this.screenLayoutImage[i].duration
+                } catch (error) {
+                    
                 }
             }
 
@@ -157,11 +164,13 @@ export default {
                 // 内容id
                 contentId: id
             })
+
+            
             
             this.$emit('setScreenLayoutData', {
                 screenLayout: this.screenTemplateInfo.id,
                 publishedMaterialRegions: this.screenLayoutImage
-            }, duration)
+            }, this.maxContentDuration)
         },
 
 

@@ -82,7 +82,7 @@ axios.interceptors.response.use(
 		if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1 && !originalRequest._retry) {
 			// eslint-disable-next-line
 			Message.error({message: '请求超时'});
-		  }
+		}
 
 		return Promise.reject(error);
 	}

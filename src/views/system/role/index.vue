@@ -30,11 +30,6 @@
                     label="组织类型名称"
                     min-width="180">
                 </el-table-column>
-                <el-table-column
-                    prop="homePageName"
-                    label="主页"
-                    min-width="180">
-                </el-table-column>
                 
                 <el-table-column
                     label="操作"

@@ -25,7 +25,6 @@
                 <!-- 选择屏幕布局模板 -->
                 <material-select-screen-layout
                     @setScreenLayoutData="setScreenLayoutData"
-                    :selectedScreenDuration="selectedScreen[0] ? selectedScreen[0].materialDuration : null"
                 ></material-select-screen-layout>
 
                 <!-- 播放限制 -->
@@ -88,7 +87,7 @@
                 <div class="item list-head">
                     <span class="radio">
                         <el-checkbox 
-                            :value="selectedScreen.length === publishedPlaceholders.length"
+                            :value="selectedScreen.length && selectedScreen.length === publishedPlaceholders.length"
                             @change="handleSelectAll"
                         >全选</el-checkbox>
                     </span>
@@ -261,9 +260,11 @@ export default {
                     return
                 }
             }
-
+            
+            // 物料包时长比输入的值默认多一秒
             this.publishedPlaceholders = this.screenData.publishedPlaceholders.filter((item) => {
-                return item.materialDuration == this.contentDuration
+                // 物料小数点向上取整  物料包和物料的时长差距在1秒之内
+                return item.materialDuration+1 > this.contentDuration && item.materialDuration+1 - this.contentDuration <= 1
             })
             
             this.stepActive = 2
