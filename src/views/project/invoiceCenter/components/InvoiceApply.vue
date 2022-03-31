@@ -441,7 +441,7 @@ export default {
 
         // 取消
         handleClickCancel(){
-            if(!this.isObjectValueEqual(this.copyInvoiceDetail, this.invoiceParams)){
+            if(this.$route.query.invoiceId && !this.isObjectValueEqual(this.copyInvoiceDetail, this.invoiceParams)){
                 this.$confirm(
                     `您已修改发票,但还未进行提交,确定要离开此页面吗?`,
                     "注意",

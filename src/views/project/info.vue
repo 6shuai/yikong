@@ -5,7 +5,7 @@
             <el-button
                 type="primary"
                 size="small"
-                :disabled="project.allowInvoicing ? false : true"
+                :disabled="allowInvoicing ? false : true"
                 @click="handleShowInvoiceDetail"
             >
                 申请发票
@@ -119,6 +119,12 @@ export default {
             project: {},
             resData: [],
             params: {}
+        }
+    },
+    computed: {
+        // 可开票金额
+        allowInvoicing(){
+            return this.$store.state.user.projectDetail.allowInvoicing
         }
     },
     mounted() {

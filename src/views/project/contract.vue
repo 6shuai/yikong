@@ -436,6 +436,7 @@ export default {
             projectDetail({ id: this.$route.params.id }).then(res => {
                 this.dataLoading = false
                 if(res.code === this.$successCode){
+                    this.$store.state.user.projectDetail = res.obj
                     this.$store.state.user.projectContractDetail = res.obj.publishedContract ? res.obj.publishedContract : {}
                     this.getContractDetail()
                 }
