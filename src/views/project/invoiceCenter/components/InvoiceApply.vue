@@ -177,7 +177,6 @@ import { getGoodsAndServicesList } from '@/api/common'
 import InvoiceDetail from "./InvoiceDetail"
 import SelectOtherProject from './SelectOtherProject'
 import InvoiceProjectList from './InvoiceProjectList'
-import router from '../../../../router'
 
 export default {
     components: {
@@ -231,7 +230,9 @@ export default {
             goodsAndServicesData: [],
 
             // 当前项目的信息
-            currentProjectData: {},
+            currentProjectData: {
+                allowInvoicing: 0
+            },
 
             // 其他项目
             otherProjectData: [],
@@ -303,11 +304,21 @@ export default {
                         ...this.defaultInfo,
                         ...res.obj
                     }
-                    this.invoiceParams.organization = this.defaultInfo.organization
+                    if(this.invoiceParams.organization && !this.invoiceParams.organization.id) this.invoiceParams.organization = this.defaultInfo.organization
 
                     // 当前项目的信息
                     let arr = this.defaultInfo.projects.filter((item) => item.id == this.$route.query.projectId)
-                    this.currentProjectData = arr[0]
+                    if(arr && arr.length) {
+                        let { allowInvoicing, amount, displayName, payment, id, materialMedias } = arr[0]
+                        this.currentProjectData = {
+                            allowInvoicing: this.currentProjectData.allowInvoicing += allowInvoicing,
+                            amount,
+                            displayName,
+                            payment,
+                            id,
+                            materialMedias
+                        }
+                    } 
                 }
             })
         },
@@ -320,6 +331,7 @@ export default {
                 if(res.code === this.$successCode){
                     let { publishedInvoice, approvalProcedures, publishedProject, reason, allowUpdate, lastOne } = res.obj
                     this.invoiceParams = publishedInvoice
+                    this.currentProjectData.allowInvoicing += publishedInvoice.amount
                     this.defaultInfo.approvalProcedures = approvalProcedures
                     this.invoiceParams.publishedProjects = []
                     this.rejectText = reason
@@ -333,7 +345,7 @@ export default {
                     }
                     
                     this.otherProjectData = publishedProject
-                    if(publishedProject.merge == 2){
+                    if(publishedInvoice.merge == 2){
                         publishedProject.forEach(element => {
                             this.totalPrice += element.allowInvoicing
                             this.invoiceParams.publishedProjects.push({ id: element.id })
