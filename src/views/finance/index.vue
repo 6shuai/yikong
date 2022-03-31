@@ -41,6 +41,23 @@
                 label="提成体系" 
                 name="commissionSystem"
             ></el-tab-pane>
+            <el-tab-pane 
+                label="发票中心" 
+                name="invoiceCenter"
+            >
+                <el-dropdown 
+                    slot="label" 
+                    @command="handleCommand"
+                >
+                    <span class="el-dropdown-link">
+                        发票中心<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>未处理</el-dropdown-item>
+                        <el-dropdown-item command="history">历史开票</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </el-tab-pane>
         </el-tabs> 
 
         <router-view></router-view>
@@ -62,6 +79,16 @@ export default {
     methods: {
         handleTab(){
             this.$router.push(`/finance/${this.tabActiveName}`)
+        },
+
+        // 发票中心
+        handleCommand(command){
+            this.$router.push({
+                path: '/finance/invoiceCenter',
+                query: {
+                    type: command
+                }
+            })
         }
     }
 }

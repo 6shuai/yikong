@@ -1,6 +1,17 @@
 <template>
     <div class="project-member-wrap">
 
+        <div class="invoice-apply-btn">
+            <el-button
+                type="primary"
+                size="small"
+                :disabled="project.allowInvoicing ? false : true"
+                @click="handleShowInvoiceDetail"
+            >
+                申请发票
+            </el-button>
+        </div>
+
         <el-descriptions 
             :column="1"
             title="项目信息"
@@ -111,12 +122,13 @@ export default {
         }
     },
     mounted() {
-        let { displayName, description, clientName, priceSystemName, publishedBeneficiaries } = this.$store.state.user.projectDetail
+        let { displayName, description, clientName, priceSystemName, publishedBeneficiaries, allowInvoicing } = this.$store.state.user.projectDetail
         this.project = {
             displayName,
             description,
             clientName,
-            priceSystemName
+            priceSystemName,
+            allowInvoicing
         }
         this.resData = publishedBeneficiaries
     },
@@ -145,6 +157,11 @@ export default {
             })
         },
 
+        // 查看发票  
+        handleShowInvoiceDetail(){
+            this.$router.push(`/invoiceApply?projectId=${this.$route.params.id}&clientId=${this.$store.state.user.projectDetail.client}`)
+        },
+
         handleAccMul(val){
             return accMul(val, 100)
         }
@@ -154,6 +171,8 @@ export default {
 
 <style lang="scss">
     .project-member-wrap{
+        position: relative;
+
         .el-image{
             width: 40px;
             height: 40px;
@@ -164,6 +183,12 @@ export default {
 
         .el-descriptions-item__label{
             font-weight: bold;
+        }
+
+        .invoice-apply-btn{
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
     }
 </style>

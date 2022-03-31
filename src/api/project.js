@@ -45,8 +45,6 @@ export function projectFinanceInfo(data) { return get('/user/project/publishedCo
 // 添加或修改 付款记录
 export function projectFinanceCreateLog(data) { return post('/user/project/publishedContractPayment', data) }
 
-// 添加 修改 发票
-export function projectFinanceCreateInvoice(data) { return post('/user/project/publishedInvoice', data) }
 
 // 删除发票
 export function projectFinanceInvoiceDelete(data) { return del(`/user/project/publishedInvoice?id=${data}`) }
@@ -130,3 +128,19 @@ export function projectScreenLayoutTempList(data) { return get('/user/project/lo
 export function projectScreenContentList(data) { return get('/user/project/content', data); }
 
 
+// 发票中心  查询发票列表
+export function projectInvoiceList(data) { return get('/user/project/publishedInvoice', data) }
+
+// 发票中心  申请发票  获取发票基本信息
+export function projectInvoiceCenterDefaultInfo(data) { return get('/user/project/invoiceBaseInfo', data); }
+
+// 发票中心  添加 修改 发票
+export function projectInvoiceCreate(data) { return post('/user/project/publishedInvoice', data) }
+
+
+// 发票中心  查询发票详情
+export function projectInvoiceDetail(data) { return get('/user/project/invoiceDetails', data) }
+
+
+// 发票中心  查询发票详情  (审核人员)
+export function projectInvoiceReviewDetail(data) { return get('/user/invoiceReview/invoiceDetails', data) }

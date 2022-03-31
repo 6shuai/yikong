@@ -142,7 +142,7 @@ export default {
                 }
 
                 try {
-                    this.maxContentDuration = duration > this.screenLayoutImage[i].duration ? duration : this.screenLayoutImage[i].duration
+                    this.maxContentDuration = (!this.screenLayoutImage[i] || duration > this.screenLayoutImage[i].duration) ? duration : this.screenLayoutImage[i].duration
                 } catch (error) {
                     
                 }
@@ -166,7 +166,7 @@ export default {
             })
 
             
-            
+            console.log('------->', this.maxContentDuration)
             this.$emit('setScreenLayoutData', {
                 screenLayout: this.screenTemplateInfo.id,
                 publishedMaterialRegions: this.screenLayoutImage

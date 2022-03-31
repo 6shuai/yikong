@@ -51,7 +51,7 @@ export default {
 
             let tabsData = this.childTabs ? this.childTabs : this.$store.state.user.currentRoleHomePageData
 
-            if(tabsData.length == 1 && !tabsData[0].children.length) return data
+            if(tabsData.length == 1 && (!tabsData[0].children || !tabsData[0].children.length)) return data
 
             tabsData.forEach(element => {
                 if(element.children && element.children.length){

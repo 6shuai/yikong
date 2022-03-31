@@ -28,3 +28,17 @@ export function financeCommissionSystemList(data) { return get('/user/finance/co
 
 // 创建或编辑  提成体系
 export function financeCommissionSystemCreate(data) { return post('/user/finance/commissionSystem', data); }
+
+
+// 获取发票列表
+export function financeCommissionInvoiceList(data) { return get('/user/invoiceReview/invoice', data); }
+
+// 获取发票项目明细
+export function financeCommissionInvoiceProjectDetail(data) { return get('/user/invoiceReview/publishedProject', data); }
+
+// 审核发票
+export function financeCommissionInvoiceReview(data) { return put(`/user/invoiceReview/invoice?${data}`); }
+
+// 审核发票  驳回原因列表
+export function financeCommissionInvoiceTurnDownReasonList(data) { return get('/public/invoiceRejectionReason', data); }
+

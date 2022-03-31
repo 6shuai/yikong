@@ -10,3 +10,6 @@ export function getPriceTypeList(data) { return get('/public/publishedPriceSyste
 // 查询所有主页
 export function getHomePageList(data) { return get('/public/homePage', data) }
 
+// 查询发票类目
+export function getGoodsAndServicesList(data) { return get('/public/goodsAndServices', data) }
+

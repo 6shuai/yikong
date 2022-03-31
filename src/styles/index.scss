@@ -266,3 +266,16 @@ li{
 .text-align-right{
 	text-align: right;
 }
+
+.hidden-scroll-x .el-scrollbar__wrap{
+	overflow-x: hidden;
+}
+
+.hidden-scroll-y .el-scrollbar__wrap{
+	overflow-x: hidden;
+}
+
+a.underline{
+	text-decoration: underline;
+	color: var(--color-primary);
+}

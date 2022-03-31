@@ -2,7 +2,7 @@
  * @Author: liushuai
  * @Date: 2022-03-02 14:41:04
  * @LastEditors: liushuai
- * @LastEditTime: 2022-03-02 17:33:10
+ * @LastEditTime: 2022-03-31 11:53:09
  * @Description: file content
  * @FilePath: \pclient\src\views\screenLayout\components\ScreenLayout.vue
 -->
@@ -17,6 +17,9 @@
                 height: screen.height > screen.width ? maxWidth + 'px' : screen.height / screen.width * maxWidth + 'px'
             }"
         >
+        
+            <slot name="state"></slot>
+
             <div 
                 class="item" 
                 :class="{ 'item-boder': showBorder }"
@@ -84,6 +87,23 @@ export default {
                 height: 100%;
                 position: absolute;
                 z-index: 10;
+            }
+        }
+
+        .material-state{
+            position: absolute;
+            left: 0;
+            width: 15px;
+            height: 15px;
+            z-index: 90;
+            border-radius: 2px;
+
+            &.state-1{
+                background: #999;
+            }
+
+            &.state-2{
+                background: var(--color-danger);
             }
         }
     }

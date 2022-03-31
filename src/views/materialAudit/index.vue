@@ -17,7 +17,23 @@
                 label="屏幕视图"
                 name="screen"
             >
-
+            </el-tab-pane>
+            <el-tab-pane 
+                label="发票中心" 
+                name="invoice"
+            >
+                <el-dropdown 
+                    slot="label" 
+                    @command="handleCommand"
+                >
+                    <span class="el-dropdown-link">
+                        发票中心<i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>未处理</el-dropdown-item>
+                        <el-dropdown-item command="history">历史开票</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-tab-pane>
         </el-tabs>
         
@@ -27,17 +43,22 @@
         <!-- 屏幕视图 -->
         <screen-view v-if="tabActiveName=='screen'"></screen-view>
 
+        <!-- 发票中心 -->
+        <invoice-center v-if="tabActiveName=='invoice'"></invoice-center>
+
     </div>
 </template>
 
 <script>
 import projectView from "./components/projectView"
 import screenView from './components/screenView'
+import invoiceCenter from '@/views/finance/components/invoiceCenter'
 
 export default {
     components: {
         projectView,
-        screenView
+        screenView,
+        invoiceCenter
     },
     data() {
         return {
@@ -54,7 +75,17 @@ export default {
                     tab: this.tabActiveName
                 }
             })
-        }   
+        },
+        
+        // 发票中心
+        handleCommand(command){
+            this.$router.push({
+                path: '/materialAudit?tab=invoice',
+                query: {
+                    type: command
+                }
+            })
+        }
     }
 }
 </script>

@@ -64,6 +64,14 @@ const financeRoutes = [
                     meta: {
                         title: '财务权责 - 提成体系'  
                     }
+                },
+                {
+                    path: 'invoiceCenter',
+                    name: 'Finance--invoiceCenter',
+                    component: () => import('@/views/finance/components/invoiceCenter/index'),
+                    meta: {
+                        title: '财务权责 - 发票中心'  
+                    }
                 }
             ],
             redirect: '/finance/projectView'

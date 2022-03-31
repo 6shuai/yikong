@@ -266,7 +266,6 @@ export default {
                 // 物料小数点向上取整  物料包和物料的时长差距在1秒之内
                 return item.materialDuration+1 > this.contentDuration && item.materialDuration+1 - this.contentDuration <= 1
             })
-            
             this.stepActive = 2
         },
 

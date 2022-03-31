@@ -40,6 +40,10 @@
                     label="成员" 
                     :name="`/project/${$route.params.id}/member`"
                 ></el-tab-pane>
+                <el-tab-pane 
+                    label="发票中心" 
+                    :name="`/project/${$route.params.id}/invoiceCenter`"
+                ></el-tab-pane>
             </el-tabs>   
             
             <router-view v-if="!dataLoading"></router-view>
@@ -60,7 +64,7 @@ export default {
             resData: [],
 
             // 获取项目详情 loading
-            dataLoading: false
+            dataLoading: true
         }
     },
     computed: {
