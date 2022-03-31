@@ -10,7 +10,7 @@
                     </div>
                     <div v-else>
                         <el-form-item label="项目名称">{{ otherProjectData[0] ? otherProjectData[0].displayName : '' }}</el-form-item>
-                        <el-form-item label="发票金额">{{ data.amount }}</el-form-item>
+                        <el-form-item label="发票金额">￥{{ data.amount }}元</el-form-item>
                     </div>
                     <el-form-item label="发票类型">{{ data.invoiceType == 1 ? '增值税普通发票' : '增值税专用发票' }}</el-form-item>
                     <el-form-item label="发票类目">{{ data.goodsAndServicesName }}</el-form-item>
@@ -21,11 +21,16 @@
     
             <el-col :span="12">
                 <el-form label-width="100px">
-                    <el-form-item label="纳税人识别号">{{ data.organization.taxpayerNumber }}</el-form-item>
-                    <el-form-item label="企业地址">{{ data.organization.address }}</el-form-item>
-                    <el-form-item label="企业电话">{{ data.organization.telephone }}</el-form-item>
-                    <el-form-item label="开户行">{{ data.organization.bank }}</el-form-item>
-                    <el-form-item label="开户行账号">{{ data.organization.account }}</el-form-item>
+                    
+                    <div v-if="data.titleType == 1">
+                        <el-form-item label="发票抬头">{{ data.organization.displayName }}</el-form-item>
+                        <el-form-item label="纳税人识别号">{{ data.organization.taxpayerNumber }}</el-form-item>
+                        <el-form-item label="企业地址">{{ data.organization.address }}</el-form-item>
+                        <el-form-item label="企业电话">{{ data.organization.telephone }}</el-form-item>
+                        <el-form-item label="开户行">{{ data.organization.bank }}</el-form-item>
+                        <el-form-item label="开户行账号">{{ data.organization.account }}</el-form-item>
+                    </div>
+                    <el-form-item v-else label="发票抬头">{{ data.organization.realName }}</el-form-item>
                     <el-form-item label="申请日期">{{ data.applyTimeFormat }}</el-form-item>
                     <el-form-item label="驳回理由" class="reason-text" v-if="rejectText">{{ rejectText }}</el-form-item> 
 
@@ -251,10 +256,10 @@ export default {
 
         // 审核操作   isApproved 驳回 0  通过 1
         handleReview(state){
-            if(this.isLastOne && !this.invoiceReviewParams.material){
+            if(state && this.isLastOne && !this.invoiceReviewParams.material){
                 this.$message.error('您未选择发票材质~')
                 return
-            }else if(this.isLastOne && !this.invoiceReviewParams.print){
+            }else if(state && this.isLastOne && !this.invoiceReviewParams.print){
                 this.$message.error('您未上传发票图片~')
                 return
             }

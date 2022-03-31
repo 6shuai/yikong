@@ -33,7 +33,7 @@
                 <li class="title">
                     <span 
                         class="state"
-                        :class="item.state=='混合' ? 'mix' : item.state=='以下刊' ? 'down' : ''"
+                        :class="item.state=='混合' ? 'mix' : item.state=='已下刊' ? 'down' : ''"
                     >
                         {{ item.state }}
                     </span>

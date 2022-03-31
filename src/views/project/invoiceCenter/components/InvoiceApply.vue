@@ -116,21 +116,23 @@
                             <el-input v-model="invoiceParams.organization.realName"></el-input>
                         </el-form-item>
 
-                        <el-form-item label="纳税人识别号" prop="organization.taxpayerNumber">
-                            <el-input v-model="invoiceParams.organization.taxpayerNumber"></el-input>
-                        </el-form-item>
-                        <el-form-item label="企业地址" prop="organization.address">
-                            <el-input v-model="invoiceParams.organization.address"></el-input>
-                        </el-form-item>
-                        <el-form-item label="企业电话" prop="organization.telephone">
-                            <el-input v-model="invoiceParams.organization.telephone"></el-input>
-                        </el-form-item>
-                        <el-form-item label="开户行" prop="organization.bank">
-                            <el-input v-model="invoiceParams.organization.bank"></el-input>
-                        </el-form-item>
-                        <el-form-item label="开户行账号" porp="organization.account">
-                            <el-input v-model="invoiceParams.organization.account"></el-input>
-                        </el-form-item>
+                        <div v-show="invoiceParams.titleType===1">
+                            <el-form-item label="纳税人识别号" prop="organization.taxpayerNumber">
+                                <el-input v-model="invoiceParams.organization.taxpayerNumber"></el-input>
+                            </el-form-item>
+                            <el-form-item label="企业地址" prop="organization.address">
+                                <el-input v-model="invoiceParams.organization.address"></el-input>
+                            </el-form-item>
+                            <el-form-item label="企业电话" prop="organization.telephone">
+                                <el-input v-model="invoiceParams.organization.telephone"></el-input>
+                            </el-form-item>
+                            <el-form-item label="开户行" prop="organization.bank">
+                                <el-input v-model="invoiceParams.organization.bank"></el-input>
+                            </el-form-item>
+                            <el-form-item label="开户行账号" porp="organization.account">
+                                <el-input v-model="invoiceParams.organization.account"></el-input>
+                            </el-form-item>
+                        </div>
                         <el-form-item label="邮箱" prop="organization.email">
                             <el-input v-model="invoiceParams.organization.email" placeholder="用于接收电子版发票"></el-input>
                         </el-form-item>
@@ -345,7 +347,9 @@ export default {
                     }
                     
                     this.otherProjectData = publishedProject
-                    if(publishedInvoice.merge == 2){
+
+                    // 合并开票 publishedProjects 传入项目id
+                    if(publishedInvoice.merge == true){
                         publishedProject.forEach(element => {
                             this.totalPrice += element.allowInvoicing
                             this.invoiceParams.publishedProjects.push({ id: element.id })
