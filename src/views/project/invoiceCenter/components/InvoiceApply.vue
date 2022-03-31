@@ -90,7 +90,7 @@
                                 class="w220"
                                 :controls="false"
                                 v-model="invoiceParams.amount" 
-                                :min="0"
+                                :min="1"
                                 :max="(invoiceParams.merge || !allowUpdate) ? Infinity : currentProjectData.allowInvoicing"
                                 placeholder="发票金额"
                                 :disabled="invoiceParams.merge || !allowUpdate"
