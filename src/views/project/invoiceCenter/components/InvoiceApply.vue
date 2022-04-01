@@ -62,7 +62,7 @@
                         </el-form-item>
                         <div v-if="invoiceParams.merge">
                             <el-form-item label="合并开票项目"></el-form-item>
-                            <invoice-project-list :projectData="otherProjectData"></invoice-project-list>
+                            <invoice-project-list v-show="otherProjectData && otherProjectData.length" :projectData="otherProjectData"></invoice-project-list>
                         </div>
                         <el-form-item label="发票类型" prop="invoiceType">
                             <el-radio-group v-model="invoiceParams.invoiceType">
@@ -90,8 +90,8 @@
                                 class="w220"
                                 :controls="false"
                                 v-model="invoiceParams.amount" 
-                                :min="1"
                                 :max="(invoiceParams.merge || !allowUpdate) ? Infinity : currentProjectData.allowInvoicing"
+                                :min="1"
                                 placeholder="发票金额"
                                 :disabled="invoiceParams.merge || !allowUpdate"
                             ></el-input-number>
@@ -395,11 +395,9 @@ export default {
 
         // 选择开票方式
         handleChangeInvoiceMethod(){
-            if(!this.invoiceParams.merge){
-                this.otherProjectData = []
-                this.invoiceParams.publishedProjects = []
-                this.invoiceParams.amount = 0
-            }
+            this.$delete(this.invoiceParams, 'amount')
+            this.otherProjectData = []
+            this.invoiceParams.publishedProjects = []
         },
 
         // 提交
