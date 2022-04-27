@@ -22,7 +22,7 @@
                 name="contract"
             ></el-tab-pane>
             <el-tab-pane 
-                label="回款" 
+                label="回款类目" 
                 name="returnMoney"
             ></el-tab-pane>
             <el-tab-pane 
@@ -58,6 +58,10 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-tab-pane>
+            <el-tab-pane 
+                label="合同审核" 
+                name="contractApproval"
+            ></el-tab-pane>
         </el-tabs> 
 
         <router-view></router-view>
@@ -89,6 +93,11 @@ export default {
                     type: command
                 }
             })
+        }
+    },
+    watch: {
+        '$route.path'(n, o){
+            if(this.$route.path.split('finance/')) this.tabActiveName = this.$route.path.split('finance/')[1]
         }
     }
 }

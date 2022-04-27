@@ -96,3 +96,11 @@ export function placeCouponStatistics(data) { return get('/place/couponStatistic
 
 //优惠券统计详情
 export function placeCouponStatisticsDetail(data) { return get('/place/couponStatisticsDetail', data) }
+
+
+
+// 设置为主力店
+export function placeMerchantSetMainStore(data) { return post('/place/placeAnchor', data) }
+
+// 删除主力店
+export function placeMerchantDeleteMainStore(data) { return del(`/place/placeAnchor?id=${data}`) }

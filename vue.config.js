@@ -38,11 +38,104 @@ module.exports = {
 		// proxy: 'http://123.206.83.233:8181',
 		
 		//本地环境
-		proxy: 'http://192.168.34.255:8181',
+		proxy: {
+			'/user': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
 
-		// public: '192.168.137.1:8080' 
+			'/sign_in': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+			
+			'/common': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+			'/logout': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+			'/entry': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+			'/system': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+
+			'/public': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+			'/homePage': {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
+
+			'/order': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+
+			'/get_order': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+
+			
+			'/upload': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+
+			'/target_placeholder': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+
+			'/throw_in_material': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/material': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/price_system': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/material_target': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/screen_statistics': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/unlock': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/delete_order': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/remove_material': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/unlock': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+
+		},
+		
 		public: '192.168.137.1:8080'
-		//   'http://www.xfengjing.com:8181',
 	},
 	configureWebpack: {
 		// provide the app's title in webpack's name field, so that

@@ -1,3 +1,5 @@
+import { timeDifference } from '@/utils/index'
+
 export const timelineFunc = {
     methods: {
         //更新 查找内容的开始时间
@@ -57,24 +59,6 @@ export const timelineFunc = {
         },
 
 
-        //计算时间差（相差分钟）
-        // var beginTime="08:31:00";
-        // var endTime="21:50:00";
-        timeDifference(beginTime, endTime) {
-            if (!beginTime) return;
-            var start1 = beginTime.split(":");
-            var startAll = parseInt(start1[0] * 60) + parseInt(start1[1]);
-            if (!endTime) {
-                return startAll * 60 + parseInt(start1[2]);
-            }
-
-            var end1 = endTime.split(":");
-            var endAll = parseInt(end1[0] * 60) + parseInt(end1[1]);
-            let minute = endAll - startAll;
-
-            return minute * 60 - (parseInt(start1[2]) - parseInt(end1[2]));
-        },
-
         //小于10 前面补个0
         addPreZero(number) {
             number = number < 0 ? (number = 0) : number;
@@ -130,9 +114,9 @@ export const timelineFunc = {
 
                 //当前内容 开始时间 和 上一个内容时间重叠
                 if (
-                    this.timeDifference(prevEndTime, currentStartTime) < 0
+                    timeDifference(prevEndTime, currentStartTime) < 0
                 ) {
-                    diffNum = this.timeDifference(
+                    diffNum = timeDifference(
                         currentStartTime,
                         prevEndTime
                     );
@@ -141,9 +125,9 @@ export const timelineFunc = {
 
                 //当前内容 开始时间 未紧跟上一个结束时间
                 if (
-                    this.timeDifference(prevEndTime, currentStartTime) > 0
+                    timeDifference(prevEndTime, currentStartTime) > 0
                 ) {
-                    diffNum = this.timeDifference(
+                    diffNum = timeDifference(
                         currentStartTime,
                         prevEndTime
                     );
@@ -191,7 +175,7 @@ export const timelineFunc = {
                 //             obj.splice(index - 1, 1);
 
                 //         try {
-                //             if (this.timeDifference(currentStartTime, obj[index - 2].endTime) > 0) {
+                //             if (timeDifference(currentStartTime, obj[index - 2].endTime) > 0) {
                 //                 isOverlap = true;
                 //             }
                 //         } catch (e) {
@@ -217,7 +201,7 @@ export const timelineFunc = {
 
                 //         if (!obj[j]) return;
 
-                //         let count = this.timeDifference(
+                //         let count = timeDifference(
                 //             prevEndTime,
                 //             currentStartTime
                 //         );
@@ -270,8 +254,8 @@ export const timelineFunc = {
 
             obj.sort((a, b) => {
                 return (
-                    this.timeDifference(a.beginTime) -
-                    this.timeDifference(b.beginTime)
+                    timeDifference(a.beginTime) -
+                    timeDifference(b.beginTime)
                 );
             });
             if (isOverlap || objLength < obj.length) {

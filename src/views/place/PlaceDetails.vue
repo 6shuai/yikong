@@ -35,197 +35,27 @@
 
             </div>
         </page-header>
+        
+        <el-tabs 
+            v-model="tabActiveName" 
+            class="mb20"
+        >
+            <el-tab-pane 
+                label="基本信息" 
+                name="basic"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="商户" 
+                name="merchant"
+            ></el-tab-pane>
+        </el-tabs>
 
-        <div class="place-info">
-            <div class="place-photo left">
-                <div class="carousel">
-                    <el-carousel
-                        ref="carouse"
-                        indicator-position="none"
-                        :autoplay="false"
-                        height="470px"
-                        :initial-index="imgIndex"
-                        @change="
-                            imgIndex = $event;
-                            prevNextChange();
-                        "
-                    >
-                        <el-carousel-item
-                            v-for="item in resData.placeShowData"
-                            :key="item.id"
-                        >
-                            <img :src="item.uri" />
-                        </el-carousel-item>
-                    </el-carousel>
-                </div>
-                <div class="thumb-wrap mt10">
-                    <div class="arrow left" @click="prevNextChange('pre')">
-                        <i class="el-icon-arrow-left"></i>
-                    </div>
-                    <div class="arrow right" @click="prevNextChange('next')">
-                        <i class="el-icon-arrow-right"></i>
-                    </div>
-                    <ul
-                        class="thumb"
-                        v-if="
-                            resData.placeShowData &&
-                            resData.placeShowData.length > 1
-                        "
-                        :style="{
-                            width: 162 * resData.placeShowData.length + 'px',
-                            marginLeft: distance + 'px',
-                        }"
-                    >
-                        <li
-                            class="ml10"
-                            v-for="(item, index) in resData.placeShowData"
-                            :key="item.id"
-                            :class="{ active: imgIndex == index }"
-                            @click="
-                                imgIndex = index;
-                                $refs.carouse.setActiveItem(index);
-                            "
-                        >
-                            <el-image :src="item.uri" fit="cover"> </el-image>
-                        </li>
-                    </ul>
-                </div>
+        <!-- 基本信息 -->
+        <place-basic v-if="tabActiveName == 'basic'" :placeDetail="resData"></place-basic>
 
-                <h2 class="p-info-title mt20 mb20">地址信息</h2>
-                <div class="place-info">
-                    <div class="address-name">
-                        <span>{{ resData.address }}</span>
-                    </div>
-                    <div class="map" v-if="resData.longitude">
-                        <the-map
-                            :disableZoom="true"
-                            :lng="resData.longitude"
-                            :lat="resData.latitude"
-                            :visible="true"
-                        ></the-map>
-                    </div>
-                </div>
-            </div>
+        <!-- 商户 -->
+        <place-merchant-list v-if="tabActiveName == 'merchant'" :merchantData="resData.merchantData"></place-merchant-list>
 
-            <div class="place-brand right clearfix" id="app-main-wrap">
-                <div class="place-logo">
-                    <el-image
-                        v-if="resData.logo"
-                        :src="resData.logo"
-                        fit="cover"
-                    >
-                    </el-image>
-                </div>
-                <div class="place-info-r">
-                    <div class="place-name mt20 mb20">
-                        {{ resData.organizationName }}
-                    </div>
-                    <div class="place-desc">
-                        <span v-if="resData.description">{{
-                            resData.description
-                        }}</span>
-                        <span v-else>还没有介绍~</span>
-                    </div>
-                </div>
-
-                <h2 class="p-info-title mt20 mb20">屏幕信息</h2>
-                <div class="place-info">
-
-                    <el-form label-width="100px">
-                        <el-form-item label="游戏数据统计:" v-if="resData.statisics">
-                            <el-link type="primary" @click="handleStatistics">游戏数据统计</el-link>
-                        </el-form-item>
-                        <el-form-item label="优惠券统计:" v-if="resData.statisics">
-                            <el-link type="primary" @click="handleCouponStatistics">优惠券数据统计</el-link>
-                        </el-form-item>
-                    </el-form>
-
-                    <div
-                        class="place-content"
-                        v-if="
-                            resData.placeScreenData &&
-                            resData.placeScreenData.length
-                        "
-                    >
-                        <div class="place-box">
-                            <div
-                                class="place-p"
-                                :style="{ width: placeW }"
-                                v-for="item in resData.placeScreenData"
-                                :key="item.id"
-                            >
-                                <screen-list
-                                    name="place"
-                                    :auth="resData.jumpToScreen"
-                                    :item="item"
-                                    :imageH="imageH"
-                                    @seeAddress="
-                                        $refs.mapDialog.showMapDialog(item)
-                                    "
-                                ></screen-list>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-else>暂无屏幕信息~</div>
-                </div>
-
-                <h2 class="p-info-title mt20 mb20">场管信息</h2>
-                <div class="place-info">
-                    <ul
-                        class="service"
-                        v-if="
-                            resData.placeContactData &&
-                            resData.placeContactData.length
-                        "
-                    >
-                        <li
-                            v-for="item in resData.placeContactData"
-                            :key="item.userId"
-                        >
-                            <el-image src="" fit="cover">
-                                <div slot="error" class="image-slot">
-                                    <svg-icon
-                                        icon-class="defalut-header-img"
-                                    ></svg-icon>
-                                </div>
-                            </el-image>
-                            <div class="desc">
-                                <p class="nickname">
-                                    {{ item.accountName }}
-                                    <span class="role">{{
-                                        item.description
-                                    }}</span>
-                                </p>
-
-                                <p class="place-lx">
-                                    <label title="电话">
-                                        <span class="label"
-                                            ><font-awesome-icon
-                                                :icon="['fas', 'mobile-alt']"
-                                        /></span>
-                                        <span>{{ item.mobile || "--" }}</span>
-                                    </label>
-                                    <el-divider
-                                        direction="vertical"
-                                    ></el-divider>
-                                    <label title="微信">
-                                        <span class="label"
-                                            ><font-awesome-icon
-                                                :icon="['fab', 'weixin']"
-                                        /></span>
-                                        <span>{{ item.wechat || "--" }}</span>
-                                    </label>
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
-                    <div v-else>暂无场管信息~</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 查看地图位置 -->
-        <map-dialog ref="mapDialog"></map-dialog>
 
         <!-- 授权 -->
         <permission
@@ -235,34 +65,34 @@
     </el-card>
 </template>
 <script>
-import {
-    placeDelete,
-    placeAuthority,
-    placeAuthorityUpdate,
-    placeAuthorityDelete,
-} from "@/api/place";
-import { screenSizeWatch } from "@/mixins";
-import { placeIsFavorite, placeDetailData } from "@/views/place/mixins";
-import TheMap from "@/components/BaiduMap/index";
-import ScreenList from "@/views/screen/components/ScreenList";
-import MapDialog from "@/components/BaiduMap/MapDialog";
-import Permission from "@/components/permission/index";
-import PageHeader from '@/components/PageHeader';
+import { placeDelete, placeAuthority, placeAuthorityUpdate, placeAuthorityDelete } from "@/api/place"
+import { placeIsFavorite, placeDetailData } from "@/views/place/mixins"
+import Permission from "@/components/permission/index"
+import PageHeader from '@/components/PageHeader'
+import PlaceBasic from '@/views/place/components/PlaceBasic'
+import PlaceMerchantList from '@/views/place/components/PlaceMerchantList'
 
 export default {
-    mixins: [screenSizeWatch, placeIsFavorite, placeDetailData],
+    components: {
+        Permission,
+        PageHeader,
+        PlaceBasic,
+        PlaceMerchantList
+    },
+    mixins: [placeIsFavorite, placeDetailData],
     data() {
         return {
-            imgIndex: 0, //幻灯片的索引
             loading: false,
             resData: {},
-            distance: -10,
             premissionApi: {
                 list: placeAuthority,
                 update: placeAuthorityUpdate,
                 delete: placeAuthorityDelete,
             },
-        };
+
+            // 当前tab
+            tabActiveName: 'basic' 
+        }
     },
     mounted() {
         this.hasPagePerm("Place").then((res) => {
@@ -312,69 +142,10 @@ export default {
             }).then((res) => {
                 this.$set(this.resData, "isFavorite", p.isFavorite);
             });
-        },
-
-        prevNextChange(type) {
-            if (type) {
-                this.imgIndex =
-                    type == "pre" ? this.imgIndex - 1 : this.imgIndex + 1;
-                if (this.imgIndex < 0) {
-                    this.imgIndex = this.resData.placeShowData.length - 1;
-                    this.distance =
-                        -162 * (this.resData.placeShowData.length - 4) + -10;
-                } else if (
-                    this.imgIndex + 1 >
-                    this.resData.placeShowData.length
-                ) {
-                    this.imgIndex = 0;
-                    this.distance = -10;
-                }
-                this.$refs.carouse.setActiveItem(this.imgIndex);
-            }
-            if (
-                this.distance != -10 &&
-                this.imgIndex < this.resData.placeShowData.length - 4
-            ) {
-                this.distance = -162 * this.imgIndex + -10;
-            } else if (
-                this.distance !=
-                    -162 * (this.resData.placeShowData.length - 4) + -10 &&
-                this.imgIndex > 3
-            ) {
-                this.distance = -162 * (this.imgIndex - 3) + -10;
-            }
-        },
-
-        //数据统计
-        handleStatistics(){
-            this.$router.push({
-                path: '/game/statisics',
-                query: {
-                    source: 'place',
-                    placeId: this.$route.params.id
-                }
-            });
-        },
-
-        //优惠券数据统计
-        handleCouponStatistics(){
-            this.$router.push({
-                path: '/game/couponStatisics',
-                query: {
-                    source: 'place',
-                    placeId: this.$route.params.id
-                }
-            });
         }
-    },
-    components: {
-        TheMap,
-        ScreenList,
-        MapDialog,
-        Permission,
-        PageHeader
-    },
-};
+       
+    }
+}
 </script>
 <style lang="scss">
 @import "../../styles/variables.scss";

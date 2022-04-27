@@ -1,6 +1,35 @@
 import Layout from '@/layout'
 
 const projectRoutes = [
+    // 项目
+	{
+		path: '/',
+		component: Layout,
+		children: [{
+			path: '/project',
+			name: 'Project',
+            redirect: '/project/view',
+			component: () => import('@/views/project/index'),
+			meta: {
+				title: '项目管理',
+				icon: 'home'
+			},
+            children: [
+                {
+                    path: 'view',
+                    name: 'Projcet--view',
+                    component: () => import('@/views/project/projectView/projectList'),
+                    meta: { title: '项目视图' }
+                },
+                {
+                    path: 'returnMoney',
+                    name: 'Projcet--returnMoney',
+                    component: () => import('@/views/project/returnMoney/index'),
+                    meta: { title: '回款列表' }
+                }
+            ]
+		}]
+	},
     {
 		path: '/',
 		component: Layout,
@@ -11,62 +40,70 @@ const projectRoutes = [
             {
                 path: '/project/:id',
                 name: 'Project--detail',
-                component: () => import('@/views/project/detail'),
+                component: () => import('@/views/project/projectView/detail'),
                 children: [
                     {
                         path: '/project/:id',
                         name: 'Project--contract',
-                        component: () => import('@/views/project/info'),
+                        component: () => import('@/views/project/projectView/info/index'),
                         meta: {
-                            title: '项目详情 - 基本信息'
+                            title: '项目 - 基本信息'
                         }
                     },
                     {
                         path: 'contract',
                         name: 'Project--contract',
-                        component: () => import('@/views/project/contract'),
+                        component: () => import('@/views/project/projectView/contract/index'),
                         meta: {
-                            title: '项目详情 - 合同'
+                            title: '项目 - 合同'
                         }
                     },
                     {
                         path: 'material',
                         name: 'Project--material',
-                        component: () => import('@/views/project/material'),
+                        component: () => import('@/views/project/projectView/material/index'),
                         meta: {
-                            title: '项目详情 - 物料'
+                            title: '项目 - 物料管理'
+                        }
+                    },
+                    {
+                        path: 'playStatistics',
+                        name: 'Project--playStatistics',
+                        component: () => import('@/views/project/projectView/playStatistics/index'),
+                        meta: {
+                            title: '项目 - 监播数据'
                         }
                     },
                     {
                         path: 'finance',
                         name: 'Project--finance',
-                        component: () => import('@/views/project/finance'),
+                        component: () => import('@/views/project/projectView/finance/index'),
                         meta: {
-                            title: '项目详情 - 财务'
+                            title: '项目 - 财务'
                         }
                     },
                     {
                         path: 'member',
                         name: 'Project--member',
-                        component: () => import('@/views/project/member'),
+                        component: () => import('@/views/project/projectView/member/index'),
                         meta: {
-                            title: '项目详情 - 成员'
+                            title: '项目 - 成员'
                         }
                     },
                     {
                         path: 'locating',
                         name: 'Project--locating',
-                        component: () => import('@/views/project/lockPositionList'),
+                        component: () => import('@/views/project/projectView/locating/index'),
                         meta: {
-                            title: '项目详情 - 寻位锁位'
+                            title: '项目 - 寻位锁位'
                         }
                     },
                     {
                         path: 'invoiceCenter',
                         name: 'Project--invoiceCenter',
-                        component: () => import('@/views/project/invoiceCenter/index'),
+                        component: () => import('@/views/project/projectView/invoiceCenter/index'),
                         meta: {
-                            title: '项目详情 - 发票中心'
+                            title: '项目 - 发票中心'
                         }
                     }
                 ],
@@ -74,10 +111,28 @@ const projectRoutes = [
             },
             {
                 path: '/invoiceApply',
-                name: 'InvoiceApply',
-                component: () => import('@/views/project/invoiceCenter/components/InvoiceApply'),
+                name: 'Project--invoiceApply',
+                component: () => import('@/views/project/projectView/invoiceCenter/components/InvoiceApply'),
                 meta: {
-                    title: '申请发票'
+                    title: '项目 - 申请发票'
+                }
+            },
+            {
+                path: '/project/:id/locating',
+                name: 'Project--locatingss',
+                component: () => import('@/views/project/projectView/locating/components/SelectScreen'),
+                children: [
+                    {
+                        path: 'selectScreen',
+                        name: 'Project-selectScreen',
+                        component: () => import('@/views/project/projectView/locating/components/SelectScreen'),
+                        meta: {
+                            title: '预选大屏'
+                        }
+                    }
+                ],
+                meta: {
+                    title: '寻位锁位'
                 }
             }
         ],

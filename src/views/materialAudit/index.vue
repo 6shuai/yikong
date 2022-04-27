@@ -52,7 +52,7 @@
 <script>
 import projectView from "./components/projectView"
 import screenView from './components/screenView'
-import invoiceCenter from '@/views/finance/components/invoiceCenter'
+import invoiceCenter from '@/views/finance/invoiceCenter'
 
 export default {
     components: {

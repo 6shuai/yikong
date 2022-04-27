@@ -72,7 +72,7 @@
 <script>
 import { formatTime } from '@/utils/index'
 import { screenOccupyRate } from '@/api/screen'
-import ScreenContentOccupyDetail from '@/views/project/components/ScreenContentOccupyDetail'
+import ScreenContentOccupyDetail from '@/views/project/projectView/locating/components/ScreenContentOccupyDetail'
 
 export default {
     components: {

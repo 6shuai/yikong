@@ -12,67 +12,75 @@ const financeRoutes = [
                 {
                     path: 'projectView',
                     name: 'Finance--projectView',
-                    component: () => import('@/views/finance/components/ProjectView/index'),
+                    component: () => import('@/views/finance/projectView/index'),
                     meta: {
-                        title: '财务权责 - 项目视图'
+                        title: '财务 - 项目视图'
                     }
                 },
                 {
                     path: 'contract',
                     name: 'Finance--contract',
-                    component: () => import('@/views/finance/components/Contract/index'),
+                    component: () => import('@/views/finance/contract/index'),
                     meta: {
-                        title: '财务权责 - 合同'
+                        title: '财务 - 合同'
                     }
                 },
                 {
                     path: 'returnMoney',
                     name: 'Finance--returnMoney',
-                    component: () => import('@/views/finance/components/ReturnMoney/index'),
+                    component: () => import('@/views/finance/returnMoney/index'),
                     meta: {
-                        title: '财务权责 - 回款'
+                        title: '财务 - 回款'
                     }
                 },
                 {
                     path: 'invoice',
                     name: 'Finance--invoice',
-                    component: () => import('@/views/finance/components/Invoice/index'),
+                    component: () => import('@/views/finance/invoice/index'),
                     meta: {
-                        title: '财务权责 - 发票'
+                        title: '财务 - 发票'
                     }
                 },
                 {
                     path: 'projectAuthority',
                     name: 'Finance--projectAuthority',
-                    component: () => import('@/views/finance/components/projectAuthority/index'),
+                    component: () => import('@/views/finance/projectAuthority/index'),
                     meta: {
-                        title: '财务权责 - 项目权责'
+                        title: '财务 - 项目权责'
                     }
                 },
                 {
                     path: 'employeeCommission',
                     name: 'Finance--employeeCommission',
-                    component: () => import('@/views/finance/components/employeeCommission/index'),
+                    component: () => import('@/views/finance/employeeCommission/index'),
                     meta: {
-                        title: '财务权责 - 员工提成'  
+                        title: '财务 - 员工提成'  
                     }
                 },
                 {
                     path: 'commissionSystem',
                     name: 'Finance--commissionSystem',
-                    component: () => import('@/views/finance/components/commissionSystem/index'),
+                    component: () => import('@/views/finance/commissionSystem/index'),
                     meta: {
-                        title: '财务权责 - 提成体系'  
+                        title: '财务 - 提成体系'  
                     }
                 },
                 {
                     path: 'invoiceCenter',
                     name: 'Finance--invoiceCenter',
-                    component: () => import('@/views/finance/components/invoiceCenter/index'),
+                    component: () => import('@/views/finance/invoiceCenter/index'),
                     meta: {
-                        title: '财务权责 - 发票中心'  
+                        title: '财务 - 发票中心'  
                     }
-                }
+                },
+                {
+                    path: 'contractApproval',
+                    name: 'Finance--contractApproval',
+                    component: () => import('@/views/contractApproval/index'),
+                    meta: {
+                        title: '财务 - 合同审核'
+                    }
+                },
             ],
             redirect: '/finance/projectView'
 		}],

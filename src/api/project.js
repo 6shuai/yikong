@@ -25,18 +25,30 @@ export function projectContractSubmitReturnDate(data) { return put(`/user/projec
 
 
 
-// 物料列表
+// 物料列表 xx
 export function projectMaterialList(data) { return get('/user/project/publishedMaterialMedia', data) }
 
-// 查询当前内容所投放的屏幕列表
+// 查询当前内容所投放的屏幕列表 xx
 export function projectMaterialForScreenList(data) { return get('/user/project/publishedMaterialMediaByPackage', data) }
 
 
-// 创建物料
-export function projectMaterialCreate(data) { return post('/user/project/publishedMaterialMedia', data) }
+// 物料列表 
+export function projectMaterialLists(data) { return get('/material', data) }
 
-// 删除物料
-export function projectMaterialDelete(data) { return del(`/user/project/publishedMaterialMedia?id=${data}`) }
+// 物料对应的投放屏幕列表 
+export function projectMaterialScreenList(data) { return get('/material_target', data) }
+
+// 创建物料
+export function projectMaterialUpload(data) { return post('/upload', data) }
+
+// 下架物料
+export function projectMaterialDelete(data) { return post('/remove_material', data) }
+
+// 获取投放锁位列表
+export function projectMaterialLockList(data) { return get('/target_placeholder', data) }
+
+// 投放物料
+export function projectMaterialPut(data) { return post('/throw_in_material', data) }
 
 
 // 查询财务信息
@@ -72,26 +84,35 @@ export function projectBeneficiaryDelete(data) { return del(`/user/project/publi
 
 
 // 寻位 - 获取屏幕列表
-export function projectLocationScreenList(data) { return get('/user/project/screen', data) }
+export function projectLocationScreenList(data) { return get('/user/project/placeAndScreen', data) }
+
+// 寻位 - 获取屏幕列表  查看详情
+export function projectLocationScreenDetail(data) { return get('/user/project/placeAndScreenDetail', data) }
 
 
-// 寻位
-export function projectLocation(data) { return post('/user/project/locating', data) }
+// 获取寻位时用到的  价格体系列表
+export function projectLockPriceSystemList(data) { return get('/price_system', data) }
 
-// 锁位
-export function projectLockPosition(data) { return post('/user/project/lockPosition', data) }
+// 寻位锁位
+export function projectLockPositionCreate(data) { return post('/order', data) }
+
+// 释放订单  删除锁位列表
+export function projectLockPositionDeleteOrder(data) { return post('/delete_order', data) }
+
+// 释放屏幕
+export function projectLockPositionDeleteScreen(data) { return post('/unlock', data) }
 
 
-// 查询锁位列表
-export function projectLockPositionList(data) { return get('/user/project/publishedPlaceholder', data) }
-
-
-// 删除锁位
-export function projectLockPositionDelete(data) { return del(`/user/project/publishedPlaceholder?id=${data}`) }
-
+// 锁位列表
+export function projectLockList(data) { return get(`/get_order?project=${data}`) }
 
 // 查询屏幕某天的上刊信息
 export function projectScreenPublicDetail(data) { return get('/user/project/screenMaterial', data) }
+
+
+// 查询屏幕某天的上刊信息 查询一个屏幕在某天的刊挂情况，用于锁位失败时候，查看该屏幕的使用详情 (姚哥) 
+export function projectScreenUseDetail(data) { return get('/screen_statistics', data) }
+
 
 
 // 查询物料包播放明细
@@ -144,3 +165,38 @@ export function projectInvoiceDetail(data) { return get('/user/project/invoiceDe
 
 // 发票中心  查询发票详情  (审核人员)
 export function projectInvoiceReviewDetail(data) { return get('/user/invoiceReview/invoiceDetails', data) }
+
+
+
+// 回款列表  申领
+export function projectReturnMoneyApply(data) { return post('/user/project/collectionRequest', data) }
+
+// 回款列表  申领记录列表
+export function projectReturnMoneyApplyList(data) { return get('/user/project/collectionRequest', data) }
+
+// 回款列表  申领记录删除
+export function projectReturnMoneyApplyDelete(data) { return del(`/user/project/collectionRequest?id=${data}`) }
+
+// 回款列表  查询销售签约的公司  
+export function projectReturnMoneyCompany(data) { return get('/user/project/organizationForSale', data) }
+
+// 回款列表  查看待分配信息  
+export function projectReturnMoneyDistributeDetail(data) { return get('/user/project/scheduleForProject', data) }
+
+// 回款列表  查看待分配信息 提交分配金额  
+export function projectReturnMoneyDistribute(data) { return post('/user/project/distributePayment', data) }
+
+// 回款列表  退款  
+export function projectReturnMoneyRefund(data) { return post('/user/project/salesRefund', data) }
+
+
+// 监播数据 列表
+export function projectPlayStatisticsList(data) { return get('/user/project/materialPlaybackData', data) }
+
+
+// 查询屏幕的播放情况 按月显示
+export function projectPlayStatisticsCalendar(data) { return get('/user/project/materialPlaybackDataByPlaceholder', data) }
+
+// 查询屏幕某天的播放数据
+export function projectPlayStatisticsCurrentDay(data) { return get('/user/project/materialPlaybackDetail', data) }
+

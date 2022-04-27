@@ -19,21 +19,21 @@
             >
             </el-table-column>
             <el-table-column 
-                prop="effectiveTime" 
+                prop="publishDate" 
                 label="上刊时间" 
                 min-width="80"
             >
                 <template slot-scope="scope">
-                    {{ dateAddHMS(scope.row.effectiveTime) }}
+                    {{ dateAddHMS(scope.row.publishDate) }}
                 </template>
             </el-table-column>
             <el-table-column 
-                prop="dueTime" 
+                prop="dueDate" 
                 label="下刊时间" 
                 min-width="80"
             >
                 <template slot-scope="scope">
-                    {{ dateAddHMS(scope.row.dueTime) }}
+                    {{ dateAddHMS(scope.row.dueDate) }}
                 </template>
             </el-table-column>
             <el-table-column 
@@ -42,7 +42,7 @@
                 min-width="60"
             ></el-table-column>
             <el-table-column 
-                prop="publishedTimes" 
+                prop="playTimes" 
                 label="每日播放次数" 
                 min-width="60"
             ></el-table-column>

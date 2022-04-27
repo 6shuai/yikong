@@ -69,22 +69,6 @@ export const constantRoutes = [
 		}],
 		hidden: true
 	},
-
-	
-	// 项目
-	{
-		path: '/',
-		component: Layout,
-		children: [{
-			path: '/project',
-			name: 'Project',
-			component: () => import('@/views/project/index'),
-			meta: {
-				title: '项目管理',
-				icon: 'home'
-			}
-		}]
-	},
 	
 
 	//个人中心

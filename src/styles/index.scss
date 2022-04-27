@@ -203,6 +203,11 @@ li{
   width: 200px !important;
 }
 
+.w100.el-input, .w100.el-input-number, .w100.el-select{
+	width: 100% !important;
+  }
+
+
 .search-list-wrap{
   .search-list{
       padding-bottom: 10px;
@@ -272,7 +277,7 @@ li{
 }
 
 .hidden-scroll-y .el-scrollbar__wrap{
-	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 a.underline{

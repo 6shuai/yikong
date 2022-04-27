@@ -7,7 +7,7 @@
  * @FilePath: \pclient\src\layout\components\HomeTabs.vue
 -->
 <template>
-    <div class="home-page-tabs-wrap">
+    <div class="home-page-tabs-wrap" v-if="currentRoleHomePageData && currentRoleHomePageData.length > 1">
         <div class="home-page-tabs">
             <div 
                 v-for="(item, index) in currentRoleHomePageData"

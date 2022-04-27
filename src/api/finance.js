@@ -1,7 +1,30 @@
 import { postKeyValueRequest, get, post, put, del } from '@/utils/request';
 
-// 查询回款列表
-export function financeReturnMoneyList(data) { return get('/user/finance/projectAmount', data); }
+// 添加收款记录
+export function financeReturnMoneyAddLog(data) { return post('/user/finance/businessTransaction', data); }
+
+// 获取收款记录列表
+export function financeReturnMoneyLogList(data) { return get('/user/finance/businessTransaction', data); }
+
+// 删除收款记录
+export function financeReturnMoneyLogDelete(data) { return del(`/user/finance/businessTransaction?id=${data}`); }
+
+// 收款分配
+export function financeReturnMoneyDistribute(data) { return put(`/user/finance/collectionReques?${data}`); }
+
+
+
+// 退款处理列表 审核列表
+export function financeReturnMoneyReviewList(data) { return get('/user/finance/salesRefund', data); }
+
+// 退款审核
+export function financeReturnMoneyReview(data) { return put(`/user/finance/salesRefund?${data}`); }
+
+// 退款处理列表数量
+export function financeReturnMoneyReviewCount(data) { return get('/user/finance/salesRefundStatistics', data); }
+
+
+
 
 
 // 获取项目权责  

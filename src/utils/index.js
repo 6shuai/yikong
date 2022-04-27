@@ -101,6 +101,24 @@ export const ajaxUrl = process.env.NODE_ENV === 'development' ?
 	'/' : `${document.location.origin}/`;
 
 
+//计算时间差（相差秒）
+// var beginTime="08:31:00";
+// var endTime="21:50:00";
+export function timeDifference(beginTime, endTime) {
+	if (!beginTime) return;
+	var start1 = beginTime.split(":");
+	var startAll = parseInt(start1[0] * 60) + parseInt(start1[1]);
+	if (!endTime) {
+		return startAll * 60 + parseInt(start1[2]);
+	}
+
+	var end1 = endTime.split(":");
+	var endAll = parseInt(end1[0] * 60) + parseInt(end1[1]);
+	let minute = endAll - startAll;
+
+	return minute * 60 - (parseInt(start1[2]) - parseInt(end1[2]));
+}
+
 //  yyyy-MM-dd 日期 后面加上 HH:mm:ss  00:00:00
 export function dateAddHMS(date) {
 	if (!date) return
@@ -145,6 +163,54 @@ export const Subtr = function(arg1, arg2) {
     m = Math.pow(10, Math.max(r1, r2));
     n = (r1 >= r2) ? r1 : r2;
     return Number(((arg1 * m - arg2 * m) / m).toFixed(n));
+}
+
+
+//价格格式   
+//整数部分大于4位 使用千位分割
+export const priceFormat = (x) => {
+    //强制保留两位小数
+    var f = parseFloat(x);
+    if (isNaN(f)) return x;
+    var f = Math.round(x * 100) / 100;
+    var s = f.toString();
+    var rs = s.indexOf('.');
+    if (rs < 0) {
+        rs = s.length;
+        s += '.';
+    }
+    while (s.length < (rs + 1) + 2) {
+        s += '0';
+    }
+    //每三位用一个逗号隔开
+    var leftNum = s.split(".")[0];
+    var rightNum = "." + s.split(".")[1];
+    var result;
+    //定义数组记录截取后的价格
+    var resultArray = new Array();
+    if (leftNum.length > 3) {
+        var i = true;
+        while (i) {
+            resultArray.push(leftNum.slice(-3));
+            leftNum = leftNum.slice(0, leftNum.length - 3);
+            if (leftNum.length < 4) {
+                i = false;
+            }
+        }
+        //由于从后向前截取，所以从最后一个开始遍历并存到一个新的数组，顺序调换
+        var sortArray = new Array();
+        for (var i = resultArray.length - 1; i >= 0; i--) {
+            sortArray.push(resultArray[i]);
+        }
+        result = leftNum + "," + sortArray.join(",") + rightNum;
+    } else {
+        result = s;
+    }
+    // return {
+    //     full: Number(result.replace(/\,/g,'')),
+	// 	decimal: '￥' + result + '元'
+    // }
+	return '￥' + result + '元'
 }
 
 

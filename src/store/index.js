@@ -8,6 +8,7 @@ import tagsView from './modules/tagsView'
 import user from './modules/user'
 import timeline from './modules/timeline'
 import game from './modules/game'
+import project from './modules/project'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ const store = new Vuex.Store({
     tagsView,
     user,
     timeline,
-    game
+    game,
+    project
   },
   getters
 })

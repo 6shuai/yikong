@@ -1,6 +1,7 @@
-import { userLogin, userLogout, getInfo } from "@/api/user";
+import { userLogin, userLogout, organizationListProject } from "@/api/user";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import { resetRouter } from "@/router";
+import { reject } from "core-js/fn/promise";
 
 const state = {
 	token: getToken(),
@@ -17,14 +18,11 @@ const state = {
 	// 场所列表
 	placeData: [],
 
-	// 项目详情
-	projectDetail: {},
-
-	// 项目 合同详情
-	projectContractDetail: {},
-
 	// 价格体系列表
-	priceTypeData: []
+	priceTypeData: [],
+
+	// 品牌列表
+	brandData: undefined
 };
 
 const mutations = {
@@ -34,6 +32,10 @@ const mutations = {
 	SET_LOGIN_DATA: (state, data) => {
 		state.loginData = data;
 	},
+
+	SET_BRAND_DATA: (state, data) => {
+		state.brandData = data
+	}
 };
 
 const actions = {
@@ -77,6 +79,23 @@ const actions = {
 			resolve();
 		});
 	},
+
+
+	// 获取品牌列表
+	getBrandList({ commit, state }){
+		return new Promise((resolve, reject) => {
+			if(state.brandData){
+				resolve(state.brandData)
+			}else{
+				organizationListProject().then(res => {
+					commit('SET_BRAND_DATA', res.obj)
+					resolve(res.obj)	
+				})
+			}
+		}).catch((error) => {
+			reject([])
+		})
+	}
 };
 
 export default {

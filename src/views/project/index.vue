@@ -1,103 +1,39 @@
 <template>
-    <div 
-        class="app-main-wrap" 
-        id="app-main-wrap"
-    >
-        <div class="add-and-search mb10">
-            <el-button 
-                type="primary" 
-                icon="el-icon-plus" 
-                @click="handleShowCreateProject()"
-                size="small">
-                创建项目
-            </el-button>
+    <el-card class="app-main-wrap"> 
+        <el-tabs 
+            v-model="tabActiveName" 
+            class="mb20"
+            @tab-click="handleClickTab"
+        >
+            <el-tab-pane 
+                label="项目视图" 
+                name="view"
+            ></el-tab-pane>
+            <el-tab-pane 
+                label="回款列表" 
+                name="returnMoney"
+            ></el-tab-pane>
+        </el-tabs>
 
-            <div class="search-input">
-                <el-input 
-                    clearable
-                    size="small"
-                    v-model="params.displayName"
-                    placeholder="输入项目名称搜索"
-                    @input="$debounce(handleSearch)"
-                ></el-input>
-            </div>
-        </div>
+        <router-view></router-view>
 
-        <!-- 项目列表 -->
-        <project-list
-            :listLoading="listLoading"
-            :resData="resData"
-            :totalCount="totalCount"
-            @getList="getList"
-            @handleShowCreateProject="handleShowCreateProject"
-            @jumpPage="jumpProjectDetail"
-        ></project-list>
-        
-
-        <create-project ref="createProject"></create-project>
-
-    </div>
+    </el-card>
 </template>
 
 <script>
-import { projectList } from '@/api/project'
-import ProjectList from './components/ProjectList'
-import CreateProject from './components/CreateProject'
-
 export default {
-    components: {
-        ProjectList, 
-        CreateProject
-    },
     data(){
-        return{
-            resData: [],
-            totalCount: 0,
-            listLoading: false,
-            params: {
-                pageNo: 1,
-                pageSize: 40
-            }
+        return {
+            tabActiveName: 'view'
         }
     },
     mounted() {
-        this.getList()
+        this.tabActiveName = this.$route.name == 'Projcet--view' ? 'view' : 'returnMoney'
     },
     methods: {
-        // 项目列表
-        getList(data){
-            if(data) {
-                this.params = {
-                    ...data,
-                    ...this.params
-                }
-            }
-            this.listLoading = true
-            projectList(this.params).then(res => {
-                this.listLoading = false
-                if(res.code === this.$successCode){
-                    let { list, totalRecords } = res.obj
-                    this.resData = list
-                    this.totalCount = totalRecords
-                }
-            })
-        },
-
-        // 显示创建项目
-        handleShowCreateProject(item){
-            this.$refs.createProject.showCreateProjectDialog(item)
-        },
-
-        // 跳转项目详情
-        jumpProjectDetail({id}){
-            this.$router.push(`/project/${id}`)
-        },  
-
-        // 搜索
-        handleSearch(){
-            this.params.pageNo = 1
-            this.getList()
-        }
+        handleClickTab(){
+            this.$router.push(`/project/${this.tabActiveName}`)
+        }   
     }
 }
 </script>

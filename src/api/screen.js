@@ -15,6 +15,13 @@ export function screenList(data) { return get('/screen/', data) }
 //屏幕管理  创建屏幕
 export function screenCreated(data) { return post('/screen/', data) }
 
+//屏幕管理  创建屏幕 获取屏幕级别列表
+export function screenLevelList(data) { return get('/screen/screenLevel', data) }
+
+//屏幕管理  创建屏幕 获取屏幕类型列表
+export function screenTypeList(data) { return get('/screen/screenType', data) }
+
+
 //屏幕管理  删除屏幕
 export function screenDelete(data) { return del(`/screen/${data}`) }
 

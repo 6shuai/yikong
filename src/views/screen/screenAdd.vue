@@ -111,6 +111,49 @@
                         >
                         </el-time-picker>
                     </el-form-item>
+                    <el-form-item label="屏幕拥有者" prop="ownership">
+                        <el-select v-model="screenParams.ownership" placeholder="请选择屏幕拥有者" style="width:100%">
+                            <el-option 
+                                v-for="item in groupData" 
+                                :key="item.id"
+                                :label="item.displayName" 
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="屏幕级别" prop="levelId">
+                        <el-select v-model="screenParams.levelId" placeholder="请选择屏幕级别" style="width:100%">
+                            <el-option 
+                                v-for="item in screenLevelData" 
+                                :key="item.id"
+                                :label="item.displayName" 
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="屏幕位置" prop="indoor">
+                        <el-select v-model="screenParams.indoor" placeholder="请选择屏幕位置" style="width:100%">
+                            <el-option 
+                                v-for="item in [{ id: 0, displayName: '室内' }, { id: 1, displayName: '室外' }]" 
+                                :key="item.id"
+                                :label="item.displayName" 
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="屏幕具体位置描述" prop="location">
+                        <el-input v-model="screenParams.location" placeholder="屏幕具体位置描述"></el-input>
+                    </el-form-item>
+                    <el-form-item label="屏幕类型" prop="screenType">
+                        <el-select v-model="screenParams.screenType" placeholder="请选择屏幕类型" style="width:100%">
+                            <el-option 
+                                v-for="item in screenTypeData" 
+                                :key="item.id"
+                                :label="item.displayName" 
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="实景图片" prop="screenShowData">
                         <upload-img 
                             ref="uploadImg"
@@ -201,7 +244,7 @@
 </template>
 <script>
 import { getPriceTypeList } from '@/api/common';
-import { screenPlaceList, screenCreated, screenShowDelete, screenShowDefault } from '@/api/screen';
+import { screenPlaceList, screenCreated, screenShowDelete, screenShowDefault, screenLevelList, screenTypeList } from '@/api/screen';
 import { getOrganizationList, objsDifferMethod } from '@/mixins';
 import { getDotPitch, getAspectRatio, getScreenDetail } from '@/views/screen/mixins';
 import { findTimeHasYtd } from '@/utils/index';
@@ -240,15 +283,28 @@ export default {
                 beginTime: [{ required: true, trigger: "change", message: '请选择开始时间~' }],
                 endTime: [{ required: true, trigger: "change", message: '请选择开始时间~' }],
                 screenShowData: [{ required: true, trigger: "change", message: '请选择结束时间~' }],
+                ownership:  [{ required: true, trigger: "change", message: '请选择屏幕拥有者~' }],
+                levelId: [{ required: true, trigger: "change", message: '请选择屏幕级别~' }],
+                indoor: [{ required: true, trigger: "change", message: '请选择屏幕位置~' }],
+                screenType: [{ required: true, trigger: "change", message: '请选择屏幕类型~' }],
+                location: [{ required: true, trigger: "blur", message: '请输入屏幕具体位置描述~' }],
                 groupIds: [{ required: true, trigger: "blur", message: '请选择权限群组~' }]
             },
             loading: false,          //编辑时获取详情  loading
+
+            // 屏幕级别列表
+            screenLevelData: [],
+
+            // 屏幕类型类别
+            screenTypeData: []
         }
     },
     mounted() {
         this.hasPagePerm('Screen').then(res => {
             if(res){
                 this.getPriceType()
+                this.getScreenLevelList()
+                this.getScreenTypeList()
                 this.init()
             }
         })
@@ -268,6 +324,24 @@ export default {
                     this.screenParams.endTime = findTimeHasYtd(this.screenParams.endTime)
                 })
             }
+        },
+
+        // 获取屏幕级别
+        getScreenLevelList(){
+            screenLevelList().then(res => {
+                if(res.code === this.$successCode){
+                    this.screenLevelData = res.obj
+                }
+            })
+        },
+
+        // 获取屏幕类型列表
+        getScreenTypeList(){
+            screenTypeList().then(res => {
+                if(res.code === this.$successCode){
+                    this.screenTypeData = res.obj
+                }
+            })
         },
 
         //提交

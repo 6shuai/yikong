@@ -50,6 +50,9 @@
                         <el-form-item label="详细地址" prop="address">
                             <el-input v-model="placeForm.address" placeholder="详细地址"></el-input>
                         </el-form-item>
+                        <el-form-item label="客流量(万人次)">
+                            <el-input-number :controls="false" v-model="placeForm.flowVolume" placeholder="客流量"></el-input-number>
+                        </el-form-item>
                         <el-form-item label="展示图片" prop="placeShowData">
                             <upload-img 
                                 ref="uploadImg"
