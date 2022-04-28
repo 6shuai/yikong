@@ -136,7 +136,14 @@ module.exports = {
 				target: 'http://188.131.244.215:6122',
 				changeOrigin: true
 			},
-
+			'/layout':  {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/screen_layout':  {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
 		},
 		
 		public: '192.168.137.1:8080'

@@ -180,6 +180,22 @@ export const constantRoutes = [
 		]
 	},
 
+	{
+		path: '/',
+		component: Layout,
+		children: [
+			{
+				path: 'contentManage/screenLayout',
+				name: 'ContentManage--screenLayout',
+				component: () => import('@/views/contentManage/screenLayout'),
+				meta: {
+					title: '配置屏幕布局'
+				}
+			}
+		],
+		hidden: true
+	},
+
 
 	// 我的项目
 	...projectRoutes,
