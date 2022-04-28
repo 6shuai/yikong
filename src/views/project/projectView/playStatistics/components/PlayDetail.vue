@@ -18,8 +18,16 @@
             <div class="not-play-count" v-if="missingCount > 0">漏播: {{ missingCount }}次</div>
         </div>
 
+        <el-empty v-if="!resData.length && !playDataLoading"></el-empty>
+
         <div class="material-play-log">
-            <el-row class="log-head" type="flex" justify="center" align="middle">
+            <el-row 
+                class="log-head" 
+                type="flex" 
+                justify="center" 
+                align="middle"
+                v-if="resData.length"
+            >
                 <el-col :span="12">物料</el-col>
                 <el-col :span="12" class="play-date">
                     <p>

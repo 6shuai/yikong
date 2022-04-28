@@ -234,7 +234,6 @@ export default {
             }else{
                 this.screenIds.push(placeholder)
             }
-            console.log(this.screenIds)
         },
 
         // 下架

@@ -74,6 +74,10 @@ module.exports = {
 				target: 'http://192.168.34.121:8181',
 				changeOrigin: true
 			},
+			'/screen':  {
+				target: 'http://192.168.34.121:8181',
+				changeOrigin: true
+			},
 
 			'/order': {
 				target: 'http://188.131.244.215:6122',

@@ -63,11 +63,11 @@ export const constantRoutes = [
 			name: 'Home',
 			component: () => import('@/views/home/index'),
 			meta: {
-				title: '首页',
+				title: '项目管理',
 				icon: 'home'
 			}
 		}],
-		hidden: true
+		// hidden: true
 	},
 	
 
@@ -162,6 +162,22 @@ export const constantRoutes = [
 			}
 		],
 		hidden: true
+	},
+
+	// 内容管理
+	{
+		path: '/',
+		component: Layout,
+		children: [
+			{
+				path: 'contentManage',
+				name: 'ContentManage',
+				component: () => import('@/views/contentManage/index'),
+				meta: {
+					title: '内容管理'
+				}
+			}
+		]
 	},
 
 

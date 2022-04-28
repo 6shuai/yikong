@@ -11,7 +11,7 @@
 					<item
 						v-if="!onlyOneChild.noShowingChildren"
 						:icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
-						:title="onlyOneChild.meta.title"
+						:title="onlyOneChild.meta && onlyOneChild.meta.title"
 					/>
 					<item v-else :title="onlyOneChild.meta.title" />
 				</el-menu-item>
@@ -23,9 +23,9 @@
 				<item
 					v-if="item.meta && item.meta.icon && item.meta.icon != 'Home'"
 					:icon="item.meta && item.meta.icon"
-					:title="item.meta.title"
+					:title="item.meta && item.meta.title"
 				/>
-				<item v-else icon="menu-item" :title="item.meta.title" />
+				<item v-else icon="menu-item" :title="item.meta && item.meta.title" />
 			</template>
 			<sidebar-item
 				v-for="child in item.children"

@@ -11,9 +11,9 @@ const projectRoutes = [
             redirect: '/project/view',
 			component: () => import('@/views/project/index'),
 			meta: {
-				title: '项目管理',
-				icon: 'home'
-			},
+                title: '项目管理',
+                icon: 'home'
+            },
             children: [
                 {
                     path: 'view',
@@ -27,7 +27,9 @@ const projectRoutes = [
                     component: () => import('@/views/project/returnMoney/index'),
                     meta: { title: '回款列表' }
                 }
-            ]
+            ],
+
+            hidden: true
 		}]
 	},
     {
