@@ -35,11 +35,11 @@
                 >
                     <div class="group-title">{{ groupName }}</div>
                     <ul>
-                        <li v-for="item in group">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</li>
+                        <li v-for="item in group" :key="item.id">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</li>
                     </ul>
                 </div>
 
-                <el-empty v-if="!screenData.length"></el-empty>
+                <!-- <el-empty v-if="!screenData.length"></el-empty> -->
 
             </el-scrollbar>
         </div>

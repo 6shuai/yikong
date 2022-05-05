@@ -305,7 +305,7 @@ export default {
 
         .screen-preview{
             .order-list{
-                box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
                 padding: 20px;
                 margin: 20px 0;
 
@@ -462,7 +462,7 @@ export default {
                                 top: 10px;
                                 right: 10px;
                                 z-index: 99;
-                                box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+                                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
                                 max-width: 230px;
                                 display: flex;
                                 flex-wrap: wrap;

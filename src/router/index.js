@@ -196,6 +196,23 @@ export const constantRoutes = [
 		hidden: true
 	},
 
+	{
+		path: '/',
+		component: Layout,
+		children: [
+			{
+				path: 'contentManage/lockPosition',
+				name: 'ContentManage--lockPosition',
+				component: () => import('@/views/contentManage/lockPosition'),
+				meta: {
+					title: '锁位'
+				}
+			}
+		],
+		hidden: true
+	},
+
+
 
 	// 我的项目
 	...projectRoutes,

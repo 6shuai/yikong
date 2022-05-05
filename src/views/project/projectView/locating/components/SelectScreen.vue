@@ -470,7 +470,7 @@ export default {
                 height: 200px;
                 background: #f2f2f2;
                 border-radius: 6px;
-                box-shadow: 0 2px 12px 0 rgb(0 0 0 / 50%);
+                box-shadow: 0 2px 12px 0 rgba(0,0,0,0.5);
                 cursor: pointer;
                 opacity: 0;
                 transition: all .3s;

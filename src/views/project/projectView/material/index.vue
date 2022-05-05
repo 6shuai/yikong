@@ -31,7 +31,7 @@
                         type="danger"
                         @click="showDeleteCheckbox = true; materialIds=[]"
                     >
-                        下架物料
+                        管理物料
                     </el-button>
                     <el-button
                         icon="el-icon-plus"
@@ -55,8 +55,8 @@
                                 @click.stop="currentMaterialIndex = index;getScreenList(item.id)"
                             >   
                                 <el-checkbox 
-                                    :val="materialIds.includes(item.id)"
-                                    @change="handelSelectMaterial(item.id)"
+                                    :value="materialIds[item.id]"
+                                    @change="handelSelectMaterial(item.id, index)"
                                     @click.stop.native="()=>{}"
                                     v-if="showDeleteCheckbox"
                                 ></el-checkbox>
@@ -88,11 +88,14 @@
                                 :style="{ width: placeW }"
                                 v-for="(item, index) in screenData"
                                 :key="index"
-                                @click="handleSelectScreen(item)"
                             >
                                 <div class="screen-content">
 
-                                    <div class="mask" v-show="screenIds.includes(item.placeholder)"></div>
+                                    <el-checkbox 
+                                        :value="(screenIds[currentMaterialIndex] && screenIds[currentMaterialIndex].includes(item.placeholder)) || materialIds[currentMaterialId]"
+                                        @change="handleSelectScreen(item)"
+                                        v-if="showDeleteCheckbox"
+                                    ></el-checkbox>
 
                                     <div class="screen-image" :style="{ height: imageH + 'px' }">
                                         <el-image 
@@ -119,6 +122,7 @@
         <div class="delete-material-wrap" v-if="showDeleteCheckbox">
             <el-button @click="showDeleteCheckbox=false">取消</el-button>
             <el-button 
+                :loading="btnLoading"
                 type="primary"
                 :disabled="!materialIds.length ? true : false"
                 @click="handleDelete"
@@ -162,6 +166,9 @@ export default {
             // 当前查看的物料下标
             currentMaterialIndex: 0,
 
+            // 当前查看的物料id
+            currentMaterialId: 0,
+
             // 显示投放物料
             showCreateMaterial: false,
 
@@ -169,10 +176,12 @@ export default {
             showDeleteCheckbox: false,
 
             // 已选择的物料id
-            materialIds: [],
+            materialIds: {},
 
             // 已选择的屏幕id
-            screenIds: []
+            screenIds: [],
+
+            btnLoading: false
 
         }
     },
@@ -187,7 +196,7 @@ export default {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj
-                    if(this.resData.length) this.getScreenList(this.resData[0].id)
+                    if(this.resData.length) this.getScreenList(this.currentMaterialId ? this.currentMaterialId : this.resData[0].id)
                     else this.showCreateMaterial = true
                 }
             })
@@ -195,6 +204,7 @@ export default {
 
         // 获取物料投放的屏幕列表
         getScreenList(id){
+            this.currentMaterialId = id
             this.screenLoading = true
             this.screenIds = []
             projectMaterialScreenList({ package: id }).then(res => {
@@ -217,69 +227,71 @@ export default {
         },
 
         // 选择物料
-        handelSelectMaterial(id){
-            if(this.materialIds.includes(id)){
-                let index = this.materialIds.indexOf(id)
-                this.materialIds.splice(index, 1)
+        handelSelectMaterial(id, index){
+            if(this.materialIds[id]){
+                this.$set(this.materialIds, id, false)
+                this.screenIds[index] = []
             }else{
-                this.materialIds.push(id)
+                this.$set(this.materialIds, id, true)
             }
         },
 
         // 选择屏幕
         handleSelectScreen({ placeholder }){
-            if(this.screenIds.includes(placeholder)){
-                let index = this.screenIds.findIndex((item) => item == placeholder)
-                this.screenIds.splice(index, 1)
+            let index = this.currentMaterialIndex
+            if(!this.screenIds[index]) this.screenIds[index] = []
+            if(this.screenIds[index].includes(placeholder)){
+                let i = this.screenIds[index].findIndex((item) => item == placeholder)
+                this.screenIds[index].splice(i, 1)
             }else{
-                this.screenIds.push(placeholder)
+                this.screenIds[index].push(placeholder)
             }
-        },
-
-        // 下架
-        handleDelete(id){
-            projectMaterialDelete({ package: id }).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('下架成功~')
-                    this.getMaterial()
-                }
-            })
+            // this.materialIds[this.currentMaterialId] = (this.screenIds[index].length == this.screenData.length)
+            this.$set(this.materialIds, this.currentMaterialId, this.screenIds[index].length == this.screenData.length)
         },
 
         // 下架物料
         handleDelete(){
-            this.$confirm('您确定要对选择的物料进行下架吗?', '提示', {
-                confirmButtonText: '提交',
-                cancelButtonText: '我再想想',
-                type: 'warning'
-            }).then(() => {
-                this.distributeLoading = true
-                projectReturnMoneyDistribute(params).then(res => {
-                    this.distributeLoading = false
-                    if(res.code === this.$successCode){
-                        this.$message.success('操作成功~')
-                        this.getDetail()
-                    }
-                })
-            })
 
             let data = {
                 materials: []
             }
 
-            for(let i = 0; i < this.materialIds.length; i++){
-                data.materials.push({
-                    packageId: this.materialIds[i],
-                    placeholders: null
-                })
+            for (const key in this.materialIds) {
+                if(this.materialIds[key]){
+                    data.materials.push({
+                        packageId: key,
+                        placeholders: null
+                    })
+                }
             }
 
-            projectMaterialDelete(data).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('下架成功~')
-                    this.getMaterial()
-
+            for(let i = 0; i < this.screenIds.length; i++){
+                let id = this.resData[i].id
+                if(this.screenIds[i] && this.screenIds[i].length && !this.materialIds[id]){
+                    data.materials.push({
+                        packageId: id,
+                        placeholders: this.screenIds[i] 
+                    })
                 }
+            }
+
+
+            this.$confirm('您确定要对选择的物料进行下架吗?', '提示', {
+                confirmButtonText: '提交',
+                cancelButtonText: '我再想想',
+                type: 'warning'
+            }).then(() => {
+                this.btnLoading = true
+                projectMaterialDelete(data).then(res => {
+                    this.btnLoading = false
+                    if(res.code === this.$successCode){
+                        this.$message.success('操作成功~')
+                        this.screenIds = {}
+                        this.materialIds = []
+                        this.getMaterial()
+                    }
+                })
             })
         }
     },
@@ -328,7 +340,7 @@ export default {
                         z-index: 200;
                         width: 160px;
                         background: #fff;
-                        box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+                        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
                         transform: all .3s;
                         opacity: 0;
 
@@ -482,19 +494,28 @@ export default {
 
                             .screen-content{
                                 border: 1px solid #e5e5e5;
-                                box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+                                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
                                 margin: 0 0 20px 20px;
                                 position: relative;
 
-                                .mask{
+                                .el-checkbox{
                                     position: absolute;
                                     top: 0;
                                     left: 0;
-                                    width: 100%;
-                                    height: 100%;
-                                    z-index: 10;
-                                    background: rgba(32,160,255,0.4);
+                                    z-index: 99;
+
+                                    .el-checkbox__inner{
+                                        width: 20px !important;
+                                        height: 20px !important;
+                                        
+                                        &::after{
+                                            height: 10px;
+                                            left: 7px;
+                                            top: 2px;
+                                        }
+                                    }
                                 }
+
 
                                 .screen-image{
                                     width: 100%;

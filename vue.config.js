@@ -32,53 +32,51 @@ module.exports = {
 	productionSourceMap: false,
 	devServer: {
 		port: 8080,
-		//测试环境
+		// 测试环境
 		// proxy: 'http://123.206.83.233:8191',       
-		//线上环境
+		// 线上环境
 		// proxy: 'http://123.206.83.233:8181',
+
+		// 本地环境
+		// proxy: 'http://192.168.34.121:8181',
 		
 		//本地环境
 		proxy: {
 			'/user': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 
 			'/sign_in': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 			
 			'/common': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 			'/logout': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 			'/entry': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 			'/system': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 
 			'/public': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 			'/homePage': {
-				target: 'http://192.168.34.121:8181',
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
-			'/screen':  {
-				target: 'http://192.168.34.121:8181',
-				changeOrigin: true
-			},
-
 			'/order': {
 				target: 'http://188.131.244.215:6122',
 				changeOrigin: true
@@ -136,12 +134,32 @@ module.exports = {
 				target: 'http://188.131.244.215:6122',
 				changeOrigin: true
 			},
-			'/layout':  {
+			'/layout': {
 				target: 'http://188.131.244.215:6122',
 				changeOrigin: true
 			},
-			'/screen_layout':  {
+			'/default_layout': {
 				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/landlord': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/default_layout': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/screen_default': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/screen_layout': {
+				target: 'http://188.131.244.215:6122',
+				changeOrigin: true
+			},
+			'/screen':  {
+				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
 		},

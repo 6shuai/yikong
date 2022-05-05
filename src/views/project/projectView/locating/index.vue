@@ -299,7 +299,7 @@ export default {
                 .screen-item{
                     width: 250px;
                     margin: 0 0 20px 20px;
-                    box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+                    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 
                     .screen-img{
                         width: 100%;
