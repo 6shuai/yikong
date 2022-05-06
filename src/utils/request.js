@@ -13,7 +13,7 @@ axios.defaults.withCredentials = true;  //携带cookie
 axios.interceptors.request.use(
 	(config) => {
 		if(process.env.NODE_ENV === 'production' && config.requestBaseUrl == 'published'){
-			config.baseURL = 'http://188.131.244.215:6122'
+			config.baseURL = 'http://123.206.83.233:6122'
 		}else{
 			config.baseURL = ajaxUrl
 		}
