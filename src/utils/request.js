@@ -109,9 +109,9 @@ const logout = function(){
  */
 export function get(url, params = {}, domainName = '') {
     return new Promise((resolve, reject) => {
-        axios.get(url, { requestBaseUrl: domainName }, {
+        axios.get(url, {
             params: params
-        })
+        }, { requestBaseUrl: domainName })
 		.then(response => {
 			resolve(response);
 		})
@@ -129,7 +129,7 @@ export function get(url, params = {}, domainName = '') {
  */
 export function post(url, data = {}, domainName = '') {
     return new Promise((resolve, reject) => {
-        axios.post(url, { requestBaseUrl: domainName }, data)
+        axios.post(url, data, { requestBaseUrl: domainName })
             .then(response => {
                 resolve(response);
             }, err => {
