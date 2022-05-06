@@ -12,6 +12,11 @@ axios.defaults.withCredentials = true;  //携带cookie
 // request i
 axios.interceptors.request.use(
 	(config) => {
+		if(config.requestBaseUrl == 'published'){
+			config.baseURL = 'http://188.131.244.215:6122'
+		}else{
+			config.baseURL = document.location.origin
+		}
 		// config.headers = {
 		// 	'Content-Type': 'application/x-www-form-urlencoded'
 		// };
@@ -102,9 +107,9 @@ const logout = function(){
  * @param params
  * @returns {Promise}
  */
-export function get(url, params = {}) {
+export function get(url, params = {}, domainName = '') {
     return new Promise((resolve, reject) => {
-        axios.get(url, {
+        axios.get(url, { requestBaseUrl: domainName }, {
             params: params
         })
 		.then(response => {
@@ -122,9 +127,9 @@ export function get(url, params = {}) {
  * @param data
  * @returns {Promise}
  */
-export function post(url, data = {}) {
+export function post(url, data = {}, domainName = '') {
     return new Promise((resolve, reject) => {
-        axios.post(url, data)
+        axios.post(url, { requestBaseUrl: domainName }, data)
             .then(response => {
                 resolve(response);
             }, err => {

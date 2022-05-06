@@ -132,7 +132,7 @@ export default {
         // 获取锁位列表
         getScreenList(){
             this.tLoading = true
-            projectLockList(this.$route.params.id).then(res => {
+            projectLockList({ project: this.$route.params.id }).then(res => {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj

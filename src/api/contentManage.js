@@ -3,6 +3,13 @@ import { get, post, put, del, postKeyValueRequest } from '@/utils/request'
 // 获取屏幕列表 按收藏和城市分组
 export function getScreenGoupList(data) { return get('/screen/screenGroupByCity', data) }
 
+// 获取某个屏幕的默认布局
+export function getScreenLayoutDetail(data) { return get('/default_layout', data) }
+
+// 设置某个屏幕的默认内容
+export function setScreenLayoutContent(data) { return post('/screen_default', data) }
+
+
 
 // 配置屏幕布局  屏幕布局列表
 export function getScreenLayoutList(data) { return get('/layout', data) }

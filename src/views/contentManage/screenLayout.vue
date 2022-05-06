@@ -182,7 +182,6 @@ export default {
             if(!data.all) delete data.all
             getScreenListAndLayout(data).then(res => {
                 this.screenListLoading = false
-                console.log(res.obj)
                 this.screenData = res.obj
             })
         },

@@ -56,13 +56,14 @@
                         class="city-group"
                         v-for="(item, index) in placeData"
                         :key="index"
-
+                        v-show="!item.active"
                     >
                         <div class="city-title">{{ placeData[index-1] && item.city == placeData[index-1].city ? '' : item.city }}</div>
                         <div class="screen-wrap" @click="handelSelectScreen(item, index)">
                             <div class="screen-title overflow">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div>
-                            <div class="msg">{{ item.type == 2 ? '按时长' : item.type == 4 ? '按比例' : '未配置屏幕时长' }}</div>
-                            <div class="content" v-if="item.duration">{{ item.duration }}</div>
+                            <div class="msg" v-if="item.order">{{ item.order.type == 2 ? '按时长' : item.order.type == 4 ? '按比例' : '未配置屏幕时长' }}</div>
+                            <div class="content" v-if="item.order">{{ item.order.type == 2 ? secondToHour(item.order.duration) : item.order.percent + '%' }}</div>
+                            <div class="msg" v-else>未配置屏幕时长</div>
                         </div>
                     </div>
                 </div>
@@ -131,6 +132,35 @@ export default {
             successCount: null
         }
     },
+    computed: {
+        secondToHour(){
+            return (value) => {
+                var theTime = parseInt(value)// 秒
+                var middle= 0// 分
+                var hour= 0// 小时
+
+                if(theTime >= 60) {
+                    middle= parseInt(theTime/60)
+                    theTime = parseInt(theTime%60)
+                    if(middle>= 60) {
+                        hour= parseInt(middle/60)
+                        middle= parseInt(middle%60)
+                    }
+                }
+                var result = ""
+                if(hour> 0) {
+                    result += parseInt(hour)+"小时"+result
+                }
+                if(middle > 0) {
+                    result += parseInt(middle)+"分"+result
+                }
+                if(theTime > 0){
+                    result += parseInt(theTime)+"秒"
+                }
+                return result
+            }
+        }
+    },
     mounted() {
         this.getLockPositionList()
     },
@@ -153,7 +183,9 @@ export default {
         },
 
         // 选择大屏
-        handelSelectScreen(data){
+        handelSelectScreen(data, index){
+
+            
             if(this.ruleData.length && !this.ruleData[this.currentRuleIndex].selectedScreenIds) {
                 this.$set(this.ruleData[this.currentRuleIndex], 'selectedScreenIds', [])
             } 
@@ -164,15 +196,18 @@ export default {
 
             if(this.ruleData.length && !this.ruleData[this.currentRuleIndex].selectedScreenIds.includes(data.id)){
                 let ids = this.ruleData[this.currentRuleIndex].selectedScreenIds.concat([data.id])
+                data.selectedScreenIndex = index
                 let datas = this.ruleData[this.currentRuleIndex].selectedScreens.concat([data])
                 this.$set(this.ruleData[this.currentRuleIndex], 'selectedScreenIds', ids)
                 this.$set(this.ruleData[this.currentRuleIndex], 'selectedScreens', datas)
+                this.placeData[index].active = true
             }
 
         },
 
         // 删除已选定的大屏
         handleScreenDelete(index){
+            this.placeData[this.ruleData[this.currentRuleIndex].selectedScreens[index].selectedScreenIndex].active = false
             this.$delete(this.ruleData[this.currentRuleIndex].selectedScreenIds, index)
             this.$delete(this.ruleData[this.currentRuleIndex].selectedScreens, index)
         },

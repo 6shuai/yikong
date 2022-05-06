@@ -16,18 +16,18 @@
                     v-model="screenName"
                     @input="$debounce(getScreenList)"
                 ></el-input>
-                <el-dropdown class="head-right-icon">
+                <el-dropdown class="head-right-icon" @command="handleCommand">
                     <span class="el-dropdown-link">
                         <i class="el-icon-s-operation"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>创建内容</el-dropdown-item>
-                        <el-dropdown-item>配置屏幕布局</el-dropdown-item>
-                        <el-dropdown-item>配置屏幕时长</el-dropdown-item>
+                        <el-dropdown-item command="/contentManage/screenLayout">配置屏幕布局</el-dropdown-item>
+                        <el-dropdown-item command="/contentManage/lockPosition">配置屏幕时长</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
-            <el-scrollbar class="screen-list">
+            <el-scrollbar class="screen-list hidden-scroll-x">
                 <div 
                     class="screen-group-wrap"
                     v-for="(group, groupName, index) in screenData"
@@ -35,7 +35,14 @@
                 >
                     <div class="group-title">{{ groupName }}</div>
                     <ul>
-                        <li v-for="item in group" :key="item.id">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</li>
+                        <li 
+                            v-for="item in group" 
+                            :key="item.id"
+                            :class="{ 'active': screenId == item.id }"
+                            @click="getScreenDefaultLayout(item.id)"
+                        >
+                            {{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}
+                        </li>
                     </ul>
                 </div>
 
@@ -44,17 +51,60 @@
             </el-scrollbar>
         </div>
         <div class="right-content">
+            <div class="content-wrap">
+                <div class="content-wrap-top" v-if="screenLayout">
+                    <p>全部内容</p>
+                    <div class="btn-wrap">
+                        <el-button 
+                            type="primary" 
+                            v-if="screenLayout.regions.length>1"
+                            @click="showSetDefaultMaterial=true"
+                        >
+                            管理默认素材
+                        </el-button>
+                        <el-button type="primary">素材库</el-button>
+                    </div>
+                </div>
+                <el-empty v-else></el-empty>
 
+                <div class="layout" v-if="screenLayout">
+                    <div
+                        class="region"
+                        v-for="(regions, regionsIndex) in screenLayout.regions"
+                        :key="regionsIndex"
+                        :class="{ 'active': screenLayout.mainRegion == regions.region.id}"
+                        :style="{
+                            width: regions.region.width + '%',
+                            height: regions.region.height + '%', 
+                            left: regions.region.x + '%',
+                            top:  regions.region.y + '%', 
+                        }"
+                    >
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-        <router-view></router-view>
+        <!-- 设置默认素材 -->
+        <set-default-material 
+            :screenLayout="screenLayout" 
+            :screenId="screenId"
+            v-if="showSetDefaultMaterial"
+            @setSuccess="showSetDefaultMaterial=fasle;getScreenDefaultLayout()"
+        ></set-default-material>
+
     </div>
 </template>
 
 <script>
-import { getScreenGoupList } from '@/api/contentManage'
+import { getScreenGoupList, getScreenLayoutDetail } from '@/api/contentManage'
+import SetDefaultMaterial from './components/SetDefaultMaterial'
 
 export default {
+    components: {
+        SetDefaultMaterial
+    },
     data() {
         return {
             // 屏幕列表
@@ -65,6 +115,15 @@ export default {
 
             // 屏幕列表数据加载中
             screenLoading: false,
+
+            // 选中的屏幕id
+            screenId: null,
+
+            // 屏幕默认布局详情
+            screenLayout: undefined,
+
+            // 显示管理默认素材
+            showSetDefaultMaterial: false
         }
     },
     mounted() {
@@ -77,6 +136,19 @@ export default {
                 this.screenLoading = false
                 this.screenData = res.obj
             })
+        },
+
+        // 下拉菜单跳转对应页
+        handleCommand(path){
+            this.$router.push(path)
+        },
+
+        // 获取屏幕默认布局
+        getScreenDefaultLayout(id = this.screenId){
+            this.screenId = id
+            getScreenLayoutDetail({ screen: id }).then(res => {
+                this.screenLayout = res.obj
+            })
         }
     }
 
@@ -84,6 +156,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    $bgColor: #F2F3F5;
+    $mainColor: #0283C6;
+
     .content-manage-wrap{
         display: flex;
         height: calc(100vh - 72px);
@@ -127,6 +202,11 @@ export default {
                         text-overflow: ellipsis;
                         white-space: nowrap;
 
+                        &.active{
+                            background: #0283C6;
+                            color: #fff;
+                        }
+
                         &:hover{
                             background: #0283C6;
                             color: #fff;
@@ -139,6 +219,46 @@ export default {
         .right-content{
             margin-left: 20px;
             flex: 1;
+
+            .content-wrap{
+                height: 100%;
+                margin: 20px;
+                background: #F3F3F4;
+                border-radius: 6px;
+                padding: 20px;
+
+                .content-wrap-top{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                .layout{
+                    width: 200px;
+                    height: 120px;
+                    background: #D0D4DA;
+                    border-radius: 6px;
+                    overflow: hidden;
+                    margin: 20px;
+                    position: relative;
+                    cursor: pointer;
+
+                    &.vertical{
+                        width: 120px;
+                        height: 200px;
+                    }
+
+                    .region{
+                        position: absolute;
+                        border: 1px solid #fff;
+                        cursor: pointer;
+
+                        &.active{
+                            background: $mainColor;
+                        }
+                    }
+                }
+            }
         }
     }
 </style>

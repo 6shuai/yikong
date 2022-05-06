@@ -21,7 +21,7 @@ export function userPasswordUpdate(data) { return put('/user/password', data); }
 
 
 //加载菜单列表
-export function getAuthMenu(data) { return get('/user/authority', data); }
+export function getAuthMenu(data) { return get('/user/authority'); }
 
 //权限管理  添加菜单路由权限
 export function createdMenuAuth(data) { return post('/system/authority/', data); }

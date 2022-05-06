@@ -33,22 +33,22 @@ export function projectMaterialForScreenList(data) { return get('/user/project/p
 
 
 // 物料列表 
-export function projectMaterialLists(data) { return get('/material', data) }
+export function projectMaterialLists(data) { return get('/material', data, 'published') }
 
 // 物料对应的投放屏幕列表 
-export function projectMaterialScreenList(data) { return get('/material_target', data) }
+export function projectMaterialScreenList(data) { return get('/material_target', data, 'published') }
 
 // 创建物料
-export function projectMaterialUpload(data) { return post('/upload', data) }
+export function projectMaterialUpload(data) { return post('/upload', data, 'published') }
 
 // 下架物料
-export function projectMaterialDelete(data) { return post('/remove_material', data) }
+export function projectMaterialDelete(data) { return post('/remove_material', data, 'published') }
 
 // 获取投放锁位列表
-export function projectMaterialLockList(data) { return get('/target_placeholder', data) }
+export function projectMaterialLockList(data) { return get('/target_placeholder', data, 'published') }
 
 // 投放物料
-export function projectMaterialPut(data) { return post('/throw_in_material', data) }
+export function projectMaterialPut(data) { return post('/throw_in_material', data, 'published') }
 
 
 // 查询财务信息
@@ -91,27 +91,27 @@ export function projectLocationScreenDetail(data) { return get('/user/project/pl
 
 
 // 获取寻位时用到的  价格体系列表
-export function projectLockPriceSystemList(data) { return get('/price_system', data) }
+export function projectLockPriceSystemList(data) { return get('/price_system', data, 'published') }
 
 // 寻位锁位
-export function projectLockPositionCreate(data) { return post('/order', data) }
+export function projectLockPositionCreate(data) { return post('/order', data, 'published') }
 
 // 释放订单  删除锁位列表
-export function projectLockPositionDeleteOrder(data) { return post('/delete_order', data) }
+export function projectLockPositionDeleteOrder(data) { return post('/delete_order', data, 'published') }
 
 // 释放屏幕
-export function projectLockPositionDeleteScreen(data) { return post('/unlock', data) }
+export function projectLockPositionDeleteScreen(data) { return post('/unlock', data, 'published') }
 
 
 // 锁位列表
-export function projectLockList(data) { return get(`/get_order?project=${data}`) }
+export function projectLockList(data) { return get('/get_order', data, 'published') }
 
 // 查询屏幕某天的上刊信息
 export function projectScreenPublicDetail(data) { return get('/user/project/screenMaterial', data) }
 
 
 // 查询屏幕某天的上刊信息 查询一个屏幕在某天的刊挂情况，用于锁位失败时候，查看该屏幕的使用详情 (姚哥) 
-export function projectScreenUseDetail(data) { return get('/screen_statistics', data) }
+export function projectScreenUseDetail(data) { return get('/screen_statistics', data, 'published') }
 
 
 
