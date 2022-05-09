@@ -34,7 +34,7 @@
                         </div>
                         <div class="right-limit">
                             <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                                <span v-for="(limitTime, index) in item.limits">{{ limitTime.begin }} - {{ limitTime.end }}</span>
+                                <span v-for="(limitTime, index) in item.limits" :key="index">{{ limitTime.begin }} - {{ limitTime.end }}</span>
                             </p>
                         </div>
                     </div>

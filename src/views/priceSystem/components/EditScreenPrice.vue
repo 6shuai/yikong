@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="520px"
-        title="编辑屏幕刊例价"
+        title="编辑大屏刊例价"
         :visible.sync="showAddScreenPrice"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -13,16 +13,16 @@
             :model="addParams"
             :rules="addParamsRules"
         >
-            <el-form-item label="屏幕" prop="client">
-                {{ addParams.displayName }}
+            <el-form-item label="大屏名称" prop="client">
+                {{ addParams.screenName }}
             </el-form-item>
-            <el-form-item label="刊例价">
+            <el-form-item label="大屏价格">
                 <el-input-number 
                     class="w220"
                     :controls="false"
                     v-model="addParams.price" 
                     :min="0"
-                    placeholder="刊例价"
+                    placeholder="大屏价格"
                 ></el-input-number>
             </el-form-item>
         </el-form>
@@ -57,9 +57,9 @@ export default {
     methods: {
         // 显示新建屏幕刊例价窗口
         showAddScreenPriceDialog(data = {}){
-            let { displayName, media, price, id } = JSON.parse(JSON.stringify(data))
+            let { screenName, media, price, id } = JSON.parse(JSON.stringify(data))
             this.addParams = {
-                displayName,
+                screenName,
                 media,
                 price,
                 id,
@@ -81,7 +81,7 @@ export default {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showAddScreenPrice = false 
-                            this.$parent.getDetail()
+                            this.$parent.getScreenList()
                             this.$message.success('操作成功~')
                         }
                     })

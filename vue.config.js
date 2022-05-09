@@ -77,85 +77,90 @@ module.exports = {
 				target: 'http://123.206.83.233:8191',
 				changeOrigin: true
 			},
+			'/priceSystem': {
+				target: 'http://123.206.83.233:8191',
+				changeOrigin: true
+			},
+
 			'/order': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 
 			'/get_order': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 
 			
 			'/upload': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 
 			'/target_placeholder': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 
 			'/throw_in_material': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/material': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/price_system': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/material_target': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/screen_statistics': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/unlock': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/delete_order': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/remove_material': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/unlock': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/layout': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/default_layout': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/landlord': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/default_layout': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/screen_default': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/screen_layout': {
-				target: 'http://188.131.244.215:6122',
+				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
 			'/screen':  {
