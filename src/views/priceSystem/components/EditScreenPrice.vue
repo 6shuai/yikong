@@ -77,7 +77,7 @@ export default {
             this.$refs.addForm.validate((valid) => {
                 if(valid){
                     this.createdLoading = true
-                    addScreenPrice(this.addParams).then(res => {
+                    addScreenPrice([this.addParams]).then(res => {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showAddScreenPrice = false 

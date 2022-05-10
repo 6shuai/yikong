@@ -11,8 +11,8 @@ import activityRoutes from './activity'
 import merchantRoutes from './merchant'
 import layoutRoutes from './layout'
 import adverRoutes from './adver'
-import priceSystemRoutes from './priceSystem'
 import financeRoutes from './finance'
+import bossRoutes from './boss'
 
 Vue.use(Router)
 
@@ -212,6 +212,22 @@ export const constantRoutes = [
 		hidden: true
 	},
 
+	// 监播统计
+	{
+		path: '/',
+		component: Layout,
+		children: [
+			{
+				path: 'playStatistics',
+				name: 'PlayStatistics',
+				component: () => import('@/views/playStatistics/index'),
+				meta: {
+					title: '监播统计'
+				}
+			}
+		]
+	},
+
 
 
 	// 我的项目
@@ -244,11 +260,11 @@ export const constantRoutes = [
 	// 插播广告
 	...adverRoutes,
 
-	// 屏幕刊例价
-	...priceSystemRoutes,
-
 	// 财务权责
-	...financeRoutes
+	...financeRoutes,
+
+	// boss
+	...bossRoutes,
 ]
 
 

@@ -36,12 +36,13 @@
                     <div class="group-title">{{ groupName }}</div>
                     <ul>
                         <li 
-                            v-for="item in group" 
+                            v-for="(item, subIndex) in group" 
                             :key="item.id"
                             :class="{ 'active': screenId == item.id }"
                             @click="getScreenDefaultLayout(item.id)"
                         >
-                            {{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}
+                            <span class="title overflow">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</span>
+                            <span class="collection" @click="handleFavorite(item)"><i :class="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i></span>
                         </li>
                     </ul>
                 </div>
@@ -99,6 +100,7 @@
 
 <script>
 import { getScreenGoupList, getScreenLayoutDetail } from '@/api/contentManage'
+import { screenFavorite } from '@/api/screen'
 import SetDefaultMaterial from './components/SetDefaultMaterial'
 
 export default {
@@ -135,6 +137,22 @@ export default {
             getScreenGoupList({ displayName: this.screenName }).then(res => {
                 this.screenLoading = false
                 this.screenData = res.obj
+            })
+        },
+
+        // 收藏或取消收藏
+        handleFavorite({ isFavorite, id }){
+            let data = {
+                isFavorite: isFavorite ? 0 : 1,
+                screenId: id,
+                userId: this.$store.state.user.loginData.id,
+            };
+            let s = `?isFavorite=${data.isFavorite}&screenId=${data.screenId}&userId=${data.userId}`
+            screenFavorite(s).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~')
+                    this.getScreenList()
+                }
             })
         },
 
@@ -197,10 +215,13 @@ export default {
 
                     li{
                         padding: 15px 20px;
+                        line-height: 21px;
                         cursor: pointer;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        display: flex;
+                        align-items: center;
 
                         &.active{
                             background: #0283C6;
@@ -210,6 +231,24 @@ export default {
                         &:hover{
                             background: #0283C6;
                             color: #fff;
+
+                            .collection{
+                                display: block;
+                            }
+                        }
+
+                        .title{
+                            flex: 1;
+                        }
+
+                        .collection{
+                            width: 30px;
+                            font-size: 20px;
+                            display: none;
+
+                            .el-icon-star-on{
+                                color: #e6a23c;
+                            }
                         }
                     }
                 }
