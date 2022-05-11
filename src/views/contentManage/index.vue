@@ -36,10 +36,10 @@
                     <div class="group-title">{{ groupName }}</div>
                     <ul>
                         <li 
-                            v-for="(item, subIndex) in group" 
+                            v-for="item in group" 
                             :key="item.id"
                             :class="{ 'active': screenId == item.id }"
-                            @click="getScreenDefaultLayout(item.id)"
+                            @click="getScreenDataAndOrder(item.id)"
                         >
                             <span class="title overflow">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</span>
                             <span class="collection" @click="handleFavorite(item)"><i :class="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i></span>
@@ -51,14 +51,16 @@
 
             </el-scrollbar>
         </div>
-        <div class="right-content">
+        <div class="right-content" v-loading="materialDataLoading">
             <div class="content-wrap">
-                <div class="content-wrap-top" v-if="screenLayout">
+                <put-material ref="putMaterial"></put-material>
+
+                <div class="content-wrap-top" v-if="materialData">
                     <p>全部内容</p>
                     <div class="btn-wrap">
                         <el-button 
                             type="primary" 
-                            v-if="screenLayout.regions.length>1"
+                            v-if="materialData.length"
                             @click="showSetDefaultMaterial=true"
                         >
                             管理默认素材
@@ -66,46 +68,62 @@
                         <el-button type="primary">素材库</el-button>
                     </div>
                 </div>
+
                 <el-empty v-else></el-empty>
 
-                <div class="layout" v-if="screenLayout">
-                    <div
-                        class="region"
-                        v-for="(regions, regionsIndex) in screenLayout.regions"
-                        :key="regionsIndex"
-                        :class="{ 'active': screenLayout.mainRegion == regions.region.id}"
-                        :style="{
-                            width: regions.region.width + '%',
-                            height: regions.region.height + '%', 
-                            left: regions.region.x + '%',
-                            top:  regions.region.y + '%', 
-                        }"
-                    >
+                <el-scrollbar class="hidden-scroll-y">
+                    <div class="content-item" v-for="item in materialData" :key="item.id">
+                        <p class="duration">{{ item.duration }}s</p>
+                        <div class="layout">
+                            <div
+                                class="region"
+                                v-for="(regions, regionsIndex) in item.screenLayout.regions"
+                                :key="regionsIndex"
+                                :class="{ 'active': screenLayout.layout.mainRegion == regions.region.id}"
+                                :style="{
+                                    width: regions.region.width + '%',
+                                    height: regions.region.height + '%', 
+                                    left: regions.region.x + '%',
+                                    top:  regions.region.y + '%', 
+                                }"
+                            >   
+                                <el-image :src="regions.content.content"></el-image>   
+                            </div>
+                        </div>
+                        <ul class="screen-content">
+                            <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex">
+                                <span class="screen-layout-name">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
+                                <span class="content-name overflow">{{ content.content.name }}</span>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                </el-scrollbar>
 
             </div>
         </div>
 
         <!-- 设置默认素材 -->
         <set-default-material 
-            :screenLayout="screenLayout" 
+            :screenLayout="materialData[0].screenLayout" 
+            :mainRegion="screenLayout.layout.mainRegion"
             :screenId="screenId"
             v-if="showSetDefaultMaterial"
-            @setSuccess="showSetDefaultMaterial=fasle;getScreenDefaultLayout()"
+            @setSuccess="showSetDefaultMaterial=fasle;getScreenMaterialList()"
         ></set-default-material>
 
     </div>
 </template>
 
 <script>
-import { getScreenGoupList, getScreenLayoutDetail } from '@/api/contentManage'
+import { getScreenGoupList, getScreenLayoutAndOrderDetail, operationMaterialData } from '@/api/contentManage'
 import { screenFavorite } from '@/api/screen'
 import SetDefaultMaterial from './components/SetDefaultMaterial'
+import PutMaterial from './components/PutMaterial'
 
 export default {
     components: {
-        SetDefaultMaterial
+        SetDefaultMaterial,
+        PutMaterial
     },
     data() {
         return {
@@ -121,8 +139,15 @@ export default {
             // 选中的屏幕id
             screenId: null,
 
-            // 屏幕默认布局详情
-            screenLayout: undefined,
+            // 当前屏幕布局
+            screenLayout: {},
+
+
+
+            // 屏幕物料数据
+            materialData: undefined,
+
+            materialDataLoading: false,
 
             // 显示管理默认素材
             showSetDefaultMaterial: false
@@ -161,11 +186,29 @@ export default {
             this.$router.push(path)
         },
 
-        // 获取屏幕默认布局
-        getScreenDefaultLayout(id = this.screenId){
-            this.screenId = id
-            getScreenLayoutDetail({ screen: id }).then(res => {
+        // 获取屏幕数据和绑定的锁位订单
+        getScreenDataAndOrder(id){
+            this.materialData = undefined
+            this.materialDataLoading = true
+            getScreenLayoutAndOrderDetail({ screen: id }).then(res => {
                 this.screenLayout = res.obj
+                if(this.screenLayout) {
+                    this.getScreenMaterialList(id)
+                } else {
+                    this.materialDataLoading = false
+                }
+            })
+        },
+
+        // 获取屏幕物料数据
+        getScreenMaterialList(id = this.screenId){
+            this.screenId = id
+            operationMaterialData({ screen: id }).then(res => {
+                this.materialDataLoading = false
+                this.materialData = res.obj
+                if(!this.materialData){
+                    this.$refs.putMaterial.showUploadMaterial(this.screenLayout.order)
+                }
             })
         }
     }
@@ -265,6 +308,7 @@ export default {
                 background: #F3F3F4;
                 border-radius: 6px;
                 padding: 20px;
+                position: relative;
 
                 .content-wrap-top{
                     display: flex;
@@ -272,14 +316,48 @@ export default {
                     align-items: center;
                 }
 
+                .el-scrollbar{
+                    height: calc(100% - 150px);
+                }
+                
+                .content-item{
+                    width: 220px;
+                    padding: 10px;
+                    display: inline-block;
+                    background: #fff;
+                    border-radius: 6px;
+                    margin: 20px 20px 0 0;
+                    overflow: hidden;
+
+                    .duration{
+                        text-align: right;
+                    }
+
+                    .screen-content{
+                        li{
+                            line-height: 26px;
+                            display: flex;
+
+                            span.screen-layout-name{
+                                width: 30px; 
+                                font-size: 12px;
+                                color: #999;
+                                margin-right: 10px;
+                            }
+
+                            span.content-name{
+                                flex: 1;
+                            }
+                        }
+                    }
+                }
+
                 .layout{
                     width: 200px;
                     height: 120px;
-                    background: #D0D4DA;
-                    border-radius: 6px;
                     overflow: hidden;
-                    margin: 20px;
                     position: relative;
+                    background: #D0D4DA;
                     cursor: pointer;
 
                     &.vertical{
@@ -291,6 +369,11 @@ export default {
                         position: absolute;
                         border: 1px solid #fff;
                         cursor: pointer;
+                        
+                        .el-image{
+                            width: 100%;
+                            height: 100%;
+                        }
 
                         &.active{
                             background: $mainColor;

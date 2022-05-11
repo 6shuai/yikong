@@ -21,7 +21,17 @@
             <el-col :span="3">{{ item.playDate }}</el-col>
             <el-col :span="2">{{ item.roomType }}</el-col>
             <el-col :span="2">{{ item.duration }}</el-col>
-            <el-col :span="5" class="content-name" @click.native="handleShowContentDetail(item, item.playDate, item.contentId)">{{ item.contentName }}</el-col>
+            <el-popover
+                placement="top"
+                width="400"
+                trigger="hover">
+                <el-image v-if="item.contentPath" fit="cover" :src="item.contentPath"></el-image>
+                <div class="content-detail-popover">
+                    <span>分辨率：{{ item.width }} x {{ item.height }}</span>
+                    <span>文件大小：{{ (item.size / 1024).toFixed(2) }}MB</span>
+                </div>
+                <el-col :span="5" class="content-name" slot="reference" @click.native="handleShowContentDetail(item, item.playDate, item.contentId)">{{ item.contentName }}</el-col>
+            </el-popover>
             <el-col :span="2">{{ item.tempName }} / {{ item.regionName }}</el-col>
             <el-col :span="2">{{ item.contentPath.substring(item.contentPath.lastIndexOf('.')+1) }}</el-col>
             <el-col :span="2">{{ totalType ? item.playCount : item.playDuration }}</el-col>
@@ -118,5 +128,11 @@ export default {
                 color: #fff;
             }
         }
+    }
+
+    .content-detail-popover{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
     }
 </style>

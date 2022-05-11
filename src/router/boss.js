@@ -4,14 +4,24 @@ const bossRoutes = [
 	{
 		path: '/',
         component: Layout,
-		children: [{
-            path: '/boss',
-            name: 'Boss',
-            component: () => import('@/views/priceSystem/index'),
-			meta: {
-				title: '价格体系'
+		children: [
+			{
+				path: '/boss',
+				name: 'Boss',
+				component: () => import('@/views/priceSystem/index'),
+				meta: {
+					title: '价格体系'
+				}
+			},
+			{
+				path: '/priceSystem/:id',
+				name: 'PriceSystem',
+				component: () => import('@/views/priceSystem/screenList'),
+				meta: {
+					title: '价格体系'
+				}
 			}
-		}],
+		],
 		hidden: true
 	}
 ]

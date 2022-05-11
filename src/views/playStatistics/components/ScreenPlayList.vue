@@ -48,7 +48,17 @@
             <el-row class="item" v-for="(child, cIndex) in item.materialInfo" :key="cIndex + index">
                 <el-col :span="3">{{ child.roomType }}</el-col>
                 <el-col :span="3">{{ child.duration }}</el-col>
-                <el-col :span="6" class="content-name" @click.native="handleShowContentDetail(child, item.playDate, child.contentId)">{{ child.contentName }}</el-col>
+                <el-popover
+                    placement="top"
+                    width="400"
+                    trigger="hover">
+                    <el-image v-if="child.contentPath" fit="cover" :src="child.contentPath"></el-image>
+                    <div class="content-detail-popover">
+                        <span>分辨率：{{ child.width }} x {{ child.height }}</span>
+                        <span>文件大小：{{ (child.size / 1024).toFixed(2) }}MB</span>
+                    </div>
+                    <el-col :span="6" class="content-name" slot="reference" @click.native="handleShowContentDetail(child, item.playDate, child.contentId)">{{ child.contentName }}</el-col>
+                </el-popover>
                 <el-col :span="3">{{ child.tempName }} / {{ child.regionName }}</el-col>
                 <el-col :span="3">{{ child.contentPath.substring(child.contentPath.lastIndexOf('.')+1) }}</el-col>
                 <el-col :span="3">{{ child.publishDate }}</el-col>

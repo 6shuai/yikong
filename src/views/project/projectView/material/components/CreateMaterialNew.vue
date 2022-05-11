@@ -173,7 +173,7 @@ export default {
                     // 图片默认时长15s
                     let duration = 15
 
-                   _this.uploadFile(file[0], 1, width, height, duration, size)
+                    _this.uploadFile(file[0], 1, width, height, duration, size)
 
                 }
             }

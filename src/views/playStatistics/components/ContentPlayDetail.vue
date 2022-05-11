@@ -11,7 +11,8 @@
     >   
         <div class="content-detail" v-if="contentInfo">
             <div class="content-img">
-                <el-image fit="cover" :src="contentInfo.contentPath"></el-image>
+                <video v-if="contentInfo.contentType==2" :src="contentInfo.contentPath"></video>
+                <el-image v-else fit="cover" :src="contentInfo.contentPath"></el-image>
             </div>
             <div class="right-detail">
                 <div class="detail-top overflow">
@@ -22,7 +23,10 @@
                     <li>物料时长： {{ contentInfo.duration }}s</li>
                     <li>文件类型： {{ contentInfo.contentPath.substring(contentInfo.contentPath.lastIndexOf('.')+1) }}</li>
                     <li>分辨率： {{ contentInfo.width }} x {{ contentInfo.height }}</li>
-                    <li>文件大小： {{ contentInfo.size }}</li>
+                    <li>
+                        文件大小： {{ (contentInfo.size / 1024).toFixed(2) }}MB 
+                        <a href="javascript:;" class="el-icon-download ml10" @click="downUrl(contentInfo.contentPath)"></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -168,7 +172,36 @@ export default {
 			window.open(
 				`${document.location.origin}/user/project/exportOneMaterialPlaybackData?${qs.stringify(this.params)}`
 			);
-		}
+		},
+        
+        // 下载图片
+        downUrl(url) {
+            // window.open(_this.detail.imgUrl)
+            let xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", url, true);
+            xmlhttp.responseType = "blob";
+            xmlhttp.onload = function () {
+            if (this.status == 200) {
+                const blob = this.response;
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = url.substring(url.lastIndexOf("/") + 1, url.length);
+
+
+                //此写法兼容可火狐浏览器
+                document.body.appendChild(link);
+
+
+                const evt = document.createEvent("MouseEvents");
+                evt.initEvent("click", false, false);
+                link.dispatchEvent(evt);
+                window.URL.revokeObjectURL(link.href)
+                document.body.removeChild(link);
+            }
+            ;
+            }
+            xmlhttp.send();
+        }
     }
 }
 
@@ -186,7 +219,7 @@ export default {
                 flex: 1;
                 height: 120px;
 
-                .el-image{
+                .el-image, video{
                     height: 120px;
                 }
             }

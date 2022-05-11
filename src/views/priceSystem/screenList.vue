@@ -5,7 +5,7 @@
             <el-card> 
                 <div class="project-introduce">
                     <el-page-header 
-                        @back="$router.push('/priceSystem')"
+                        @back="$router.go(-1)"
                         title="返回"
                     > </el-page-header>
                 </div>

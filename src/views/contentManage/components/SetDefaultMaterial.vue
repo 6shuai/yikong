@@ -6,7 +6,7 @@
                 class="region"
                 v-for="(regions, regionsIndex) in screenLayout.regions"
                 :key="regionsIndex"
-                :class="{ 'active': screenLayout.mainRegion != regions.region.id}"
+                :class="{ 'active': mainRegion != regions.region.id}"
                 :style="{
                     width: regions.region.width + '%',
                     height: regions.region.height + '%', 
@@ -16,7 +16,7 @@
             >
 
                 <div 
-                    v-if="screenLayout.mainRegion != regions.region.id"
+                    v-if="mainRegion != regions.region.id"
                     class="drag-upload-wrap" 
                     id="drop_area"
                     :loading="uploadLoading"
@@ -36,6 +36,7 @@ import { ajaxUrl } from '@/utils'
 export default {
     props: {
         screenLayout: Object,
+        mainRegion: Number,
         screenId: Number
     },
     data(){
@@ -97,7 +98,6 @@ export default {
             }).then(data => {
                 return data.json()
             }).then(res => {
-                this.$message.success('上传成功~')
                 this.setDefaultContent(res.obj.id)
             }).catch(err => {
                 this.uploadLoading = false

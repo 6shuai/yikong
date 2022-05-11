@@ -163,6 +163,18 @@ module.exports = {
 				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
+			'/throw_in_content': {
+				target: 'https://static.xfengjing.com/publish',
+				changeOrigin: true
+			},
+			'/screen_for_operation': {
+				target: 'https://static.xfengjing.com/publish',
+				changeOrigin: true
+			},
+			'/operational_material': {
+				target: 'https://static.xfengjing.com/publish',
+				changeOrigin: true
+			},
 			'/screen':  {
 				target: 'http://123.206.83.233:8191',
 				changeOrigin: true

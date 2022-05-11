@@ -45,7 +45,18 @@
                                     :min="1"
                                     v-model="addParams.priceSystemConfigCarouselTimes.duration"
                                 ></el-input-number>
-                                秒
+                                <el-select 
+                                    v-model="durationType" 
+                                    style="width: 80px"
+                                    class="ml10"
+                                >   
+                                    <el-option 
+                                        v-for="item in [{ name: '秒', id: 1 }, { name: '分钟', id: 2 }]" 
+                                        :key="item.id"
+                                        :label="item.name" 
+                                        :value="item.id">
+                                    </el-option>
+                                </el-select>
                             </span>
                         </p>
                         <p>
@@ -85,7 +96,18 @@
                                     :min="1"
                                     v-model="addParams.priceSystemConfigSpot.duration"
                                 ></el-input-number>
-                                秒
+                                <el-select 
+                                    v-model="durationType" 
+                                    style="width: 80px"
+                                    class="ml10"
+                                >   
+                                    <el-option 
+                                        v-for="item in [{ name: '秒', id: 1 }, { name: '分钟', id: 2 }]" 
+                                        :key="item.id"
+                                        :label="item.name" 
+                                        :value="item.id">
+                                    </el-option>
+                                </el-select>
                             </span>
                         </p>
                         <p>
@@ -102,16 +124,19 @@
                         </p>
                     </div>
 
-                    <div class="period mt10">
+                    <p>
                         <label>可用时段</label>
-                        <el-date-picker
-                            v-model="addParams.dueDate"
-                            type="date"
-                            value-format="yyyy-MM-dd"
-                            placeholder="选择日期"
-                        >
-                        </el-date-picker>
-                    </div>
+                        <span>
+                            <el-date-picker
+                                class="w200"
+                                v-model="addParams.dueDate"
+                                type="date"
+                                value-format="yyyy-MM-dd"
+                                placeholder="选择日期"
+                            >
+                            </el-date-picker>
+                        </span>
+                    </p>
                 </div>    
             </div>
 
@@ -144,6 +169,9 @@ export default {
                 { id: 1, name: '轮播' },
                 { id: 3, name: '插播' }
             ],
+
+            // 时长单位  秒 分钟
+            durationType: 1,
 
             // 播放规则
             addParams: {},
@@ -213,6 +241,9 @@ export default {
             if(data.lockType == 1) delete data.priceSystemConfigSpot
             if(data.lockType == 3) delete data.priceSystemConfigCarouselTimes
 
+            if(this.durationType == 2 && lockType == 1) data.priceSystemConfigCarouselTimes.duration = data.priceSystemConfigCarouselTimes.duration * 60
+            if(this.durationType == 2 && lockType == 3) data.priceSystemConfigSpot.duration = data.priceSystemConfigSpot.duration * 60
+
             this.btnLoading = true
             priceSystemCreate(data).then(res => {
                 this.btnLoading = false
@@ -234,13 +265,6 @@ $borderColor: #e5e5e5;
 .screen-attributes-dialog{
     .cattributes-content{
         padding: 0 20px;
-
-        .period{
-            text-align: center;
-            label{
-                padding-right: 20px;
-            }
-        }
 
         .play-method{
             border: 1px solid $borderColor;
@@ -278,7 +302,7 @@ $borderColor: #e5e5e5;
 
                     &>span{
                         display: inline-block;
-                        width: 240px;
+                        width: 300px;
                         text-align: left;
                     }
 
