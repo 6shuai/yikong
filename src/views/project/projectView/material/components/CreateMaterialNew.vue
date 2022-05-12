@@ -15,7 +15,7 @@
 
             <div class="material" v-if="uploadLoading">
                 
-                <el-image :src="materialData.image" :class="{ 'material-type-video': materialData.contentType==2 }"></el-image>
+                <el-image :src="materialData.image" :class="{ 'material-type-video': materialContentType==2 }"></el-image>
 
                 <div class="material-info">
                     <div class="info-top">
@@ -67,6 +67,9 @@ export default {
             // 上传内容接口
             uploadMaterialUrl: 'user/project/upload',
             borderhover: false,
+
+            // 上传物料的类型
+            materialContentType: 1,
 
             // 文件是否上传中
             uploadLoading: false,
@@ -181,6 +184,8 @@ export default {
 
         // 上传文件
         uploadFile(file, type, width, height, duration, size, cover){
+            this.materialContentType = type
+
             let fd = new FormData()
             fd.append('contentType', type)
             fd.append('width', width)

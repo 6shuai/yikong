@@ -134,9 +134,11 @@
     
             <div class="horizontal">
                 <el-form-item label="合同金额:" prop="amount">
-                    <el-input-number 
+                    <el-input-number
+                        :precision="2" 
                         v-show="showEdit"
                         :controls="false"
+                        :min="0"
                         v-model="contractParams.amount" 
                     ></el-input-number>
                     <span v-show="!showEdit">{{ contractParams.amount }}</span>
@@ -258,6 +260,7 @@
                         :key="index"
                     >
                         <el-input-number
+                            :precision="2"
                             v-model="returnMoney.amount"
                             :controls="false"
                             :min="0"
