@@ -11,6 +11,7 @@
                         v-for="item in typeData" 
                         :key="item.id"
                         :class="{ active: currentType == item.id }"
+                        @click="currentType=item.id; handleSearch()"
                     >{{ item.name }}</li>
                 </ul>
             </div>
@@ -26,7 +27,12 @@
             </div>
         </div>
         
-        <el-input suffix-icon="el-icon-search"></el-input>
+        <el-input 
+            clearable
+            suffix-icon="el-icon-search" 
+            v-model="params.displayName"
+            @input="$debounce(handleSearch)"
+        ></el-input>
 
         <el-card
             v-for="(item, index) in resData"
@@ -101,8 +107,8 @@ export default {
             typeData: [
                 { id: 0, name: '全部' },
                 { id: 1, name: '轮播' },
-                { id: 2, name: '插播' },
-                // { id: 3, name: '游戏' }
+                { id: 3, name: '插播' },
+                // { id: 4, name: '游戏' }
             ],
 
             // 当前选中的价格体系类型
@@ -153,6 +159,14 @@ export default {
         // 每页多少条
         handleSizeChange(size){
             this.params.pageSize = size
+            this.init()
+        },
+
+        // 搜索
+        handleSearch(){
+            this.params.pageNo = 1
+            this.params.lockType = this.currentType
+            if(!this.params.lockType) delete this.params.lockType
             this.init()
         },
 
