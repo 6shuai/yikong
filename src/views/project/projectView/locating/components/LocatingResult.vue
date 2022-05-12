@@ -26,7 +26,7 @@
 
 
         <div class="total-price mb20">
-            <el-tag type="primary">总刊例价: {{ totalPrice ? totalPrice.decimal : '-' }}</el-tag>
+            <el-tag type="primary">总刊例价: {{ totalPrice ? totalPrice : '-' }}</el-tag>
         </div>
 
         <div 

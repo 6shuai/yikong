@@ -13,13 +13,13 @@
                     </p>
                     <p>
                         <span>开始日期: {{ limitParams.publishDate }}</span>
-                        <span class="ml10" v-if="limitParams.type==1">物料时长: {{ limitParams.duration }}</span>
+                        <span class="ml10" v-if="limitParams.type==1">物料时长: {{ limitParams.duration }}s</span>
                         <span class="ml10" v-if="limitParams.type==3">开始时间: {{ limitParams.time }}</span>
                     </p>
                     <p>
                         <span>结束日期: {{ limitParams.dueDate }}</span>
-                        <span class="ml10" v-if="limitParams.type==1">每日播放次数: {{ limitParams.times }}</span>
-                        <span class="ml10" v-if="limitParams.type==3">播放时长: {{ limitParams.duration }}</span>
+                        <span class="ml10" v-if="limitParams.type==1">每日播放次数: {{ limitParams.times }}次</span>
+                        <span class="ml10" v-if="limitParams.type==3">播放时长: {{ limitParams.duration }}s</span>
                     </p>
                 </div>
                 <div class="limit" v-if="limitParams.limits && limitParams.limits.length">
@@ -60,7 +60,7 @@
                                     <s v-if="discount">{{ realPrice(item.price, index) }}</s>
                                     <span v-else>{{ realPrice(item.price, index) }}</span>
                                 </span>
-                                <span class="current-price" v-if="discount">{{ discountPrice(item.price, index), index }}</span>
+                                <span class="current-price" v-if="discount">{{ discountPrice(item.price, index) }}</span>
                             </p>
                         </div>
     
@@ -102,7 +102,7 @@
                         </el-option>
                     </el-select>
                 折)：</span>
-                <b class="price active">{{ screenTotalPrice.decimal }}</b>
+                <b class="price active">{{ screenTotalPrice }}</b>
                 <el-button 
                     type="info" 
                     size="small"
@@ -146,7 +146,7 @@ export default {
                 let { type, duration, times } = this.limitParams
                 let durationDay = type == 1 ? duration * times : duration
                 let result = priceFormat(price * this.playDay * durationDay)
-                this.$set(this.screenList[index], 'realPrice', result.full)
+                this.$set(this.screenList[index], 'realPrice', result.full || 0)
                 return result
             }
         },
