@@ -309,11 +309,23 @@ export default {
                 this.screenIds.push(data.id)
                 this.selectedScreenList.push(data)
             }
+            this.isSelectedAll = this.screenIds.length === this.placeData.length
         },
 
         // 全选
         handleSelectAll(){
-            // this.
+            this.selectedScreenList = []
+            if(this.screenIds.length === this.placeData.length){
+                this.screenIds = []
+                this.isSelectedAll = false
+            }else{
+                this.screenIds = []
+                for(let i = 0 ; i < this.placeData.length; i++){
+                    this.screenIds.push(this.placeData[i].id)
+                    this.selectedScreenList.push(this.placeData[i])
+                }
+                this.isSelectedAll = true
+            }
         },
 
         // 查看屏幕详情
