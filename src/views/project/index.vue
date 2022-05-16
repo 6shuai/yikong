@@ -1,5 +1,5 @@
 <template>
-    <el-card class="app-main-wrap"> 
+    <el-card> 
         <el-tabs 
             v-model="tabActiveName" 
             class="mb20"

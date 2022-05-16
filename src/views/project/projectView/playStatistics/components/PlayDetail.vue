@@ -28,8 +28,9 @@
                 align="middle"
                 v-if="resData.length"
             >
+                <el-col :span="2">序号</el-col>
                 <el-col :span="12">物料</el-col>
-                <el-col :span="12" class="play-date">
+                <el-col :span="10" class="play-date">
                     <p>
                         <span>开始时间</span>
                         <span>结束时间</span>
@@ -45,6 +46,7 @@
                 v-for="(item, index) in resData"
                 :key="index"
             >
+                <el-col :span="2">{{ index+1 }}</el-col>
                 <el-col :span="12" class="material">
                     <screen-layout 
                         :screen="item" 
@@ -63,13 +65,13 @@
                     <p>{{ item.playCount }}次</p>
                 </el-col>
                 <el-col 
-                    :span="12" 
+                    :span="10" 
                     class="play-date"
                 >
                     <div class="date" :class="{ 'active': item.active }">
                         <el-scrollbar 
                             class="hidden-scroll-x"
-                            :style="{ height: (item.active || resData.length == 1 ) && item.times.length > 7 ? '200px' : item.times.length * 30 + 'px' }"
+                            :style="{ height: (item.active || resData.length == 1 ) && item.times.length > 10 ? '300px' : item.times.length * 30 + 'px' }"
                         >
                             <p v-for="(time, tIndex) in item.times" :key="tIndex">
                                 <span>{{ time.beginTime }}</span>
@@ -175,6 +177,7 @@ export default {
     .material-play-log{
         .log-head{
             padding: 10px 20px;
+            text-align: center;
         }
 
         .play-date p{
@@ -201,8 +204,8 @@ export default {
 
             .play-date{
                 .date{
-                    overflow: hidden;
-                    height: 60px;
+                    // overflow: hidden;
+                    // height: 60px;
 
                     &.active{
                         height: auto;

@@ -61,7 +61,12 @@
                                     v-if="showDeleteCheckbox"
                                 ></el-checkbox>
                                 <div class="material-cover">
-                                    <el-image fit="cover" :src="item.regions[0].content"></el-image>
+                                    <el-image 
+                                        fit="cover" 
+                                        :src="item.regions[0].content" 
+                                        :preview-src-list="[item.regions[0].content]"
+                                        @click.stop.native="()=>{}"
+                                    ></el-image>
                                 </div>
                             </li>
                         </ul>

@@ -88,6 +88,7 @@
                         <el-form-item label="发票金额" prop="amount">
                             <el-input-number 
                                 class="w220"
+                                :precision="2"
                                 :controls="false"
                                 v-model="invoiceParams.amount" 
                                 :max="(invoiceParams.merge || !allowUpdate) ? Infinity : currentProjectData.allowInvoicing"

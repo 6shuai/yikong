@@ -4,6 +4,14 @@
 @import './element-ui.scss';
 @import './sidebar.scss';
 
+:root{
+	--color-primary: #0284C7;
+	--color-success: #36D977;
+	--color-warning: #F2AA3D;
+	--color-danger: #E63939;
+	--color-info: #FF4066;
+}
+
 body {
 	height: 100vh;
 	-moz-osx-font-smoothing: grayscale;

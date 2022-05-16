@@ -108,7 +108,7 @@ export default {
                 .link{
                     &:hover{
                         background: #F5F7FA;
-                        color: #8484FF;
+                        color: var(--color-primary);
                     }
                 }
 

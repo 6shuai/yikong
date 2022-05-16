@@ -57,12 +57,12 @@ export default {
             text-align: right;
 
             .el-radio-button__inner{
-                border: 1px dashed #8484FF;
+                border: 1px dashed var(--color-primary);
                 border-left: 0;
             }
 
             .el-radio-button:first-child .el-radio-button__inner{
-                border-left: 1px dashed #8484FF;
+                border-left: 1px dashed var(--color-primary);
             }
         }
     }

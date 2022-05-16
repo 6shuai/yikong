@@ -24,5 +24,5 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the menu
    */
-   showMenu: false
+   classicMode: false
 }

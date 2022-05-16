@@ -32,15 +32,14 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="提点" prop="percent">
-                <el-input
-                    class="w200"
+                <el-input-number
+                    :precision="2"
                     v-model="addParams.percent"
+                    :controls="false"
+                    :min="0"
                     placeholder="提点"
-                >
-                    <template #append>
-                        <el-button>%</el-button>
-                    </template>
-                </el-input>
+                ></el-input-number>
+                <span class="ml10">%</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">

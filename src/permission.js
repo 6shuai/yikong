@@ -23,7 +23,7 @@ router.beforeEach((to, from, next) => {
 		if (to.path === '/login' || to.path === '/register') {
 			next({ path: '/' })
 			NProgress.done()
-		}else if(to.path === '/' && store.state.settings.showMenu){
+		}else if(to.path === '/' && store.state.settings.classicMode){
 			next({ path: '/project' })
 			NProgress.done()
 		}else if(to.path === '/' && localStorage.homeRoute){

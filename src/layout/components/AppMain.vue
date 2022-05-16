@@ -1,5 +1,5 @@
 <template>
-	<section class="app-main">
+	<section class="app-main" :class="{ 'classic-mode': !classicMode }">
 		
 		<home-tabs></home-tabs>
 
@@ -23,6 +23,9 @@ export default {
 		cachedViews() {
 			return this.$store.state.tagsView.cachedViews
 		},
+		classicMode() {
+			return this.$store.state.settings.classicMode
+		}
 		/* key() {
 			return this.$route.path
 		} */
@@ -43,6 +46,10 @@ export default {
 	padding-top: 72px;
 	background: #f5f5f5;
 	overflow-x: auto;
+
+	&.classic-mode {
+		padding-top: 40px;
+	}
 }
 
 .app-main>.el-card{
@@ -53,10 +60,18 @@ export default {
 	.app-main {
 		/* 84 = navbar + tags-view = 50 + 34 */
 		min-height: calc(100vh - 84px);
+
+		&.classic-mode{
+			min-height: calc(100vh - 40px);
+		}
 	}
 
 	.fixed-header+.app-main {
 		padding-top: 84px;
+
+		&.classic-mode {
+			padding-top: 40px;
+		}
 	}
 }
 </style>

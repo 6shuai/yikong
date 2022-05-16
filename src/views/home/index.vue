@@ -53,9 +53,18 @@ import { filterAsyncRouter } from '@/store/modules/permission'
 import router from '@/router'
 
 const roleHome = {
-    '/project': '项目管理',
-    '/finance': '财务管理',
-    '/materialAudit': '物料投放审核'
+    '/project': {
+        title: '项目管理',
+        moduleName: 'Project'
+    },
+    '/finance': {
+        title: '财务管理',
+        moduleName: 'Finance'
+    },
+    '/materialAudit': {
+        title: '物料投放审核',
+        moduleName: 'MaterialAudit'
+    }
 }
 
 export default {
@@ -78,7 +87,8 @@ export default {
         handleSelectRole(data){
             let routes = [
                 {
-                    displayName: roleHome[data.frontRoute],
+                    displayName: roleHome[data.frontRoute].title,
+                    moduleName: roleHome[data.frontRoute].moduleName,
                     route: data.frontRoute,
                     hidden: true
                 },
@@ -100,7 +110,6 @@ export default {
             }else{
                 this.$router.push(data.frontRoute)
             }
-            
             this.$store.state.user.currentRoleHomePageData = routes
             this.currentRoleHomePageData = routes
             localStorage.currentRoleHomePageData = JSON.stringify(routes)
@@ -168,7 +177,7 @@ export default {
                 margin: 20px;
                 border-radius: 6px;
                 cursor: pointer;
-                background: #8484ff1a;
+                background: var(--color-primary);
 
                 &:hover{
                     background: #8484ff36;

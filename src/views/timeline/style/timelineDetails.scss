@@ -33,7 +33,7 @@
             .screen-content{
                 position: relative;
                 display: inline-block;
-                // border: 5px solid #8484FF;
+                // border: 5px solid $--color-primary;
                 width: 500px;
                 height: 250px;
                 border: 5px solid rgb(70, 70, 70);
@@ -323,7 +323,7 @@
                     margin-right: 10px;
                     position: relative;
                     &.video{
-                        background: #8484ff;
+                        background: var(--color-danger);
                     }
                     &.game{
                         background: #f2aa3d;

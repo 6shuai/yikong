@@ -253,7 +253,7 @@
                 </div>
             </el-form-item>
 
-            <el-form-item label="回款计划:">
+            <el-form-item label="回款计划:" prop="paymentSchedules">
                 <ul class="return-money" v-show="showEdit">
                     <li 
                         v-for="(returnMoney, index) in contractParams.paymentSchedules"
@@ -347,10 +347,29 @@ export default {
         UploadImg
     },
     data(){
+        var checkPaymentSchedules = (rule, value, callback) => {
+            let money = 0
+            let result = true
+            for(let i = 0; i < value.length; i++){
+                let item = value[i]
+                money += item.amount
+                if(!item.amount || !item.deadline){
+                    result = false
+                }
+            }
+
+            if(!result){
+                return callback(new Error('回款计划未填写完整~'))
+            }else if(money > this.contractParams.amount){
+                return callback(new Error('回款计划未填写完整~'))
+            }else {
+                callback()
+            }
+        }
         return {
             contractParams: {
                 publishedContractPrints: [],
-                paymentSchedules: [{}]
+                paymentSchedules: [{}],
             },
 
             // 创建合同 表单验证
@@ -358,7 +377,8 @@ export default {
                 contractNumber: [{ required: true, message: '请输入合同号~', trigger: 'blur' }],
                 amount: [{ required: true, message: '请输入合同金额~', type: 'number', trigger: 'blur' }],
                 paymentDue: [{ required: true, message: '请输入付款截止日期~', trigger: 'change' }],
-                commissionSystem: [{ required: true, message: '请选择提成体系~', type: 'number', trigger: 'change' }]
+                commissionSystem: [{ required: true, message: '请选择提成体系~', type: 'number', trigger: 'change' }],
+                paymentSchedules: [ { validator: checkPaymentSchedules, trigger: 'blur' }]
             },
 
             // 组织列表
@@ -446,11 +466,9 @@ export default {
 
         // 保存合同
         handleSaveContract(){
-            this.$refs.contractForm.validate(async (valid) => {
+            this.$refs.contractForm.validate((valid) => {
                 if(valid){
-                    let returnMoneyPlan = await this.returnMoneyPlanIsWhole()
-
-                    if(!returnMoneyPlan) return
+                    return 
 
                     this.btnLoading = true
                     let data = {
@@ -470,29 +488,6 @@ export default {
                     })
                 }
             })
-        },
-
-        // 查询回款计划是否填写完整
-        returnMoneyPlanIsWhole(){
-            let money = 0
-            for(let i = 0; i < this.contractParams.paymentSchedules.length; i++){
-                let item = this.contractParams.paymentSchedules[i]
-                money += item.amount
-                if(!item.amount){
-                    this.$message.warning(`回款计划第${i+1}行回款金额未填写~`)
-                    return false
-                }else if(!item.deadline){
-                    this.$message.warning(`回款计划第${i+1}行回款时间未选择~`)
-                    return false
-                }
-            }
-
-            if(money > this.contractParams.amount){
-                this.$message.warning('回款计划总金额不能大于合同金额~')
-                return false
-            }
-
-            return true
         },
 
         // 合同提交审批
@@ -574,6 +569,7 @@ export default {
 
         // 回款计划日期格式化
         returnMoneyDateFormat(){
+            if(!this.contractParams.paymentSchedules[0].deadline) return
             for(let i = 0; i < this.contractParams.paymentSchedules.length; i++){
                 this.contractParams.paymentSchedules[i].deadline = this.contractParams.paymentSchedules[i].deadlineFormat
             }

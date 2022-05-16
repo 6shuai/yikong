@@ -52,18 +52,13 @@
                             min-width="80"
                         >
                             <template slot-scope="scope">
-                                <span 
-                                    v-if="item.orderType == '轮播'" 
+                                <a 
+                                    href="javascript:;"
                                     :class="item.playTimes <= scope.row[key] ? 'accomplish' : 'fail'"
+                                    @click="handleShowCurrentDayPlayDetail(scope.row.placeholder, key, item.playTimes - scope.row[key])"
                                 >
                                     {{ scope.row[key] }} / {{ item.playTimes }}
-                                </span>
-                                <span 
-                                    v-else="item.orderType == '插播'" 
-                                    :class="item.playTimes <= scope.row[key] ? 'accomplish' : 'fail'"
-                                >
-                                    {{ scope.row[key] }} / {{ item.playTimes }}
-                                </span>
+                                </a>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -83,16 +78,21 @@
         <!-- 屏幕监播情况 -->
         <play-calendar v-if="showPlayCalendar" :screenPlaceHolderId="screenPlaceHolderId"></play-calendar>
 
+        <!-- 播放详情 -->
+        <play-detail ref="playDetail"></play-detail>
+
     </div>
 </template>
 
 <script>
 import { projectPlayStatisticsList } from '@/api/project'
 import PlayCalendar from './components/PlayCalendar'
+import PlayDetail from "./components/PlayDetail"
 
 export default {
     components: {
-        PlayCalendar
+        PlayCalendar,
+        PlayDetail
     },
     data() {
         return {
@@ -130,6 +130,11 @@ export default {
                     target: 'calendar'
                 }
             })
+        },
+
+         // 显示某天的播放数据
+        handleShowCurrentDayPlayDetail(screenPlaceHolderId, date, missingCount){
+            this.$refs.playDetail.showDialog(screenPlaceHolderId, date, missingCount)
         }
     },
     watch: {
@@ -199,6 +204,7 @@ export default {
                         color: var(--color-primary);
                     }
                 }
+
 
                 .accomplish{
                     color: #23D89E;

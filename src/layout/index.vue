@@ -3,7 +3,7 @@
 		<div 
 			:class="classObj" 
 			class="app-wrapper"
-			v-if="showMenu"
+			v-if="classicMode"
 		>
 			<div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
 			<sidebar class="sidebar-container" />
@@ -15,22 +15,15 @@
 				<app-main />
 			</div>
 		</div>
-	
-		<div 
-			:class="classObj" 
-			class="app-wrapper full-screen"
-			v-else
-		>
-			<div :class="{ 'fixed-header': fixedHeader }" style="width: 100%">
-				<navbar />
-			</div>
-			<app-main />
-		</div>
+
+		<home-mode v-else></home-mode>
+		
 	</div>
 </template>
 
 <script>
 import { Navbar, Sidebar, AppMain, TagsView } from "./components";
+import HomeMode from './HomeMode'
 import ResizeMixin from "./mixin/ResizeHandler";
 import { mapState } from "vuex";
 
@@ -40,7 +33,8 @@ export default {
 		Navbar,
 		Sidebar,
 		AppMain,
-		TagsView
+		TagsView,
+		HomeMode
 	},
 	mixins: [ResizeMixin],
 	computed: {
@@ -50,7 +44,7 @@ export default {
 			needTagsView: state => state.settings.tagsView,
 			fixedHeader: state => state.settings.fixedHeader,
 			sidebarLogo: state => state.settings.sidebarLogo,
-			showMenu: state => state.settings.showMenu
+			classicMode: state => state.settings.classicMode
 		}),
 		classObj() {
 			return {
@@ -62,7 +56,7 @@ export default {
 		}
 	},
 	created() {
-		if(localStorage.showMenu) this.$store.state.settings.showMenu =  JSON.parse(localStorage.showMenu)
+		if(localStorage.classicMode) this.$store.state.settings.classicMode =  JSON.parse(localStorage.classicMode)
 	},
 	methods: {
 		handleClickOutside() {
@@ -119,6 +113,18 @@ export default {
 		width: 50px;
 		height: 50px;
 		display: inline-block;
+	}
+}
+
+.app-breadcrumb.el-breadcrumb {
+	display: inline-block;
+	font-size: 16px;
+	line-height: 72px;
+	margin-left: 8px;
+
+	.no-redirect {
+		color: #97a8be;
+		cursor: text;
 	}
 }
 </style>

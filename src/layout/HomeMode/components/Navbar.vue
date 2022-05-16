@@ -1,15 +1,10 @@
 <template>
 	<div 
-		class="navbar"
+		class="navbar-home-mode"
 	>	
-		<hamburger 
-			:is-active="sidebar.opened" 
-			class="hamburger-container" 
-			@toggleClick="toggleSideBar" 
-		/>
 
 		<breadcrumb class="breadcrumb-container" />
-
+		
 		<div class="right-menu">
 			<el-dropdown class="avatar-container" trigger="click">
 				<div class="avatar-wrapper">
@@ -22,9 +17,6 @@
 					<i class="el-icon-arrow-down" />
 				</div>
 				<el-dropdown-menu slot="dropdown" class="user-dropdown">
-					<router-link to="/">
-						<el-dropdown-item>首页</el-dropdown-item>
-					</router-link>
 					<router-link to="/user">
 						<el-dropdown-item>个人中心</el-dropdown-item>
 					</router-link>
@@ -38,71 +30,57 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
+import { mapState } from "vuex"
+import Breadcrumb from "@/components/Breadcrumb"
 
 export default {
 	components: {
-		Breadcrumb,
-		Hamburger,
+		Breadcrumb
 	},
 	computed: {
-		...mapGetters(["sidebar"]),
 		...mapState({
 			user: state => state.user.loginData
 		})
 	},
 	methods: {
-		toggleSideBar() {
-			this.$store.dispatch("app/toggleSideBar");
-		},
 		async logout() {
 			await this.$store.dispatch("user/logout");
 			this.$router.push(`/login?redirect=${this.$route.fullPath}`);
 			location.reload()
-		},
-
-		// 跳转到首页
-		goToHomePage(){
-			this.$router.push(localStorage.homeRoute)
 		}
-	},
-};
+	}
+}
 </script>
 
 <style lang="scss">
-.navbar {
-	height: 72px;
+.navbar-home-mode {
+	height: 40px;
+    line-height: 40px;
 	overflow: hidden;
 	position: relative;
-	background: #fff;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #374151;
 	box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-
-	.hamburger-container {
-		line-height: 70px;
-		height: 100%;
-		float: left;
-		cursor: pointer;
-		transition: background 0.3s;
-		-webkit-tap-highlight-color: transparent;
-
-		&:hover {
-			background: rgba(0, 0, 0, 0.025);
-		}
+	
+	.nickname, .el-icon-arrow-down, .el-breadcrumb__inner a{
+		color: #F3F4F6; 
 	}
 
 	.breadcrumb-container {
 		float: left;
-	}
+		cursor: pointer;
+		color: #F3F4F6;
+		transition: background 0.3s;
+		-webkit-tap-highlight-color: transparent;
 
-	.app-breadcrumb.el-breadcrumb{
-		line-height: 72px;
+		&:hover {
+			background: rgba(12, 11, 11, 0.025);
+		}
 	}
 
 	.right-menu {
-		float: right;
-		height: 100%;
 
 		&:focus {
 			outline: none;
@@ -111,7 +89,6 @@ export default {
 		.right-menu-item {
 			display: inline-block;
 			padding: 0 8px;
-			height: 100%;
 			font-size: 18px;
 			color: #5a5e66;
 			vertical-align: text-bottom;
@@ -130,17 +107,15 @@ export default {
 			margin-right: 30px;
 
 			.avatar-wrapper {
-				margin-top: 12px;
-
 				.user-avatar {
 					cursor: pointer;
-					width: 48px;
-					height: 48px;
+					width: 30px;
+					height: 30px;
 					border-radius: 50%;
 					vertical-align: middle;
 					.image-slot .svg-icon {
-						width: 48px;
-						height: 48px;
+						width: 30px;
+						height: 30px;
 					}
 				}
 

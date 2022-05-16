@@ -333,6 +333,7 @@ $borderColor: #e5e5e5;
 
                 .limit-time-list{
                     flex: 1;
+                    text-align: left;
 
 
                     .time-item{

@@ -1,10 +1,10 @@
 <template>
-    <div class="contract-wrap app-main-wrap">
+    <div class="contract-wrap">
         <el-card v-loading="dataLoading"> 
 
             <div class="project-introduce">
                 <el-page-header 
-                    @back="$router.push('/project')"
+                    @back="$router.go(-1)"
                     title="项目列表"
                 > </el-page-header>
                 <div class="title">{{ resData.displayName }}</div>

@@ -67,7 +67,7 @@ export default {
                 margin-right: 10px;
             }
             .focus{
-                color: #8484FF;
+                color: var(--color-primary);
                 border-color: #dadaff;
                 background-color: #f3f3ff;
             }

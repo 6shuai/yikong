@@ -104,7 +104,7 @@ export default {
             display: inline-block;
             
             &:hover{
-                color: #8484FF;
+                color: var(--color-primary);
             }
         }
 

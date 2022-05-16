@@ -37,11 +37,11 @@ export default {
 			);
 			const first = matched[0];
 
-			if (!this.isHome(first)) {
-				matched = [{ path: "/", meta: { title: "首页" } }].concat(
-					matched
-				);
-			}
+			// if (!this.isHome(first)) {
+			// 	matched = [{ path: "/", meta: { title: "首页" } }].concat(
+			// 		matched
+			// 	);
+			// }
 
 			this.levelList = matched.filter(
 				item => item.meta && item.meta.title && item.meta.breadcrumb !== false
@@ -76,17 +76,3 @@ export default {
 	}
 };
 </script>
-
-<style lang="scss" scoped>
-	.app-breadcrumb.el-breadcrumb {
-	display: inline-block;
-	font-size: 16px;
-	line-height: 72px;
-	margin-left: 8px;
-
-	.no-redirect {
-		color: #97a8be;
-		cursor: text;
-	}
-	}
-</style>

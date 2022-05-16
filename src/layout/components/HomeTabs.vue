@@ -45,7 +45,7 @@ export default {
     },
     computed: {
         currentRoleHomePageData() {
-            if(this.$store.state.settings.showMenu) return 
+            if(this.$store.state.settings.classicMode) return 
 
             let data = []
 

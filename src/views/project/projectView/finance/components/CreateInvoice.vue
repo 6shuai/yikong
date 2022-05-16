@@ -17,6 +17,7 @@
                 <el-input-number 
                     class="w220"
                     :controls="false"
+                    :precision="2"
                     v-model="addParams.amount" 
                     :min="0"
                     placeholder="发票金额"
