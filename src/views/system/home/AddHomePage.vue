@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { homePageCreate } from '@/api/basicRole'
+import { homePageCreate } from '@/api/user'
 
 export default {
     data(){

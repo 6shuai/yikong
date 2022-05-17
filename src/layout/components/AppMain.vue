@@ -1,7 +1,5 @@
 <template>
 	<section class="app-main" :class="{ 'classic-mode': !classicMode }">
-		
-		<home-tabs></home-tabs>
 
 		<transition name="fade-transform" mode="out-in">
 			<keep-alive :include="cachedViews">
@@ -12,13 +10,9 @@
 </template>
 
 <script>
-import HomeTabs from './HomeTabs'
 
 export default {
 	name: 'AppMain',
-	components: {
-		HomeTabs
-	},
 	computed: {
 		cachedViews() {
 			return this.$store.state.tagsView.cachedViews

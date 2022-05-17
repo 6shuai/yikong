@@ -51,7 +51,7 @@
 
 <script>
 import { videoShot } from '@/mixins/UploadVideoShot'
-import { ajaxUrl } from '@/utils'
+import { ajaxUrl, aspectRatioCompute } from '@/utils'
 import MaterialMatch  from './MaterialMatch'
 
 export default {
@@ -206,7 +206,7 @@ export default {
                     duration, 
                     image: cover ? cover : res.obj.contentPath,
                     contentType: cover ? 2 : 1,
-                    aspectRatio: this.aspectRatioCompute(width, height)
+                    aspectRatio: aspectRatioCompute(width, height)
                 }
                 this.$message.success('上传成功~')
                 this.contentId = res.obj.id
@@ -220,30 +220,6 @@ export default {
                 this.$message.error('上传失败~')
                 clearInterval(this.progressTimer)
             })
-        },
-
-        //宽高比计算
-        aspectRatioCompute(width, height){
-            // id=1(16:9)  id=2(16:10)  id=3(9:16)  id=4(10:16)  id=5(4:3)  id=6(3:4)  id=7(21:9)
-            if(width > height){
-                let ratio = width / height;
-                if(ratio < 1.5){
-                    return '4 : 3'
-                }else if(ratio >= 1.5 && ratio < 2.3){
-                    return '16 : 9'
-                }else{
-                    return '21 : 9'
-                }
-            }else{
-                let ratio = height / width;
-                if(ratio < 1.5){
-                    return '3 : 4'
-                }else if(ratio >= 1.5 && ratio < 2.3){
-                    return '9 : 16'
-                }else{
-                    return '21 : 9'
-                }
-            }
         },
         
         // 上传进度

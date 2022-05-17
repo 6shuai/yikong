@@ -1,36 +1,8 @@
 <template>
-    <div class="play-statistics-wrap">
-        <div class="left-screen-list" v-loading="screenLoading">
-            <div class="head-wrap">
-                <el-input 
-                    clearable
-                    prefix-icon="el-icon-search"
-                    v-model="screenName"
-                    @input="$debounce(getScreenList)"
-                ></el-input>
-            </div>
-            <el-scrollbar class="screen-list hidden-scroll-x">
-                <div 
-                    class="screen-group-wrap"
-                    v-for="(group, groupName, index) in screenData"
-                    :key="index"
-                >
-                    <div class="group-title">{{ groupName }}</div>
-                    <ul>
-                        <li 
-                            v-for="(item, subIndex) in group" 
-                            :key="item.id"
-                            :class="{ 'active': screenId == item.id }"
-                            @click="getScreenPlayDate(item)"
-                        >
-                            <span class="title overflow">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</span>
-                            <span class="collection" @click="handleFavorite(item)"><i :class="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i></span>
-                        </li>
-                    </ul>
-                </div>
+    <div class="content-manage-wrap play-statistics-wrap">
+        
+        <left-screen-list @currentScreenId="getScreenPlayDate" :hideConfig="true"></left-screen-list>
 
-            </el-scrollbar>
-        </div>
         <div class="right-content" v-if="!selectedScreenName">
             <el-empty></el-empty>
         </div>
@@ -108,26 +80,19 @@
 import { getScreenGoupList } from '@/api/contentManage'
 import { operateContentPlayStatistics } from '@/api/playStatistics'
 import { screenFavorite } from '@/api/screen'
+import LeftScreenList from '../components/LeftScreenList'
 import ScreenPlayList from './components/ScreenPlayList'
 import ContentPlayList from './components/ContentPlayList'
 import qs from 'qs'
 
 export default {
     components: {
+        LeftScreenList,
         ScreenPlayList, 
         ContentPlayList
     },
     data() {
         return {
-            // 屏幕列表
-            screenData: {},
-
-            // 按屏幕名称搜索
-            screenName: '',
-
-            // 屏幕列表数据加载中
-            screenLoading: false,
-
             // 选中的屏幕id
             screenId: null,
 
@@ -257,87 +222,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    $bgColor: #F2F3F5;
-    $mainColor: #0283C6;
+<style lang="scss">
+    $bgColor: #F3F4F6;
 
     .play-statistics-wrap{
-        display: flex;
-        height: calc(100vh - 72px);
-        background: #fff;
-        
-        .left-screen-list{
-            width: 300px;
-            background: #F3F3F4;
-
-            .head-wrap{
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                border-bottom: 1px solid #e5e5e5;
-                
-                .head-right-icon{
-                    font-size: 18px;
-                    margin-left: 10px;
-                    cursor: pointer;
-                }
-
-                .el-input{
-                    flex: 1;
-                }
-            }
-
-            .screen-list{
-                height: calc(100vh - 153px);
-
-                .screen-group-wrap{
-                    .group-title{
-                        font-size: 12px;
-                        color: #999;
-                        padding: 10px;
-                    }
-
-                    li{
-                        padding: 15px 20px;
-                        line-height: 21px;
-                        cursor: pointer;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        display: flex;
-                        align-items: center;
-
-                        &.active{
-                            background: #0283C6;
-                            color: #fff;
-                        }
-
-                        &:hover{
-                            background: #0283C6;
-                            color: #fff;
-
-                            .collection{
-                                display: block;
-                            }
-                        }
-
-                        .title{
-                            flex: 1;
-                        }
-
-                        .collection{
-                            width: 30px;
-                            font-size: 20px;
-                            display: none;
-
-                            .el-icon-star-on{
-                                color: #e6a23c;
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         .right-content{
             margin: 10px 20px;
@@ -372,7 +260,7 @@ export default {
                         span{
                             display: inline-block;
                             padding: 0 10px;
-                            background: $mainColor;
+                            background: var(--color-primary);
                             color: #fff;
                         }
 
@@ -391,11 +279,11 @@ export default {
                             height: 40px;
                             line-height: 40px;
                             padding: 0 20px;
-                            color: $mainColor;
+                            color: var(--color-primary);
                             cursor: pointer;
 
                             &.active{
-                                background: $mainColor;
+                                background: var(--color-primary);
                                 color: #fff;
                             }
                         }

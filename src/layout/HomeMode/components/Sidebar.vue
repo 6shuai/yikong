@@ -13,7 +13,8 @@
                 <li 
                     v-for="(item, index) in currentRoleHomePageData"
                     :key="index"
-                    :class="{ 'active': item.route == item.route }"
+                    :class="{ 'active': activeName == item.moduleName }"
+                    @click="handleTabClick(item)"
                 >
                     <span class="icon"><svg-icon :icon-class="item.moduleName" /></span>
                     <span class="menu-name">{{ item.displayName }}</span> 
@@ -34,12 +35,12 @@ export default {
     },
     data() {
         return {
-            currentIndex: 0,
+            activeName: 0,
             currentTab: {}
         }
     },
     mounted() {
-        this.activeName = this.$route.path
+        this.activeName = this.$route.name.split('--')[0]
     },
     computed: {
         currentRoleHomePageData() {
@@ -73,9 +74,13 @@ export default {
 		},
 
         handleTabClick(item){
-            this.currentTab = item
-            this.activeName = item.route
+            this.activeName = item.moduleName
             this.$router.push(item.children && item.children.length ? item.children[0].route : item.route)
+        }
+    },
+    watch: {
+        '$route.name'(n, o){
+            this.activeName = this.$route.name.split('--')[0]
         }
     }
 }

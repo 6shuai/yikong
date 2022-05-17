@@ -209,7 +209,7 @@ export default {
 
 <style lang="scss">
     $bgColor: #F2F3F5;
-    $mainColor: #0283C6;
+    $mainColor: var(--color-primary);
 
     .content-play-detail-dialog{
         .content-detail{

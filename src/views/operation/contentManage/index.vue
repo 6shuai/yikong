@@ -8,49 +8,9 @@
 -->
 <template>
     <div class="content-manage-wrap">
-        <div class="left-screen-list" v-loading="screenLoading">
-            <div class="head-wrap">
-                <el-input 
-                    clearable
-                    prefix-icon="el-icon-search"
-                    v-model="screenName"
-                    @input="$debounce(getScreenList)"
-                ></el-input>
-                <el-dropdown class="head-right-icon" @command="handleCommand">
-                    <span class="el-dropdown-link">
-                        <i class="el-icon-s-operation"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>创建内容</el-dropdown-item>
-                        <el-dropdown-item command="/contentManage/screenLayout">配置屏幕布局</el-dropdown-item>
-                        <el-dropdown-item command="/contentManage/lockPosition">配置屏幕时长</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-            </div>
-            <el-scrollbar class="screen-list hidden-scroll-x">
-                <div 
-                    class="screen-group-wrap"
-                    v-for="(group, groupName, index) in screenData"
-                    :key="index"
-                >
-                    <div class="group-title">{{ groupName }}</div>
-                    <ul>
-                        <li 
-                            v-for="item in group" 
-                            :key="item.id"
-                            :class="{ 'active': screenId == item.id }"
-                            @click="getScreenDataAndOrder(item.id)"
-                        >
-                            <span class="title overflow">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</span>
-                            <span class="collection" @click="handleFavorite(item)"><i :class="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i></span>
-                        </li>
-                    </ul>
-                </div>
+        
+        <left-screen-list @currentScreenId="getScreenDataAndOrder"></left-screen-list>
 
-                <!-- <el-empty v-if="!screenData.length"></el-empty> -->
-
-            </el-scrollbar>
-        </div>
         <div class="right-content" v-loading="materialDataLoading">
             <div class="content-wrap">
                 <put-material ref="putMaterial"></put-material>
@@ -115,34 +75,24 @@
 </template>
 
 <script>
-import { getScreenGoupList, getScreenLayoutAndOrderDetail, operationMaterialData } from '@/api/contentManage'
-import { screenFavorite } from '@/api/screen'
+import { getScreenLayoutAndOrderDetail, operationMaterialData } from '@/api/contentManage'
+import LeftScreenList from '../components/LeftScreenList'
 import SetDefaultMaterial from './components/SetDefaultMaterial'
 import PutMaterial from './components/PutMaterial'
 
 export default {
     components: {
+        LeftScreenList,
         SetDefaultMaterial,
         PutMaterial
     },
     data() {
         return {
-            // 屏幕列表
-            screenData: {},
-
-            // 按屏幕名称搜索
-            screenName: '',
-
-            // 屏幕列表数据加载中
-            screenLoading: false,
-
-            // 选中的屏幕id
+            // 当前屏幕id
             screenId: null,
 
             // 当前屏幕布局
             screenLayout: {},
-
-
 
             // 屏幕物料数据
             materialData: undefined,
@@ -153,41 +103,9 @@ export default {
             showSetDefaultMaterial: false
         }
     },
-    mounted() {
-        this.getScreenList()
-    },
     methods: {
-        getScreenList(){
-            this.screenLoading = true
-            getScreenGoupList({ displayName: this.screenName }).then(res => {
-                this.screenLoading = false
-                this.screenData = res.obj
-            })
-        },
-
-        // 收藏或取消收藏
-        handleFavorite({ isFavorite, id }){
-            let data = {
-                isFavorite: isFavorite ? 0 : 1,
-                screenId: id,
-                userId: this.$store.state.user.loginData.id,
-            };
-            let s = `?isFavorite=${data.isFavorite}&screenId=${data.screenId}&userId=${data.userId}`
-            screenFavorite(s).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('操作成功~')
-                    this.getScreenList()
-                }
-            })
-        },
-
-        // 下拉菜单跳转对应页
-        handleCommand(path){
-            this.$router.push(path)
-        },
-
         // 获取屏幕数据和绑定的锁位订单
-        getScreenDataAndOrder(id){
+        getScreenDataAndOrder({ id }){
             this.materialData = undefined
             this.materialDataLoading = true
             getScreenLayoutAndOrderDetail({ screen: id }).then(res => {
@@ -216,88 +134,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    $bgColor: #F2F3F5;
-    $mainColor: #0283C6;
-
+<style lang="scss">
     .content-manage-wrap{
-        display: flex;
-        height: calc(100vh - 72px);
-        background: #fff;
         
-        .left-screen-list{
-            width: 300px;
-            background: #F3F3F4;
-
-            .head-wrap{
-                padding: 20px;
-                display: flex;
-                align-items: center;
-                border-bottom: 1px solid #e5e5e5;
-                
-                .head-right-icon{
-                    font-size: 18px;
-                    margin-left: 10px;
-                    cursor: pointer;
-                }
-
-                .el-input{
-                    flex: 1;
-                }
-            }
-
-            .screen-list{
-                height: calc(100vh - 153px);
-
-                .screen-group-wrap{
-                    .group-title{
-                        font-size: 12px;
-                        color: #999;
-                        padding: 10px;
-                    }
-
-                    li{
-                        padding: 15px 20px;
-                        line-height: 21px;
-                        cursor: pointer;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        display: flex;
-                        align-items: center;
-
-                        &.active{
-                            background: #0283C6;
-                            color: #fff;
-                        }
-
-                        &:hover{
-                            background: #0283C6;
-                            color: #fff;
-
-                            .collection{
-                                display: block;
-                            }
-                        }
-
-                        .title{
-                            flex: 1;
-                        }
-
-                        .collection{
-                            width: 30px;
-                            font-size: 20px;
-                            display: none;
-
-                            .el-icon-star-on{
-                                color: #e6a23c;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         .right-content{
             margin-left: 20px;
             flex: 1;
@@ -317,7 +156,7 @@ export default {
                 }
 
                 .el-scrollbar{
-                    height: calc(100% - 150px);
+                    height: calc(100% - 70px);
                 }
                 
                 .content-item{
@@ -376,7 +215,7 @@ export default {
                         }
 
                         &.active{
-                            background: $mainColor;
+                            background: var(--color-primary);
                         }
                     }
                 }

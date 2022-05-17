@@ -181,7 +181,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    $mainColor: #0283C6;
 
     .put-material-drag-wrap{
         position: absolute;
@@ -220,13 +219,13 @@ export default {
             }
 
             &.active{
-                background: rgba($color: $mainColor, $alpha: 0.4);
-                border: 2px solid $mainColor;
+                background: rgba($color: var(--color-primary), $alpha: 0.4);
+                border: 2px solid var(--color-primary);
             }
 
             &:hover{
-                background: rgba($color: $mainColor, $alpha: 0.4);
-                border: 2px solid $mainColor;
+                background: rgba($color: var(--color-primary), $alpha: 0.4);
+                border: 2px solid var(--color-primary);
             }
         }
         

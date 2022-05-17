@@ -214,6 +214,30 @@ export const priceFormat = (x) => {
 }
 
 
+//宽高比计算
+export const aspectRatioCompute = (width, height) => {
+	// id=1(16:9)  id=2(16:10)  id=3(9:16)  id=4(10:16)  id=5(4:3)  id=6(3:4)  id=7(21:9)
+	if(width > height){
+		let ratio = width / height;
+		if(ratio < 1.5){
+			return '4 : 3'
+		}else if(ratio >= 1.5 && ratio < 2.3){
+			return '16 : 9'
+		}else{
+			return '21 : 9'
+		}
+	}else{
+		let ratio = height / width;
+		if(ratio < 1.5){
+			return '3 : 4'
+		}else if(ratio >= 1.5 && ratio < 2.3){
+			return '9 : 16'
+		}else{
+			return '21 : 9'
+		}
+	}
+}
+
 //上传路径
 export const uploadUrl = 'common/upload/';
 

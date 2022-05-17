@@ -60,7 +60,7 @@
                             </div>
 
                             <!-- 物料尺寸不匹配 -->
-                            <div class="screen-detail" v-if="materialData.width && !item.disabled && aspectRatioCompute(child.width, child.height) != aspectRatioCompute(materialData.width, materialData.height)">
+                            <div class="screen-detail" v-if="materialData.width && !item.disabled && handleAspectRatioCompute(child.width, child.height) != handleAspectRatioCompute(materialData.width, materialData.height)">
                                 <article>
                                     <p>建议上传合适尺寸的物料</p>
                                 </article>
@@ -117,6 +117,7 @@
 
 <script>
 import { projectMaterialLockList, projectMaterialPut, projectMaterialUpload } from '@/api/project'
+import { aspectRatioCompute } from '@/utils/index'
 
 export default {
     props: {
@@ -145,6 +146,13 @@ export default {
 
             // 确定按钮loading
             btnLoading: false
+        }
+    },
+    computed: {
+        handleAspectRatioCompute(){
+            return (width, height) => {
+                return aspectRatioCompute(width, heith)
+            }
         }
     },
     mounted() {
@@ -218,31 +226,6 @@ export default {
                 return acc.concat(curr)
             })
             return newArr
-        },
-
-        //宽高比计算
-        aspectRatioCompute(width, height){
-
-            // id=1(16:9)  id=2(16:10)  id=3(9:16)  id=4(10:16)  id=5(4:3)  id=6(3:4)  id=7(21:9)
-            if(width > height){
-                let ratio = width / height;
-                if(ratio < 1.5){
-                    return '4 : 3'
-                }else if(ratio >= 1.5 && ratio < 2.3){
-                    return '16 : 9'
-                }else{
-                    return '21 : 9'
-                }
-            }else{
-                let ratio = height / width;
-                if(ratio < 1.5){
-                    return '3 : 4'
-                }else if(ratio >= 1.5 && ratio < 2.3){
-                    return '9 : 16'
-                }else{
-                    return '21 : 9'
-                }
-            }
         },
 
         // 物料投放

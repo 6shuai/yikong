@@ -53,18 +53,37 @@ import { filterAsyncRouter } from '@/store/modules/permission'
 import router from '@/router'
 
 const roleHome = {
-    '/project': {
-        title: '项目管理',
-        moduleName: 'Project'
-    },
-    '/finance': {
-        title: '财务管理',
-        moduleName: 'Finance'
-    },
-    '/materialAudit': {
-        title: '物料投放审核',
-        moduleName: 'MaterialAudit'
-    }
+    '/project': [
+        {
+            displayName: '项目管理',
+            moduleName: 'Project',
+            route: '/project'
+        }
+    ],
+    '/finance': [ 
+        {
+            displayName: '财务管理',
+            moduleName: 'Finance',
+            route: '/finance'
+        }
+    ],
+    '/operation': [
+        {
+            displayName: '播放管理',
+            moduleName: 'ContentManage',
+            route: '/operation/contentManage'
+        },
+        {
+            displayName: '监播统计',
+            moduleName: 'PlayStatistics',
+            route: '/operation/playStatistics'
+        },
+        {
+            displayName: '物料审核',
+            moduleName: 'MaterialAudit',
+            route: '/materialAudit'
+        }
+    ]
 }
 
 export default {
@@ -86,12 +105,7 @@ export default {
         // 选择角色 注册对应的路由
         handleSelectRole(data){
             let routes = [
-                {
-                    displayName: roleHome[data.frontRoute].title,
-                    moduleName: roleHome[data.frontRoute].moduleName,
-                    route: data.frontRoute,
-                    hidden: true
-                },
+                ... roleHome[data.frontRoute],
                 ...data.authorities
             ]
 

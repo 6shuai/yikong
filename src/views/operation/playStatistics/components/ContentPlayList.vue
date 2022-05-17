@@ -84,7 +84,7 @@ export default {
 
 <style lang="scss">
     $listBgColor: #e2e2e2;
-    $activeBgColor: #0283C6;
+    $activeBgColor: var(--color-primary);
 
     .screen-play-list-wrap{
         .play-date{

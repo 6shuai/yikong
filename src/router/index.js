@@ -13,6 +13,7 @@ import layoutRoutes from './layout'
 import adverRoutes from './adver'
 import financeRoutes from './finance'
 import bossRoutes from './boss'
+import operationRoutes from './operation'
 
 Vue.use(Router)
 
@@ -164,71 +165,6 @@ export const constantRoutes = [
 		hidden: true
 	},
 
-	// 内容管理
-	{
-		path: '/',
-		component: Layout,
-		children: [
-			{
-				path: 'contentManage',
-				name: 'ContentManage',
-				component: () => import('@/views/contentManage/index'),
-				meta: {
-					title: '内容管理'
-				}
-			}
-		]
-	},
-
-	{
-		path: '/',
-		component: Layout,
-		children: [
-			{
-				path: 'contentManage/screenLayout',
-				name: 'ContentManage--screenLayout',
-				component: () => import('@/views/contentManage/screenLayout'),
-				meta: {
-					title: '配置屏幕布局'
-				}
-			}
-		],
-		hidden: true
-	},
-
-	{
-		path: '/',
-		component: Layout,
-		children: [
-			{
-				path: 'contentManage/lockPosition',
-				name: 'ContentManage--lockPosition',
-				component: () => import('@/views/contentManage/lockPosition'),
-				meta: {
-					title: '锁位'
-				}
-			}
-		],
-		hidden: true
-	},
-
-	// 监播统计
-	{
-		path: '/',
-		component: Layout,
-		children: [
-			{
-				path: 'playStatistics',
-				name: 'PlayStatistics',
-				component: () => import('@/views/playStatistics/index'),
-				meta: {
-					title: '监播统计'
-				}
-			}
-		]
-	},
-
-
 
 	// 我的项目
 	...projectRoutes,
@@ -263,8 +199,11 @@ export const constantRoutes = [
 	// 财务权责
 	...financeRoutes,
 
-	// boss
+	// boss 主页
 	...bossRoutes,
+
+	// 运营主页
+	...operationRoutes,
 ]
 
 
