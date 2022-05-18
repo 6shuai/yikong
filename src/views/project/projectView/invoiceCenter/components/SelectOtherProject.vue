@@ -34,6 +34,7 @@
                             class="head" 
                             v-for="item in resData"
                             :key="item.id"
+                            :class="{ 'highlight': item.payment < item.allowInvoicing }"
                         >
                             <el-col :span="2">
                                 <el-checkbox 
@@ -56,7 +57,7 @@
             <div class="selected-project-list">
                 <div class="total-warp">
                     <span>已选择{{ rightData.length }}个项目</span>
-                    <span class="total-price">合计 ￥{{ totalPrice }}</span>
+                    <span class="total-price">合计 ￥{{ moneyFormat(totalPrice) }}</span>
                 </div>
                 <el-row>
                     <el-col :span="2">
@@ -75,7 +76,10 @@
                         <el-col :span="2">
                             <el-checkbox :value="item.checked" @change="item.checked = !item.checked; $set(rightData, index, item);handleClickRightCheckbox(item)"></el-checkbox>
                         </el-col>
-                        <el-col :span="22">{{ item.displayName }}</el-col>
+                        <el-col :span="22">
+                            <i v-if="item.payment < item.allowInvoicing" class="highlight el-icon-warning"></i>
+                            {{ item.displayName }}
+                        </el-col>
                     </el-row>
                 </el-scrollbar>
             </div>
@@ -96,6 +100,7 @@
 
 <script>
 import InvoiceProjectDetail from '@/views/project/projectView/invoiceCenter/components/ProjectDetail'
+import { priceFormat } from '@/utils/index'
 
 export default {
     components: {
@@ -129,6 +134,14 @@ export default {
             // 项目搜索关键字
             projectKeyword: ''
         }
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     methods: {
         // 显示选择其他项目
@@ -274,6 +287,10 @@ export default {
     .invoice-add-other-project-wrap{
         display: flex;   
         align-items: center;
+
+         .highlight{
+            color: red;
+        }
 
         .el-row{
             .el-col{

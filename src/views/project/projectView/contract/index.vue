@@ -141,7 +141,7 @@
                         :min="0"
                         v-model="contractParams.amount" 
                     ></el-input-number>
-                    <span v-show="!showEdit">{{ contractParams.amount }}</span>
+                    <span v-show="!showEdit">{{ moneyFormat(contractParams.amount) }}</span>
                 </el-form-item>
                 
             </div>
@@ -299,6 +299,9 @@
                             label="回款金额" 
                             min-width="100"
                         >
+                            <template slot-scope="scope">
+                                {{ moneyFormat(scope.row.amount) }}
+                            </template>
                         </el-table-column>
                         <el-table-column 
                             prop="deadline" 
@@ -340,7 +343,7 @@ import UploadImg from '@/components/Upload/UploadImg'
 import { organizationListProject } from '@/api/user'
 import { projectDetail, projectContractCreate, organizationUser, projectContractSubmitApproval, projectContractSubmitReturnDate } from '@/api/project'
 import { financeCommissionSystemList } from '@/api/finance'
-import { dateAddHMS } from '@/utils/index'
+import { dateAddHMS, priceFormat } from '@/utils/index'
 
 export default {
     components: { 
@@ -407,6 +410,14 @@ export default {
             // 提交审批按钮loading
             submitApprovalBtnLoading: false
         }
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     mounted() {
         this.getDetail()

@@ -25,17 +25,17 @@
                     clearable
                     prefix-icon="el-icon-search"
                     size="small"
-                    v-model="screenName"
+                    v-model="searchParams.displayName"
                     @input="$debounce(getScreenList)"
                 ></el-input>
             </div>
             <div class="screen-list-tab">
                 <span 
-                    v-for="(item, index) in ['按城市', '按屏幕比例']"
+                    v-for="(item, index) in [{ id: 1, name: '按城市' }, { id: 2, name: '按屏幕比例' }]"
                     :key="index"
-                    :class="{ 'active': tabIndex == index }"
-                    @click="tabIndex = index"
-                >{{ item }}</span>
+                    :class="{ 'active': searchParams.groupType == item.id }"
+                    @click="searchParams.groupType = item.id; getScreenList()"
+                >{{ item.name }}</span>
             </div>
             <el-scrollbar class="screen-list hidden-scroll-x">
                 <div 
@@ -82,9 +82,6 @@ export default {
     },
     data() {
         return {
-            // 屏幕列表显示方式
-            tabIndex: 0,
-
             // 折叠组index
             hideListIndex: [],
 
@@ -94,8 +91,10 @@ export default {
             // 屏幕列表
             screenData: {},
 
-            // 按屏幕名称搜索
-            screenName: '',
+            // 筛选参数
+            searchParams: {
+                groupType: 1
+            },
 
             // 屏幕列表数据加载中
             screenLoading: false,
@@ -110,7 +109,7 @@ export default {
     methods: {
         getScreenList(){
             this.screenLoading = true
-            getScreenGoupList({ displayName: this.screenName }).then(res => {
+            getScreenGoupList(this.searchParams).then(res => {
                 this.screenLoading = false
                 this.screenData = res.obj
             })

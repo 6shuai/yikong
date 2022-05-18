@@ -30,7 +30,7 @@
                 {{ contract.secondResponsibleName }}
             </el-form-item>
             <el-form-item label="合同金额:">
-                {{ contract.amount }}
+                {{ moneyFormat(contract.amount) }}
             </el-form-item>
             <el-form-item label="签署日期:">
                 {{ contract.contractDateFormat }}
@@ -99,6 +99,7 @@
 
 <script>
 import { contractApprovalDetail, contractApproval } from '@/api/contractApproval'
+import { priceFormat } from '@/utils/index'
 
 export default {
     data() {
@@ -108,6 +109,14 @@ export default {
             contract: {},
             btnLoading: false
         }
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     methods: {
         getContractDetail(contract){

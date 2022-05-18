@@ -31,7 +31,7 @@
         ></project-list>
         
 
-        <create-project ref="createProject"></create-project>
+        <create-project ref="createProject" @createProjectSuccess="getList()"></create-project>
 
     </div>
 </template>

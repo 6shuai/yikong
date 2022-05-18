@@ -71,7 +71,7 @@
             min-width="100"
         >
             <template slot-scope="scope">
-                ￥{{ scope.row.amount }}元
+                {{ moneyFormat(scope.row.amount) }}
             </template>
         </el-table-column>
         <el-table-column 
@@ -80,7 +80,7 @@
             min-width="100"
         >
             <template slot-scope="scope">
-               ￥{{ scope.row.payment }}元
+                {{ moneyFormat(scope.row.payment) }}
             </template>
         </el-table-column>
         <el-table-column 
@@ -89,7 +89,7 @@
             min-width="100"
         >
             <template slot-scope="scope">
-               ￥{{ scope.row.allowInvoicing || scope.row.invoiceAmount }}元
+               {{ moneyFormat(scope.row.allowInvoicing || scope.row.invoiceAmount) }}
             </template>
         </el-table-column>
     </el-table>
@@ -97,12 +97,22 @@
 
 <script>
 import ScreenLayout from '@/views/screenLayout/components/ScreenLayout'
+import { priceFormat } from '@/utils/index'
+
 export default {
     components: {
         ScreenLayout
     },
     props: {
         projectData: Array
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     methods: {
         getSummaries(param) {

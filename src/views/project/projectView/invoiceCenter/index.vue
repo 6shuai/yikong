@@ -16,7 +16,7 @@
             @click="handleShowInvoiceDetail(item.id)"
         >
             <div class="left-detail">
-                <p class="price">开票金额: ￥{{ item.amount }}元</p>
+                <p class="price">开票金额: {{ moneyFormat(item.amount) }}</p>
                 <p class="time">申请时间: {{ item.applyTime }}</p>
             </div>
             <div class="state">
@@ -45,6 +45,7 @@
 
 <script>
 import { projectInvoiceList } from '@/api/project'
+import { priceFormat } from '@/utils/index'
 
 export default {
     data() {
@@ -55,6 +56,14 @@ export default {
             // 发票列表加载中
             listLoading: true
         }
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     mounted() {
         this.getInvoiceList()

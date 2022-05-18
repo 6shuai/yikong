@@ -102,7 +102,7 @@ export default {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showCreateProject = false 
-                            this.$parent.getList()
+                            this.$emit('createProjectSuccess', this.addParams)
                         }
                     })
                 }

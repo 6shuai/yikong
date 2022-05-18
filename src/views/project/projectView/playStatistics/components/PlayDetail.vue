@@ -28,10 +28,10 @@
                 align="middle"
                 v-if="resData.length"
             >
-                <el-col :span="2">序号</el-col>
-                <el-col :span="12">物料</el-col>
-                <el-col :span="10" class="play-date">
+                <el-col :span="10">物料</el-col>
+                <el-col :span="14" class="play-date">
                     <p>
+                        <span>序号</span>
                         <span>开始时间</span>
                         <span>结束时间</span>
                     </p>
@@ -46,8 +46,7 @@
                 v-for="(item, index) in resData"
                 :key="index"
             >
-                <el-col :span="2">{{ index+1 }}</el-col>
-                <el-col :span="12" class="material">
+                <el-col :span="10" class="material">
                     <screen-layout 
                         :screen="item" 
                         :maxWidth="180"
@@ -65,7 +64,7 @@
                     <p>{{ item.playCount }}次</p>
                 </el-col>
                 <el-col 
-                    :span="10" 
+                    :span="14" 
                     class="play-date"
                 >
                     <div class="date" :class="{ 'active': item.active }">
@@ -74,6 +73,7 @@
                             :style="{ height: (item.active || resData.length == 1 ) && item.times.length > 10 ? '300px' : item.times.length * 30 + 'px' }"
                         >
                             <p v-for="(time, tIndex) in item.times" :key="tIndex">
+                                <span>{{ time.number }}</span>
                                 <span>{{ time.beginTime }}</span>
                                 <span>{{ time.endTime }}</span>
                             </p>
@@ -186,6 +186,7 @@ export default {
             
             span{
                 flex: 1;
+                text-align: center;
             }
         }
 

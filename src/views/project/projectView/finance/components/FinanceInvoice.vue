@@ -20,9 +20,9 @@
             </el-button>
     
             <div class="statistics">
-                <span>应开票金额: {{ invoiceData.amount }}</span>
-                <span>已开票金额: {{ invoiceData.sumInvoice }}</span>
-                <span>未开票金额: {{ invoiceData.nonInvoice }}</span>
+                <span>应开票金额: {{ moneyFormat(invoiceData.amount) }}</span>
+                <span>已开票金额: {{ moneyFormat(invoiceData.sumInvoice) }}</span>
+                <span>未开票金额: {{ moneyFormat(invoiceData.nonInvoice) }}</span>
             </div>
         </div>
         
@@ -51,7 +51,11 @@
                 prop="amount" 
                 label="金额" 
                 min-width="60"
-            ></el-table-column>
+            >
+                <template slot-scope="scope">
+                    {{ moneyFormat(scope.row.amount) }}
+                </template>
+            </el-table-column>
             <el-table-column 
                 prop="billingTimeFormat" 
                 label="开票时间" 
@@ -96,9 +100,19 @@
 
 <script>
 import { projectFinanceInvoiceDelete } from '@/api/project'
+import { priceFormat } from '@/utils/index'
+
 export default {
     props: {
         invoiceData: Object
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     methods: {
         // 添加 或 编辑 发票

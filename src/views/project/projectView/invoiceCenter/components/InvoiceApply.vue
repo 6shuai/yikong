@@ -119,13 +119,13 @@
 
                         <div v-show="invoiceParams.titleType===1">
                             <el-form-item label="纳税人识别号" prop="organization.taxpayerNumber">
-                                <el-input v-model="invoiceParams.organization.taxpayerNumber"></el-input>
+                                <el-input v-model="invoiceParams.organization.taxpayerNumber" type="number"></el-input>
                             </el-form-item>
                             <el-form-item label="企业地址" prop="organization.address">
                                 <el-input v-model="invoiceParams.organization.address"></el-input>
                             </el-form-item>
                             <el-form-item label="企业电话" prop="organization.telephone">
-                                <el-input v-model="invoiceParams.organization.telephone"></el-input>
+                                <el-input v-model="invoiceParams.organization.telephone" type="number"></el-input>
                             </el-form-item>
                             <el-form-item label="开户行" prop="organization.bank">
                                 <el-input v-model="invoiceParams.organization.bank"></el-input>
@@ -188,6 +188,12 @@ export default {
         InvoiceProjectList
     },
     data() {
+        let checkEmail = (rule, value,callback) =>{//验证邮箱
+            const regEmail = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+            if(this.invoiceParams.organization.email != '' && !regEmail.test(this.invoiceParams.organization.email)) {
+                callback(new Error('请输入有效的邮箱')); 
+            }
+        }
         return {
             active: 0,
             invoiceParams: {
@@ -226,7 +232,7 @@ export default {
                 'organization.telephone': [{ required: true, message: '请输入企业电话~', trigger: 'blur' }],
                 'organization.bank': [{ required: true, message: '请输入开户行~', trigger: 'blur' }],
                 'organization.account': [{ required: true, message: '请输入开户行账号~', trigger: 'blur' }],
-                'organization.email': [{ required: true, message: '请输入邮箱账号~', trigger: 'blur' }],
+                'organization.email': [{ required: true, message: '请输入邮箱账号~', trigger: 'blur' }, {validator: checkEmail, trigger: "blur" }],
             },
 
             // 发票类目

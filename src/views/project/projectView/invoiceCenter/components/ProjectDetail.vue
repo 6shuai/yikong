@@ -79,7 +79,7 @@
                 min-width="100"
             >
                 <template slot-scope="scope">
-                    ￥{{ scope.row.invoiceAmount }}元
+                    {{ moneyFormat(scope.row.invoiceAmount) }}
                 </template>
             </el-table-column>
         </el-table>
@@ -94,6 +94,7 @@
 
 <script>
 import ScreenLayout from '@/views/screenLayout/components/ScreenLayout'
+import { priceFormat } from '@/utils/index'
 
 export default {
     components: {
@@ -101,6 +102,14 @@ export default {
     },
     props: {
         projectDetailData: Array
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     }
 }
 </script>
