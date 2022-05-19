@@ -145,8 +145,9 @@ export default {
                 // 一天播放时长
                 let { type, duration, times } = this.limitParams
                 let durationDay = type == 1 ? duration * times : duration
-                let result = priceFormat(price * this.playDay * durationDay)
-                this.$set(this.screenList[index], 'realPrice', result.full || 0)
+                let amount = price * this.playDay * durationDay
+                let result = priceFormat(amount)
+                this.$set(this.screenList[index], 'realPrice', amount || 0)
                 return result
             }
         },
@@ -161,8 +162,9 @@ export default {
                 // 一天播放时长
                 let { type, duration, times } = this.limitParams
                 let durationDay = type == 1 ? duration * times : duration
-                let result = priceFormat(price * this.playDay * durationDay * (this.discount / 10))
-                this.$set(this.screenList[index], 'discountPrice', result.full)
+                let amount = price * this.playDay * durationDay * (this.discount / 10)
+                let result = priceFormat(amount)
+                this.$set(this.screenList[index], 'discountPrice', amount)
                 return result
             }
         },

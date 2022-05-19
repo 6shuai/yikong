@@ -251,7 +251,9 @@ export default {
 
         // 选择播放方式
         handleChangePlayType(id){
+            if(this.limitParams.type == id) return
             this.limitParams.type = id
+            this.$delete(this.limitParams, 'priceSystem')
             this.getPriceSystemList()
         },
 

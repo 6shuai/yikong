@@ -58,7 +58,7 @@
                 <span>{{ item.priceSystemConfigSpot.duration }}秒</span>
                 <span>{{ item.priceSystemConfigSpot.days }}天</span>
             </p>
-            <p>{{ item.dueDateFormat }}</p>
+            <p> 失效日期：{{ item.dueDateFormat || '--' }}</p>
             <p class="desc">{{ item.description }}</p>
         </el-card>
 
@@ -200,14 +200,15 @@ export default {
             if(!this.priceSystemIds.length) return
 
             let msg = '您确定要删除所选价格体系吗?'
-            if(this.effectIds.length) msg = '您将要删除的内容中,包含正在使用的价格体系,暂不可删除'
+            if(this.effectIds.length) msg = '您将删除的内容中,包含正在使用的价格体系,暂不可删除'
 
             this.$confirm(
                 msg,
                 "提示",
                 {
                     confirmButtonText: "确定",
-                    cancelButtonText: "取消",
+                    cancelButtonText: !this.effectIds.length ? '取消' : '确定',
+                    showConfirmButton: !this.effectIds.length,
                     type: "warning",
                     center: true,
                 }

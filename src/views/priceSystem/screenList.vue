@@ -24,7 +24,7 @@
                         <span>{{ priceSystemDetail.priceSystemConfigSpot.duration }}秒</span>
                         <span>{{ priceSystemDetail.priceSystemConfigSpot.days }}天</span>
                     </p>
-                    <p class="clearfix">{{ priceSystemDetail.dueDateFormat }}
+                    <p class="clearfix">失效日期：{{ priceSystemDetail.dueDateFormat || "--" }}
                         <span class="edit" @click="$refs.createPriceSystem.init(priceSystemDetail)">编辑 >></span>
                     </p>
                 </div>
@@ -119,8 +119,8 @@
                                         </div>
                                         <div style="padding: 0 14px 14px">
                                             <div class="bottom bottom-place-detail clearfix">
-                                                <p>大屏名称：{{ item.location }}</p>
-                                                <p>大屏价格： {{ item.price }}</p>
+                                                <p>大屏位置：{{ item.location }}</p>
+                                                <p>大屏价格： {{ moneyFormat(item.price) }}</p>
                                             </div>
                                         </div>                    
                                     </el-card>
@@ -182,6 +182,7 @@ import { getOrganizationList, screenSizeWatch } from '@/mixins'
 import PlaceScreenDetail from '@/views/project/projectView/locating/components/PlaceScreenDetail'
 import EditScreenPrice from './components/EditScreenPrice'
 import CreatePriceSystem from './components/CreatePriceSystem'
+import { priceFormat } from '@/utils/index'
 
 export default {
     components: {
@@ -218,6 +219,14 @@ export default {
             // 生效提交loading
             btnLoading: false
         }
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     mounted() {
         this.getScreenList()

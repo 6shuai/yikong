@@ -1,9 +1,9 @@
 <template>
-    <!-- 选择播放规则 -->
+    <!-- 新建价格体系 -->
     <el-dialog
         class="screen-attributes-dialog"
         width="620px"
-        title="新建价格体系"
+        :title="addParams.id ? '编辑价格体系' : '新建价格体系'"
         :visible.sync="showCreatePriceSystem"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -125,7 +125,7 @@
                     </div>
 
                     <p>
-                        <label>可用时段</label>
+                        <label>失效日期</label>
                         <span>
                             <el-date-picker
                                 class="w200"
@@ -186,7 +186,9 @@ export default {
     methods: {
         init(data){
             if(data){
-                this.addParams = data
+                this.addParams = JSON.parse(JSON.stringify(data))
+                if(!data.priceSystemConfigCarouselTimes) this.addParams.priceSystemConfigCarouselTimes = {}
+                if(!data.priceSystemConfigSpot) this.addParams.priceSystemConfigSpot = {}
                 this.addParams.dueDate = data.dueDateFormat
             }else{
                 this.addParams = {
@@ -302,7 +304,7 @@ $borderColor: #e5e5e5;
 
                     &>span{
                         display: inline-block;
-                        width: 300px;
+                        width: 310px;
                         text-align: left;
                     }
 

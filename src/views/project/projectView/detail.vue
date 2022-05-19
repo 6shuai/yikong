@@ -5,7 +5,7 @@
             <div class="project-introduce">
                 <el-page-header 
                     @back="$router.go(-1)"
-                    title="项目列表"
+                    title="返回"
                 > </el-page-header>
                 <div class="title">{{ resData.displayName }}</div>
                 <!-- <div class="desc">{{ resData.clientName }}</div> -->

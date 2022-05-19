@@ -18,12 +18,14 @@
             </el-form-item>
             <el-form-item label="大屏价格">
                 <el-input-number 
+                    :precision="2" 
                     class="w220"
                     :controls="false"
                     v-model="addParams.price" 
                     :min="0"
                     placeholder="大屏价格"
                 ></el-input-number>
+                <span class="ml10">元</span>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
