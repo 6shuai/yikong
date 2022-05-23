@@ -14,7 +14,7 @@
             ></el-table-column>
             <el-table-column 
                 prop="nickname" 
-                label="物料状态" 
+                label="素材状态" 
                 min-width="300"
             >
                 <template slot-scope="scope">
@@ -85,8 +85,8 @@
         </el-table>
         
         <div class="tip mt20">
-            <div class="material-state state-1">已下刊物料</div>
-            <div class="material-state state-2">未下刊物料</div>
+            <div class="material-state state-1">已下刊素材</div>
+            <div class="material-state state-2">未下刊素材</div>
         </div>
 
     </div>

@@ -25,29 +25,29 @@ export function projectContractSubmitReturnDate(data) { return put(`/user/projec
 
 
 
-// 物料列表 xx
+// 素材列表 xx
 export function projectMaterialList(data) { return get('/user/project/publishedMaterialMedia', data) }
 
 // 查询当前内容所投放的屏幕列表 xx
 export function projectMaterialForScreenList(data) { return get('/user/project/publishedMaterialMediaByPackage', data) }
 
 
-// 物料列表 
+// 素材列表 
 export function projectMaterialLists(data) { return get('/material', data, 'published') }
 
-// 物料对应的投放屏幕列表 
+// 素材对应的投放屏幕列表 
 export function projectMaterialScreenList(data) { return get('/material_target', data, 'published') }
 
-// 创建物料
+// 创建素材
 export function projectMaterialUpload(data) { return post('/upload', data, 'published') }
 
-// 下架物料
+// 下架素材
 export function projectMaterialDelete(data) { return post('/remove_material', data, 'published') }
 
 // 获取投放锁位列表
 export function projectMaterialLockList(data) { return get('/target_placeholder', data, 'published') }
 
-// 投放物料
+// 投放素材
 export function projectMaterialPut(data) { return post('/throw_in_material', data, 'published') }
 
 
@@ -115,29 +115,29 @@ export function projectScreenUseDetail(data) { return get('/screen_statistics', 
 
 
 
-// 查询物料包播放明细
+// 查询素材包播放明细
 export function projectMaterialPlayDetail(data) { return get('/user/project/publishedPlaybackStatistics', data) }
 
 
 
 
-// 物料审核   待审核项目列表
+// 素材审核   待审核项目列表
 export function materialAuditProjectList(data) { return get('/user/auditor/project', data) }
 
-// 物料审核   分页查询待审核物料包列表
+// 素材审核   分页查询待审核素材包列表
 export function materialAuditPackageList(data) { return get('/user/auditor/materialPackage', data) }
 
-// 物料审核   待审核屏幕列表
+// 素材审核   待审核屏幕列表
 export function materialAuditScreenList(data) { return get('/user/auditor/screen', data) }
 
-// 物料审核   查询待审核项目上刊明细列表
+// 素材审核   查询待审核项目上刊明细列表
 export function materialAuditMaterialDetail(data) { return get('/user/auditor/projectMaterial', data) }
 
-// 物料审核   审核单个物料
+// 素材审核   审核单个素材
 export function materialAuditSingle(data) { return put(`/user/auditor/examineMaterial${data}`) }
 
 
-// 物料审核   审核多个物料  全部通过 或者 全部拒绝
+// 素材审核   审核多个素材  全部通过 或者 全部拒绝
 export function materialAuditAll(data) { return put(`/user/auditor/examineMaterials${data}`) }
 
 
@@ -145,7 +145,7 @@ export function materialAuditAll(data) { return put(`/user/auditor/examineMateri
 // 获取屏幕布局模板
 export function projectScreenLayoutTempList(data) { return get('/user/project/logicRegionTemp', data); }
 
-// 获取内容物料列表
+// 获取内容素材列表
 export function projectScreenContentList(data) { return get('/user/project/content', data); }
 
 

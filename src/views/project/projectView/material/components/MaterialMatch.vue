@@ -18,7 +18,7 @@
                             </p>
                         </div>
                         <div class="tip" v-if="item.disabled">
-                            <p>物料时长 {{ item.duration > materialData.duration ? '<' : '>' }} 大屏时长暂不可选择</p>
+                            <p>素材时长 {{ item.duration > materialData.duration ? '<' : '>' }} 大屏时长暂不可选择</p>
                         </div>
                     </div>
                     <div class="right-limit">
@@ -59,14 +59,14 @@
                                 ></el-image>
                             </div>
 
-                            <!-- 物料尺寸不匹配 -->
+                            <!-- 素材尺寸不匹配 -->
                             <div class="screen-detail" v-if="materialData.width && !item.disabled && handleAspectRatioCompute(child.width, child.height) != handleAspectRatioCompute(materialData.width, materialData.height)">
                                 <article>
-                                    <p>建议上传合适尺寸的物料</p>
+                                    <p>建议上传合适尺寸的素材</p>
                                 </article>
                             </div>
 
-                            <!-- 当前屏幕已上传的物料 -->
+                            <!-- 当前屏幕已上传的素材 -->
                             <div class="material-count" v-if="child.materials && child.materials.length && child.materials[0].id">
 
                                 <span v-for="(m, mIndex) in child.materials.length" :key="mIndex"></span>
@@ -168,12 +168,12 @@ export default {
             })
         },
 
-        // 检查大屏的时长 是否符合物料的时长 
+        // 检查大屏的时长 是否符合素材的时长 
         durationWhetherMatch(){
             for(let i = 0 ; i < this.screenData.length; i++){
                 this.screenCount += this.screenData[i].placeholders.length
                 let order = this.screenData[i]
-                // 检查大屏的时长 是否符合物料的时长  物料包时长比输入的值默认多一秒
+                // 检查大屏的时长 是否符合素材的时长  素材包时长比输入的值默认多一秒
                 if(order.duration + 1 > this.materialData.duration && order.duration + 1 - this.materialData.duration <= 1){
                     this.$set(this.screenData[i], 'disabled', false)
                 }else{
@@ -228,7 +228,7 @@ export default {
             return newArr
         },
 
-        // 物料投放
+        // 素材投放
         async handleMaterialPut(){
             this.btnLoading = true
             let packageId =  await this.uploadMaterial()
@@ -242,13 +242,13 @@ export default {
             projectMaterialPut(data).then(res => {
                 this.btnLoading = false
                 if(res.code === this.$successCode){
-                    this.$message.success('物料投放成功~')
+                    this.$message.success('素材投放成功~')
                     this.$emit('materialPutSuccess')
                 }
             })
         },
 
-        // 调用上传物料接口
+        // 调用上传素材接口
         uploadMaterial(){
             return new Promise((resolve, reject) => {
                 let data = {

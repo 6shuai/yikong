@@ -65,7 +65,7 @@ const projectRoutes = [
                         name: 'Project--material',
                         component: () => import('@/views/project/projectView/material/index'),
                         meta: {
-                            title: '项目 - 物料管理'
+                            title: '项目 - 素材管理'
                         }
                     },
                     {

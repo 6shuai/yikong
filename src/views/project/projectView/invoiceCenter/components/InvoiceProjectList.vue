@@ -24,7 +24,7 @@
         </el-table-column>
         <el-table-column 
             prop="nickname" 
-            label="物料状态" 
+            label="素材状态" 
             min-width="200"
         >
             <template slot-scope="scope">

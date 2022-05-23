@@ -1,6 +1,6 @@
 <template>
     <div class="created-material-wrap">
-        <h3>添加物料</h3>
+        <h3>添加素材</h3>
         <div class="material-add">
             <div 
                 class="drag-upload-wrap" 
@@ -10,7 +10,7 @@
             >
                 <i class="el-icon-upload"></i>
                 <input type="file" accept="image/*, .mp4" @change="handleChangeFile">
-                <div class="el-upload__text">拖拽到此处上传物料</div>
+                <div class="el-upload__text">拖拽到此处上传素材</div>
             </div>
 
             <div class="material" v-if="uploadLoading">
@@ -24,8 +24,8 @@
                             <p class="upload-loading" v-else><i class="el-icon-time"></i> 上传中...</p>
                         </div>
                         <div class="right-content">
-                            <p>物料时长：{{ materialData.duration }}s</p>
-                            <p>物料分辨率：{{ materialData.width }} * {{ materialData.height }} &nbsp;({{ materialData.aspectRatio }})</p>
+                            <p>素材时长：{{ materialData.duration }}s</p>
+                            <p>素材分辨率：{{ materialData.width }} * {{ materialData.height }} &nbsp;({{ materialData.aspectRatio }})</p>
                         </div>
                     </div>
                     <div class="progress">
@@ -68,13 +68,13 @@ export default {
             uploadMaterialUrl: 'user/project/upload',
             borderhover: false,
 
-            // 上传物料的类型
+            // 上传素材的类型
             materialContentType: 1,
 
             // 文件是否上传中
             uploadLoading: false,
 
-            // 物料信息
+            // 素材信息
             materialData: {},
 
             // 内容id
@@ -243,7 +243,7 @@ export default {
             , 300)
         },
 
-        // 物料投放成功
+        // 素材投放成功
         materialPutSuccess(){
             this.$emit('createMaterialSuccess')
         }

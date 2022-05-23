@@ -2,7 +2,7 @@
     <div class="lock-position-list">
         <div class="lock-order-warp" v-if="!showFreenScreen">
             <div class="total-price-and-add">
-                <span class="total-price">刊例总价: <span class="ml20">{{ totalPrice.decimal }}</span></span>
+                <span class="total-price">刊例总价: <span class="ml20">{{ totalPrice }}</span></span>
     
                 <el-button 
                     type="primary"
@@ -195,7 +195,7 @@ export default {
                     this.getScreenList()
                 }else if(res.code === 1204){
                     this.$confirm(
-                        `要释放的锁位已经投放了物料,是否要删除?`,
+                        `要释放的锁位已经投放了素材,是否要删除?`,
                         "提示",
                         {
                             confirmButtonText: "确定",

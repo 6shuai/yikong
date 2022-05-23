@@ -7,10 +7,10 @@ export function getScreenGoupList(data) { return get('/screen/screenGroupByCity'
 // 获取屏幕的基本数据，包括屏幕分辨率，和该屏幕绑定的运营锁位订单
 export function getScreenLayoutAndOrderDetail(data) { return get('/screen_for_operation', data, 'published') }
 
-// 运营投放物料
+// 运营投放素材
 export function operationPutMaterial(data) { return post('/throw_in_content', data, 'published') }
 
-// 获取运营在某个屏幕上投放的物料数据
+// 获取运营在某个屏幕上投放的素材数据
 export function operationMaterialData(data) { return get('/operational_material', data, 'published') }
 
 

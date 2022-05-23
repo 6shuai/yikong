@@ -134,13 +134,15 @@
     
             <div class="horizontal">
                 <el-form-item label="合同金额:" prop="amount">
-                    <el-input-number
-                        :precision="2" 
-                        v-show="showEdit"
-                        :controls="false"
-                        :min="0"
-                        v-model="contractParams.amount" 
-                    ></el-input-number>
+                    <div v-show="showEdit" class="flex">
+                        <el-input-number
+                            :precision="2" 
+                            :controls="false"
+                            :min="0"
+                            v-model="contractParams.amount" 
+                        ></el-input-number>
+                        <span class="ml10">元</span>
+                    </div>
                     <span v-show="!showEdit">{{ moneyFormat(contractParams.amount) }}</span>
                 </el-form-item>
                 
@@ -253,7 +255,7 @@
                 </div>
             </el-form-item>
 
-            <el-form-item label="回款计划:" prop="paymentSchedules">
+            <el-form-item label="回款计划:" class="is-required" prop="paymentSchedules">
                 <ul class="return-money" v-show="showEdit">
                     <li 
                         v-for="(returnMoney, index) in contractParams.paymentSchedules"
@@ -266,6 +268,7 @@
                             :min="0"
                             placeholder="回款金额"
                         ></el-input-number>
+                        <span class="ml10">元</span>
                         <el-date-picker
                             class="w200 ml20"
                             v-model="returnMoney.deadline"
@@ -449,12 +452,14 @@ export default {
 
         // 选择甲方
         handelChangeFirstParty(){
-            if(!this.firstPartyMemberList.length) this.getGroupMemberList(this.contractParams.firstParty).then(res => this.firstPartyMemberList = res)
+            this.$delete(this.contractParams, 'firstResponsible')
+            this.getGroupMemberList(this.contractParams.firstParty).then(res => this.firstPartyMemberList = res)
         },
 
         // 选择已方
         handleChangeSecondParty(){
-            if(!this.secondPartyMemberList.length) this.getGroupMemberList(this.contractParams.secondParty).then(res => this.secondPartyMemberList = res)
+            this.$delete(this.contractParams, 'secondResponsible')
+            this.getGroupMemberList(this.contractParams.secondParty).then(res => this.secondPartyMemberList = res)
         },
 
         // 查询品牌组织下的 用户列表
@@ -479,7 +484,6 @@ export default {
         handleSaveContract(){
             this.$refs.contractForm.validate((valid) => {
                 if(valid){
-                    return 
 
                     this.btnLoading = true
                     let data = {

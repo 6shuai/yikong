@@ -43,8 +43,8 @@
                 </div>
         
                 <div class="select-content">
-                    <span @click="handleSelectContent(dataDefalut.index)">选择物料</span>
-                    <span @click="handleAddContent(dataDefalut.index)">新建物料</span>
+                    <span @click="handleSelectContent(dataDefalut.index)">选择素材</span>
+                    <span @click="handleAddContent(dataDefalut.index)">新建素材</span>
                 </div>
             </template>
         </screen-layout>
@@ -126,7 +126,7 @@ export default {
             // 上传文件信息
             fileInfo: {},
 
-            // 上传物料接口
+            // 上传素材接口
             uploadMaterialUrl: 'user/project/upload',
             borderhover: false,
 
@@ -182,7 +182,7 @@ export default {
             for(let i = 0; i < this.screenLayoutImage.length; i++){
                 // 
                 if(this.screenLayoutImage[i] && Math.abs(Math.ceil(this.screenLayoutImage[i].duration) - Math.ceil(duration)) > 1 && i != this.splitScreenIndex){
-                    this.$message.warning('投放的物料时长不一致, 请重新投放~')
+                    this.$message.warning('投放的素材时长不一致, 请重新投放~')
                     return false
                 }
 

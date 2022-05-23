@@ -130,7 +130,7 @@ export default {
         }
     },
     mounted() {
-        // 项目物料 查看播放详情 用这个接口
+        // 项目素材 查看播放详情 用这个接口
         if(this.source == 'project'){
             this.getPlayDetail = projectMaterialPlayDetail
         }

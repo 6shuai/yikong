@@ -18,7 +18,7 @@
                     </div>
                     <div class="right-limit">
                         <p v-if="resData.limits && resData.limits.length ">{{ resData.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                            <span v-for="(limitTime, index) in resData.limits">{{ limitTime.begin }} - {{ limitTime.end }}</span>
+                            <span v-for="(limitTime, index) in resData.limits" :key="index">{{ limitTime.begin }} - {{ limitTime.end }}</span>
                         </p>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
             append-to-body
         >   
             <div class="freed-confirm-wrap">
-                <div class="msg">后台检测到以下大屏有正在进行中的上刊物料,释放后该屏上的所有物料也将自动下刊,是否继续释放?</div>
+                <div class="msg">后台检测到以下大屏有正在进行中的上刊素材,释放后该屏上的所有素材也将自动下刊,是否继续释放?</div>
     
                 <!-- 进行中的屏幕 -->
                 <ul class="conduct-screen-list">

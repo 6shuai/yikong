@@ -109,7 +109,7 @@ export default {
         return {
             showScreenList: false,
 
-            // 物料包id
+            // 素材包id
             contenPackagetId: null,
 
             resData: [],
@@ -117,7 +117,7 @@ export default {
         }
     },
     methods: {
-        // 显示物料 对应的屏幕列表
+        // 显示素材 对应的屏幕列表
         showScreenListDialog(id){
             this.contenPackagetId = id
             this.showScreenList = true

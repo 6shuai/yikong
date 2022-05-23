@@ -27,6 +27,7 @@
                     <p class="clearfix">失效日期：{{ priceSystemDetail.dueDateFormat || "--" }}
                         <span class="edit" @click="$refs.createPriceSystem.init(priceSystemDetail)">编辑 >></span>
                     </p>
+                    <p>{{ priceSystemDetail.description }}</p>
                 </div>
 
                 <div class="mt20">

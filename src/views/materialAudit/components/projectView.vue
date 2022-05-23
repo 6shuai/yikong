@@ -55,7 +55,7 @@ export default {
             })
         },
 
-        // 跳转到 项目 物料投放审核列表
+        // 跳转到 项目 素材投放审核列表
         handleGoMaterialAudit({id}){
             this.$router.push(`/materialAudit/list?projectId=${id}`)
         }

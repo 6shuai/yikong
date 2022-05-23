@@ -79,7 +79,7 @@ const roleHome = {
             route: '/operation/playStatistics'
         },
         {
-            displayName: '物料审核',
+            displayName: '素材审核',
             moduleName: 'MaterialAudit',
             route: '/materialAudit'
         }

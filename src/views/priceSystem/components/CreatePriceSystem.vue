@@ -37,7 +37,7 @@
                     <!-- 轮播 -->
                     <div v-if="addParams.lockType == 1">
                         <p>
-                            <label>物料时长</label>
+                            <label>素材时长</label>
                             <span>
                                 <el-input-number 
                                     class="w200" 
@@ -220,7 +220,7 @@ export default {
                 this.$message.warning('请输入体系名称~')
                 return
             }else if(lockType == 1 && !priceSystemConfigCarouselTimes.duration){
-                this.$message.warning('请输入物料时长~')
+                this.$message.warning('请输入素材时长~')
                 return
             }else if(lockType == 1 && !priceSystemConfigCarouselTimes.times){
                 this.$message.warning('请输入播放次数~')

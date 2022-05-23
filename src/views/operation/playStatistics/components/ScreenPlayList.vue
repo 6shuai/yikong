@@ -4,7 +4,7 @@
         <el-row class="head item">
             <el-col :span="3">时间池</el-col>
             <el-col :span="3">播放时长(秒)</el-col>
-            <el-col :span="6">物料名称</el-col>
+            <el-col :span="6">素材名称</el-col>
             <el-col :span="3">布局分屏</el-col>
             <el-col :span="3">类型</el-col>
             <el-col :span="3">上刊日期</el-col>
@@ -14,8 +14,8 @@
         <div class="group" v-for="(item, index) in playData" :key="index">
             <div class="play-date">
                 <span>{{ item.playDate }}</span>
-                <span v-show="!item.countType" class="total"><i class="el-icon-time"></i>总时长: {{ item.playDuration }}</span>
-                <span v-show="item.countType" class="total"><i class="el-icon-tickets"></i>总次数: {{ item.playCount }}</span>
+                <span v-show="!item.countType" class="total"><i class="el-icon-time"></i>总时长: {{ timeFromat(item.playDuration) }}</span>
+                <span v-show="item.countType" class="total"><i class="el-icon-tickets"></i>总次数: {{ item.playCount }}次</span>
                 <a href="javascript:;" class="el-icon-menu ml10" @click="$set(playData[index], 'countType', !item.countType)"></a>
             </div>
             <!-- <el-row class="item" type="flex" align="middle">
@@ -23,21 +23,21 @@
                 <el-col :span="3">15</el-col>
                 <el-col :span="18">
                     <el-row class="item">
-                        <el-col :span="8">物料名称</el-col>
+                        <el-col :span="8">素材名称</el-col>
                         <el-col :span="4">布局分屏</el-col>
                         <el-col :span="4">类型</el-col>
                         <el-col :span="4">上刊日期</el-col>
                         <el-col :span="4">下刊日期</el-col>
                     </el-row>
                     <el-row class="item">
-                        <el-col :span="8">物料名称</el-col>
+                        <el-col :span="8">素材名称</el-col>
                         <el-col :span="4">布局分屏</el-col>
                         <el-col :span="4">类型</el-col>
                         <el-col :span="4">上刊日期</el-col>
                         <el-col :span="4">下刊日期</el-col>
                     </el-row>
                     <el-row class="item">
-                        <el-col :span="8">物料名称</el-col>
+                        <el-col :span="8">素材名称</el-col>
                         <el-col :span="4">布局分屏</el-col>
                         <el-col :span="4">类型</el-col>
                         <el-col :span="4">上刊日期</el-col>
@@ -74,6 +74,7 @@
 
 <script>
 import ContentPlayDetail from "./ContentPlayDetail"
+import { formatSeconds } from '@/utils/index'
 
 export default {
     components: {
@@ -85,6 +86,11 @@ export default {
 
             // 屏幕id
             screenId: null
+        }
+    },
+    timeFromat(){
+        return (date) => {
+            return formatSeconds(date)
         }
     },
     methods: {

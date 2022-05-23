@@ -5,7 +5,7 @@
             <el-col :span="3">时间</el-col>
             <el-col :span="2">时间池</el-col>
             <el-col :span="2">播放时长(秒)</el-col>
-            <el-col :span="5">物料名称</el-col>
+            <el-col :span="5">素材名称</el-col>
             <el-col :span="2">布局分屏</el-col>
             <el-col :span="2">类型</el-col>
             <el-col :span="2">
@@ -25,7 +25,8 @@
                 placement="top"
                 width="400"
                 trigger="hover">
-                <el-image v-if="item.contentPath" fit="cover" :src="item.contentPath"></el-image>
+                <video v-if="item.contentType==2" :src="item.contentPath"></video>
+                <el-image v-else fit="cover" :src="item.contentPath"></el-image>
                 <div class="content-detail-popover">
                     <span>分辨率：{{ item.width }} x {{ item.height }}</span>
                     <span>文件大小：{{ (item.size / 1024).toFixed(2) }}MB</span>
@@ -34,7 +35,7 @@
             </el-popover>
             <el-col :span="2">{{ item.tempName }} / {{ item.regionName }}</el-col>
             <el-col :span="2">{{ item.contentPath.substring(item.contentPath.lastIndexOf('.')+1) }}</el-col>
-            <el-col :span="2">{{ totalType ? item.playCount : item.playDuration }}</el-col>
+            <el-col :span="2">{{ totalType ? item.playCount : parseInt(item.playDuration / 60) }}</el-col>
             <el-col :span="3">{{ item.publishDate }}</el-col>
             <el-col :span="3">{{ item.dueDate }}</el-col>
         </el-row>
@@ -97,7 +98,7 @@ export default {
         }
 
         .item{
-            padding: 15px;
+            padding: 10px;
             margin-bottom: 10px;
             background: $listBgColor;
             text-align: center;

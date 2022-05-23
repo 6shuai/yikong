@@ -13,7 +13,7 @@
                     </p>
                     <p>
                         <span>开始日期: {{ limitParams.publishDate }}</span>
-                        <span class="ml10" v-if="limitParams.type==1">物料时长: {{ limitParams.duration }}s</span>
+                        <span class="ml10" v-if="limitParams.type==1">素材时长: {{ limitParams.duration }}s</span>
                         <span class="ml10" v-if="limitParams.type==3">开始时间: {{ limitParams.time }}</span>
                     </p>
                     <p>

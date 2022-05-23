@@ -94,7 +94,7 @@ export default {
             // 当前屏幕布局
             screenLayout: {},
 
-            // 屏幕物料数据
+            // 屏幕素材数据
             materialData: undefined,
 
             materialDataLoading: false,
@@ -118,7 +118,7 @@ export default {
             })
         },
 
-        // 获取屏幕物料数据
+        // 获取屏幕素材数据
         getScreenMaterialList(id = this.screenId){
             this.screenId = id
             operationMaterialData({ screen: id }).then(res => {

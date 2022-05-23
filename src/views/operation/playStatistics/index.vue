@@ -10,6 +10,7 @@
             <div class="title">{{ selectedScreenName }}</div>
             <div class="fliter-wrap mt10">
                 <el-input 
+                    size="small"
                     prefix-icon="el-icon-search" 
                     clearable
                     v-model="params.displayName"
@@ -17,8 +18,9 @@
                 ></el-input>
                 <div class="filter-item mt10">
                     <div class="play-date">
-                        <span>监播日期</span>
+                        <label>监播日期</label>
                         <el-date-picker
+                            size="small"
                             v-model="filterDate"
                             @change="handleChangeDate()"
                             type="daterange"
@@ -234,13 +236,13 @@ export default {
             flex-direction: column;
 
             .title{
-                padding: 20px;
+                padding: 15px 26px;
                 border-radius: 12px;
                 background: $bgColor;
             }
 
             .fliter-wrap{
-                padding: 20px;
+                padding: 18px 34px;
                 background: $bgColor;
                 border-radius: 12px;
 
@@ -251,15 +253,15 @@ export default {
                     font-size: 14px;
 
                     .play-date{
-                        height: 40px;
-                        line-height: 40px;
+                        height: 29px;
+                        line-height: 29px;
                         background: #fff;
                         border-radius: 6px;
                         overflow: hidden;
 
-                        span{
+                        label{
                             display: inline-block;
-                            padding: 0 10px;
+                            padding: 0 12px;
                             background: var(--color-primary);
                             color: #fff;
                         }
@@ -276,9 +278,9 @@ export default {
 
                         li{
                             display: inline-block;
-                            height: 40px;
-                            line-height: 40px;
-                            padding: 0 20px;
+                            height: 29px;
+                            line-height: 29px;
+                            padding: 0 26px;
                             color: var(--color-primary);
                             cursor: pointer;
 

@@ -5,7 +5,7 @@
     >
         <el-card> 
             <page-header 
-                title="待审核物料列表"
+                title="待审核素材列表"
                 backTitle="项目视图"
                 :backPath="`/materialAudit?tab=${$route.query.projectId ? 'project' : 'screen'}`"
             ></page-header>
@@ -100,7 +100,7 @@
 
         </el-card>
 
-        <!-- 物料投放的屏幕列表 -->
+        <!-- 素材投放的屏幕列表 -->
         <material-screen 
             ref="materialScreen"
             @allAuditResult="getNotAuditList"
@@ -128,7 +128,7 @@ export default {
             tLoading: false,
             resData: {},
 
-            // 物料总条数
+            // 素材总条数
             totalCount: 0,
 
             params: {
@@ -147,7 +147,7 @@ export default {
         this.getNotAuditList()
     },
     methods: {
-        // 获取未审核物料列表
+        // 获取未审核素材列表
         getNotAuditList(){
             this.tLoading = true
             materialAuditPackageList(this.params).then(res => {
@@ -169,7 +169,7 @@ export default {
 
         // 全部通过 1   全部拒绝 0
         handleAudit(packageId, status){
-            // packageId 物料包id    
+            // packageId 素材包id    
             // status 审核状态 1 通过  0 拒绝   
             // screenId 屏幕id
 
@@ -200,7 +200,7 @@ export default {
             })
         },
 
-        // 查看详情  物料投放的屏幕列表
+        // 查看详情  素材投放的屏幕列表
         handleShowDetail(id){
             this.$refs.materialScreen.showScreenListDialog(id)
         }

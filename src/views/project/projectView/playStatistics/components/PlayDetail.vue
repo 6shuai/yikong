@@ -28,7 +28,7 @@
                 align="middle"
                 v-if="resData.length"
             >
-                <el-col :span="10">物料</el-col>
+                <el-col :span="10">素材</el-col>
                 <el-col :span="14" class="play-date">
                     <p>
                         <span>序号</span>
@@ -177,7 +177,6 @@ export default {
     .material-play-log{
         .log-head{
             padding: 10px 20px;
-            text-align: center;
         }
 
         .play-date p{
@@ -186,17 +185,16 @@ export default {
             
             span{
                 flex: 1;
-                text-align: center;
             }
         }
 
         .material-item{
-            border: 1px solid #e5e5e5;
             margin-bottom: 20px;
             padding: 20px;
 
             .material{
                 text-align: center;
+                margin-right: 10px;
 
                 p{
                     line-height: 28px;

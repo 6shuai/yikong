@@ -34,7 +34,7 @@ export default {
     },
     data() {
         return {
-            // 显示上传物料
+            // 显示上传素材
             showPutMaterial: false,
 
             // 上传内容接口
@@ -160,7 +160,7 @@ export default {
             })
         },
 
-        // 投放物料
+        // 投放素材
         putMaterial(){
             let { projectId, placeholder } = this.order[this.selectedOrderIndex]
             let data = {

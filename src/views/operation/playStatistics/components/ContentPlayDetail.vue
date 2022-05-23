@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="1000px"
-        title="hhhh"
+        :title="contentInfo.contentName"
         :visible.sync="showPlayDetailDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
@@ -20,7 +20,7 @@
                     <span class="content-title">{{ contentInfo.contentName }}</span>
                 </div>
                 <ul>
-                    <li>物料时长： {{ contentInfo.duration }}s</li>
+                    <li>素材时长： {{ contentInfo.duration }}s</li>
                     <li>文件类型： {{ contentInfo.contentPath.substring(contentInfo.contentPath.lastIndexOf('.')+1) }}</li>
                     <li>分辨率： {{ contentInfo.width }} x {{ contentInfo.height }}</li>
                     <li>
@@ -35,11 +35,11 @@
             <div class="left-date">
                 <div class="date">
                     <span class="label">监播日期</span>
-                    <span>{{ playDate }}</span>
+                    <span>{{ playDate }}</span> 
                 </div>
                 <div class="total-duration" v-show="!statisticsType">
                     <i class="el-icon-time"></i>
-                    总时长 {{ playDuration }}分
+                    总时长 {{ timeFromat(playDuration) }}
                 </div>
 
                 <div class="total-duration" v-show="statisticsType">
@@ -91,6 +91,7 @@
 
 <script>
 import { operateContentPlayData } from '@/api/playStatistics'
+import { formatSeconds } from '@/utils/index'
 import { findContentType } from '@/utils/config'
 import qs from 'qs'
 
@@ -129,6 +130,11 @@ export default {
         contentType(){
             return (id) => {
                 return findContentType(id)
+            }
+        },
+        timeFromat(){
+            return (date) => {
+                return formatSeconds(date)
             }
         }
     },

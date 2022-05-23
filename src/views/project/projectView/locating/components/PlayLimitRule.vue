@@ -35,7 +35,7 @@
                     <!-- 轮播 -->
                     <div v-if="limitParams.type == 1">
                         <p>
-                            <label>物料时长</label>
+                            <label>素材时长</label>
                             <span>
                                 <el-input-number 
                                     class="w200" 
@@ -206,7 +206,7 @@ export default {
             this.limitParams = {
                 type: 1,
 
-                // 物料时长 默认15秒
+                // 素材时长 默认15秒
                 duration: 15,
 
                 // 播放次数 默认120
@@ -270,7 +270,7 @@ export default {
                 this.$message.warning('请选择上刊时间段~')
                 return
             }else if(type == 1 && !duration){
-                this.$message.warning('请输入物料时长~')
+                this.$message.warning('请输入素材时长~')
                 return
             }else if(type == 1 && !times){
                 this.$message.warning('请输入播放次数~')

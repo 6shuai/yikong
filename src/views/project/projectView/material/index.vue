@@ -3,9 +3,9 @@
         <div class="material-list-wrap" v-if="!showCreateMaterial" v-loading="tLoading">
             <div class="material-top-head">
                 <div class="head-left">
-                    <span class="page-title">物料列表</span>
+                    <span class="page-title">素材列表</span>
                     <!-- <div class="screen-count">
-                        (<b>17/27</b>您还有<b>10</b>块大屏未投放物料<i class="el-icon-caret-bottom"></i>)
+                        (<b>17/27</b>您还有<b>10</b>块大屏未投放素材<i class="el-icon-caret-bottom"></i>)
                         
                         <div class="unprotected-list">
                             <el-scrollbar 
@@ -31,21 +31,21 @@
                         type="danger"
                         @click="showDeleteCheckbox = true; materialIds=[]"
                     >
-                        管理物料
+                        管理素材
                     </el-button>
                     <el-button
                         icon="el-icon-plus"
                         type="primary"
                         @click="handleShowCreate"
                     >
-                        添加物料
+                        添加素材
                     </el-button>
                 </div>
             </div>
     
             <div class="material-content-wrap">
                 <div class="material-list">
-                    <div class="title">物料</div>
+                    <div class="title">素材</div>
                     <el-scrollbar class="hidden-scroll-x">
                         <ul>
                             <li 
@@ -76,11 +76,11 @@
                 <div class="material-screen-list" id="app-main-wrap" v-loading="screenLoading">
                     <!-- <div class="material-detail">
                         <p>
-                            <span>物料状态： 进行中</span>
+                            <span>素材状态： 进行中</span>
                             <span>上刊时间： 2022-04-12 -- 2022-04-22</span>
                         </p>
                         <p>
-                            <span>物料尺寸： 1080*1920</span>
+                            <span>素材尺寸： 1080*1920</span>
                             <span>宽高比： 16:9</span>
                         </p>
                     </div> -->
@@ -123,7 +123,7 @@
             </div>
         </div>
 
-        <!-- 下架物料 -->
+        <!-- 下架素材 -->
         <div class="delete-material-wrap" v-if="showDeleteCheckbox">
             <el-button @click="showDeleteCheckbox=false">取消</el-button>
             <el-button 
@@ -135,7 +135,7 @@
         </div>
 
 
-        <!-- 添加物料 -->
+        <!-- 添加素材 -->
         <create-material-new 
             v-if="showCreateMaterial"
             @createMaterialSuccess="showCreateMaterial=false; getMaterial()"
@@ -162,25 +162,25 @@ export default {
             // 列表数据
             resData: [],
 
-            // 物料投放的屏幕列表
+            // 素材投放的屏幕列表
             screenData: [],
 
             // 屏幕列表加载中
             screenLoading: false,
 
-            // 当前查看的物料下标
+            // 当前查看的素材下标
             currentMaterialIndex: 0,
 
-            // 当前查看的物料id
+            // 当前查看的素材id
             currentMaterialId: 0,
 
-            // 显示投放物料
+            // 显示投放素材
             showCreateMaterial: false,
 
-            // 显示下架物料
+            // 显示下架素材
             showDeleteCheckbox: false,
 
-            // 已选择的物料id
+            // 已选择的素材id
             materialIds: {},
 
             // 已选择的屏幕id
@@ -194,7 +194,7 @@ export default {
         this.getMaterial()
     },
     methods: {
-        // 获取物料列表
+        // 获取素材列表
         getMaterial(){
             this.tLoading = true
             projectMaterialLists({ project: this.$route.params.id }).then(res => {
@@ -207,7 +207,7 @@ export default {
             })
         },
 
-        // 获取物料投放的屏幕列表
+        // 获取素材投放的屏幕列表
         getScreenList(id){
             this.currentMaterialId = id
             this.screenLoading = true
@@ -220,7 +220,7 @@ export default {
             })
         },
     
-        // 显示添加物料页
+        // 显示添加素材页
         handleShowCreate(){
             this.$router.push({
                 path: this.$route.path,
@@ -231,7 +231,7 @@ export default {
             this.showCreateMaterial = true
         },
 
-        // 选择物料
+        // 选择素材
         handelSelectMaterial(id, index){
             if(this.materialIds[id]){
                 this.$set(this.materialIds, id, false)
@@ -255,7 +255,7 @@ export default {
             this.$set(this.materialIds, this.currentMaterialId, this.screenIds[index].length == this.screenData.length)
         },
 
-        // 下架物料
+        // 下架素材
         handleDelete(){
 
             let data = {
@@ -282,7 +282,7 @@ export default {
             }
 
 
-            this.$confirm('您确定要对选择的物料进行下架吗?', '提示', {
+            this.$confirm('您确定要对选择的素材进行下架吗?', '提示', {
                 confirmButtonText: '提交',
                 cancelButtonText: '我再想想',
                 type: 'warning'

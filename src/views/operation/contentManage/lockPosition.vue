@@ -10,7 +10,7 @@
                     @input="$debounce(getLockPositionList)"
                 ></el-input>
 
-                <div class="filter-item">
+                <!-- <div class="filter-item">
                     <label>分组</label>
                     <div class="tabs">
                         <span 
@@ -20,7 +20,7 @@
                             @click="groupTypetabIndex = index; placeGrouSet()"
                         >{{ item }}</span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="filter-item">
                     <label>筛选</label>

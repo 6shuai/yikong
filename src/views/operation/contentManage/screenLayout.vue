@@ -10,7 +10,7 @@
                     @input="$debounce(getScreenList)"
                 ></el-input>
 
-                <div class="filter-item">
+                <!-- <div class="filter-item">
                     <label>分组</label>
                     <div class="tabs">
                         <span 
@@ -20,7 +20,7 @@
                             @click="groupTypetabIndex = index; screenGrouSet()"
                         >{{ item }}</span>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="filter-item">
                     <label>筛选</label>
@@ -53,6 +53,7 @@
                         <div 
                             v-for="(item, childIndex) in group" :key="childIndex"
                             :class="{ 'hide-list': hideListIndex.includes(index) }"
+                            v-show="!selectedScreenIds.includes(item.id)"
                         >
                             <div 
                                 v-if="item.defaultLayout"
@@ -84,6 +85,7 @@
                             </div>
                             <div 
                                 class="screen-wrap flex-center not-layout" 
+                                @click="handelSelectScreen(item)"
                                 v-else
                             >
                                 <div class="screen-title overflow">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div>
@@ -99,32 +101,36 @@
 
         <div class="right-content">
             <div class="screen-layout-list">
-                <el-radio-group size="medium" v-model="layoutDisplayState">
-                    <el-radio-button :label="1">横屏</el-radio-button>
-                    <el-radio-button :label="2">竖屏</el-radio-button>
-                </el-radio-group>
                 <el-scrollbar class="hidden-scroll-x">
                     <div class="layout-wrap">
-                        <div
-                            class="layout"
-                            :class="{ vertical: layoutDisplayState==2 }" 
+                        <div 
+                            class="layout-item" 
                             v-for="(item, index) in layoutData" 
                             :key="index"
                         >
                             <div
-                                class="region"
-                                v-for="(regions, regionsIndex) in item.regions"
-                                :key="regionsIndex"
-                                @click="mainRegionId = regions.region.id; layoutId = item.id"
-                                :class="{ 'active': mainRegionId == regions.region.id}"
+                                class="layout"
                                 :style="{
-                                    width: regions.region.width + '%',
-                                    height: regions.region.height + '%', 
-                                    left: regions.region.x + '%',
-                                    top:  regions.region.y + '%', 
+                                    width: item.height > item.width ? item.width / item.height * layoutMaxWidth + 'px' : layoutMaxWidth + 'px',
+                                    height: item.height > item.width ? layoutMaxWidth + 'px' : item.height / item.width * layoutMaxWidth + 'px'
                                 }"
                             >
+                                <div
+                                    class="region"
+                                    v-for="(regions, regionsIndex) in item.regions"
+                                    :key="regionsIndex"
+                                    @click="mainRegionId = regions.id; layoutId = item.id"
+                                    :class="{ 'active': mainRegionId == regions.id}"
+                                    :style="{
+                                        width: regions.region.width + '%',
+                                        height: regions.region.height + '%', 
+                                        left: regions.region.x + '%',
+                                        top:  regions.region.y + '%', 
+                                    }"
+                                >
+                                </div>
                             </div>
+                            <div>{{ item.name }}</div>
                         </div>
                     </div>
                 </el-scrollbar>
@@ -173,7 +179,7 @@ export default {
             // 获取屏幕列表参数
             screenParams: {
                 // true 全部  fasle 未分配
-                all: true,   
+                // all: true,   
             },
 
             // 屏幕列表加载中
@@ -208,6 +214,8 @@ export default {
 
             // 最大高
             maxHeight: 62,
+
+            layoutMaxWidth: 240,
 
 
             // 应用中
@@ -457,7 +465,12 @@ export default {
                 width: 100%;
                 display: flex;
                 flex-wrap: wrap;
+                align-items: center;
                 margin-left: -20px;
+
+                .layout-item{
+                    text-align: center;
+                }
             }
 
             .layout{

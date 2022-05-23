@@ -29,14 +29,14 @@
                     @input="$debounce(getScreenList)"
                 ></el-input>
             </div>
-            <div class="screen-list-tab">
+            <!-- <div class="screen-list-tab">
                 <span 
                     v-for="(item, index) in [{ id: 1, name: '按城市' }, { id: 2, name: '按屏幕比例' }]"
                     :key="index"
                     :class="{ 'active': searchParams.groupType == item.id }"
                     @click="searchParams.groupType = item.id; getScreenList()"
                 >{{ item.name }}</span>
-            </div>
+            </div> -->
             <el-scrollbar class="screen-list hidden-scroll-x">
                 <div 
                     class="screen-group-wrap"
@@ -92,9 +92,7 @@ export default {
             screenData: {},
 
             // 筛选参数
-            searchParams: {
-                groupType: 1
-            },
+            searchParams: {},
 
             // 屏幕列表数据加载中
             screenLoading: false,

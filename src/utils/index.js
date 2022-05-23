@@ -56,7 +56,7 @@ export function formatTime(time, type) {
 	let s = addZero(date.getSeconds());
 	let result = '';
 	switch (type) {
-		case 'year': 
+		case 'year':
 			result = Y;
 			break;
 		case 'time':
@@ -130,14 +130,42 @@ export function dateAddHMS(date) {
 }
 
 // 时间里是否包含 1970-01-01  有就删除  没有就添加
-export function findTimeHasYtd(data){
+export function findTimeHasYtd(data) {
 	let fixedValue = '1970-01-01 '
-	if(!data) return 
-	if(data.indexOf(fixedValue) > -1){
+	if (!data) return
+	if (data.indexOf(fixedValue) > -1) {
 		return data.split(fixedValue)[1]
-	}else{
+	} else {
 		return fixedValue + data
 	}
+}
+
+
+//秒 转成  时分秒
+export function formatSeconds() {
+	var theTime = this.stagetContentDuration // 秒
+	var middle = 0 // 分
+	var hour = 0 // 小时
+
+	if (theTime > 60) {
+		middle = parseInt(theTime / 60)
+		theTime = parseInt(theTime % 60)
+		if (middle > 60) {
+			hour = parseInt(middle / 60)
+			middle = parseInt(middle % 60)
+		}
+	}
+	var result = ""
+	if(theTime > 0){
+		result = parseInt(theTime) + "秒"
+	}
+	if (middle > 0) {
+		result = "" + parseInt(middle) + "分" + result
+	}
+	if (hour > 0) {
+		result = "" + parseInt(hour) + "小时" + result
+	}
+	return result
 }
 
 
@@ -156,60 +184,68 @@ export const accMul = function (arg1 = 0, arg2 = 0) {
 }
 
 // 减法小数点精度计算
-export const Subtr = function(arg1, arg2) {
-    var r1, r2, m, n;
-    try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
-    try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
-    m = Math.pow(10, Math.max(r1, r2));
-    n = (r1 >= r2) ? r1 : r2;
-    return Number(((arg1 * m - arg2 * m) / m).toFixed(n));
+export const Subtr = function (arg1, arg2) {
+	var r1, r2, m, n;
+	try {
+		r1 = arg1.toString().split(".")[1].length
+	} catch (e) {
+		r1 = 0
+	}
+	try {
+		r2 = arg2.toString().split(".")[1].length
+	} catch (e) {
+		r2 = 0
+	}
+	m = Math.pow(10, Math.max(r1, r2));
+	n = (r1 >= r2) ? r1 : r2;
+	return Number(((arg1 * m - arg2 * m) / m).toFixed(n));
 }
 
 
 //价格格式   
 //整数部分大于4位 使用千位分割
 export const priceFormat = (x) => {
-    //强制保留两位小数
-    var f = parseFloat(x);
-    if (isNaN(f)) return x;
-    var f = Math.round(x * 100) / 100;
-    var s = f.toString();
-    var rs = s.indexOf('.');
-    if (rs < 0) {
-        rs = s.length;
-        s += '.';
-    }
-    while (s.length < (rs + 1) + 2) {
-        s += '0';
-    }
-    //每三位用一个逗号隔开
-    var leftNum = s.split(".")[0];
-    var rightNum = "." + s.split(".")[1];
-    var result;
-    //定义数组记录截取后的价格
-    var resultArray = new Array();
-    if (leftNum.length > 3) {
-        var i = true;
-        while (i) {
-            resultArray.push(leftNum.slice(-3));
-            leftNum = leftNum.slice(0, leftNum.length - 3);
-            if (leftNum.length < 4) {
-                i = false;
-            }
-        }
-        //由于从后向前截取，所以从最后一个开始遍历并存到一个新的数组，顺序调换
-        var sortArray = new Array();
-        for (var i = resultArray.length - 1; i >= 0; i--) {
-            sortArray.push(resultArray[i]);
-        }
-        result = leftNum + "," + sortArray.join(",") + rightNum;
-    } else {
-        result = s;
-    }
-    // return {
-    //     full: Number(result.replace(/\,/g,'')),
+	//强制保留两位小数
+	var f = parseFloat(x);
+	if (isNaN(f)) return x;
+	var f = Math.round(x * 100) / 100;
+	var s = f.toString();
+	var rs = s.indexOf('.');
+	if (rs < 0) {
+		rs = s.length;
+		s += '.';
+	}
+	while (s.length < (rs + 1) + 2) {
+		s += '0';
+	}
+	//每三位用一个逗号隔开
+	var leftNum = s.split(".")[0];
+	var rightNum = "." + s.split(".")[1];
+	var result;
+	//定义数组记录截取后的价格
+	var resultArray = new Array();
+	if (leftNum.length > 3) {
+		var i = true;
+		while (i) {
+			resultArray.push(leftNum.slice(-3));
+			leftNum = leftNum.slice(0, leftNum.length - 3);
+			if (leftNum.length < 4) {
+				i = false;
+			}
+		}
+		//由于从后向前截取，所以从最后一个开始遍历并存到一个新的数组，顺序调换
+		var sortArray = new Array();
+		for (var i = resultArray.length - 1; i >= 0; i--) {
+			sortArray.push(resultArray[i]);
+		}
+		result = leftNum + "," + sortArray.join(",") + rightNum;
+	} else {
+		result = s;
+	}
+	// return {
+	//     full: Number(result.replace(/\,/g,'')),
 	// 	decimal: '￥' + result + '元'
-    // }
+	// }
 	return '￥' + result + '元'
 }
 
@@ -217,26 +253,27 @@ export const priceFormat = (x) => {
 //宽高比计算
 export const aspectRatioCompute = (width, height) => {
 	// id=1(16:9)  id=2(16:10)  id=3(9:16)  id=4(10:16)  id=5(4:3)  id=6(3:4)  id=7(21:9)
-	if(width > height){
+	if (width > height) {
 		let ratio = width / height;
-		if(ratio < 1.5){
+		if (ratio < 1.5) {
 			return '4 : 3'
-		}else if(ratio >= 1.5 && ratio < 2.3){
+		} else if (ratio >= 1.5 && ratio < 2.3) {
 			return '16 : 9'
-		}else{
+		} else {
 			return '21 : 9'
 		}
-	}else{
+	} else {
 		let ratio = height / width;
-		if(ratio < 1.5){
+		if (ratio < 1.5) {
 			return '3 : 4'
-		}else if(ratio >= 1.5 && ratio < 2.3){
+		} else if (ratio >= 1.5 && ratio < 2.3) {
 			return '9 : 16'
-		}else{
+		} else {
 			return '21 : 9'
 		}
 	}
 }
+
 
 //上传路径
 export const uploadUrl = 'common/upload/';
@@ -246,4 +283,3 @@ export const uploadGamePackage = '/common/uploadApplicationPackage';
 
 //获取登录验证码
 export const getLoginCode = 'entry/verifyCode';
-

@@ -28,7 +28,7 @@
                     :name="`/project/${$route.params.id}/contract`"
                 ></el-tab-pane>
                 <el-tab-pane 
-                    label="物料管理" 
+                    label="素材管理" 
                     :name="`/project/${$route.params.id}/material`"
                 ></el-tab-pane>
                 <el-tab-pane 

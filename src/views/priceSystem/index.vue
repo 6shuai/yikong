@@ -46,6 +46,8 @@
                 @click.stop.native="()=>{}"
             ></el-checkbox>
 
+            <!-- 是否生效 effect: 1生效  2否 -->
+            <div v-if="item.effect==1" class="dot"></div>
             <div class="type" :class="{ 'insert': item.lockType != 1 }">{{ item.lockType == 1 ? '轮播' : '插播' }}</div>
 
             <div class="title overflow">{{ item.displayName }}</div>
@@ -297,7 +299,7 @@ export default {
             margin: 20px 20px 0 0;
             position: relative;
 
-            .type{
+            .type, .dot{
                 font-size: 14px;
                 position: absolute;
                 top: 0;
@@ -307,8 +309,16 @@ export default {
                 z-index: 99;
 
                 &.insert{
-                    background: #ECDDC7;
+                    background: #FFE1B5;
                 }
+            }
+
+            .dot{
+                padding: 5px;
+                left: 0;
+                right: auto;
+                background: var(--color-primary);
+                border-radius: 50%;
             }
 
             .el-checkbox{
