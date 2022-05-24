@@ -193,8 +193,8 @@
                     v-model="contractParams.paymentDue"
                     type="datetime"
                     placeholder="选择日期"
-                    format="yyyy-MM-dd HH:mm:ss"
-                    value-format="yyyy-MM-dd HH:mm:ss">
+                    format="yyyy-MM-dd"
+                    value-format="yyyy-MM-dd">
                 </el-date-picker>
                 <span v-show="!showEdit">{{ contractParams.paymentDue }}</span>
             </el-form-item>
@@ -486,13 +486,16 @@ export default {
                 if(valid){
 
                     this.btnLoading = true
+                    let { contractDate, paymentDue, secondArchiveDate } = this.contractParams
+
                     let data = {
                         ...JSON.parse(JSON.stringify(this.contractParams)),
                         project: Number(this.$route.params.id),
-                        contractDate: dateAddHMS(this.contractParams.contractDate),
+                        contractDate: dateAddHMS(contractDate),
                         validBegin: dateAddHMS(this.contractTime[0]),
                         validEnd: dateAddHMS(this.contractTime[1]),
-                        secondArchiveDate: dateAddHMS(this.contractParams.secondArchiveDate),
+                        paymentDue: dateAddHMS(paymentDue),
+                        secondArchiveDate: dateAddHMS(secondArchiveDate),
                     }
                     projectContractCreate(data).then(res => {
                         this.btnLoading = false
@@ -558,7 +561,7 @@ export default {
                 validBegin: dateAddHMS(validBeginFormat),
                 validEnd: dateAddHMS(validEndFormat),
                 secondArchiveDate: dateAddHMS(secondArchiveDateFormat),
-                paymentDue: paymentDueFormat,
+                paymentDue: dateAddHMS(paymentDueFormat),
                 publishedContractPrints: newData.publishedContractPrints || [],
                 paymentSchedules: newData.paymentSchedules && newData.paymentSchedules.length ? newData.paymentSchedules : [{}]
             }

@@ -266,7 +266,7 @@ export default {
             border: 1px dashed #808080;
             border-radius: 4px;
             text-align: center;
-            padding: 20px 0;
+            padding: 35px 0;
             position: relative;
     
             &.active{
@@ -290,14 +290,19 @@ export default {
             }
     
             .el-icon-upload{
-                font-size: 60px;
+                font-size: 30px;
                 margin-bottom: 10px;
             }
+        }
+
+        .material-add{
+            margin-bottom: 20px;
         }
     
         .material-add .material{
             display: flex;
             padding: 10px 20px;
+            background: #fff;
 
                 .el-image{
                     max-width: 120px;
@@ -327,7 +332,7 @@ export default {
                             color: $uploadEnd;
                         }
 
-                        .el-icon{
+                        i{
                             font-size: 30px;
                             margin-right: 20px;
                         }

@@ -33,16 +33,13 @@
                 {{ moneyFormat(contract.amount) }}
             </el-form-item>
             <el-form-item label="签署日期:">
-                {{ contract.contractDateFormat }}
+                {{ timeFormat(contract.contractDateFormat) }}
             </el-form-item>
             <el-form-item label="合同期:">
-                {{ contract.validBeginFormat ? `${contract.validBeginFormat}  -  ${contract.validEndFormat}` : '' }}
+                {{ contract.validBeginFormat ? `${timeFormat(contract.validBeginFormat)}  -  ${timeFormat(contract.validEndFormat)}` : '' }}
             </el-form-item>
             <el-form-item label="付款截止日期:">
-                {{ contract.paymentDueFormat }}
-            </el-form-item>
-            <el-form-item label="价格体系:">
-                {{ contract.priceSystemName }}
+                {{ timeFormat(contract.paymentDueFormat) }}
             </el-form-item>
 
             <el-form-item label="提成体系:">
@@ -75,6 +72,31 @@
                 </div>
             </el-form-item>
 
+            <el-form-item label="回款计划:">
+                <div class="return-money">
+                    <el-table
+                        border
+                        size="small"
+                        :data="contract.paymentSchedules">
+                        <el-table-column 
+                            prop="amount" 
+                            label="回款金额" 
+                            min-width="100"
+                        >
+                            <template slot-scope="scope">
+                                {{ moneyFormat(scope.row.amount) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column 
+                            prop="deadlineFormat" 
+                            label="回款时间" 
+                            min-width="100"
+                        >
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-form-item>
+
             <el-form-item label="说明:">
                 {{ contract.description }}
             </el-form-item>
@@ -99,7 +121,7 @@
 
 <script>
 import { contractApprovalDetail, contractApproval } from '@/api/contractApproval'
-import { priceFormat } from '@/utils/index'
+import { dateAddHMS, priceFormat } from '@/utils/index'
 
 export default {
     data() {
@@ -117,6 +139,13 @@ export default {
                 return priceFormat(key)
             }
         },
+
+        // 时间格式化
+        timeFormat(){
+            return (time) => {
+                return dateAddHMS(time)
+            }
+        }
     },
     methods: {
         getContractDetail(contract){
@@ -173,6 +202,32 @@ export default {
             a{
                 text-align: center;
                 background: url('../../../assets/images/pdf.png') no-repeat center;
+            }
+        }
+    }
+
+    .return-money{
+        li{
+            padding-bottom: 10px;
+            display: flex;
+
+            .right-icon{
+                i{
+                    display: inline-block;
+                    width: 30px;
+                    height: 100%;
+                    cursor: pointer;
+                    line-height: 40px;
+                    text-align: center;
+
+                    &.el-icon-plus:hover{
+                        color: var(--color-primary);
+                    }
+
+                    &.el-icon-close:hover{
+                        color: var(--color-danger);
+                    }
+                }
             }
         }
     }

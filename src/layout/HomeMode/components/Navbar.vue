@@ -3,7 +3,7 @@
 		class="navbar-home-mode"
 	>	
 
-		<breadcrumb class="breadcrumb-container" />
+		<breadcrumb class="breadcrumb-container" model="homeModel" />
 		
 		<div class="right-menu">
 			<el-dropdown class="avatar-container" trigger="click">

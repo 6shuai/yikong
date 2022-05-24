@@ -28,7 +28,7 @@ export default {
         }
     },
     mounted() {
-        this.tabActiveName = this.$route.name == 'Projcet--view' ? 'view' : 'returnMoney'
+        this.tabActiveName = this.$route.name == 'Project--view' ? 'view' : 'returnMoney'
     },
     methods: {
         handleClickTab(){

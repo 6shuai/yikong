@@ -4,7 +4,7 @@
 
             <div class="project-introduce">
                 <el-page-header 
-                    @back="$router.go(-1)"
+                    @back="$route.path == `/project/${$route.params.id}` ? $router.push('/project/view')  : $router.go(-1)"
                     title="返回"
                 > </el-page-header>
                 <div class="title">{{ resData.displayName }}</div>

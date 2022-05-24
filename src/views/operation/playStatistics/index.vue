@@ -166,6 +166,8 @@ export default {
                 pageNo: 1,
                 pageSize: 40
             }
+            this.filterDate = undefined
+            
             this.getPlayData(id)
         },
 

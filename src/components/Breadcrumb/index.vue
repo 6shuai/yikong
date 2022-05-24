@@ -1,5 +1,5 @@
 <template>
-	<el-breadcrumb class="app-breadcrumb" separator="/">
+	<el-breadcrumb class="app-breadcrumb" separator-class="el-icon-arrow-right">
 		<transition-group name="breadcrumb">
 			<el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path+index">
 				<span
@@ -16,6 +16,9 @@
 import pathToRegexp from "path-to-regexp";
 
 export default {
+	props: {
+		model: String
+	},
 	data() {
 		return {
 			levelList: null
@@ -42,7 +45,6 @@ export default {
 			// 		matched
 			// 	);
 			// }
-
 			this.levelList = matched.filter(
 				item => item.meta && item.meta.title && item.meta.breadcrumb !== false
 			);
@@ -71,7 +73,11 @@ export default {
 				this.$router.push(redirect);
 				return;
 			}
-			this.$router.push(this.pathCompile(path));
+			if(this.model == 'homeModel' && !this.pathCompile(path)){
+				this.$router.push('/');
+			}else{
+				this.$router.push(this.pathCompile(path) || '/');
+			}
 		}
 	}
 };

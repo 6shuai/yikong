@@ -16,6 +16,7 @@
                         </el-button>
                     </div>
                     <el-scrollbar class="hidden-scroll-x">
+                        <div class="not-data" v-if="!resData || !resData.length">该项目下暂无素材,请尽快添加素材</div>
                         <ul>
                             <li 
                                 v-for="(item, index) in resData" 
@@ -23,12 +24,16 @@
                                 :class="{ 'active': currentMaterialIndex==index }"
                                 @click.stop="currentMaterialIndex = index;getScreenList(item.id)"
                             >   
+                                <div class="delete-wrap flex-center" v-if="currentMaterialIndex==index">
+                                    <div class="mask"></div>
+                                    <div class="del-btn" @click="showDeleteTip = true">删除素材</div>
+                                </div>
                                 <p class="overflow">{{ item.name }}</p>
                                 <div class="material-cover">
                                     <el-image 
                                         fit="cover" 
-                                        :src="item.content" 
-                                        :preview-src-list="[item.content]"
+                                        :src="item.thumbnail" 
+                                        :preview-src-list="[item.sourceFile]"
                                         @click.stop.native="()=>{}"
                                     ></el-image>
                                 </div>
@@ -40,74 +45,101 @@
     
                 <div class="material-screen-list" id="app-main-wrap" v-loading="screenLoading">
                     
-                    <div class="head">
-                        <span class="title">大屏内容</span>
+                    <div class="head flex-between-center"> 
+                        <div class="title">大屏内容</div>
+                        <div class="right-tabs flex">
+                            <span v-for="(item, index) in ['进行中', '全部']" :key="index" :class="{ 'active': showType==index }">{{ item }}</span>
+                        </div>
                     </div>
 
                     <el-scrollbar class="hidden-scroll-x">
-                        <el-empty v-if="!screenLoading && !screenData.length"></el-empty>
+                        <div class="not-data" v-if="!screenData.length">暂无物料，暂不可添加大屏</div>
 
-                        <el-card class="item" v-for="item in screenData" :key="item.id">
+                        <div class="order-list" v-for="(item, index) in screenData" :key="item.id">
                             <div class="top-content">
                                 <div class="left-time-info">
-                                    <p class="time-period">
-                                        <span v-if="item.type == 1" class="play-type">轮播</span>
-                                        <span v-if="item.type == 3" class="play-type limit-2">插播</span>
-                                        上刊时间段： {{ item.publishDate }} -- {{ item.dueDate }}
-                                    </p>
+                                    <div class="limt">
+                                        <p class="time-period">上刊时间段： {{ item.publishDate }} -- {{ item.dueDate }}</p>
+                                        <p v-if="item.type == 1">
+                                            <span class="play-type">轮播</span>
+                                            <span class="play-duration ml20">播放时长： {{ item.duration }}s</span>
+                                            <span class="play-count ml20">每日播放次数：{{ item.times }}次</span>
+                                        </p>
+                                        <p v-if="item.type == 3">
+                                            <span class="play-type limit-2">插播</span>
+                                            <span class="play-duration ml20">开始时间： {{ item.time }}</span>
+                                            <span class="play-count ml20">每日时间：{{ item.duration }}秒</span>
+                                        </p>
+                                    </div>
                                 </div>
                                 <div class="right-limit">
                                     <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                                        <span v-for="(limitTime, index) in item.limits" :key="index">{{ limitTime.begin }} - {{ limitTime.end }}</span>
+                                        <span v-for="(limitTime, limitIndex) in item.limits" :key="limitIndex">{{ limitTime.begin }} - {{ limitTime.end }}</span>
                                     </p>
                                 </div>
                             </div>
+
+                            <!-- 大屏列表 -->
+                            <div class="screen-list-wrap">
+                                <!-- @click.prevent="handleSelectScreen(item.disabled, child.id, index)" -->
+                                <div 
+                                    class="screen-item" 
+                                    v-for="(child, cindex) in item.placeholders" 
+                                    :key="child.id"
+                                    @click.prevent="handleSelectScreen(item.disabled, child.id, index)"
+                                    :class="{ 'active': screenIds.includes(child.id) }"
+                                >
+
+                                    <!-- <div class="delete-wrap flex-center" v-if="currentMaterialIndex==index">
+                                        <div class="mask"></div>
+                                        <div class="del-btn" @click="showDeleteTip = true">删除素材</div>
+                                    </div> -->
             
-                            <el-scrollbar class="hidden-scroll-y" style="width: 100%;">
-                                <div class="screen-list mt20" :style="{ width: item.placeholders.length * 270 +'px' }">
-                                    <div class="screen-item" 
-                                        v-for="screen in item.placeholders" 
-                                        :key="screen.id"
-                                    >
-                                        <div class="screen-img">
-                                            <el-image fit="cover" :src="screen.photo"></el-image>
-                                            <div class="screen-name overflow">{{ screen.name }} {{ screen.location ? `(${screen.location})` : '' }}</div>
+                                    <div class="content flex-between-center">
+                                        
+                                        <div class="screen-name overflow" :title="child.name + (child.location ? `(${child.location})` : '')">
+                                            {{ child.name }} {{ child.location ? `(${child.location})` : '' }}
                                         </div>
-                                        <div class="screen-bottom">
-                                            <el-tag size="small" v-if="screen.city">{{ screen.city }}</el-tag>
-                                            <el-tag size="small" v-if="screen.level">{{ screen.level }}</el-tag>
+            
+                                        <div class="specification">{{ child.width }} * {{ child.height }}</div>
+                                    </div>
+            
+                                    <div class="screen-img">
+                                        <!-- <el-image fit="cover" :src="child.photo"></el-image> -->
+                                        <div 
+                                            class="item" 
+                                            v-for="(sub, sIndex) in child.materials[0].regions" 
+                                            :key="sIndex"
+                                            :style="{
+                                                width: sub.region.width + '%',
+                                                height: sub.region.height + '%',
+                                                top: sub.region.y + '%',
+                                                left: sub.region.x + '%'
+                                            }"
+                                        >   
+                                            <el-image fit="cover" v-if="sub.content" :src="sub.content.thumbnail"></el-image> 
                                         </div>
                                     </div>
-                                </div>
-                            </el-scrollbar>
-                            <div class="bottom mt20 flex-between-center clearfix">
-                                <p v-if="item.type == 1">
-                                    <span class="play-duration ml20">播放时长： {{ item.duration }}s</span>
-                                    <span class="play-count ml20">每日播放次数：{{ item.times }}次</span>
-                                </p>
-                                <p v-if="item.type == 3">
-                                    <span class="play-duration ml20">开始时间： {{ item.time }}</span>
-                                    <span class="play-count ml20">播放时长：{{ item.duration }}秒</span>
-                                </p>
-                                <span class="locating-time">订单号: {{ item.orderNumber }}</span>
-                            </div>
             
-                        </el-card>
+                                    <div class="other">
+                                        此屏已投放 <span>{{ child.materials.length }}</span> 个物料
+                                    </div>
+                                    
+                                </div>
+
+
+                            </div>
+
+                            <div class="order-bottom flex-between-center">
+
+                                <div class="order-number">订单编号: {{ item.orderNumber }}</div>
+
+                            </div>
+                        </div>
                     </el-scrollbar>
     
                 </div>
             </div>
-        </div>
-
-        <!-- 下架素材 -->
-        <div class="delete-material-wrap" v-if="showDeleteCheckbox">
-            <el-button @click="showDeleteCheckbox=false">取消</el-button>
-            <el-button 
-                :loading="btnLoading"
-                type="primary"
-                :disabled="!materialIds.length ? true : false"
-                @click="handleDelete"
-            >确定</el-button>
         </div>
 
 
@@ -116,6 +148,33 @@
             v-if="showCreateMaterial"
             @createMaterialSuccess="showCreateMaterial=false; getMaterial()"
         ></create-material-new>
+
+        <!-- 删除素材 -->
+        <el-dialog
+            width="300px"
+            title="提示"
+            :visible.sync="showDeleteTip"
+            :close-on-click-modal="false"
+            :close-on-press-escape="false"
+            :show-close="false"
+            append-to-body
+            custom-class="delete-material-tip-dialog"
+        >
+            <div class="msg">您是否要对所选物料进行下刊？</div>
+            <div class="tip-bottom flex-between-center mt20">
+                <el-checkbox>立即下刊</el-checkbox>
+                <div class="btn-wrap"> 
+                    <el-button size="small" @click="showDeleteTip=false">取消</el-button>
+                    <el-button 
+                        size="small" 
+                        type="primary"
+                        @click="handleDeleteMaterial"
+                    >
+                        确定
+                    </el-button>
+                </div>
+            </div>
+        </el-dialog>
     
     </div>
 </template>
@@ -150,11 +209,14 @@ export default {
             // 当前查看的素材id
             currentMaterialId: 0,
 
+            // 显示删除提示
+            showDeleteTip: false,
+
+            // 大屏内容筛选  0 进行中  1全部
+            showType: 0,
+
             // 显示投放素材
             showCreateMaterial: false,
-
-            // 显示下架素材
-            showDeleteCheckbox: false,
 
             // 已选择的素材id
             materialIds: {},
@@ -178,7 +240,6 @@ export default {
                 if(res.code === this.$successCode){
                     this.resData = res.obj
                     if(this.resData.length) this.getScreenList(this.currentMaterialId ? this.currentMaterialId : this.resData[0].id)
-                    else this.showCreateMaterial = true
                 }
             })
         },
@@ -236,48 +297,53 @@ export default {
             this.$set(this.materialIds, this.currentMaterialId, this.screenIds[index].length == this.screenData.length)
         },
 
+        // 删除素材
+        handleDeleteMaterial(){
+            // let data = {
+            //     materials: [{
+            //         packageId: 
+            //     }]
+            // }
+            // this.handleDelete()
+        },
+
         // 下架素材
-        handleDelete(){
+        handleDelete(data){
 
-            let data = {
-                materials: []
-            }
+            // let data = {
+            //     materials: []
+            // }
 
-            for (const key in this.materialIds) {
-                if(this.materialIds[key]){
-                    data.materials.push({
-                        packageId: key,
-                        placeholders: null
-                    })
+            // for (const key in this.materialIds) {
+            //     if(this.materialIds[key]){
+            //         data.materials.push({
+            //             packageId: key,
+            //             placeholders: null
+            //         })
+            //     }
+            // }
+
+            // for(let i = 0; i < this.screenIds.length; i++){
+            //     let id = this.resData[i].id
+            //     if(this.screenIds[i] && this.screenIds[i].length && !this.materialIds[id]){
+            //         data.materials.push({
+            //             packageId: id,
+            //             placeholders: this.screenIds[i] 
+            //         })
+            //     }
+            // }
+
+
+   
+            this.btnLoading = true
+            projectMaterialDelete(data).then(res => {
+                this.btnLoading = false
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~')
+                    this.screenIds = {}
+                    this.materialIds = []
+                    this.getMaterial()
                 }
-            }
-
-            for(let i = 0; i < this.screenIds.length; i++){
-                let id = this.resData[i].id
-                if(this.screenIds[i] && this.screenIds[i].length && !this.materialIds[id]){
-                    data.materials.push({
-                        packageId: id,
-                        placeholders: this.screenIds[i] 
-                    })
-                }
-            }
-
-
-            this.$confirm('您确定要对选择的素材进行下架吗?', '提示', {
-                confirmButtonText: '提交',
-                cancelButtonText: '我再想想',
-                type: 'warning'
-            }).then(() => {
-                this.btnLoading = true
-                projectMaterialDelete(data).then(res => {
-                    this.btnLoading = false
-                    if(res.code === this.$successCode){
-                        this.$message.success('操作成功~')
-                        this.screenIds = {}
-                        this.materialIds = []
-                        this.getMaterial()
-                    }
-                })
             })
         }
     },
@@ -295,10 +361,16 @@ export default {
 <style lang="scss">
     .material-manage-wrap{
 
+        .not-data{
+            line-height: calc(100vh - 320px);
+            color: #A1A1AA;
+            text-align: center;
+        }
+
         .material-content-wrap{
             margin-top: 20px;
             width: 100%;
-            height: calc(100vh - 220px);
+            height: calc(100vh - 230px);
             display: flex;
 
             .material-list{
@@ -315,7 +387,8 @@ export default {
                 }
 
                 .el-scrollbar{
-                    height: calc(100vh - 410px);
+                    height: calc(100vh - 310px);
+                    margin-top: 20px;
                 }
 
                 ul{
@@ -327,15 +400,36 @@ export default {
                         background: #fff;
                         border-left: 25px solid #5996FF; 
                         border-radius: 16px 0px 0px 16px;
+                        position: relative;
+
+                        .delete-wrap, .delete-wrap .mask{
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 99;
+                            
+                        }
+
+                        .delete-wrap{
+                            .mask{
+                                background:rgba(124, 124, 124, 0.4);
+                            }
+
+                            .del-btn{
+                                width: 94px;
+                                height: 30px;
+                                line-height: 30px;
+                                font-size: 14px;
+                                background: rgba(255, 255, 255, 0.73);
+                                color: #111827;
+                                border-radius: 8px;
+                                text-align: center;
+                                z-index: 1000;
+                            }
+                        }
                         
-                        // &:hover{
-                        //     background: #e3fdfd;
-                        // }
-
-                        // &.active{
-                        //     background: #e3fdfd;
-                        // }
-
                         .material-cover{
                             display: inline-block;
                             width: 238px;
@@ -366,22 +460,40 @@ export default {
                 .head{
                     line-height: 42px;
                     font-size: 16px;
+
+                    .right-tabs{
+                        border: 1px solid #71717A;
+                        border-radius: 3px;
+                        span{
+                            font-size: 12px;
+                            line-height: 29px;
+                            padding: 0 10px;
+                            color: #71717A;
+
+                            &.active{
+                                background: #71717A;
+                                color: #fff;
+                            }
+                        }
+                    }
                 }
 
                 &>.el-scrollbar{
                     height: calc(100vh - 310px);
                     margin-top: 20px;
                     margin-right: 20px;
+                    background: #fff;
 
-                    .item{
+                    .order-list{
+                        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+                        background: #fff;
+                        padding: 20px;
                         margin-bottom: 20px;
-                        padding: 0 10px;
 
                         .top-content{
                             display: flex;
                             justify-content: space-between;
                             padding-bottom: 10px;
-                            border-bottom: 1px solid #e5e5e5;
 
                             p{
                                 line-height: 26px;
@@ -389,23 +501,39 @@ export default {
                             }
 
                             .left-time-info{
-                                width: 400px;
-                                font-weight: bold;
+                                display: flex;
 
-                                .play-type{
+                                .limt{
+                                    font-weight: bold;
                                     display: inline-block;
-                                    background: #0091C2;
-                                    border-radius: 4px;
-                                    color: #fff;
-                                    padding: 2px 10px;
-                                    font-size: 14px;
-                                    line-height: 20px;
 
-                                    &.limit-2{
-                                        background: #C27B00;
+                                    .play-type{
+                                        display: inline-block;
+                                        background: #0091C2;
+                                        border-radius: 4px;
+                                        color: #fff;
+                                        padding: 2px 10px;
+                                        font-size: 14px;
+                                        line-height: 20px;
+
+                                        &.limit-2{
+                                            background: #C27B00;
+                                        }
                                     }
                                 }
+                                
+
+
+                                .tip{
+                                    display: inline-block;
+                                    background: #FF81B0;
+                                    padding: 5px 10px;
+                                    height: 36px;
+                                    color: #fff;
+                                    margin-left: 30px;
+                                }
                             }
+
 
                             .right-limit{
                                 display: flex;
@@ -413,73 +541,86 @@ export default {
                             }
                         }   
 
-                        .el-scrollbar{
-                            border-bottom: 1px solid #e5e5e5;
+                        .order-bottom{
+                            font-size: 14px;
+                            padding-top: 10px;
+                            text-align: right;
                         }
 
-                        .screen-list{
+                        .screen-list-wrap{
                             display: flex;
                             flex-wrap: wrap;
-                            margin-left: -20px;
-
+                            padding-top: 20px;
+                            
                             .screen-item{
-                                width: 250px;
-                                margin: 0 0 20px 20px;
-                                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+                                width: 240px;
+                                margin: 0 12px 20px 8px;
+                                padding: 8px 12px;
+                                position: relative;
+                                cursor: pointer;
+                                box-shadow: 0 2px 12px 0 rgba(0,0,0, .1);
+
+                                &.active{
+                                    background: #CBE2FF;
+                                }
+
+                                .content{
+                                    line-height: 20px;
+                                    padding: 2px 0 8px 0;
+
+                                    .screen-name{
+                                        width: 130px;
+                                        color: #71717A;
+                                        font-weight: 700;
+                                    }
+
+                                    .specification{
+                                        font-size: 12px;
+                                        color: #D4D4D8;
+                                    }
+                                }
 
                                 .screen-img{
-                                    width: 100%;
-                                    height: 180px;
-                                    position: relative;
-                                    background: #999;
+                                    width: 215px;
+                                    height: 95px;
 
                                     .el-image{
                                         width: 100%;
                                         height: 100%;
                                     }
+                                }
 
-                                    .screen-name{
-                                        position: absolute;
-                                        left: 0;
-                                        bottom: 0;
-                                        width: 100%;
-                                        text-align: center;
-                                        color: #fff;
-                                        background: rgba($color: #000000, $alpha: 0.6);
-                                        padding: 5px;
+                                .other{
+                                    height: 17px;
+                                    line-height: 17px;
+                                    margin-top: 8px;
+                                    text-align: right;
+                                    font-size: 12px;
+                                    color: #767676;
+
+                                    span{
+                                        font-weight: bold;
+                                        padding: 0 3px;
+                                        text-decoration: underline;
                                     }
                                 }
-
-                                .screen-bottom{
-                                    text-align: center;
-                                    padding: 10px 0;
-                                }
                             }
                         }
 
-                        .bottom{
-                            .locating-time{
-                                float: right;
-                                font-size: 14px;
-                                color: #999;
-                                line-height: 40px;
-                            }
-                        }
                     }
                 }
                 
             }
         }
+    }
 
-        .delete-material-wrap{
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+    .delete-material-tip-dialog{
+        .el-dialog__body{
             padding: 20px;
-            text-align: right;
-            z-index: 99;
-            background: #eeeeee;
+        }
+
+        .msg{
+            padding-bottom: 20px;
         }
     }
 

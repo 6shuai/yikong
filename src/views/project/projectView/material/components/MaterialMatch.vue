@@ -29,38 +29,52 @@
                 </div>
 
                 <!-- 大屏列表 -->
-                <div class="screen-list-wrap">
-                    <div 
-                        class="screen-item" 
-                        v-for="(child, cindex) in item.placeholders" 
-                        :key="child.id"
-                        @click.prevent="handelSelectScreen(item.disabled, child.id, index)"
-                        :class="{ 'active': screenIds.includes(child.id) }"
-                    >
-                        
-                        
-
-                        <div class="content flex-between-center">
-                            
-                            <div class="screen-name overflow">
-                                {{ child.name }} {{ child.location ? `(${child.location})` : '' }}
+                <el-scrollbar class="order-screen-scroll hidden-scroll-x">
+                    <div class="screen-list-wrap">
+                        <div 
+                            class="screen-item" 
+                            v-for="(child, cindex) in item.placeholders" 
+                            :key="child.id"
+                            @click.prevent="handelSelectScreen(item.disabled, child.id, index)"
+                            :class="{ 'active': screenIds.includes(child.id) }"
+                        >
+    
+                            <div class="content flex-between-center">
+                                
+                                <div class="screen-name overflow" :title="child.name + (child.location ? `(${child.location})` : '')">
+                                    {{ child.name }} {{ child.location ? `(${child.location})` : '' }}
+                                </div>
+    
+                                <div class="specification">{{ child.width }} * {{ child.height }}</div>
                             </div>
-
-                            <div class="specification">{{ child.width }} * {{ child.height }}</div>
+    
+                            <div class="screen-img">
+                                <el-image fit="cover" :src="child.photo"></el-image>
+                            </div>
+    
+                            <div class="other flex">
+                                <span>{{ child.city }}</span>
+                                <span>{{ child.level }}</span>
+                            </div>
+                            
                         </div>
 
-                        <div class="screen-img">
-                            <el-image fit="cover" :src="child.photo"></el-image>
-                        </div>
 
-                        <div class="other flex">
-                            <span>北京</span>
-                            <span>S级</span>
-                        </div>
-                        
                     </div>
-                </div>
+                </el-scrollbar>
 
+                <div class="order-bottom flex-between-center">
+                    <el-checkbox 
+                        :disabled="(materialData.image && !item.disabled) ? false : true"
+                        :value="orderScreenIds[index] && orderScreenIds[index].length == item.placeholders.length" 
+                        @change="handleSelectAll(item.placeholders, index)"
+                    >
+                        全选
+                    </el-checkbox>
+
+                    <div class="order-number">订单编号: 20200524</div>
+
+                </div>
             </div>
         </el-scrollbar>
         
@@ -167,6 +181,28 @@ export default {
             }
         },
 
+        // 全选
+        handleSelectAll(placeholders, index){
+            let result = true
+            if(this.orderScreenIds[index] && this.orderScreenIds[index].length == placeholders.length){
+                result = false                
+            }
+            for(let i = 0; i < placeholders.length; i++){
+                let id = placeholders[i].id
+                if(this.screenIds.includes(id) && !result){
+                    let idIndex = this.screenIds.indexOf(id)
+                    this.$delete(this.screenIds, idIndex)
+
+                    let idIndex2 = this.orderScreenIds[index].indexOf(id)
+                    this.$delete(this.orderScreenIds[index], idIndex2)
+                }else if(!this.screenIds.includes(id) && result){
+                    this.$set(this.screenIds, this.screenIds.length, id)
+                    if(!this.orderScreenIds[index]) this.orderScreenIds[index] = []
+                    this.$set(this.orderScreenIds[index], this.orderScreenIds[index].length, id)
+                }
+            }
+        },
+
         // 二维数组 转为一维数组 
         arrayFormat(arr){
             let newArr = arr.reduce((acc, curr) => {
@@ -230,8 +266,9 @@ export default {
         
             .order-list{
                 box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+                background: #fff;
                 padding: 20px;
-                margin: 20px 0;
+                margin-bottom: 20px;
 
                 .top-content{
                     display: flex;
@@ -284,14 +321,27 @@ export default {
                     }
                 }   
 
+                .order-bottom{
+                    font-size: 14px;
+                    padding-top: 10px;
+                }
+
+            }
+
+            .order-screen-scroll {
+                padding-bottom: 10px;
+                border-top: 1px solid $borderColor;
+                border-bottom: 1px solid $borderColor;
+
+                .el-scrollbar__wrap{
+                    max-height: 410px;
+                }
             }
 
             .screen-list-wrap{
                 display: flex;
                 flex-wrap: wrap;
                 padding-top: 20px;
-                border-top: 1px solid $borderColor;
-                border-bottom: 1px solid $borderColor;
                 
                 .screen-item{
                     width: 240px;
@@ -337,7 +387,7 @@ export default {
                         span{
                             font-size: 12px;
                             height: 20px;
-                            line-height: 20px;
+                            line-height: 18px;
                             color: #AAAAAA;
                             border: 1px solid #AAAAAA;
                             border-radius: 2px;
@@ -363,6 +413,7 @@ export default {
                 color: #3D3D3D;
                 span{
                     font-weight: bold;
+                    margin: 0 5px;
                 }
             }
         }
