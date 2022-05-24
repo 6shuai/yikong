@@ -142,8 +142,7 @@ export function findTimeHasYtd(data) {
 
 
 //秒 转成  时分秒
-export function formatSeconds() {
-	var theTime = this.stagetContentDuration // 秒
+export function formatSeconds(theTime) {
 	var middle = 0 // 分
 	var hour = 0 // 小时
 

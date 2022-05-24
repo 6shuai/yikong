@@ -1,6 +1,6 @@
 <template>
     <div class="created-material-wrap">
-        <h3>添加素材</h3>
+        
         <div class="material-add">
             <div 
                 class="drag-upload-wrap" 
@@ -256,18 +256,17 @@ export default {
     $uploadEnd: #00A857;
 
     .created-material-wrap{
-        padding: 0 20px;
-
-        h3{
-            padding: 20px 0;
-        }
+        padding: 40px 20px 0;
+        background: #F3F4F6;
+        border-radius: 12px;
 
         .drag-upload-wrap{
             margin: 0 40px;
-            border: 1px dashed #878787;
+            background: #FEFEFE;
+            border: 1px dashed #808080;
             border-radius: 4px;
             text-align: center;
-            padding: 80px 0;
+            padding: 20px 0;
             position: relative;
     
             &.active{
@@ -297,15 +296,15 @@ export default {
         }
     
         .material-add .material{
-            background: #ececec;
             display: flex;
             padding: 10px 20px;
-
 
                 .el-image{
                     max-width: 120px;
                     border-left: 10px solid #5996FF;
                     background: #999;
+                    border-top-left-radius: 6px;
+                    border-bottom-left-radius: 6px;
 
                     &.material-type-video{
                         border-color: #FF597D;
@@ -322,11 +321,15 @@ export default {
                     align-items: center;
 
                     .upload-state{
-                        font-weight: bold;
                         color: $uploading;
 
                         &.upload-end{
                             color: $uploadEnd;
+                        }
+
+                        .el-icon{
+                            font-size: 30px;
+                            margin-right: 20px;
                         }
                     }
 
@@ -338,13 +341,13 @@ export default {
                 .progress{
                     margin-top: 5px;
                     width: 100%;
-                    height: 10px;
-                    background: #8C8C8C;
+                    height: 20px;
+                    border: 1px dashed #FEFEFE;
                     text-align: left;
                     
                     .progress-bar{
                         width: 50%;
-                        height: 10px;
+                        height: 20px;
                         background: $uploading;
                     }
 

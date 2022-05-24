@@ -25,11 +25,11 @@
                 placement="top"
                 width="400"
                 trigger="hover">
-                <video v-if="item.contentType==2" :src="item.contentPath"></video>
+                <video width="370" controls v-if="item.contentType==2" :src="item.contentPath"></video>
                 <el-image v-else fit="cover" :src="item.contentPath"></el-image>
                 <div class="content-detail-popover">
                     <span>分辨率：{{ item.width }} x {{ item.height }}</span>
-                    <span>文件大小：{{ (item.size / 1024).toFixed(2) }}MB</span>
+                    <span>文件大小：{{ (item.size / 1024 / 1024).toFixed(2) }}MB</span>
                 </div>
                 <el-col :span="5" class="content-name" slot="reference" @click.native="handleShowContentDetail(item, item.playDate, item.contentId)">{{ item.contentName }}</el-col>
             </el-popover>

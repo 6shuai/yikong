@@ -55,7 +55,7 @@
                             @click="handleClickScreen(item)"
                         >
                             <span class="title overflow">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</span>
-                            <span class="collection" @click="handleFavorite(item)"><i :class="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i></span>
+                            <span v-if="groupName!='收藏'" class="collection" @click="handleFavorite(item)"><i :class="item.isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"></i></span>
                         </li>
                     </ul>
                 </div>
@@ -221,7 +221,7 @@ export default {
             }
 
             .screen-list{
-                height: calc(100vh - 164px);
+                height: calc(100vh - 125px);
 
                 .screen-group-wrap{
                     .group-title{
@@ -257,13 +257,6 @@ export default {
                             }
                         }
 
-                        &:hover{
-                            background: rgba(17, 24, 39, 0.1);
-
-                            .collection{
-                                display: block;
-                            }
-                        }
 
                         .title{
                             flex: 1;
@@ -273,10 +266,21 @@ export default {
                             width: 30px;
                             text-align: right;
                             font-size: 20px;
-                            display: none;
-
+                            
                             .el-icon-star-on{
                                 color: #e6a23c;
+                            }
+                            
+                            .el-icon-star-off{
+                                display: none;
+                            }
+                        }
+                        
+                        &:hover{
+                            background: rgba(17, 24, 39, 0.1);
+
+                            .el-icon-star-off{
+                                display: block;
                             }
                         }
                     }

@@ -1,8 +1,9 @@
 <template>
     <el-dialog
         width="1000px"
-        :title="contentInfo.contentName"
+        :title="contentInfo ? contentInfo.contentName : ''"
         :visible.sync="showPlayDetailDialog"
+        v-if="showPlayDetailDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         :show-close="false"
@@ -11,7 +12,7 @@
     >   
         <div class="content-detail" v-if="contentInfo">
             <div class="content-img">
-                <video v-if="contentInfo.contentType==2" :src="contentInfo.contentPath"></video>
+                <video controls v-if="contentInfo.contentType==2" :src="contentInfo.contentPath"></video>
                 <el-image v-else fit="cover" :src="contentInfo.contentPath"></el-image>
             </div>
             <div class="right-detail">
@@ -24,8 +25,9 @@
                     <li>文件类型： {{ contentInfo.contentPath.substring(contentInfo.contentPath.lastIndexOf('.')+1) }}</li>
                     <li>分辨率： {{ contentInfo.width }} x {{ contentInfo.height }}</li>
                     <li>
-                        文件大小： {{ (contentInfo.size / 1024).toFixed(2) }}MB 
-                        <a href="javascript:;" class="el-icon-download ml10" @click="downUrl(contentInfo.contentPath)"></a>
+                        文件大小： {{ (contentInfo.size / 1024 / 1024).toFixed(2) }}MB 
+                        <a :href="contentInfo.contentPath" class="el-icon-download ml10" download=""></a>
+                        <!-- <a href="javascript:;" class="el-icon-download ml10" @click="downUrl(contentInfo.contentPath)"></a> -->
                     </li>
                 </ul>
             </div>

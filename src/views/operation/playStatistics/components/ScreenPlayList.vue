@@ -52,10 +52,11 @@
                     placement="top"
                     width="400"
                     trigger="hover">
-                    <el-image v-if="child.contentPath" fit="cover" :src="child.contentPath"></el-image>
+                    <video width="370" controls v-if="child.contentType==2" :src="child.contentPath"></video>
+                    <el-image v-else fit="cover" :src="child.contentPath"></el-image>
                     <div class="content-detail-popover">
                         <span>分辨率：{{ child.width }} x {{ child.height }}</span>
-                        <span>文件大小：{{ (child.size / 1024).toFixed(2) }}MB</span>
+                        <span>文件大小：{{ (child.size / 1024 / 1024).toFixed(2) }}MB</span>
                     </div>
                     <el-col :span="6" class="content-name" slot="reference" @click.native="handleShowContentDetail(child, item.playDate, child.contentId)">{{ child.contentName }}</el-col>
                 </el-popover>
@@ -88,9 +89,11 @@ export default {
             screenId: null
         }
     },
-    timeFromat(){
-        return (date) => {
-            return formatSeconds(date)
+    computed: {
+        timeFromat(){
+            return (date) => {
+                return formatSeconds(date)
+            }
         }
     },
     methods: {

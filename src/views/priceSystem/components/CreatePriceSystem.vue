@@ -36,97 +36,91 @@
                 <div class="content">
                     <!-- 轮播 -->
                     <div v-if="addParams.lockType == 1">
-                        <p>
+                        <p class="flex-center">
                             <label>素材时长</label>
-                            <span>
+                            <span class="flex">
                                 <el-input-number 
                                     class="w200" 
                                     :controls="false"
                                     :min="1"
                                     v-model="addParams.priceSystemConfigCarouselTimes.duration"
                                 ></el-input-number>
-                                <el-select 
-                                    v-model="durationType" 
-                                    style="width: 80px"
-                                    class="ml10"
-                                >   
-                                    <el-option 
+                                <div class="time-tab flex ml10">
+                                    <div 
+                                        class="tab-item" 
                                         v-for="item in [{ name: '秒', id: 1 }, { name: '分钟', id: 2 }]" 
                                         :key="item.id"
-                                        :label="item.name" 
-                                        :value="item.id">
-                                    </el-option>
-                                </el-select>
+                                        :class="{ 'active': durationType==item.id}"
+                                        @click="durationType=item.id"
+                                    >{{ item.name }}</div>
+                                </div>
                             </span>
                         </p>
-                        <p>
+                        <p class="flex-center">
                             <label>播放次数</label>
-                            <span>
+                            <span class="flex">
                                 <el-input-number 
                                     class="w200" 
                                     :controls="false"
                                     :min="1"
                                     v-model="addParams.priceSystemConfigCarouselTimes.times"
                                 ></el-input-number>
-                                次/天
+                                <label class="ml10">次/天</label>
                             </span>
                         </p>
-                        <p>
+                        <p class="flex-center">
                             <label>基础天数</label>
-                            <span>
+                            <span class="flex">
                                 <el-input-number 
                                     class="w200" 
                                     :controls="false"
                                     :min="1"
                                     v-model="addParams.priceSystemConfigCarouselTimes.days"
                                 ></el-input-number>
-                                天
+                                <label class="ml10">天</label>
                             </span>
                         </p>
                     </div>
 
                     <!-- 插播 -->
                     <div v-if="addParams.lockType == 3">
-                        <p>
+                        <p class="flex-center">
                             <label>播放时长</label>
-                            <span>
+                            <span class="flex">
                                 <el-input-number 
                                     class="w200"
                                     :controls="false"
                                     :min="1"
                                     v-model="addParams.priceSystemConfigSpot.duration"
                                 ></el-input-number>
-                                <el-select 
-                                    v-model="durationType" 
-                                    style="width: 80px"
-                                    class="ml10"
-                                >   
-                                    <el-option 
+                                <div class="time-tab flex ml10">
+                                    <div 
+                                        class="tab-item" 
                                         v-for="item in [{ name: '秒', id: 1 }, { name: '分钟', id: 2 }]" 
                                         :key="item.id"
-                                        :label="item.name" 
-                                        :value="item.id">
-                                    </el-option>
-                                </el-select>
+                                        :class="{ 'active': durationType==item.id}"
+                                        @click="durationType=item.id"
+                                    >{{ item.name }}</div>
+                                </div>
                             </span>
                         </p>
-                        <p>
+                        <p class="flex-center">
                             <label>基础天数</label>
-                            <span>
+                            <span class="flex">
                                 <el-input-number 
                                     class="w200" 
                                     :controls="false"
                                     :min="1"
                                     v-model="addParams.priceSystemConfigSpot.days"
                                 ></el-input-number>
-                                天
+                                <label class="ml10">天</label>
                             </span>
                         </p>
                     </div>
 
-                    <p>
+                    <p class="flex-center">
                         <label>失效日期</label>
-                        <span>
+                        <span class="flex">
                             <el-date-picker
                                 class="w200"
                                 v-model="addParams.dueDate"
@@ -293,6 +287,7 @@ $borderColor: #e5e5e5;
 
             .content{
                 p{
+                    line-height: 40px;
                     padding-top: 10px;
                     text-align: center;
 
@@ -303,13 +298,32 @@ $borderColor: #e5e5e5;
                     }
 
                     &>span{
-                        display: inline-block;
-                        width: 310px;
+                        width: 330px;
                         text-align: left;
                     }
 
                     .el-date-editor .el-input__inner{
                         text-align: center;
+                    }
+
+                    .time-tab{
+                        width: 120px;
+                        height: 40px;
+                        line-height: 40px;
+                        border: 1px solid var(--color-primary);
+                        color: var(--color-primary);
+                        border-radius: 6px;
+
+                        .tab-item{
+                            width: 60px;
+                            text-align: center;
+                            cursor: pointer;
+                        }
+
+                        .active{
+                            background: var(--color-primary);
+                            color: #fff;
+                        }
                     }
                 }
             }

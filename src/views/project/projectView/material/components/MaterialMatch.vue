@@ -1,6 +1,6 @@
 <template>
     <div class="material-match-wrap">
-        <div class="screen-preview mb10">
+        <el-scrollbar class="screen-preview hidden-scroll-x mb10">
             <div class="order-list" v-for="(item, index) in screenData" :key="item.id">
                 <div class="top-content">
                     <div class="left-time-info">
@@ -23,7 +23,7 @@
                     </div>
                     <div class="right-limit">
                         <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                            <span v-for="(limitTime, index) in item.limits">{{ limitTime.begin }} - {{ limitTime.end }}</span>
+                            <span v-for="(limitTime, limitIndex) in item.limits" :key="limitIndex">{{ limitTime.begin }} - {{ limitTime.end }}</span>
                         </p>
                     </div>
                 </div>
@@ -35,81 +35,50 @@
                         v-for="(child, cindex) in item.placeholders" 
                         :key="child.id"
                         @click.prevent="handelSelectScreen(item.disabled, child.id, index)"
+                        :class="{ 'active': screenIds.includes(child.id) }"
                     >
-    
-                        <el-checkbox 
-                            v-show="materialData.image"
-                            :disabled="item.disabled"
-                            :value="screenIds.includes(child.id)" 
-                            @change="handelSelectScreen(item.disabled, child.id, index)"
-                        ></el-checkbox>
-    
-                        <div class="content">
-                            <div 
-                                class="screen"
-                                :style="{
-                                    width: child.height > child.width ? child.width / child.height * maxWidth + 'px' : maxWidth + 'px',
-                                    height: child.height > child.width ? maxWidth + 'px' : child.height / child.width * maxWidth + 'px'
-                                }"
-                            >
-                                <el-image 
-                                    v-if="materialData.image"
-                                    class="material"
-                                    :src="materialData.image"
-                                ></el-image>
+                        
+                        
+
+                        <div class="content flex-between-center">
+                            
+                            <div class="screen-name overflow">
+                                {{ child.name }} {{ child.location ? `(${child.location})` : '' }}
                             </div>
 
-                            <!-- 素材尺寸不匹配 -->
-                            <div class="screen-detail" v-if="materialData.width && !item.disabled && handleAspectRatioCompute(child.width, child.height) != handleAspectRatioCompute(materialData.width, materialData.height)">
-                                <article>
-                                    <p>建议上传合适尺寸的素材</p>
-                                </article>
-                            </div>
-
-                            <!-- 当前屏幕已上传的素材 -->
-                            <div class="material-count" v-if="child.materials && child.materials.length && child.materials[0].id">
-
-                                <span v-for="(m, mIndex) in child.materials.length" :key="mIndex"></span>
-
-                                <ul class="material-list">
-                                    <li v-for="content in child.materials">
-                                        <el-image :src="content.regions[0].content"></el-image>
-                                    </li>
-                                </ul>
-                            </div>
-    
+                            <div class="specification">{{ child.width }} * {{ child.height }}</div>
                         </div>
-    
-                        <div class="screen-name overflow" :class="{ 'disabled': item.disabled }">
-                            {{ child.name }} {{ child.location ? `(${child.location})` : '' }}
+
+                        <div class="screen-img">
+                            <el-image fit="cover" :src="child.photo"></el-image>
                         </div>
+
+                        <div class="other flex">
+                            <span>北京</span>
+                            <span>S级</span>
+                        </div>
+                        
                     </div>
                 </div>
 
-
-                <!-- 全选 -->
-                <el-checkbox 
-                    class="mt10"
-                    :disabled="(materialData.image && !item.disabled) ? false : true"
-                    :value="orderScreenIds[index] && orderScreenIds[index].length == item.placeholders.length" 
-                    @change="handleSelectAll(item.placeholders, index)"
-                >
-                    全选
-                </el-checkbox>
-
             </div>
-        </div>
+        </el-scrollbar>
         
-        <div class="select-screen-and-submit">
-            <el-checkbox v-model="immediate" class="mr20">即时生效</el-checkbox>
-            <el-button 
-                type="primary"
-                :disabled="!screenIds || !screenIds.length"
-                :loading="btnLoading"
-                @click="handleMaterialPut"
-            >
-                确 定
-            </el-button>
+        <div class="select-screen-and-submit flex-between-center">
+            <!-- <el-checkbox v-model="immediate" class="mr20">即时生效</el-checkbox> -->
+            <div class="screen-count">本次已添加<span>{{ screenIds.length }}块</span>屏幕</div>
+            <div class="btn-right">
+                <el-button size="small" @click="$router.go(-1)">取消</el-button>
+                <el-button 
+                    type="primary"
+                    size="small"
+                    :disabled="!screenIds || !screenIds.length"
+                    :loading="btnLoading"
+                    @click="handleMaterialPut"
+                >
+                    确 定
+                </el-button>
+            </div>
         </div>
 
     </div>
@@ -198,28 +167,6 @@ export default {
             }
         },
 
-        // 全选
-        handleSelectAll(placeholders, index){
-            let result = true
-            if(this.orderScreenIds[index] && this.orderScreenIds[index].length == placeholders.length){
-                result = false                
-            }
-            for(let i = 0; i < placeholders.length; i++){
-                let id = placeholders[i].id
-                if(this.screenIds.includes(id) && !result){
-                    let idIndex = this.screenIds.indexOf(id)
-                    this.$delete(this.screenIds, idIndex)
-
-                    let idIndex2 = this.orderScreenIds[index].indexOf(id)
-                    this.$delete(this.orderScreenIds[index], idIndex2)
-                }else if(!this.screenIds.includes(id) && result){
-                    this.$set(this.screenIds, this.screenIds.length, id)
-                    if(!this.orderScreenIds[index]) this.orderScreenIds[index] = []
-                    this.$set(this.orderScreenIds[index], this.orderScreenIds[index].length, id)
-                }
-            }
-        },
-
         // 二维数组 转为一维数组 
         arrayFormat(arr){
             let newArr = arr.reduce((acc, curr) => {
@@ -234,8 +181,11 @@ export default {
             let packageId =  await this.uploadMaterial()
 
             let data = {
-                packageId: packageId,
-                immediate: this.immediate,
+                project: this.$route.params.id,
+                content: {
+                    id: this.contentId,
+                    duration: this.materialData.duration
+                },
                 placeholders: this.screenIds
             }
 
@@ -252,16 +202,8 @@ export default {
         uploadMaterial(){
             return new Promise((resolve, reject) => {
                 let data = {
-                    layout: 13, // 屏幕布局id 默认通屏
                     project: this.$route.params.id,
-                    regions: [
-                        {
-                            // 屏幕区域id 默认通屏 21
-                            region: 21,  
-                            content: this.contentId,
-                            duration: this.materialData.duration
-                        }
-                    ]
+                    content: this.contentId,
                 }
                 projectMaterialUpload(data).then(res => {
                     this.uploadLoading = false
@@ -283,10 +225,9 @@ export default {
     $borderColor: #e5e5e5;
 
     .material-match-wrap{
-        padding-bottom: 80px;
-        position: relative;  
-
         .screen-preview{
+            height: calc(100vh - 420px);
+        
             .order-list{
                 box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
                 padding: 20px;
@@ -353,144 +294,55 @@ export default {
                 border-bottom: 1px solid $borderColor;
                 
                 .screen-item{
-                    width: 300px;
-                    margin: 0 8px 20px 8px;
+                    width: 240px;
+                    margin: 0 12px 20px 8px;
+                    padding: 8px 12px;
                     position: relative;
                     cursor: pointer;
+                    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.25);
 
-                    .el-checkbox{
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        z-index: 99;
-
-                        .el-checkbox__inner{
-                            width: 20px !important;
-                            height: 20px !important;
-                            
-                            &::after{
-                                height: 10px;
-                                left: 7px;
-                                top: 2px;
-                            }
-                        }
+                    &.active{
+                        background: #CBE2FF;
                     }
 
                     .content{
-                        width: 100%;
-                        height: 200px;
-                        border: 1px solid #5e5e5e;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        position: relative;
+                        line-height: 20px;
+                        padding: 2px 0 8px 0;
 
-                        .screen{
-                            background: #000;
-                            text-align: center;
-
-                            .material{
-                                display: inline-block;
-                                background: #999;
-                                height: 100%;
-                            }
+                        .screen-name{
+                            width: 130px;
+                            color: #71717A;
+                            font-weight: 700;
                         }
 
-                        .screen-detail{
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-
-                            &.disabled{
-                                background: #e4e4e4b3;
-                                color: #000;
-                            }
-
-                            article{
-                                width: 100%;
-                                text-align: center;
-                            }
-
-                            p{
-                                line-height: 26px;
-                                background: #DB5D8C;
-                                color: #fff;
-                                padding: 5px;
-                            }
-                        }
-
-                        .material-count{
-                            width: 100%;
-                            position: absolute;
-                            bottom: 5px;
-                            margin: 0 10px;
-                            display: flex;
-                            justify-content: end;
-
-                            span{
-                                width: 8px;
-                                height: 8px;
-                                border-radius: 50%;
-                                background: #000;
-                                margin-right: 5px;
-                            }
-
-                            .material-list{
-                                position: absolute;
-                                top: 10px;
-                                right: 10px;
-                                z-index: 99;
-                                box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-                                max-width: 230px;
-                                display: flex;
-                                flex-wrap: wrap;
-                                padding:0 10px 10px 0;
-                                background: #fff;
-                                opacity: 0;
-                                height: 0;
-                                transition: all .3s;
-
-                                li{
-                                    width: 100px;
-                                    height: 60px;
-                                    border: 1px solid #e5e5e5;
-                                    margin: 10px 0 0 10px;
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-
-                                    .el-image{
-                                        height: 100%;
-                                    }
-                                }
-                            }
-
-                            &:hover{
-                                .material-list{
-                                    opacity: 1;
-                                    height: auto;
-                                }
-                            }
+                        .specification{
+                            font-size: 12px;
+                            color: #D4D4D8;
                         }
                     }
 
-                    .screen-name{
-                        line-height: 49px;
-                        text-align: center;
-                        font-weight: bold;
+                    .screen-img{
+                        width: 215px;
+                        height: 95px;
 
-                        &.disabled{
-                            background: #e4e4e4b3;
+                        .el-image{
+                            width: 100%;
+                            height: 100%;
                         }
+                    }
 
-                        &.suggest{
-                            background: #D17799;
-                            color: #fff;
+                    .other{
+                        padding-top: 8px;
+                        
+                        span{
+                            font-size: 12px;
+                            height: 20px;
+                            line-height: 20px;
+                            color: #AAAAAA;
+                            border: 1px solid #AAAAAA;
+                            border-radius: 2px;
+                            padding: 0 8px;
+                            margin-right: 10px;
                         }
                     }
                 }
@@ -498,19 +350,20 @@ export default {
         }
 
         .select-screen-and-submit{
-            display: flex;
-            align-items: center;
-            justify-content: end;
-            position: fixed;
+            position: absolute;
             left: 0;
             bottom: 0px;
             z-index: 99;
-            padding: 20px;
+            padding: 0 50px;
             width: 100%;
-            background: #eeeeee;
+            height: 59px;
+            background: #F3F4F6;
 
-            .el-button{
-                margin-left: 20px;
+            .screen-count{
+                color: #3D3D3D;
+                span{
+                    font-weight: bold;
+                }
             }
         }
     }
