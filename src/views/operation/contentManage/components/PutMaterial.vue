@@ -55,7 +55,7 @@ export default {
     methods: {
         showUploadMaterial(order){
             this.order = order
-            this.showUploadMaterial = true
+            this.showPutMaterial = true
         },
 
         handleDrop(e, index){
@@ -219,13 +219,13 @@ export default {
             }
 
             &.active{
-                background: rgba($color: var(--color-primary), $alpha: 0.4);
                 border: 2px solid var(--color-primary);
+                color: var(--color-primary);
             }
 
             &:hover{
-                background: rgba($color: var(--color-primary), $alpha: 0.4);
                 border: 2px solid var(--color-primary);
+                color: var(--color-primary);
             }
         }
         

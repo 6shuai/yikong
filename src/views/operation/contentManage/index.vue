@@ -13,7 +13,11 @@
 
         <div class="right-content" v-loading="materialDataLoading">
             <div class="content-wrap">
-                <put-material ref="putMaterial"></put-material>
+                <put-material 
+                    v-if="showPutMaterial"
+                    ref="putMaterial" 
+                    @putSuccess="getScreenMaterialList(screenId)"
+                ></put-material>
 
                 <div class="content-wrap-top" v-if="materialData">
                     <p>全部内容</p>
@@ -32,30 +36,39 @@
                 <el-empty v-else></el-empty>
 
                 <el-scrollbar class="hidden-scroll-y">
-                    <div class="content-item" v-for="item in materialData" :key="item.id">
-                        <p class="duration">{{ item.duration }}s</p>
-                        <div class="layout">
-                            <div
-                                class="region"
-                                v-for="(regions, regionsIndex) in item.screenLayout.regions"
-                                :key="regionsIndex"
-                                :class="{ 'active': screenLayout.layout.mainRegion == regions.region.id}"
-                                :style="{
-                                    width: regions.region.width + '%',
-                                    height: regions.region.height + '%', 
-                                    left: regions.region.x + '%',
-                                    top:  regions.region.y + '%', 
-                                }"
-                            >   
-                                <el-image :src="regions.content.content"></el-image>   
+                    <div class="content-wrap flex">
+                        <div class="content-item" v-for="item in materialData" :key="item.id">
+                            <p class="duration">{{ item.duration }}s</p>
+                            <div class="layout">
+                                <div
+                                    class="region"
+                                    v-for="(regions, regionsIndex) in item.screenLayout.regions"
+                                    :key="regionsIndex"
+                                    :class="{ 'active': screenLayout.layout && screenLayout.layout.mainRegion == regions.id}"
+                                    :style="{
+                                        width: regions.region.width + '%',
+                                        height: regions.region.height + '%', 
+                                        left: regions.region.x + '%',
+                                        top:  regions.region.y + '%', 
+                                    }"
+                                >   
+                                    <el-image :src="regions.content.thumbnail"></el-image>   
+                                </div>
                             </div>
+                            <ul class="screen-content">
+                                <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex">
+                                    <span class="screen-layout-name">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
+                                    <span class="content-name overflow">{{ content.content.name }}</span>
+                                </li>
+                            </ul>
                         </div>
-                        <ul class="screen-content">
-                            <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex">
-                                <span class="screen-layout-name">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
-                                <span class="content-name overflow">{{ content.content.name }}</span>
-                            </li>
-                        </ul>
+                        <div 
+                            v-if="materialData && materialData.length"
+                            class="add flex-center" 
+                            @click="handleShowPutMaterial"
+                        >
+                            <i class="el-icon-plus"></i>
+                        </div>
                     </div>
                 </el-scrollbar>
 
@@ -65,10 +78,10 @@
         <!-- 设置默认素材 -->
         <set-default-material 
             :screenLayout="materialData[0].screenLayout" 
-            :mainRegion="screenLayout.layout.mainRegion"
+            :mainRegion="screenLayout.layout ? screenLayout.layout.mainRegion : null"
             :screenId="screenId"
             v-if="showSetDefaultMaterial"
-            @setSuccess="showSetDefaultMaterial=fasle;getScreenMaterialList()"
+            @setSuccess="showSetDefaultMaterial=false;getScreenMaterialList()"
         ></set-default-material>
 
     </div>
@@ -100,7 +113,10 @@ export default {
             materialDataLoading: false,
 
             // 显示管理默认素材
-            showSetDefaultMaterial: false
+            showSetDefaultMaterial: false,
+
+            // 显示上传素材
+            showPutMaterial: false
         }
     },
     methods: {
@@ -108,6 +124,7 @@ export default {
         getScreenDataAndOrder({ id }){
             this.materialData = undefined
             this.materialDataLoading = true
+            this.showPutMaterial = false
             getScreenLayoutAndOrderDetail({ screen: id }).then(res => {
                 this.screenLayout = res.obj
                 if(this.screenLayout) {
@@ -124,9 +141,16 @@ export default {
             operationMaterialData({ screen: id }).then(res => {
                 this.materialDataLoading = false
                 this.materialData = res.obj
-                if(!this.materialData){
-                    this.$refs.putMaterial.showUploadMaterial(this.screenLayout.order)
+                if(!this.materialData.length){
+                    this.handleShowPutMaterial()
                 }
+            })
+        },
+
+        handleShowPutMaterial(){
+            this.showPutMaterial = true
+            this.$nextTick(() => {
+                this.$refs.putMaterial.showUploadMaterial(this.screenLayout.orders)
             })
         }
     }
@@ -158,14 +182,18 @@ export default {
                 .el-scrollbar{
                     height: calc(100% - 70px);
                 }
+
+                .content-wrap{
+                    flex-wrap: wrap;
+                }
                 
                 .content-item{
-                    width: 220px;
+                    width: 260px;
                     padding: 10px;
                     display: inline-block;
                     background: #fff;
                     border-radius: 6px;
-                    margin: 20px 20px 0 0;
+                    margin: 0 20px 20px 0;
                     overflow: hidden;
 
                     .duration{
@@ -191,8 +219,16 @@ export default {
                     }
                 }
 
+                .add{
+                    width: 100px;
+                    height: 100px;
+                    font-size: 30px;
+                    background: #fff;
+                    cursor: pointer;
+                }
+
                 .layout{
-                    width: 200px;
+                    width: 240px;
                     height: 120px;
                     overflow: hidden;
                     position: relative;

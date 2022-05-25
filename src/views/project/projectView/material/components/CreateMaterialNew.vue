@@ -15,17 +15,40 @@
 
             <div class="material" v-if="uploadLoading">
                 
-                <el-image :src="materialData.image" :class="{ 'material-type-video': materialContentType==2 }"></el-image>
+                <el-image :src="materialData.image" fit="cover" :class="{ 'material-type-video': materialData.contentType==2 }"></el-image>
 
                 <div class="material-info">
                     <div class="info-top">
-                        <div class="upload-state" :class="{ 'upload-end': progressWidth == 100 }">
-                            <p class="upload-loading" v-if="progressWidth == 100"><i class="el-icon-circle-check"></i> 已上传</p>
+                        <div class="upload-state">
+                            <p class="upload-loading" :class="{ 'upload-end': progressWidth == 100 }" v-if="progressWidth == 100"><i class="el-icon-circle-check"></i> 已完成</p>
                             <p class="upload-loading" v-else><i class="el-icon-time"></i> 上传中...</p>
+
+                            <div class="material-detail">
+                                <p>素材时长：{{ materialData.duration }}s</p>
+                                <p>素材分辨率：{{ materialData.width }} * {{ materialData.height }} &nbsp;({{ materialData.aspectRatio }})</p>
+                            </div>
                         </div>
-                        <div class="right-content">
-                            <p>素材时长：{{ materialData.duration }}s</p>
-                            <p>素材分辨率：{{ materialData.width }} * {{ materialData.height }} &nbsp;({{ materialData.aspectRatio }})</p>
+                        <div class="right-content flex-center">
+                            <div class="material-date-tabs flex">
+                                <span 
+                                    v-for="(item, index) in ['定期', '默认']" 
+                                    :key="index" 
+                                    :class="{ 'active': currentMaterialDateType == index }"
+                                    @click="currentMaterialDateType=index; currentMaterialDateType ? materialDate = [] : ''"
+                                >
+                                    {{ item }}
+                                </span>
+                            </div>
+                            <el-date-picker
+                                :disabled="currentMaterialDateType ? true : false"
+                                v-model="materialDate"
+                                type="daterange"
+                                size="small"
+                                value-format="yyyy-MM-dd"
+                                range-separator="至"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期">
+                            </el-date-picker>
                         </div>
                     </div>
                     <div class="progress">
@@ -39,11 +62,11 @@
             </div>
         </div>
 
-
         <material-match 
             ref="materialMatch"
             :materialData="materialData"
             :contentId="contentId"
+            :materialDate="materialDate"
             @materialPutSuccess="materialPutSuccess"
         ></material-match>
     </div>
@@ -61,15 +84,9 @@ export default {
     mixins: [videoShot],
     data(){
         return {
-            // 上传文件信息
-            fileInfo: {},
-
             // 上传内容接口
             uploadMaterialUrl: 'user/project/upload',
             borderhover: false,
-
-            // 上传素材的类型
-            materialContentType: 1,
 
             // 文件是否上传中
             uploadLoading: false,
@@ -82,12 +99,16 @@ export default {
 
             // 上传进度
             progressWidth: 0,
-            progressTimer: undefined
+            progressTimer: undefined,
+
+            // 物料默认日期 tabs
+            currentMaterialDateType: 1,
+
+            // 物料定期 日期
+            materialDate: []
         }
     },
     mounted() {
-        this.fileInfo = {}
-
         let _this = this
         this.$nextTick(() => {
             var dropbox = document.getElementById('drop_area');
@@ -121,7 +142,6 @@ export default {
 
         // 点击上传文件
         handleChangeFile(e){
-            this.fileInfo = {}
             let file = e.target.files
             this.getFileInfo(file)
         },
@@ -146,12 +166,11 @@ export default {
                     let height = videoElement.videoHeight
                     let duration = videoElement.duration; // 视频时长
 
-                    _this.fileInfo = {
+                    _this.materialData = {
                         width,
                         height,
                         duration,
-                        size, 
-                        contentType: 2
+                        contentType: 2,
                     }
 
                     // 视频第一帧截图
@@ -176,6 +195,13 @@ export default {
                     // 图片默认时长15s
                     let duration = 15
 
+                    _this.materialData = {
+                        width,
+                        height,
+                        duration,
+                        contentType: 1
+                    }
+
                     _this.uploadFile(file[0], 1, width, height, duration, size)
 
                 }
@@ -184,8 +210,6 @@ export default {
 
         // 上传文件
         uploadFile(file, type, width, height, duration, size, cover){
-            this.materialContentType = type
-
             let fd = new FormData()
             fd.append('contentType', type)
             fd.append('width', width)
@@ -305,7 +329,7 @@ export default {
             background: #fff;
 
                 .el-image{
-                    max-width: 120px;
+                    max-width: 180px;
                     border-left: 10px solid #5996FF;
                     background: #999;
                     border-top-left-radius: 6px;
@@ -326,7 +350,9 @@ export default {
                     align-items: center;
 
                     .upload-state{
-                        color: $uploading;
+                        .upload-loading{
+                            color: $uploading;
+                        }
 
                         &.upload-end{
                             color: $uploadEnd;
@@ -336,10 +362,42 @@ export default {
                             font-size: 30px;
                             margin-right: 20px;
                         }
+
+                        p{
+                            padding-top: 10px;
+                        }
+
+                        .material-detail{
+                            margin-left: 50px;
+                        }
                     }
 
                     .right-content{
                         line-height: 30px;
+
+                        .material-date-tabs{
+                            height: 30px;
+                            border-radius: 3px;
+                            border: 1px solid var(--color-primary);
+                            color: var(--color-primary);
+
+                            span{
+                                padding: 0 8px;
+                                font-size: 14px;
+                                cursor: pointer;
+
+                                &.active{
+                                    color: #fff;
+                                    background: var(--color-primary);
+                                }
+                            }
+                        }
+
+                        .el-range-editor--small.el-input__inner {
+                            height: 32px;
+                            width: 250px;
+                            margin-left: 10px;
+                        }
                     }
                 }
 

@@ -22,11 +22,11 @@
                                 v-for="(item, index) in resData" 
                                 :key="item.id"
                                 :class="{ 'active': currentMaterialIndex==index }"
-                                @click.stop="currentMaterialIndex = index;getScreenList(item.id)"
+                                @click.stop="currentMaterialIndex = index;currentPlaceholder = null;getScreenList(item.id)"
                             >   
                                 <div class="delete-wrap flex-center" v-if="currentMaterialIndex==index">
                                     <div class="mask"></div>
-                                    <div class="del-btn" @click="showDeleteTip = true">删除素材</div>
+                                    <div class="del-btn" @click="handleDelete()">删除素材</div>
                                 </div>
                                 <p class="overflow">{{ item.name }}</p>
                                 <div class="material-cover">
@@ -48,14 +48,25 @@
                     <div class="head flex-between-center"> 
                         <div class="title">大屏内容</div>
                         <div class="right-tabs flex">
-                            <span v-for="(item, index) in ['进行中', '全部']" :key="index" :class="{ 'active': showType==index }">{{ item }}</span>
+                            <span 
+                                v-for="(item, index) in ['进行中', '全部']" 
+                                :key="index" 
+                                :class="{ 'active': showType==index }"
+                                @click="showType = index"
+                            >
+                                {{ item }}
+                            </span>
                         </div>
                     </div>
 
                     <el-scrollbar class="hidden-scroll-x">
                         <div class="not-data" v-if="!screenData.length">暂无物料，暂不可添加大屏</div>
 
-                        <div class="order-list" v-for="(item, index) in screenData" :key="item.id">
+                        <div 
+                            class="order-list" 
+                            v-for="(item, index) in screenData" :key="item.id"
+                            v-show="showType==1 || isDuringDate(item.publishDate, item.dueDate)"
+                        >
                             <div class="top-content">
                                 <div class="left-time-info">
                                     <div class="limt">
@@ -79,21 +90,27 @@
                                 </div>
                             </div>
 
+                            <div class="fold flex-center" @click="$set(screenData[index], 'fold', !item.fold)">
+                                <div class="line"></div>
+                                <div class="right">
+                                    <i :class="item.fold ? 'el-icon-caret-bottom' : 'el-icon-caret-top'"></i>
+                                    <span>{{ item.fold ? '展开' : '收起' }}</span>
+                                </div>
+                            </div>
+
                             <!-- 大屏列表 -->
-                            <div class="screen-list-wrap">
-                                <!-- @click.prevent="handleSelectScreen(item.disabled, child.id, index)" -->
+                            <div class="screen-list-wrap" :class="{ 'to-fold': item.fold }">
                                 <div 
                                     class="screen-item" 
                                     v-for="(child, cindex) in item.placeholders" 
                                     :key="child.id"
-                                    @click.prevent="handleSelectScreen(item.disabled, child.id, index)"
-                                    :class="{ 'active': screenIds.includes(child.id) }"
+                                    @click.prevent="currentPlaceholder = child.id"
                                 >
 
-                                    <!-- <div class="delete-wrap flex-center" v-if="currentMaterialIndex==index">
+                                    <div class="delete-wrap flex-center" v-if="currentPlaceholder==child.id">
                                         <div class="mask"></div>
-                                        <div class="del-btn" @click="showDeleteTip = true">删除素材</div>
-                                    </div> -->
+                                        <div class="del-btn" @click="handleDelete(child.id)">删除素材</div>
+                                    </div>
             
                                     <div class="content flex-between-center">
                                         
@@ -148,33 +165,6 @@
             v-if="showCreateMaterial"
             @createMaterialSuccess="showCreateMaterial=false; getMaterial()"
         ></create-material-new>
-
-        <!-- 删除素材 -->
-        <el-dialog
-            width="300px"
-            title="提示"
-            :visible.sync="showDeleteTip"
-            :close-on-click-modal="false"
-            :close-on-press-escape="false"
-            :show-close="false"
-            append-to-body
-            custom-class="delete-material-tip-dialog"
-        >
-            <div class="msg">您是否要对所选物料进行下刊？</div>
-            <div class="tip-bottom flex-between-center mt20">
-                <el-checkbox>立即下刊</el-checkbox>
-                <div class="btn-wrap"> 
-                    <el-button size="small" @click="showDeleteTip=false">取消</el-button>
-                    <el-button 
-                        size="small" 
-                        type="primary"
-                        @click="handleDeleteMaterial"
-                    >
-                        确定
-                    </el-button>
-                </div>
-            </div>
-        </el-dialog>
     
     </div>
 </template>
@@ -204,13 +194,10 @@ export default {
             screenLoading: false,
 
             // 当前查看的素材下标
-            currentMaterialIndex: 0,
+            currentMaterialIndex: null,
 
             // 当前查看的素材id
             currentMaterialId: 0,
-
-            // 显示删除提示
-            showDeleteTip: false,
 
             // 大屏内容筛选  0 进行中  1全部
             showType: 0,
@@ -218,11 +205,8 @@ export default {
             // 显示投放素材
             showCreateMaterial: false,
 
-            // 已选择的素材id
-            materialIds: {},
-
-            // 已选择的屏幕id
-            screenIds: [],
+            // 当前选中的屏幕
+            currentPlaceholder: null,
 
             btnLoading: false
 
@@ -239,7 +223,6 @@ export default {
                 this.tLoading = false
                 if(res.code === this.$successCode){
                     this.resData = res.obj
-                    if(this.resData.length) this.getScreenList(this.currentMaterialId ? this.currentMaterialId : this.resData[0].id)
                 }
             })
         },
@@ -248,7 +231,6 @@ export default {
         getScreenList(id){
             this.currentMaterialId = id
             this.screenLoading = true
-            this.screenIds = []
             let data = {
                 project: this.$route.params.id,
                 content: id
@@ -257,7 +239,6 @@ export default {
                 this.screenLoading = false
                 if(res.code === this.$successCode){
                     this.screenData = res.obj
-                    console.log(this.screenData)
                 }
             })
         },
@@ -273,78 +254,50 @@ export default {
             this.showCreateMaterial = true
         },
 
-        // 选择素材
-        handelSelectMaterial(id, index){
-            if(this.materialIds[id]){
-                this.$set(this.materialIds, id, false)
-                this.screenIds[index] = []
-            }else{
-                this.$set(this.materialIds, id, true)
+
+        // 当前时间是否在这个范围内
+        isDuringDate (beginDateStr, endDateStr) {
+            let curDate = new Date(),
+                beginDate = new Date(beginDateStr),
+                endDate = new Date(endDateStr);
+            if (curDate >= beginDate && curDate <= endDate) {
+                return true
             }
+            return false
         },
 
-        // 选择屏幕
-        handleSelectScreen({ placeholder }){
-            let index = this.currentMaterialIndex
-            if(!this.screenIds[index]) this.screenIds[index] = []
-            if(this.screenIds[index].includes(placeholder)){
-                let i = this.screenIds[index].findIndex((item) => item == placeholder)
-                this.screenIds[index].splice(i, 1)
-            }else{
-                this.screenIds[index].push(placeholder)
+        // 下架素材  或 释放屏幕
+        handleDelete(placeholder = null){
+            let msg = '您是否要对所选物料进行下刊？'
+            if(placeholder){
+                msg = '您是否要对所选大屏进行物料释放？'
             }
-            // this.materialIds[this.currentMaterialId] = (this.screenIds[index].length == this.screenData.length)
-            this.$set(this.materialIds, this.currentMaterialId, this.screenIds[index].length == this.screenData.length)
-        },
 
-        // 删除素材
-        handleDeleteMaterial(){
-            // let data = {
-            //     materials: [{
-            //         packageId: 
-            //     }]
-            // }
-            // this.handleDelete()
-        },
-
-        // 下架素材
-        handleDelete(data){
-
-            // let data = {
-            //     materials: []
-            // }
-
-            // for (const key in this.materialIds) {
-            //     if(this.materialIds[key]){
-            //         data.materials.push({
-            //             packageId: key,
-            //             placeholders: null
-            //         })
-            //     }
-            // }
-
-            // for(let i = 0; i < this.screenIds.length; i++){
-            //     let id = this.resData[i].id
-            //     if(this.screenIds[i] && this.screenIds[i].length && !this.materialIds[id]){
-            //         data.materials.push({
-            //             packageId: id,
-            //             placeholders: this.screenIds[i] 
-            //         })
-            //     }
-            // }
-
-
-   
-            this.btnLoading = true
-            projectMaterialDelete(data).then(res => {
-                this.btnLoading = false
-                if(res.code === this.$successCode){
-                    this.$message.success('操作成功~')
-                    this.screenIds = {}
-                    this.materialIds = []
-                    this.getMaterial()
+            this.$confirm(msg, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消'
+            }).then(() => {
+                let data = {
+                    project: this.$route.params.id,
+                    content: this.currentMaterialId,
+                    placeholders: placeholder ? [placeholder] : null
                 }
+
+                this.btnLoading = true
+                projectMaterialDelete(data).then(res => {
+                    this.btnLoading = false
+                    if(res.code === this.$successCode){
+                        this.$message.success('操作成功~')
+                        if(!placeholder) {
+                            this.currentMaterialIndex = null
+                            this.getMaterial()
+                        }else{
+                            this.getScreenList(this.currentMaterialId)
+                        }
+                    }
+                })
             })
+
         }
     },
     watch: {
@@ -401,34 +354,6 @@ export default {
                         border-left: 25px solid #5996FF; 
                         border-radius: 16px 0px 0px 16px;
                         position: relative;
-
-                        .delete-wrap, .delete-wrap .mask{
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            z-index: 99;
-                            
-                        }
-
-                        .delete-wrap{
-                            .mask{
-                                background:rgba(124, 124, 124, 0.4);
-                            }
-
-                            .del-btn{
-                                width: 94px;
-                                height: 30px;
-                                line-height: 30px;
-                                font-size: 14px;
-                                background: rgba(255, 255, 255, 0.73);
-                                color: #111827;
-                                border-radius: 8px;
-                                text-align: center;
-                                z-index: 1000;
-                            }
-                        }
                         
                         .material-cover{
                             display: inline-block;
@@ -469,6 +394,7 @@ export default {
                             line-height: 29px;
                             padding: 0 10px;
                             color: #71717A;
+                            cursor: pointer;
 
                             &.active{
                                 background: #71717A;
@@ -541,6 +467,32 @@ export default {
                             }
                         }   
 
+                        .fold{
+                            cursor: pointer;
+                            
+                            .line{
+                                flex: 1;
+                                height: 1px;
+                                background: #6F6F6F;
+                            }
+
+                            .right{
+                                width: 76px;
+                                padding-left: 10px;
+
+                                i{
+                                    font-size: 20px;
+                                    color: var(--color-primary);
+                                    margin-right: 5px;
+                                }
+
+                                span{
+                                    font-size: 14px;
+                                    vertical-align: text-bottom;
+                                }
+                            }
+                        }
+
                         .order-bottom{
                             font-size: 14px;
                             padding-top: 10px;
@@ -551,6 +503,11 @@ export default {
                             display: flex;
                             flex-wrap: wrap;
                             padding-top: 20px;
+
+                            &.to-fold{
+                                height: 0;
+                                overflow: hidden;
+                            }
                             
                             .screen-item{
                                 width: 240px;
@@ -583,6 +540,7 @@ export default {
                                 .screen-img{
                                     width: 215px;
                                     height: 95px;
+                                    background: #999;
 
                                     .el-image{
                                         width: 100%;
@@ -610,6 +568,34 @@ export default {
                     }
                 }
                 
+            }
+        }
+
+        .delete-wrap, .delete-wrap .mask{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99;
+            
+        }
+
+        .delete-wrap{
+            .mask{
+                background:rgba(124, 124, 124, 0.4);
+            }
+
+            .del-btn{
+                width: 94px;
+                height: 30px;
+                line-height: 30px;
+                font-size: 14px;
+                background: rgba(255, 255, 255, 0.73);
+                color: #111827;
+                border-radius: 8px;
+                text-align: center;
+                z-index: 1000;
             }
         }
     }

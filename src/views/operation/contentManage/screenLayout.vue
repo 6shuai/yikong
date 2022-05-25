@@ -179,7 +179,7 @@ export default {
             // 获取屏幕列表参数
             screenParams: {
                 // true 全部  fasle 未分配
-                // all: true,   
+                all: true,   
             },
 
             // 屏幕列表加载中

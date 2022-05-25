@@ -6,7 +6,7 @@
                 class="region"
                 v-for="(regions, regionsIndex) in screenLayout.regions"
                 :key="regionsIndex"
-                :class="{ 'active': mainRegion != regions.region.id}"
+                :class="{ 'active': mainRegion != regions.id}"
                 :style="{
                     width: regions.region.width + '%',
                     height: regions.region.height + '%', 
@@ -16,13 +16,13 @@
             >
 
                 <div 
-                    v-if="mainRegion != regions.region.id"
+                    v-if="mainRegion != regions.id"
                     class="drag-upload-wrap" 
                     id="drop_area"
                     :loading="uploadLoading"
                 >
                     <i class="el-icon-upload2"></i>
-                    <input type="file" accept="image/*, .mp4" @change="handleChangeFile($event, regions.region.id)">
+                    <input type="file" accept="image/*, .mp4" @change="handleChangeFile($event, regions.id)">
                 </div>
             </div>
         </div>
@@ -113,6 +113,7 @@ export default {
                 content: contentId
             }
             setScreenLayoutContent(data).then(res => {
+                this.uploadLoading = false
                 if(res.code === this.$successCode){
                     this.$message.success('操作成功~')
                     this.$emit('setSuccess')

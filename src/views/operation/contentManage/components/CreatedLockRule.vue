@@ -10,7 +10,7 @@
         <el-form label-width="80px">
             <el-form-item label="时长类型">
                 <el-radio-group 
-                    size="medium" 
+                    size="mini" 
                     v-model="addParams.type"
                 >
                     <el-radio-button :label="4">按比例</el-radio-button>
@@ -19,29 +19,27 @@
             </el-form-item>
             <el-form-item label="时长数值">
                 <el-input-number
+                    size="mini" 
                     v-model="addParams.duration" 
+                    :controls="false"
                     :min="0"
                     :placeholder="addParams.type == 4 ? '请输入比例' : '请输入时长'"
                 ></el-input-number>
                 <span v-if="addParams.type==4">%</span>
-                <el-select 
+                <el-radio-group 
+                    size="mini" 
                     v-if="addParams.type == 2"
-                    v-model="addParams.durationType" 
-                    style="width: 80px"
-                    class="ml10"
-                >   
-                    <el-option 
-                        v-for="item in [{ name: '分钟', id: 1 }, { name: '小时', id: 2 }]" 
-                        :key="item.id"
-                        :label="item.name" 
-                        :value="item.id">
-                    </el-option>
-                </el-select>
+                    v-model="addParams.durationType"
+                >
+                    <el-radio-button :label="1">分钟</el-radio-button>
+                    <el-radio-button :label="2">小时</el-radio-button>
+                </el-radio-group>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="showCreateRule = false">取 消</el-button>
+            <el-button size="mini" @click="showCreateRule = false">取 消</el-button>
             <el-button
+                size="mini"
                 type="primary"
                 :loading="createdLoading"
                 @click="handleCreate"

@@ -79,7 +79,6 @@
         </el-scrollbar>
         
         <div class="select-screen-and-submit flex-between-center">
-            <!-- <el-checkbox v-model="immediate" class="mr20">即时生效</el-checkbox> -->
             <div class="screen-count">本次已添加<span>{{ screenIds.length }}块</span>屏幕</div>
             <div class="btn-right">
                 <el-button size="small" @click="$router.go(-1)">取消</el-button>
@@ -105,7 +104,8 @@ import { aspectRatioCompute } from '@/utils/index'
 export default {
     props: {
         materialData: Object,
-        contentId: Number
+        contentId: Number,
+        materialDate: Array
     },
     data(){
         return {
@@ -123,9 +123,6 @@ export default {
 
             // 按订单 区分  已选的屏幕id
             orderScreenIds: [],
-
-            // 是否即时上刊
-            immediate: false,
 
             // 确定按钮loading
             btnLoading: false
@@ -203,6 +200,17 @@ export default {
             }
         },
 
+         // 当前时间是否在这个范围内
+        isDuringDate (date, beginDateStr, endDateStr) {
+            let curDate = new Date(date),
+                beginDate = new Date(beginDateStr),
+                endDate = new Date(endDateStr);
+            if (curDate >= beginDate && curDate <= endDate) {
+                return true
+            }
+            return false
+        },
+
         // 二维数组 转为一维数组 
         arrayFormat(arr){
             let newArr = arr.reduce((acc, curr) => {
@@ -213,9 +221,7 @@ export default {
 
         // 素材投放
         async handleMaterialPut(){
-            this.btnLoading = true
-            let packageId =  await this.uploadMaterial()
-
+            
             let data = {
                 project: this.$route.params.id,
                 content: {
@@ -225,6 +231,31 @@ export default {
                 placeholders: this.screenIds
             }
 
+            let result = true
+            if(this.materialDate && this.materialDate.length){
+                data.publishDate = this.materialDate[0]
+                data.dueDate = this.materialDate[1]
+
+                for(let i = 0; i < this.screenData.length; i++){
+                    let { publishDate, dueDate } = this.screenData[i]
+                    if(this.orderScreenIds[i] && this.orderScreenIds[i].length && (!this.isDuringDate(data.publishDate, publishDate, dueDate) || !this.isDuringDate(data.dueDate, publishDate, dueDate))){
+                        console.log(data.publishDate,data.dueDate,  publishDate, dueDate, this.isDuringDate(data.publishDate, publishDate, dueDate), this.isDuringDate(data.dueDate, publishDate, dueDate))
+                        result = false
+                    }
+                }
+            }
+
+            if(!result){
+                this.$confirm('您选择的上刊大屏不在素材可播放的时间内，请重新选择。', '提示', {
+                    confirmButtonText: '确定',
+                    showCancelButton: false
+                })
+                return
+            }
+
+
+            let packageId =  await this.uploadMaterial()
+            this.btnLoading = true
             projectMaterialPut(data).then(res => {
                 this.btnLoading = false
                 if(res.code === this.$successCode){
