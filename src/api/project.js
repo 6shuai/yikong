@@ -48,7 +48,7 @@ export function projectMaterialDelete(data) { return post('/remove_material', da
 export function projectMaterialLockList(data) { return get('/target_placeholder', data, 'published') }
 
 // 投放素材
-export function projectMaterialPut(data) { return post('/throw_in_material', data, 'published') }
+export function projectMaterialPut(data) { return post('/sales_throw_in_content', data, 'published') }
 
 
 // 查询财务信息

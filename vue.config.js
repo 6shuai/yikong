@@ -163,6 +163,10 @@ module.exports = {
 				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
+			'/sales_throw_in_content': {
+				target: 'https://static.xfengjing.com/publish',
+				changeOrigin: true
+			},
 			'/throw_in_content': {
 				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
