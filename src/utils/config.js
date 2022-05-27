@@ -11,3 +11,38 @@ export const findContentType = (id) => {
     let data = contentTypeList.find(item => item.id == id )
     return data.name
 }
+
+// 角色对应的主页
+export const roleHome = {
+    '/project': [
+        {
+            displayName: '项目管理',
+            moduleName: 'Project',
+            route: '/project'
+        }
+    ],
+    '/finance': [ 
+        {
+            displayName: '财务管理',
+            moduleName: 'Finance',
+            route: '/finance'
+        }
+    ],
+    '/operation': [
+        {
+            displayName: '播放管理',
+            moduleName: 'ContentManage',
+            route: '/operation/contentManage'
+        },
+        {
+            displayName: '监播统计',
+            moduleName: 'PlayStatistics',
+            route: '/operation/playStatistics'
+        },
+        {
+            displayName: '素材审核',
+            moduleName: 'MaterialAudit',
+            route: '/materialAudit'
+        }
+    ]
+}

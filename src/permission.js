@@ -7,6 +7,7 @@ import getPageTitle from '@/utils/get-page-title'
 import { getAuthMenu } from "@/api/user";
 import { filterAsyncRouter } from './store/modules/permission'
 import nprogress from 'nprogress'
+import { roleHome } from '@/utils/config'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -38,7 +39,11 @@ router.beforeEach((to, from, next) => {
 
 						// 只有一个角色时 直接显示首页    多个角色要选选择角色进入
 						if(res.obj.length === 1){
-							localStorage.currentRoleHomePageData = JSON.stringify(res.obj[0].authorities)
+							let { frontRoute, authorities } = res.obj[0]
+							localStorage.currentRoleHomePageData = JSON.stringify([
+								...roleHome[frontRoute],
+								...authorities
+							])
 
 							// id === 1 老用户  显示左侧菜单栏
 							if(res.obj[0].id === 1){
