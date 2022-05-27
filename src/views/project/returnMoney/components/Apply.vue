@@ -25,12 +25,14 @@
         >
             <el-form-item label="申领金额" prop="amount">
                 <el-input-number
-                    class="w100"
+                    class="w220"
                     v-model="applyParams.amount"
                     :controls="false"
                     :min="0"
+                    :precision="2"
                     placeholder="请输入本次的申领金额"
                 ></el-input-number>
+                <span>元</span>
             </el-form-item>
             <el-form-item label="收款时间" prop="requestDate">
                 <el-date-picker

@@ -16,7 +16,7 @@
                 <put-material 
                     v-if="showPutMaterial"
                     ref="putMaterial" 
-                    @putSuccess="getScreenMaterialList(screenId)"
+                    @putSuccess="getScreenMaterialList()"
                 ></put-material>
 
                 <div class="content-wrap-top" v-if="materialData">

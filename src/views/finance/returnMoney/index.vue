@@ -55,23 +55,27 @@
                                 width="250"
                                 trigger="click">
         
-                                    <p v-for="c in item.collectionRequests" :key="c.id">
-                                        <el-checkbox :label="c.nickname" :value="c.checked" @change="c.checked = !c.checked"></el-checkbox>
-                                        <span>{{ c.amount }}</span>
+                                    <p v-for="(c, cIndex) in item.collectionRequests" :key="c.id">
+                                        <el-checkbox 
+                                            :label="c.nickname" 
+                                            :value="c.checked" 
+                                            @change="$set(item.collectionRequests[cIndex], 'checked', !c.checked)"
+                                        ></el-checkbox>
+                                        <span>{{ collectMoneyFormat(c.amount) }}</span>
                                     </p>
                                 <span slot="reference"> -- <i class="el-icon-arrow-down"></i></span>
         
                                 <div class="distribute-btn mt10">
                                     <el-button 
                                         size="small" 
-                                        :disabled="!distributeSuitable(item.collectionRequests, item.amount)"
-                                        @click="handleDistribute(item.id, item.collectionRequests)"
+                                        :disabled="!distributeSuitable(item.collectionRequests)"
+                                        @click="handleDistribute(item.id, item.collectionRequests, item.amount)"
                                     >确定分配
                                     </el-button>
                                 </div>
                             </el-popover>
                         </div>
-                        <span v-else>{{ item.nickNames ? item.nickNames : '--' }}</span>
+                        <span v-else>{{ item.nicknames ? item.nicknames : '--' }}</span>
                     </el-col>
                     <el-col :span="4">
                         <ul v-if="item.state == '多销售分配'">
@@ -158,17 +162,17 @@ export default {
             }
         },
 
-        // 分配是否合适
+        // 分配是否选中
         distributeSuitable(){
-            return (collectionRequests, amount) => {
-                let money = 0
+            return (collectionRequests) => {
+                let result = false
                 for(let i = 0; i < collectionRequests.length; i++){
                     if(collectionRequests[i].checked){
-                        money += collectionRequests[i].amount
+                        result = true
                     }
                 }
-
-                return money == amount
+                console.log(result)
+                return result
             }
         }
     },
@@ -244,13 +248,20 @@ export default {
         },
 
         // 回款分配
-        handleDistribute(id, collectionRequests){
+        handleDistribute(id, collectionRequests, amount){
             let collectionIds = []
+            let money = 0
 
             for(let i = 0; i < collectionRequests.length; i++){
                 if(collectionRequests[i].checked){
+                    money += collectionRequests[i].amount
                     collectionIds.push(collectionRequests[i].id)
                 }
+            }
+
+            if(money != amount){
+                this.$message.warning('分配金额和收款金额不相符~')
+                return
             }
 
             let data = {

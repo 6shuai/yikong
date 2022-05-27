@@ -57,7 +57,7 @@
             <div class="selected-project-list">
                 <div class="total-warp">
                     <span>已选择{{ rightData.length }}个项目</span>
-                    <span class="total-price">合计 ￥{{ moneyFormat(totalPrice) }}</span>
+                    <span class="total-price">合计 {{ moneyFormat(totalPrice) }}</span>
                 </div>
                 <el-row>
                     <el-col :span="2">

@@ -117,7 +117,7 @@
                             <el-input v-model="invoiceParams.organization.realName"></el-input>
                         </el-form-item>
 
-                        <div v-show="invoiceParams.titleType===1">
+                        <div v-if="invoiceParams.titleType===1">
                             <el-form-item label="纳税人识别号" prop="organization.taxpayerNumber">
                                 <el-input v-model="invoiceParams.organization.taxpayerNumber" type="number"></el-input>
                             </el-form-item>
@@ -130,7 +130,7 @@
                             <el-form-item label="开户行" prop="organization.bank">
                                 <el-input v-model="invoiceParams.organization.bank"></el-input>
                             </el-form-item>
-                            <el-form-item label="开户行账号" porp="organization.account">
+                            <el-form-item label="开户行账号" prop="organization.account">
                                 <el-input v-model="invoiceParams.organization.account"></el-input>
                             </el-form-item>
                         </div>
@@ -192,6 +192,8 @@ export default {
             const regEmail = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
             if(this.invoiceParams.organization.email != '' && !regEmail.test(this.invoiceParams.organization.email)) {
                 callback(new Error('请输入有效的邮箱')); 
+            }else {
+                callback()
             }
         }
         return {
@@ -435,6 +437,7 @@ export default {
         invoiceCreata(){
             this.btnLoading = true
             if(!this.invoiceParams.publishedProjects || this.invoiceParams.publishedProjects.length <= 1) this.invoiceParams.publishedProjects = [{ id: this.$route.query.projectId }]
+            console.log('@!!!!')
             projectInvoiceCreate(this.invoiceParams).then(res => {
                 this.btnLoading = false
                 if(res.code === this.$successCode){

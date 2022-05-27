@@ -172,7 +172,7 @@ export default {
                 if(res.code === this.$successCode){
                     this.$message.success('操作成功~')
                     this.showPutMaterial = false
-                    
+                    this.$emit('putSuccess')
                 }
             })
         }

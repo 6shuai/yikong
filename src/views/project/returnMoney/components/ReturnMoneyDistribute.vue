@@ -15,7 +15,7 @@
                 <span v-if="!showDistribute">
                     <span class="balance">余额：{{ moneyFormat(resData.unassigned) }}</span>
                     <el-button 
-                        v-if="applyState != '未匹配' && applyState != '退款中'"
+                        v-if="applyState != '未匹配' && applyState != '退款中' && resData.unassigned"
                         type="primary" 
                         size="mini"
                         @click="showDistribute = true"
@@ -81,9 +81,11 @@
                         <el-input-number 
                             :controls="false"
                             size="mini"
+                            :precision="2"
                             :max="item.amount - item.sumAmount"
                             v-model="item.distributePrice"
                         ></el-input-number>
+                        <span class="ml10">元</span>
                     </div>
     
                 </div>
@@ -365,6 +367,10 @@ export default {
 
                     .el-input-number{
                         flex: 1;
+                    }
+
+                    span{
+                        width: 20px;
                     }
                 }
             }
