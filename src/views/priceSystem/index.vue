@@ -19,11 +19,12 @@
                 <el-button 
                     icon="el-icon-plus"
                     type="primary"
+                    size="small"
                     @click="handleShowCreateSystem()"
                 >
                     新建价格体系
                 </el-button>
-                <el-button type="primary" @click="showCheckbox=true">管理</el-button>
+                <el-button type="primary" size="small" @click="showCheckbox=true">管理</el-button>
             </div>
         </div>
         
@@ -47,7 +48,7 @@
             ></el-checkbox>
 
             <!-- 是否生效 effect: 1生效  2否 -->
-            <div v-if="item.effect==1" class="dot"></div>
+            <!-- <div v-if="item.effect==1" class="dot"></div> -->
             <div class="type" :class="{ 'insert': item.lockType != 1 }">{{ item.lockType == 1 ? '轮播' : '插播' }}</div>
 
             <div class="title overflow">{{ item.displayName }}</div>

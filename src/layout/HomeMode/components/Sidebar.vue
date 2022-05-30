@@ -100,6 +100,7 @@ export default {
         transition: width 0.28s;
 
         .home-mode-scrollbar-wrapper{
+            width: 100%;
             height: calc(100% - 100px);
 
             ul>li{

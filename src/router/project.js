@@ -15,7 +15,8 @@ const projectRoutes = [
 					title: '项目管理'
 				}
 			}
-		]
+		],
+        hidden: true
 	},
     {
 		path: '/project',
@@ -29,7 +30,8 @@ const projectRoutes = [
 					title: '回款处理'
 				}
 			}
-		]
+		],
+        hidden: true
 	},
     {
 		path: '/',

@@ -12,9 +12,10 @@
             ref="addForm"
             :model="addParams"
             :rules="addParamsRules"
+            v-if="selectedData && selectedData.length"
         >
             <el-form-item label="大屏名称" prop="client">
-                {{ addParams.screenName }}
+                {{ selectedData[0].screenName }} {{ selectedData.length > 1 ? `等${selectedData.length}个屏幕` : '' }}
             </el-form-item>
             <el-form-item label="大屏价格">
                 <el-input-number 
@@ -48,6 +49,7 @@ export default {
         return {
             showAddScreenPrice: false,
             createdLoading: false,
+            selectedData: [],
             addParams: {},
 
             // 表单验证
@@ -58,15 +60,12 @@ export default {
     },
     methods: {
         // 显示新建屏幕刊例价窗口
-        showAddScreenPriceDialog(data = {}){
-            let { screenName, media, price, id } = JSON.parse(JSON.stringify(data))
-            this.addParams = {
-                screenName,
-                media,
-                price,
-                id,
-                priceSystem: this.$route.params.id
-            }
+        showAddScreenPriceDialog(data = []){
+            this.selectedData = JSON.parse(JSON.stringify(data))
+
+            this.addParams = {}
+            if(this.selectedData.length == 1) this.addParams.price = this.selectedData[0].price
+
             this.showAddScreenPrice = true
             this.$nextTick(() => {
                 this.$refs["addForm"].clearValidate()
@@ -78,8 +77,19 @@ export default {
         handleCreate(){
             this.$refs.addForm.validate((valid) => {
                 if(valid){
+                    let data = []
+                    for(let i = 0; i < this.selectedData.length; i++){
+                        let {  media, id } = this.selectedData[i]
+                        data.push({
+                            id,
+                            media,
+                            priceSystem: this.$route.params.id,
+                            price: this.addParams.price
+                        })
+                    }
+
                     this.createdLoading = true
-                    addScreenPrice([this.addParams]).then(res => {
+                    addScreenPrice(data).then(res => {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showAddScreenPrice = false 

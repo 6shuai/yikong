@@ -88,7 +88,7 @@
                             type="primary"
                             size="mini"
                             plain
-                            :disabled="item.transactionId ? true : false"
+                            :disabled="((item.collectionRequests && item.collectionRequests.lengt) || item.nicknames || item.transactionId) ? true : false"
                             @click="handleShowCollectMoney(item)"
                         >
                             编辑

@@ -91,6 +91,16 @@
                         v-loading="dataLoading"
                     >
                         <div class="place-content">
+
+                            <div class="operate">
+                                <div class="checkbox mr10" v-if="showEdit">
+                                    <el-checkbox
+                                        v-model="isSelectAll" 
+                                        @change="handleSelectAll"
+                                    >全选</el-checkbox>
+                                </div>
+                                <el-button type="primary" size="small" @click="showEdit=true">批量管理</el-button>
+                            </div>
     
                             <div class="place-box">
                                 <div class="place-p" 
@@ -101,8 +111,13 @@
                                     <el-card 
                                         class="place-list" 
                                         shadow="always"
-                                        @click.native="$refs.editScreenPrice.showAddScreenPriceDialog(item)"
+                                        @click.native.stop="handelSelectScreen(item)"
                                     >
+                                        <el-checkbox
+                                            v-show="showEdit"
+                                            :value="screenIds.includes(item.media)" 
+                                            @change="handelSelectScreen(item)"
+                                        ></el-checkbox>
 
                                         <div 
                                             class="place-img" 
@@ -145,16 +160,17 @@
                 </el-pagination>   
 
                 <!-- 已选择大屏的数量 -->
-                <div class="price-system-bottom" v-if="priceSystemDetail.effect == 2">
-                    <!-- <div class="mr20">已选择<span class="count">{{  }}</span>个大屏</div> -->
+                <div class="price-system-bottom" v-if="showEdit">
+                    <div class="mr20">已选择<span class="count">{{ screenIds.length }}</span>个大屏</div>
                     <el-button 
                         class="mr20" 
                         type="danger" 
                         size="small"
+                        :disabled="screenIds.length ? false : true"
                         :loading="btnLoading"
                         @click="handleEffect"
                     >
-                        生 效
+                        编辑
                     </el-button>
                 </div>
 
@@ -217,6 +233,18 @@ export default {
 
             addParams: {},
 
+            // 是否显示编辑
+            showEdit: false,
+
+            // 已选中的屏幕id
+            screenIds: [],
+
+            // 已选中的屏幕
+            selectedScreenData: [],
+
+            // 是否全选
+            isSelectAll: false,
+
             // 生效提交loading
             btnLoading: false
         }
@@ -236,6 +264,9 @@ export default {
         // 获取屏幕列表
         getScreenList(){
             this.dataLoading = true
+            this.screenIds = []
+            this.selectedScreenData = []
+            this.showEdit = false
             this.searchParams.id = this.$route.params.id
             priceSystemDetail(this.searchParams).then(res => {
                 this.dataLoading = false
@@ -271,27 +302,58 @@ export default {
             this.$refs.placeScreenDetail.showDetail(media, priceSystem)
         },
 
+        // 选择屏幕
+        handelSelectScreen(data){
+            if(this.screenIds.includes(data.media)){
+                let index = this.screenIds.indexOf(data.media)
+                this.screenIds.splice(index, 1)
+                this.selectedScreenData.splice(index, 1)
+            }else{
+                this.screenIds.push(data.media)
+                this.selectedScreenData.push(data)
+            }
+            this.isSelectAll = this.screenIds.length === this.screenData.length
+        },
+
+         // 全选
+        handleSelectAll(){
+            if(this.screenIds.length === this.screenData.length){
+                this.screenIds = []
+                this.selectedScreenData = []
+                this.isSelectAll = false
+            }else{
+                this.screenIds = []
+                this.selectedScreenData = []
+                for(let i = 0 ; i < this.screenData.length; i++){
+                    this.screenIds.push(this.screenData[i].media)
+                    this.selectedScreenData.push(this.screenData[i])
+                }
+                this.isSelectAll = true
+            }
+        },
+
         // 价格体系生效
         handleEffect(){
-            this.$confirm(
-                '此价格体系生效后将被投入使用',
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning",
-                    center: true,
-                }
-            ).then(() => {
-                this.btnLoading = true
-                priceSystemEffect(this.$route.params.id).then(res => {
-                    this.btnLoading = false
-                    if(res.code === this.$successCode){
-                        this.$message.success('操作成功~')
-                        this.getScreenList()
-                    }
-                })
-            })
+            this.$refs.editScreenPrice.showAddScreenPriceDialog(this.selectedScreenData)
+            // this.$confirm(
+            //     '此价格体系生效后将被投入使用',
+            //     "提示",
+            //     {
+            //         confirmButtonText: "确定",
+            //         cancelButtonText: "取消",
+            //         type: "warning",
+            //         center: true,
+            //     }
+            // ).then(() => {
+            //     this.btnLoading = true
+            //     priceSystemEffect(this.$route.params.id).then(res => {
+            //         this.btnLoading = false
+            //         if(res.code === this.$successCode){
+            //             this.$message.success('操作成功~')
+            //             this.getScreenList()
+            //         }
+            //     })
+            // })
         }
     }
 }
@@ -378,9 +440,23 @@ export default {
             border-radius: 16px;
             position: relative;
 
+            .operate{
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                padding: 10px 0;
+            }
+
             .place-list{
                 cursor: pointer;
                 position: relative;
+
+                .el-checkbox{
+                    position: absolute;
+                    top: 0px;
+                    left: 0px;
+                    z-index: 99;
+                }
 
                 .place-img{
                     border-radius: 4px;

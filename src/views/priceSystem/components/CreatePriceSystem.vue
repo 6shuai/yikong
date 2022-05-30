@@ -307,12 +307,12 @@ $borderColor: #e5e5e5;
                     }
 
                     .time-tab{
-                        width: 120px;
                         height: 40px;
                         line-height: 40px;
                         border: 1px solid var(--color-primary);
                         color: var(--color-primary);
                         border-radius: 6px;
+                        overflow: hidden;
 
                         .tab-item{
                             width: 60px;

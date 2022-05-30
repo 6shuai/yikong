@@ -15,7 +15,7 @@
                 <span v-if="!showDistribute">
                     <span class="balance">余额：{{ moneyFormat(resData.unassigned) }}</span>
                     <el-button 
-                        v-if="applyState != '未匹配' && applyState != '退款中' && resData.unassigned"
+                        v-if="applyState != '未匹配' && applyState != '退款中' && applyState != '异常' && resData.unassigned"
                         type="primary" 
                         size="mini"
                         @click="showDistribute = true"

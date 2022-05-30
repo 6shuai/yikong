@@ -98,6 +98,12 @@ export default {
 		.menu-name{
         	opacity: 0;
 		}
+
+		.home-mode-scrollbar-wrapper ul>li{
+			width: 43px;
+			overflow: hidden;
+		}
+
     }
 
     .home-mode-main-container {
