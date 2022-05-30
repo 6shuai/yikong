@@ -1,8 +1,9 @@
 <template>
-    <div class="return-money-list">
+    <el-card class="return-money-list">
         <div class="return-money-head mt20 mb20">
-            <el-button type="primary" @click="handleShowApply()">申领</el-button>
+            <el-button type="primary" size="small" @click="handleShowApply()">申领</el-button>
             <el-input 
+                size="small"
                 suffix-icon="el-icon-search" 
                 v-model="params.displayName"
                 @input="$debounce(handleSearch)"
@@ -101,7 +102,7 @@
         <!-- 回款分配 -->
         <return-money-distribute ref="returnMoneyDistribute"></return-money-distribute>
 
-    </div>
+    </el-card>
 </template>
 
 <script>

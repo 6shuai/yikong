@@ -15,7 +15,8 @@ const operationRoutes = [
 					title: '内容管理'
 				}
 			}
-		]
+		],
+		hidden: true
 	},
 
 	{
@@ -63,7 +64,8 @@ const operationRoutes = [
 					title: '监播统计'
 				}
 			}
-		]
+		],
+		hidden: true
 	},
 
     // 素材投放 审核

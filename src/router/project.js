@@ -2,35 +2,34 @@ import Layout from '@/layout'
 
 const projectRoutes = [
     // 项目
-	{
-		path: '/',
+    {
+		path: '/project',
+		redirect: '/project/view',
 		component: Layout,
-		children: [{
-			path: '/project',
-			name: 'Project',
-            redirect: '/project/view',
-			component: () => import('@/views/project/index'),
-			meta: {
-                title: '项目管理',
-                icon: 'home'
-            },
-            children: [
-                {
-                    path: 'view',
-                    name: 'Project--view',
-                    component: () => import('@/views/project/projectView/projectList'),
-                    meta: { title: '项目视图' }
-                },
-                {
-                    path: 'returnMoney',
-                    name: 'Project--returnMoney',
-                    component: () => import('@/views/project/returnMoney/index'),
-                    meta: { title: '回款列表' }
-                }
-            ],
-
-            hidden: true
-		}]
+		children: [
+			{
+				path: 'view',
+				name: 'Project',
+				component: () => import('@/views/project/projectView/projectList'),
+				meta: {
+					title: '项目管理'
+				}
+			}
+		]
+	},
+    {
+		path: '/project',
+		component: Layout,
+		children: [
+			{
+				path: 'returnMoney',
+				name: 'ReturnMoney',
+				component: () => import('@/views/project/returnMoney/index'),
+				meta: {
+					title: '回款处理'
+				}
+			}
+		]
 	},
     {
 		path: '/',

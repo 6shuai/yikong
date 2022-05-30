@@ -18,7 +18,12 @@ export const roleHome = {
         {
             displayName: '项目管理',
             moduleName: 'Project',
-            route: '/project'
+            route: '/project/view'
+        },
+        {
+            displayName: '回款处理',
+            moduleName: 'ReturnMoney',
+            route: '/project/returnMoney'
         }
     ],
     '/finance': [ 
@@ -44,5 +49,6 @@ export const roleHome = {
             moduleName: 'MaterialAudit',
             route: '/materialAudit'
         }
-    ]
+    ],
+    '/boss': [],
 }

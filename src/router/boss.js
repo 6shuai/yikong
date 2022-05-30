@@ -7,6 +7,7 @@ const bossRoutes = [
 		children: [
 			{
 				path: '/boss',
+				redirect: '/priceSystem',
 				name: 'Boss',
 				component: () => import('@/views/priceSystem/index'),
 				meta: {

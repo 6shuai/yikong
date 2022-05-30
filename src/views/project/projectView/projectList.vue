@@ -1,5 +1,5 @@
 <template>
-    <div id="app-main-wrap">
+    <el-card id="app-main-wrap">
         <div class="add-and-search mb10">
             <el-button 
                 type="primary" 
@@ -33,7 +33,7 @@
 
         <create-project ref="createProject" @createProjectSuccess="getList()"></create-project>
 
-    </div>
+    </el-card>
 </template>
 
 <script>
