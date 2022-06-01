@@ -77,10 +77,10 @@
 
         <!-- 设置默认素材 -->
         <set-default-material 
-            :screenLayout="materialData[0].screenLayout" 
-            :mainRegion="screenLayout.layout ? screenLayout.layout.mainRegion : null"
+            :screenLayout="screenLayout.layout ? screenLayout.layout : {}" 
             :screenId="screenId"
             v-if="showSetDefaultMaterial"
+            @hide="showSetDefaultMaterial = false"
             @setSuccess="showSetDefaultMaterial=false;getScreenMaterialList()"
         ></set-default-material>
 

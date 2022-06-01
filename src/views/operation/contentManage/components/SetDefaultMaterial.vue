@@ -1,12 +1,12 @@
 <template>
     <div class="set-default-material-wrap">
-        <div class="mask"></div>
+        <div class="mask" @click="$emit('hide')"></div>
         <div class="layout">
             <div
                 class="region"
                 v-for="(regions, regionsIndex) in screenLayout.regions"
                 :key="regionsIndex"
-                :class="{ 'active': mainRegion != regions.id}"
+                :class="{ 'active': screenLayout.mainRegion != regions.id}"
                 :style="{
                     width: regions.region.width + '%',
                     height: regions.region.height + '%', 
@@ -16,7 +16,7 @@
             >
 
                 <div 
-                    v-if="mainRegion != regions.id"
+                    v-if="screenLayout.mainRegion != regions.id"
                     class="drag-upload-wrap" 
                     id="drop_area"
                     :loading="uploadLoading"
@@ -36,7 +36,6 @@ import { ajaxUrl } from '@/utils'
 export default {
     props: {
         screenLayout: Object,
-        mainRegion: Number,
         screenId: Number
     },
     data(){
