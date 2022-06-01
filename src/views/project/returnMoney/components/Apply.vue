@@ -183,7 +183,7 @@ export default {
                         if(res.code === this.$successCode){
                             this.$message.success('申领成功~')
                             this.showCreateApplyDialog = false
-                            this.$parent.getApplyList()
+                            this.$parent.$parent.getApplyList()
                         }
                     })
                 }
@@ -206,7 +206,7 @@ export default {
                     if(res.code === this.$successCode){
                         this.$message.success('删除成功~')
                         this.showCreateApplyDialog = false
-                        this.$parent.getApplyList()
+                        this.$parent.$parent.getApplyList()
                     }
                 })
             })

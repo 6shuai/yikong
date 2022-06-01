@@ -49,9 +49,9 @@
                 <li>申请时间： {{ item.applyTime }}</li>
             </ul>
             <ul class="contract-info">
-                <li>合同{{ item.merge ? '总额' : '金额' }}： {{ item.contractAmount ? '￥' + item.contractAmount + '元' : '' }}</li>
-                <li>回款{{ item.merge ? '总额' : '金额' }}： {{ item.sumPayment ? '￥' + item.sumPayment + '元' : ''  }}</li>
-                <li>开票{{ item.merge ? '总额' : '金额' }}： {{ item.amount ? '￥' + item.amount + '元' : ''  }}</li>
+                <li>合同{{ item.merge ? '总额' : '金额' }}： {{ moneyFormat(item.contractAmount) }}</li>
+                <li>回款{{ item.merge ? '总额' : '金额' }}： {{ moneyFormat(item.sumPayment) }}</li>
+                <li>开票{{ item.merge ? '总额' : '金额' }}： {{ moneyFormat(item.amount) }}</li>
             </ul>
             <div class="right-btn-wrap">
                 <p v-if="!invoiceParams.isExamine"><el-button type="primary" size="mini" @click.stop="handleShowInvoiceDetail(item.id)">查看审批</el-button></p>
@@ -98,6 +98,7 @@
 <script>
 import { financeCommissionInvoiceList, financeCommissionInvoiceProjectDetail, financeCommissionInvoiceReview } from '@/api/finance'
 import InvoiceProjectDetail from '@/views/project/projectView/invoiceCenter/components/ProjectDetail'
+import { priceFormat } from '@/utils/index'
 import qs from 'qs'
 
 export default {
@@ -142,6 +143,14 @@ export default {
             // 项目明细
             projectDetailData: []
         }
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     },
     mounted() {
         this.invoiceParams.isExamine = this.$route.query.type ? 1 : 0

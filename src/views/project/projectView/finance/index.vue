@@ -1,7 +1,7 @@
 <template>
     <finance-duty 
         :dutyData="resData.accrualDetails"
-        :projectId="Number(contractId)"
+        :projectId="$route.params.id"
     ></finance-duty>
 </template>
 

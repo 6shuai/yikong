@@ -39,7 +39,7 @@
             :close-on-press-escape="false"
             append-to-body
         >
-            <project-finance v-if="showFinanceDetail" :contract="contractId"></project-finance>
+            <project-finance v-if="showFinanceDetail" :projectId="projectId" :contract="contractId"></project-finance>
         </el-dialog>
 
     </div>
@@ -72,8 +72,11 @@ export default {
             // 项目名称
             projectName: '',
 
+            // 合同id
+            contractId: null,
+
             // 项目id
-            contractId: null
+            projectId: null
         }
     },
     mounted() {
@@ -100,8 +103,9 @@ export default {
         },
 
         // 显示项目财务详情
-        showProjectFinanceDetail({displayName, contract}){
+        showProjectFinanceDetail({displayName, contract, id}){
             this.contractId = contract
+            this.projectId = id
             this.projectName = displayName
             this.showFinanceDetail = true
         },

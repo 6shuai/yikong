@@ -24,9 +24,12 @@
                 </div>
                 <div class="limit" v-if="limitParams.limits && limitParams.limits.length">
                     <p class="title">限制时段</p>
-                    <p>{{ limitParams.limits[0].type == 1 ? '限制播放时间' : '禁止播放时间' }}: 
+                    <p>{{ limitParams.type == 1 ? '限制播放时间' : '禁止播放时间' }}: 
                         <span v-if="!limitParams.limits || !limitParams.limits.length">--</span>
-                        <span v-else v-for="(item, index) in limitParams.limits" :key="index">{{ item.time && item.time.length ? item.time[0] + ' - ' + item.time[1] : '' }} {{ index!= limitParams.limits.length-1 ? ' , ' : '' }}</span>
+                        <span v-else v-for="(item, index) in limitParams.limits" :key="index">
+                            {{ item.begin + ' - ' + item.end }} 
+                            {{ index!= limitParams.limits.length-1 ? ' , ' : '' }}
+                        </span>
                     </p>
                 </div>
             </div>

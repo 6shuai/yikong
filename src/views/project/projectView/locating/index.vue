@@ -44,7 +44,7 @@
                             <div class="screen-item" 
                                 v-for="screen in item.orderedScreens" 
                                 :key="screen.id"
-                                @click.stop="handleShowDetail(screen.id, item.priceSystem)"
+                                @click.stop="handleShowDetail(screen.id, item.priceSystem.id)"
                             >
                                 <div class="screen-img">
                                     <el-image fit="cover" :src="screen.photo"></el-image>

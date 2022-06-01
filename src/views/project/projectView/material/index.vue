@@ -33,8 +33,7 @@
                                     <el-image 
                                         fit="cover" 
                                         :src="item.thumbnail" 
-                                        :preview-src-list="[item.sourceFile]"
-                                        @click.stop.native="()=>{}"
+                                        @click.stop.native="$refs.materialPreview.showPreview(item)"
                                     ></el-image>
                                 </div>
                                 <p>{{ item.width }} * {{ item.height }}</p>
@@ -121,7 +120,7 @@
                                         <div class="specification">{{ child.width }} * {{ child.height }}</div>
                                     </div>
             
-                                    <div class="screen-img">
+                                    <div class="screen-img flex">
                                         <!-- <el-image fit="cover" :src="child.photo"></el-image> -->
                                         <div 
                                             class="item" 
@@ -165,6 +164,9 @@
             v-if="showCreateMaterial"
             @createMaterialSuccess="showCreateMaterial=false; getMaterial()"
         ></create-material-new>
+
+        <!-- 素材预览 -->
+        <material-preview ref="materialPreview"></material-preview>
     
     </div>
 </template>
@@ -173,10 +175,12 @@
 import { projectMaterialLists, projectMaterialScreenList, projectMaterialDelete } from '@/api/project'
 import { screenSizeWatch } from '@/mixins'
 import CreateMaterialNew from './components/CreateMaterialNew'
+import MaterialPreview from './components/MaterialPreview'
 
 export default {
     components: { 
-        CreateMaterialNew
+        CreateMaterialNew,
+        MaterialPreview
     },
     mixins: [screenSizeWatch],
     data() {
