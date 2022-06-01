@@ -60,7 +60,12 @@
                                 class="screen-wrap flex-center" 
                                 @click="handelSelectScreen(item)"
                             >
-                                <div class="screen-title overflow">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div>
+                                <div 
+                                    class="screen-title overflow"
+                                    :title="item.name + (item.location ? `(${item.location})` : '')"
+                                >
+                                    {{ item.name }} {{ item.location ? `(${item.location})` : '' }}
+                                </div>
                                 <div 
                                     class="temp-layout"
                                     :style="{
@@ -72,7 +77,7 @@
                                         class="item" 
                                         v-for="(sub, sIndex) in item.defaultLayout.regions" 
                                         :key="sIndex"
-                                        :class="{ 'active': item.defaultLayout.mainRegion == sub.region.id }"
+                                        :class="{ 'active': item.defaultLayout.mainRegion == sub.id }"
                                         :style="{
                                             width: sub.region.width + '%',
                                             height: sub.region.height + '%',
@@ -88,7 +93,12 @@
                                 @click="handelSelectScreen(item)"
                                 v-else
                             >
-                                <div class="screen-title overflow">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div>
+                                <div 
+                                    class="screen-title overflow"
+                                    :title="item.name + (item.location ? `(${item.location})` : '')"
+                                >
+                                    {{ item.name }} {{ item.location ? `(${item.location})` : '' }}
+                                </div>
                                 <div class="temp-layout">未配置</div>
                             </div>
 
@@ -370,7 +380,7 @@ export default {
             }
 
             .el-scrollbar{
-                height: calc(100% - 134px);
+                height: calc(100% - 96px);
             }
 
             .screen-list{

@@ -25,21 +25,9 @@
                 prop="amount" 
                 label="付款金额" 
                 min-width="60"
-            ></el-table-column>
-            <el-table-column 
-                prop="beginTime" 
-                label="操作" 
-                width="100"
             >
                 <template slot-scope="scope">
-                    <el-button
-                        type="primary"
-                        plain
-                        size="mini"
-                        @click="handleEdit(scope.row)"
-                    >
-                        编辑
-                    </el-button>
+                    {{ moneyFormat(scope.row.amount) }}
                 </template>
             </el-table-column>
         </el-table>
@@ -47,15 +35,19 @@
 </template>
 
 <script>
+import { priceFormat } from '@/utils/index'
+
 export default {
     props: {
         paymentData: Array
     },
-    methods: {
-        handleEdit(data){
-            data.occurTime = data.occurTimeFormat
-            this.$emit('editPayment', data)
-        }
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        },
     }
 }
 </script>

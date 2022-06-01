@@ -61,7 +61,7 @@
                 min-width="100"
             >
                 <template slot-scope="scope">
-                    ￥{{ scope.row.amount }}元
+                    {{ moneyFormat(scope.row.amount) }}
                 </template>
             </el-table-column>
             <el-table-column 
@@ -70,7 +70,7 @@
                 min-width="100"
             >
                 <template slot-scope="scope">
-                    ￥{{ scope.row.payment }}元
+                    {{ moneyFormat(scope.row.payment) }}
                 </template>
             </el-table-column>
             <el-table-column 

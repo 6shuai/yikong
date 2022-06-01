@@ -32,7 +32,7 @@
                     type="primary" 
                     size="mini"
                     :disabled="resData.unassigned <= 0 ? true : false"
-                    v-if="!showDistribute && !resData.refundAmount"
+                    v-if="!showDistribute && !resData.refundAmount && applyState != '异常'"
                     @click="$refs.refund.showRefund(resData.unassigned, applyId)"
                 >退款</el-button>
             </p>

@@ -60,7 +60,12 @@
                                 class="screen-wrap flex-center" 
                                 @click="handelSelectScreen(item, groupName, childIndex)"
                             >
-                                <div class="screen-title overflow">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div>
+                                <div 
+                                    class="screen-title overflow"
+                                    :title="item.name + (item.location ? `(${item.location})` : '')"
+                                >
+                                    {{ item.name }} {{ item.location ? `(${item.location})` : '' }}
+                                </div>
                                 <div class="temp-layout">
                                     <div class="msg" v-if="item.order">
                                         <svg-icon :icon-class="item.order.type==2 ? 'time' : '%'"></svg-icon>
@@ -72,7 +77,12 @@
                                 class="screen-wrap flex-center not-layout" 
                                 v-else
                             >
-                                <div class="screen-title overflow">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div>
+                                <div 
+                                    class="screen-title overflow"
+                                    :title="item.name + (item.location ? `(${item.location})` : '')"
+                                >
+                                    {{ item.name }} {{ item.location ? `(${item.location})` : '' }}
+                                </div>
                                 <div class="temp-layout">未配置</div>
                             </div>
 
@@ -398,7 +408,7 @@ export default {
             }
 
             .el-scrollbar{
-                height: calc(100% - 134px);
+                height: calc(100% - 96px);
             }
 
             .screen-list{

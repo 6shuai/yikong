@@ -9,7 +9,7 @@
             <el-col :span="2">布局分屏</el-col>
             <el-col :span="2">类型</el-col>
             <el-col :span="2">
-                <span v-show="!totalType">总时长(分)</span>
+                <span v-show="!totalType">总时长</span>
                 <span v-show="totalType">总次数</span>
                 <a href="javascript:;" class="el-icon-menu ml10" @click="totalType = !totalType"></a>
             </el-col>
@@ -36,7 +36,7 @@
                 </el-popover>
                 <el-col :span="2">{{ item.tempName }} / {{ item.regionName }}</el-col>
                 <el-col :span="2">{{ item.contentPath.substring(item.contentPath.lastIndexOf('.')+1) }}</el-col>
-                <el-col :span="2">{{ totalType ? item.playCount : parseInt(item.playDuration / 60) }}</el-col>
+                <el-col :span="2">{{ totalType ? item.playCount : timeFromat(item.playDuration) }}</el-col>
                 <el-col :span="3">{{ item.publishDate }}</el-col>
                 <el-col :span="3">{{ item.dueDate }}</el-col>
             </el-row>
@@ -50,6 +50,7 @@
 
 <script>
 import ContentPlayDetail from "./ContentPlayDetail"
+import { formatSeconds } from '@/utils/index'
 
 export default {
     components: {
@@ -64,6 +65,13 @@ export default {
 
             // 屏幕id
             screenId: null
+        }
+    },
+    computed: {
+        timeFromat(){
+            return (date) => {
+                return formatSeconds(date)
+            }
         }
     },
     methods: {

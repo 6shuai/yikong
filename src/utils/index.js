@@ -205,7 +205,7 @@ export const Subtr = function (arg1, arg2) {
 //整数部分大于4位 使用千位分割
 export const priceFormat = (x) => {
 	//强制保留两位小数
-	var f = parseFloat(x);
+	var f = parseFloat(x || 0);
 	if (isNaN(f)) return x;
 	var f = Math.round(x * 100) / 100;
 	var s = f.toString();

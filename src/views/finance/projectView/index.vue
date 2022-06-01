@@ -48,7 +48,7 @@
 <script>
 import { projectList } from '@/api/project'
 import ProjectList from '@/views/project/components/ProjectList'
-import ProjectFinance from '@/views/project/projectView/finance/index'
+import ProjectFinance from './financeDetail/index'
 
 export default {
     components: {

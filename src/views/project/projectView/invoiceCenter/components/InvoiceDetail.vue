@@ -49,7 +49,7 @@
     
                     <!-- 只有最后一位审核员才能操作 -->
                     <div v-if="isLastOne && data.approval != 3">
-                        <el-form-item label="发票材质">
+                        <el-form-item label="发票材质" class="is-required">
                             <el-select 
                                 v-model="invoiceReviewParams.material" 
                                 filterable 
@@ -64,7 +64,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="上传发票">
+                        <el-form-item label="上传发票" class="is-required">
                             <upload-img 
                                 v-if="invoiceReviewParams.material == 1"
                                 :isArray="false" 

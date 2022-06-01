@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import FinanceDuty from "@/views/project/projectView/finance/components/FinanceDuty"
+import FinanceDuty from "@/views/finance/projectView/financeDetail/components/FinanceDuty"
 import { financeProjectDetail } from '@/api/finance'
 
 export default {

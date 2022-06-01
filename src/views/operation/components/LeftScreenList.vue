@@ -52,6 +52,7 @@
                             v-for="item in group" 
                             :key="item.id"
                             :class="{ 'active': screenId == item.id }"
+                            :title="item.displayName + (item.location ? `(${item.location})` : '')"
                             @click="handleClickScreen(item)"
                         >
                             <span class="title overflow">{{ item.displayName }} {{ item.location ? `(${item.location})` : '' }}</span>

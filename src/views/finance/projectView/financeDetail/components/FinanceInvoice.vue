@@ -112,7 +112,7 @@ export default {
             return (key) => {
                 return priceFormat(key)
             }
-        },
+        }
     },
     methods: {
         // 添加 或 编辑 发票

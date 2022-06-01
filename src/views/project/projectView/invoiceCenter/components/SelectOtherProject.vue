@@ -44,8 +44,8 @@
                                 ></el-checkbox>
                             </el-col>
                             <el-col :span="8">{{ item.displayName }}</el-col>
-                            <el-col :span="7">{{ item.payment }}</el-col>
-                            <el-col :span="7">{{ item.allowInvoicing }}</el-col>
+                            <el-col :span="7">{{ moneyFormat(item.payment) }}</el-col>
+                            <el-col :span="7">{{ moneyFormat(item.allowInvoicing) }}</el-col>
                         </el-row>
                     </el-scrollbar>
                 </div>

@@ -48,7 +48,7 @@
             ></el-checkbox>
 
             <!-- 是否生效 effect: 1生效  2否 -->
-            <!-- <div v-if="item.effect==1" class="dot"></div> -->
+            <div v-if="item.effect==1" class="dot"></div>
             <div class="type" :class="{ 'insert': item.lockType != 1 }">{{ item.lockType == 1 ? '轮播' : '插播' }}</div>
 
             <div class="title overflow">{{ item.displayName }}</div>

@@ -95,15 +95,11 @@ export default {
 
     .home-mode-sidebar {
 		width: 43px !important;
+		overflow: hidden;
+		
 		.menu-name{
         	opacity: 0;
 		}
-
-		.home-mode-scrollbar-wrapper ul>li{
-			width: 43px;
-			overflow: hidden;
-		}
-
     }
 
     .home-mode-main-container {

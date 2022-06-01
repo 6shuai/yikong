@@ -110,6 +110,7 @@ export default {
                 display: flex;
                 align-items: center;
                 cursor: pointer;
+                overflow: hidden;
 
                 .icon{
                     margin-right: 5px;
