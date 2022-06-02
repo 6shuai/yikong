@@ -10,7 +10,7 @@ export function financeReturnMoneyLogList(data) { return get('/user/finance/busi
 export function financeReturnMoneyLogDelete(data) { return del(`/user/finance/businessTransaction?id=${data}`); }
 
 // 收款分配
-export function financeReturnMoneyDistribute(data) { return put(`/user/finance/collectionReques?${data}`); }
+export function financeReturnMoneyDistribute(data) { return put(`/user/finance/collectionRequest?${data}`); }
 
 
 

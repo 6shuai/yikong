@@ -16,7 +16,7 @@
                 :total="totalCount">
             </el-pagination>
 
-            <div v-if="!tLoading && !resData.length" style="margin: 20px;text-align:center">暂无数据~</div>
+            <el-empty v-if="!tLoading && !resData.length" description="暂无数据"></el-empty>
             <div v-else class="place-content">
                 <div class="place-box" v-loading="tLoading">
                     <div class="place-p" :style="{width: placeW}" v-for="(item, index) in resData" :key="item.id">
