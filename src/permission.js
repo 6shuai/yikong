@@ -25,7 +25,7 @@ router.beforeEach((to, from, next) => {
 			next({ path: '/' })
 			NProgress.done()
 		}else if(to.path === '/' && store.state.settings.classicMode){
-			next({ path: '/project' })
+			next({ path: '/' })
 			NProgress.done()
 		}else if(to.path === '/' && localStorage.homeRoute){
 			next(localStorage.homeRoute)

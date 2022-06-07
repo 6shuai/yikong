@@ -72,7 +72,7 @@
                         全选
                     </el-checkbox>
 
-                    <div class="order-number">订单编号: 20200524</div>
+                    <div class="order-number">订单编号: {{ item.orderNumber }}</div>
 
                 </div>
             </div>
@@ -293,7 +293,7 @@ export default {
 
     .material-match-wrap{
         .screen-preview{
-            height: calc(100vh - 420px);
+            height: calc(100vh - 450px);
         
             .order-list{
                 box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -432,9 +432,8 @@ export default {
 
         .select-screen-and-submit{
             position: absolute;
+            bottom: 0;
             left: 0;
-            bottom: 0px;
-            z-index: 99;
             padding: 0 50px;
             width: 100%;
             height: 59px;

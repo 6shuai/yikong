@@ -21,17 +21,28 @@
                         <span class="ml10" v-if="limitParams.type==1">每日播放次数: {{ limitParams.times }}次</span>
                         <span class="ml10" v-if="limitParams.type==3">播放时长: {{ limitParams.duration }}s</span>
                     </p>
+
+                    <div class="limit" v-if="limitParams.limits && limitParams.limits.length">
+                        <p>{{ limitParams.limits[0].type == 1 ? '限制播放时间' : '禁止播放时间' }}: 
+                            <span v-if="!limitParams.limits || !limitParams.limits.length">--</span>
+                            <span v-else v-for="(item, index) in limitParams.limits" :key="index">
+                                {{ item.begin + ' - ' + item.end }} 
+                                {{ index!= limitParams.limits.length-1 ? ' , ' : '' }}
+                            </span>
+                        </p>
+                    </div>
                 </div>
-                <div class="limit" v-if="limitParams.limits && limitParams.limits.length">
-                    <p class="title">限制时段</p>
-                    <p>{{ limitParams.type == 1 ? '限制播放时间' : '禁止播放时间' }}: 
-                        <span v-if="!limitParams.limits || !limitParams.limits.length">--</span>
-                        <span v-else v-for="(item, index) in limitParams.limits" :key="index">
-                            {{ item.begin + ' - ' + item.end }} 
-                            {{ index!= limitParams.limits.length-1 ? ' , ' : '' }}
-                        </span>
-                    </p>
-                </div>
+
+                <!-- 是否可以编辑播放规则 -->
+                <a 
+                    href="javascript:;" 
+                    class="edit-right" 
+                    @click="handleShowPlayRule"
+                    v-if="showEdit"
+                >
+                    编辑>>
+                </a>
+
             </div>
         </el-card>
 
@@ -57,7 +68,7 @@
                                 :src="item.defaultShow || item.photo"
                             ></el-image>
     
-                            <p class="screen-name">{{ item.displayName }}{{ item.location }} {{ item.hide }}</p>
+                            <p class="screen-name">{{ item.displayName }}{{ item.location ? `(${item.location})` : '' }}</p>
                             <p class="price" v-show="realPrice(item.price, index)">
                                 <span>单价: 
                                     <s v-if="discount">{{ realPrice(item.price, index) }}</s>
@@ -120,7 +131,10 @@
 
 
         <!-- 寻位详情 -->
-        <locating-result ref="locatingResult"></locating-result>
+        <locating-result ref="locatingResult" @lockFail="showEdit=true"></locating-result>
+
+        <!-- 播放规则 -->
+        <play-limit-rule ref="playLimitRule" @editSuccess="init"></play-limit-rule>
 
     </el-card>
 
@@ -131,10 +145,12 @@ import { screenSizeWatch } from '@/mixins'
 import { priceFormat } from '@/utils/index'
 import { projectLockPositionCreate } from '@/api/project'
 import LocatingResult from './LocatingResult'
+import PlayLimitRule from './PlayLimitRule'
 
 export default {
     components: {
-        LocatingResult
+        LocatingResult,
+        PlayLimitRule
     },
     props: {
         selectedScreenList: Array
@@ -188,6 +204,9 @@ export default {
             // 播放规则
             limitParams: {},
 
+            // 是否可以编辑播放规则   锁位失败的情况下可以编辑
+            showEdit: false,
+
             // 折扣
             discount: null,
 
@@ -208,12 +227,7 @@ export default {
         }
     },
     mounted() {
-        if(this.$store.state.project.playRuleData){
-            this.limitParams = this.$store.state.project.playRuleData
-            this.screenList = JSON.parse(JSON.stringify(this.selectedScreenList))
-        }else{
-            this.$router.push(`/project/${this.$route.params.id}/locating`)
-        }
+        this.init()
 
         // 播放天数
         this.playDay = this.getDaysBetween(this.limitParams.publishDate, this.limitParams.dueDate, this.screenTotalPrice)
@@ -224,6 +238,20 @@ export default {
         }
     },
     methods: {
+        init(){
+            if(this.$store.state.project.playRuleData){
+                this.limitParams = this.$store.state.project.playRuleData
+                this.screenList = JSON.parse(JSON.stringify(this.selectedScreenList.flat()))
+            }else{
+                this.$router.push(`/project/${this.$route.params.id}/locating`)
+            }
+        },
+
+        // 编辑播放规则
+        handleShowPlayRule(){
+            this.$refs.playLimitRule.init(this.$store.state.project.playRuleData)
+        },
+
         // 选择屏幕
         handelSelectScreen(id){
             if(this.screenIds.includes(id)){
@@ -334,6 +362,7 @@ export default {
             .detail-content{
                 display: flex;
                 justify-content: space-between;
+                align-items: flex-end;
 
                 .property .title{
                     span{
@@ -350,6 +379,10 @@ export default {
                             background: #C27B00;
                         }
                     }
+                }
+
+                .edit-right{
+                    color: var(--color-primary);
                 }
             }
         }   

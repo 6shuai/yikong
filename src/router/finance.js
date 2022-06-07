@@ -18,27 +18,11 @@ const financeRoutes = [
                     }
                 },
                 {
-                    path: 'contract',
-                    name: 'Finance--contract',
-                    component: () => import('@/views/finance/contract/index'),
-                    meta: {
-                        title: '财务 - 合同'
-                    }
-                },
-                {
                     path: 'returnMoney',
                     name: 'Finance--returnMoney',
                     component: () => import('@/views/finance/returnMoney/index'),
                     meta: {
                         title: '财务 - 回款'
-                    }
-                },
-                {
-                    path: 'invoice',
-                    name: 'Finance--invoice',
-                    component: () => import('@/views/finance/invoice/index'),
-                    meta: {
-                        title: '财务 - 发票'
                     }
                 },
                 {
@@ -75,7 +59,7 @@ const financeRoutes = [
                 },
                 {
                     path: 'contractApproval',
-                    name: 'Finance--contractApproval',
+                    name: 'Finance--ContractApproval',
                     component: () => import('@/views/contractApproval/index'),
                     meta: {
                         title: '财务 - 合同审核'

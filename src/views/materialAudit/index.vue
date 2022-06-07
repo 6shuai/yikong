@@ -19,6 +19,7 @@
             >
             </el-tab-pane>
             <el-tab-pane 
+                v-if="financeTabs.includes('InvoiceCenter')"
                 label="发票中心" 
                 name="invoice"
             >
@@ -63,6 +64,16 @@ export default {
     data() {
         return {
             tabActiveName: 'project'
+        }
+    },
+    computed: {
+        financeTabs(){
+            let data = localStorage.financeTabs ? JSON.parse(localStorage.financeTabs) : []
+            let arr = []
+            for(let i = 0; i < data.length; i++){
+                arr.push(data[i].moduleName)
+            }
+            return arr
         }
     },
     mounted() {

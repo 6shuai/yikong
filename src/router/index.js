@@ -64,13 +64,27 @@ export const constantRoutes = [
 			name: 'Home',
 			component: () => import('@/views/home/index'),
 			meta: {
-				title: '项目管理',
+				title: '选择角色',
+				icon: 'home'
+			}
+		}],
+		hidden: true
+	},
+	
+	{
+		path: '/',
+		component: Layout,
+		children: [{
+			path: '/home',
+			name: 'Home',
+			component: () => import('@/views/home/home'),
+			meta: {
+				title: '首页',
 				icon: 'home'
 			}
 		}],
 		// hidden: true
 	},
-	
 
 	//个人中心
 	{
@@ -155,10 +169,27 @@ export const constantRoutes = [
 		children: [
 			{
 				path: 'approval',
-				name: 'contractApproval',
+				name: 'ContractApproval',
 				component: () => import('@/views/contractApproval/index'),
 				meta: {
-					title: '合同审批'
+					title: '合同审核'
+				}
+			}
+		],
+		hidden: true
+	},
+	
+	// 发票中心
+	{
+		path: '/',
+		component: Layout,
+		children: [
+			{
+				path: 'invoiceCenter',
+				name: 'InvoiceCenter',
+				component: () => import('@/views/finance/invoiceCenter'),
+				meta: {
+					title: '发票中心'
 				}
 			}
 		],

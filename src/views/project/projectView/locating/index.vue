@@ -71,6 +71,7 @@
     
             <!-- 播放规则 -->
             <play-limit-rule ref="playLimitRule"></play-limit-rule>
+            
         </div>
 
         <!-- 释放大屏 -->

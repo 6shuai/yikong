@@ -178,7 +178,7 @@ export default {
         //导出
 		download() {
 			window.open(
-				`${document.location.origin}/user/project/exportOneMaterialPlaybackData?${qs.stringify(this.params)}`
+				`${document.location.origin}/materialPlayback/exportOneMaterialPlaybackData?${qs.stringify(this.params)}`
 			);
 		},
         

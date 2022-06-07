@@ -56,7 +56,7 @@
                             v-show="!item.active"
                         >
                             <div 
-                                v-if="item.order && item.order.type>1"
+                                v-if="item.orders && item.orders.length && item.orders[0].type>1"
                                 class="screen-wrap flex-center" 
                                 @click="handelSelectScreen(item, groupName, childIndex)"
                             >
@@ -67,10 +67,10 @@
                                     {{ item.name }} {{ item.location ? `(${item.location})` : '' }}
                                 </div>
                                 <div class="temp-layout">
-                                    <div class="msg" v-if="item.order">
-                                        <svg-icon :icon-class="item.order.type==2 ? 'time' : '%'"></svg-icon>
+                                    <div class="msg">
+                                        <svg-icon :icon-class="item.orders[0].type==2 ? 'time' : '%'"></svg-icon>
                                     </div>
-                                    <div class="value">{{ item.order.type == 2 ? secondToHour(item.order.duration) : item.order.percent + '%' }}</div>
+                                    <div class="value">{{ item.orders[0].type == 2 ? secondToHour(item.orders[0].duration) : item.orders[0].percent + '%' }}</div>
                                 </div>
                             </div>
                             <div 

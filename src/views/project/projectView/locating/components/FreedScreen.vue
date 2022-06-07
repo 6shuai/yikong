@@ -77,12 +77,33 @@
                     <li v-for="item in conductScreen" :key="item.id">
                        <div class="screen-name">{{ item.name }} {{ item.location ? `(${item.location})` : '' }}</div> 
                        <div class="screen-material">
-                            <el-image 
+                            <!-- <el-image 
                                 fit="cover"
                                 v-for="(img, index) in item.packages"
                                 :key="index"
                                 :src="img.regions[0].content"
-                            ></el-image>
+                            ></el-image> -->
+
+                            <div class="content-item" v-for="packages in item.packages" :key="packages.id">
+                                <div class="layout">
+
+                                    <div
+                                        class="region"
+                                        v-for="(regions, regionsIndex) in packages.screenLayout.regions"
+                                        :key="regionsIndex"
+                                        :style="{
+                                            width: regions.region.width + '%',
+                                            height: regions.region.height + '%', 
+                                            left: regions.region.x + '%',
+                                            top:  regions.region.y + '%', 
+                                        }"
+                                    >   
+                                        <el-image :src="regions.content.thumbnail"></el-image>   
+                                    </div>
+
+                                </div>
+                            </div>
+
                        </div>
                     </li>
                 </ul>
@@ -275,13 +296,47 @@ export default {
                 .screen-material{
                     flex: 1;
                     
-                    .el-image{
+                    // .el-image{
+                    //     display: inline-block;
+                    //     height: 60px;
+                    //     margin: 0 10px 10px 0;
+                    //     background: #999;
+                    //     border: 1px solid #e5e5e5;
+                    // }
+
+                    .content-item{
                         display: inline-block;
                         height: 60px;
                         margin: 0 10px 10px 0;
                         background: #999;
                         border: 1px solid #e5e5e5;
+
+                        .layout{
+                            width: 120px;
+                            height: 60px;
+                            overflow: hidden;
+                            position: relative;
+                            background: #D0D4DA;
+                            cursor: pointer;
+
+                            .region{
+                                position: absolute;
+                                border: 1px solid #fff;
+                                cursor: pointer;
+                                
+                                .el-image{
+                                    width: 100%;
+                                    height: 100%;
+                                }
+
+                                &.active{
+                                    background: var(--color-primary);
+                                }
+                            }
+                        }
                     }
+
+
                 }
             }
         }

@@ -14,7 +14,17 @@
                     <span class="play-type" v-if="priceSystemDetail.lockType==1">轮播</span>
                     <span class="play-type insert" v-if="priceSystemDetail.lockType==3">插播</span>
 
-                    <div class="title">{{ priceSystemDetail.displayName }}</div>
+                    <div class="title flex-left-center">
+                        {{ priceSystemDetail.displayName }}
+                        <el-switch
+                            class="ml10"
+                            v-model="priceSystemDetail.effect"
+                            :active-value="1"
+                            :inactive-value="2"
+                        >
+                        </el-switch>
+                        <span :class="{effect: priceSystemDetail.effect == 1 }">{{ priceSystemDetail.effect == 1 ? '已生效' : '未生效' }}</span>
+                    </div>
                     <p v-if="priceSystemDetail.lockType == 1 && priceSystemDetail.priceSystemConfigCarouselTimes">
                         <span>{{ priceSystemDetail.priceSystemConfigCarouselTimes.duration }}秒</span>
                         <span>{{ priceSystemDetail.priceSystemConfigCarouselTimes.times }}次</span>
@@ -168,7 +178,7 @@
                         size="small"
                         :disabled="screenIds.length ? false : true"
                         :loading="btnLoading"
-                        @click="handleEffect"
+                        @click="handleShowEdit"
                     >
                         编辑
                     </el-button>
@@ -332,28 +342,32 @@ export default {
             }
         },
 
+        // 显示编辑屏幕价格
+        handleShowEdit(){
+            this.$refs.editScreenPrice.showAddScreenPriceDialog(this.selectedScreenData)
+        },
+
         // 价格体系生效
         handleEffect(){
-            this.$refs.editScreenPrice.showAddScreenPriceDialog(this.selectedScreenData)
-            // this.$confirm(
-            //     '此价格体系生效后将被投入使用',
-            //     "提示",
-            //     {
-            //         confirmButtonText: "确定",
-            //         cancelButtonText: "取消",
-            //         type: "warning",
-            //         center: true,
-            //     }
-            // ).then(() => {
-            //     this.btnLoading = true
-            //     priceSystemEffect(this.$route.params.id).then(res => {
-            //         this.btnLoading = false
-            //         if(res.code === this.$successCode){
-            //             this.$message.success('操作成功~')
-            //             this.getScreenList()
-            //         }
-            //     })
-            // })
+            this.$confirm(
+                '此价格体系生效后将被投入使用',
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    type: "warning",
+                    center: true,
+                }
+            ).then(() => {
+                this.btnLoading = true
+                priceSystemEffect(this.$route.params.id).then(res => {
+                    this.btnLoading = false
+                    if(res.code === this.$successCode){
+                        this.$message.success('操作成功~')
+                        this.getScreenList()
+                    }
+                })
+            })
         }
     }
 }
@@ -391,6 +405,15 @@ export default {
                 .title{
                     font-weight: bold;
                     padding-bottom: 10px;
+
+                    &>span{
+                        font-weight: normal;
+                        margin-left: 5px;
+
+                        &.effect{
+                            color: var(--color-primary);
+                        }
+                    }
                 }
 
                 p{

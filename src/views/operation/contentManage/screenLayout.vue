@@ -56,7 +56,7 @@
                             v-show="!selectedScreenIds.includes(item.id)"
                         >
                             <div 
-                                v-if="item.defaultLayout"
+                                v-if="item.layout"
                                 class="screen-wrap flex-center" 
                                 @click="handelSelectScreen(item)"
                             >
@@ -75,9 +75,9 @@
                                 >
                                     <div 
                                         class="item" 
-                                        v-for="(sub, sIndex) in item.defaultLayout.regions" 
+                                        v-for="(sub, sIndex) in item.layout.regions" 
                                         :key="sIndex"
-                                        :class="{ 'active': item.defaultLayout.mainRegion == sub.id }"
+                                        :class="{ 'active': item.layout.mainRegion == sub.id }"
                                         :style="{
                                             width: sub.region.width + '%',
                                             height: sub.region.height + '%',

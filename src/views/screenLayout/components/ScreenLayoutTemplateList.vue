@@ -67,6 +67,8 @@ export default {
             this.tempLoading = true
 
             let getScreenTempApi = timelineStageTempList
+
+            // 项目用到
             if(source === 'project') getScreenTempApi = projectScreenLayoutTempList
 
             getScreenTempApi().then(res => {

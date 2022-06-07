@@ -38,7 +38,7 @@ export default {
             showPutMaterial: false,
 
             // 上传内容接口
-            uploadMaterialUrl: 'user/project/upload',
+            uploadMaterialUrl: 'project/upload',
 
             // 上传中
             uploadLoading: false,

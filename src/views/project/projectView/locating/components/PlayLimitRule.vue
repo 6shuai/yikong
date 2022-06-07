@@ -202,7 +202,7 @@ export default {
         }
     },
     methods: {
-        init(){
+        init(data){
             this.limitParams = {
                 type: 1,
 
@@ -218,17 +218,18 @@ export default {
             
             this.showPlayRule = true
 
-            if(this.$route.query.type == 'again' && this.$store.state.project.againReserveData){
-                let { publishDate, dueDate, duration, type, time, times, limits, priceSystem } = this.$store.state.project.againReserveData
+            if((this.$route.query.type == 'again' && this.$store.state.project.againReserveData) || data){
+                let { publishDate, dueDate, duration, type, time, times, limits, priceSystem } = data ? data : this.$store.state.project.againReserveData
                 this.period = [publishDate, dueDate]
                 this.limitParams = {
                     duration,
                     type,
                     time,
                     times,
-                    priceSystem
+                    priceSystem: isNaN(priceSystem) ? priceSystem.id : priceSystem
                 }
-                this.limitTime = this.formatLimitTime(limits)
+                if(limits && limits.length) this.formatLimitTime(limits)
+                
                 this.showPlayLimit = limits.length ? true : false
             }
 
@@ -309,6 +310,8 @@ export default {
             this.showPlayRule = false
             this.$store.state.project.playRuleData = this.limitParams
             this.$router.push(`/project/${this.$route.params.id}/locating/selectScreen`)
+            
+            this.$emit('editSuccess')
         },
 
         // 获取限制时间列表
@@ -331,9 +334,11 @@ export default {
         formatLimitTime(data){
             for(let i = 0; i < data.length; i++){
                 let { begin, end } = data[i]
-                data[i].time = [begin, end]
+                // data[i].time = [begin, end]
+
+                this.$set(this.limitTime[i], 'time', [begin, end])
             }
-            return data
+            
         }
     }
 }

@@ -75,7 +75,10 @@
                             <div class="right-checkbox mb10">
                                 <el-checkbox v-model="isSelectedAll" @change="handleSelectAll">全选</el-checkbox>
                             </div>
-    
+
+                            <!-- {{ screenIds }}
+                            <p>{{ againIds }}</p> -->
+                            
                             <div class="place-box">
                                 <div class="place-p" 
                                     :style="{width: placeW}" 
@@ -87,7 +90,8 @@
                                         shadow="always"
                                         @click.native="handleSelectScreen(item)"
                                     >
-                                        <div class="mask" v-show="screenIds.includes(item.id)"></div>
+
+                                        <div class="mask" v-if="(screenIds[searchParams.pageNo-1] && screenIds[searchParams.pageNo-1].includes(item.id)) || againIds.includes(item.id)"></div>
     
                                         <div 
                                             class="place-img" 
@@ -106,10 +110,10 @@
                                         </div>
                                         <div style="padding: 0 14px 14px">
                                             <div class="bottom bottom-place-detail clearfix">
-                                                <p>资源等级：{{ item.levelName }}</p>
-                                                <p>年客流量(万人次)： {{ item.flowVolume || '-' }}</p>
-                                                <p>商户数量： {{ item.merchantCount }}</p>
-                                                <p>屏幕面积： {{ item.screenArea }}m²</p>
+                                                <p class="level-and-price">
+                                                    <el-tag size="small">{{ item.levelName }}</el-tag>
+                                                    <span class="price ml10">{{ item.showPrice }}</span>
+                                                </p>
                                                 <p class="overflow" :title="addressJoint(item) + item.address">
                                                     <font-awesome-icon :icon="['fas', 'location-arrow']" />{{addressJoint(item)}}  {{item.address}}
                                                 </p>
@@ -128,17 +132,19 @@
                         <!-- 大屏列表 -->
                         <div class="screen-list-wrap" :class="{ 'show-screen-list': showSelectedList }">
                             <el-scrollbar class="hidden-scroll-x screen-scrollbar">
-                                <div 
-                                    class="item" 
-                                    v-for="item in selectedScreenList"
-                                    :key="item.id"
-                                >
-                                    <div class="screen-img">
-                                        <el-image fit="cover" :src="item.defaultShow"></el-image>
-                                        <i class="el-icon-error" @click="handleSelectScreen(item)"></i>
-                                    </div>
-                                    <p class="screen-name overflow">{{ item.displayName }}</p>
-                                </div>
+                                <span v-for="(item, sindex) in selectedScreenList.concat(againData)" :key="sindex">
+                                   <div 
+                                       class="item" 
+                                       v-for="screen in item"
+                                       :key="screen.id"
+                                   >
+                                       <div class="screen-img">
+                                           <el-image fit="cover" :src="screen.defaultShow"></el-image>
+                                           <i class="el-icon-error" @click="handleSelectScreen(screen)"></i>
+                                       </div>
+                                       <p class="screen-name overflow">{{ screen.displayName }}</p>
+                                   </div>
+                               </span>
                             </el-scrollbar>
                         </div>
     
@@ -147,14 +153,14 @@
                             <div class="screen-count mr10" @click="showSelectedList = !showSelectedList">
                                 <i class="el-icon-monitor"></i>
                                 预选大屏
-                                <span>{{ selectedScreenList.length }}</span>
+                                <span>{{ selectedScreenList.flat().length + againData.length }}</span>
                                 个
                                 <i :class="showSelectedList ? 'el-icon-arrow-up' : 'el-icon-arrow-down' "></i>
                             </div>
                             <el-button 
                                 type="info" 
                                 size="small"
-                                :disabled="!selectedScreenList.length"
+                                :disabled="!(selectedScreenList.flat().length + againData.length)"
                                 @click="handleNextStep"
                             >
                                 下一步 >>
@@ -186,7 +192,7 @@
         <capturing 
             ref="captuing" 
             v-if="showCapturing"
-            :selectedScreenList="selectedScreenList"
+            :selectedScreenList="selectedScreenList.concat(againData)"
         ></capturing>
 
     </div>
@@ -239,6 +245,12 @@ export default {
             // 已选中的屏幕
             selectedScreenList: [],
 
+            // 再次预定的屏幕
+            againData: [],
+
+            // 再次预定的屏幕id
+            againIds: [],
+
             // 寻位提交loading
             btnLoading: false,
 
@@ -253,16 +265,19 @@ export default {
             this.getScreenList()
             if(this.$store.state.project.againReserveData){
                 let { orderedScreens } = this.$store.state.project.againReserveData
+                this.againData = []
                 for(let i = 0; i < orderedScreens.length; i++){
-                    let { name, id, photo, price } = orderedScreens[i]
+                    let { name, id, photo, price, location } = orderedScreens[i]
 
                     let data = {
                         displayName: name,
                         defaultShow: photo,
+                        location,
                         id,
                         price
                     }
-                    this.handleSelectScreen(data)
+                    this.againIds.push(id)
+                    this.againData.push(data)
                 }
             }
         }
@@ -278,6 +293,19 @@ export default {
                     let { list, totalRecords } = res.obj
                     this.placeData = list
                     this.totalCount = totalRecords
+
+                    this.isSelectedAll = !this.screenIds[this.searchParams.pageNo-1] ? false : this.screenIds[this.searchParams.pageNo-1].length === this.placeData.length
+
+
+                    for(let i = 0; i < list.length; i++){
+                        if(this.againIds.includes(list[i].id)){
+                            // this.screenIds[this.searchParams.pageNo-1].push(list[i].id)
+                            this.handleSelectScreen(list[i])
+                            let index = this.againIds.findIndex((item) => item == list[i].id)
+                            this.$delete(this.againIds, index)
+                            this.$delete(this.againData, index)
+                        }
+                    }
                 }
             })
         },
@@ -291,6 +319,8 @@ export default {
         // 每页多少条
         handleSizeChange(size){
             this.searchParams.pageSize = size
+            this.screenIds = []
+            this.selectedScreenList = []
             this.getScreenList()
         },
 
@@ -301,28 +331,41 @@ export default {
 
         // 选择屏幕
         handleSelectScreen(data){
-            if(this.screenIds.includes(data.id)){
-                let index = this.screenIds.findIndex((item) => item == data.id)
-                this.screenIds.splice(index, 1)
-                this.selectedScreenList.splice(index, 1)
+            let page = this.searchParams.pageNo - 1
+
+            if(!this.screenIds[page]) this.screenIds[page] = []
+            if(!this.selectedScreenList[page]) this.selectedScreenList[page] = []
+
+            if(this.screenIds[page].includes(data.id)){
+                let index = this.screenIds[page].findIndex((item) => item == data.id)
+                this.$delete(this.screenIds[page], index)
+                this.$delete(this.selectedScreenList[page], index)
             }else{
-                this.screenIds.push(data.id)
-                this.selectedScreenList.push(data)
+                this.screenIds[page].push(data.id)
+                this.$set(this.screenIds, page, this.screenIds[page])
+                this.selectedScreenList[page].push(data)
+                this.$set(this.selectedScreenList, page, this.selectedScreenList[page])
             }
-            this.isSelectedAll = this.screenIds.length === this.placeData.length
+            this.isSelectedAll = this.screenIds[page].length === this.placeData.length
         },
 
         // 全选
         handleSelectAll(){
-            this.selectedScreenList = []
-            if(this.screenIds.length === this.placeData.length){
-                this.screenIds = []
+            let page = this.searchParams.pageNo - 1
+
+            if(!this.screenIds[page]) this.screenIds[page] = []
+            if(!this.selectedScreenList[page]) this.selectedScreenList[page] = []
+
+            if(this.screenIds[page].length === this.placeData.length){
+                this.screenIds[page] = []
+                this.selectedScreenList[page] = []
                 this.isSelectedAll = false
             }else{
-                this.screenIds = []
+                this.screenIds[page] = []
+                this.selectedScreenList[page] = []
                 for(let i = 0 ; i < this.placeData.length; i++){
-                    this.screenIds.push(this.placeData[i].id)
-                    this.selectedScreenList.push(this.placeData[i])
+                    this.screenIds[page].push(this.placeData[i].id)
+                    this.selectedScreenList[page].push(this.placeData[i])
                 }
                 this.isSelectedAll = true
             }
@@ -441,6 +484,11 @@ export default {
                     font-size: 13px;
                     color: #999;
                     line-height: 24px;
+
+                    .price{
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
                 }
             }
         }

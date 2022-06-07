@@ -15,16 +15,16 @@ export const findContentType = (id) => {
 // 角色对应的主页
 export const roleHome = {
     '/project': [
-        {
-            displayName: '项目管理',
-            moduleName: 'Project',
-            route: '/project/view'
-        },
-        {
-            displayName: '回款处理',
-            moduleName: 'ReturnMoney',
-            route: '/project/returnMoney'
-        }
+        // {
+        //     displayName: '项目管理',
+        //     moduleName: 'Project',
+        //     route: '/project/view'
+        // },
+        // {
+        //     displayName: '回款处理',
+        //     moduleName: 'ReturnMoney',
+        //     route: '/project/returnMoney'
+        // }
     ],
     '/finance': [ 
         {
@@ -39,17 +39,18 @@ export const roleHome = {
             moduleName: 'ContentManage',
             route: '/operation/contentManage'
         },
-        {
-            displayName: '监播统计',
-            moduleName: 'PlayStatistics',
-            route: '/operation/playStatistics'
-        },
-        {
-            displayName: '素材审核',
-            moduleName: 'MaterialAudit',
-            route: '/materialAudit'
-        }
+        // {
+        //     displayName: '监播统计',
+        //     moduleName: 'PlayStatistics',
+        //     route: '/operation/playStatistics'
+        // },
+        // {
+        //     displayName: '素材审核',
+        //     moduleName: 'MaterialAudit',
+        //     route: '/materialAudit'
+        // }
     ],
     '/boss': [],
     '/place/index': [],
 }
+

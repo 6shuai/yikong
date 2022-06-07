@@ -36,6 +36,9 @@
                     <el-col :span="4">时间</el-col>
                     <el-col :span="4">操作</el-col>
                 </el-row>
+                
+                <el-empty v-if="!resData || !resData.length"></el-empty>
+
                 <el-row type="flex" align="middle" v-for="item in resData" :key="item.id">
                     <el-col :span="6">{{ item.organizationName }}</el-col>
                     <el-col :span="5">

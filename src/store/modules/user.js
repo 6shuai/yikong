@@ -43,6 +43,7 @@ const actions = {
 	login({ commit }, userInfo) {
 		return new Promise((resolve, reject) => {
 			userLogin(userInfo).then((response) => {
+				localStorage.clear();
 				commit("SET_TOKEN", response.obj.username);
 				commit("SET_LOGIN_DATA", response.obj);
 				setToken(response.obj.username);

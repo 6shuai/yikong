@@ -262,8 +262,9 @@ export default {
         // 当前时间是否在这个范围内
         isDuringDate (beginDateStr, endDateStr) {
             let curDate = new Date(),
-                beginDate = new Date(beginDateStr),
-                endDate = new Date(endDateStr);
+                beginDate = new Date(beginDateStr + ' 00:00:00'),
+                endDate = new Date(endDateStr + ' 23:59:59')
+            
             if (curDate >= beginDate && curDate <= endDate) {
                 return true
             }

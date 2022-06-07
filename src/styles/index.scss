@@ -308,6 +308,12 @@ a.underline{
 	align-items: center;
 }
 
+.flex-left-center{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
 .flex-between-center{
 	display: flex;
 	justify-content: space-between;

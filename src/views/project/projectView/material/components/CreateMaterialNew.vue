@@ -85,7 +85,7 @@ export default {
     data(){
         return {
             // 上传内容接口
-            uploadMaterialUrl: 'user/project/upload',
+            uploadMaterialUrl: 'project/upload',
             borderhover: false,
 
             // 文件是否上传中
@@ -137,7 +137,7 @@ export default {
             e.stopPropagation()
             e.preventDefault()
             let file = e.dataTransfer.files
-            this.getFileInfo(file)
+            if(file && file.length) this.getFileInfo(file)
         },
 
         // 点击上传文件

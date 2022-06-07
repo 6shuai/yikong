@@ -38,47 +38,84 @@ module.exports = {
 		// proxy: 'http://123.206.83.233:8181',
 
 		// 本地环境
-		// proxy: 'http://192.168.34.121:8181',
+		// proxy: 'http://192.168.34.58:8181',
 		
 		//本地环境
 		proxy: {
 			'/user': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/project': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/businessTransaction': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/auditor': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/collectionRequest': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/commissionSystem': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/contractReview': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/finance': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/invoiceReview': {
+				target: 'http://192.168.34.58:8181',
+				changeOrigin: true
+			},
+			'/materialPlayback': {
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 
+
 			'/sign_in': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 			
 			'/common': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 			'/logout': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 			'/entry': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 			'/system': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 
 			'/public': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 			'/homePage': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 			'/priceSystem': {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 
@@ -180,7 +217,7 @@ module.exports = {
 				changeOrigin: true
 			},
 			'/screen':  {
-				target: 'http://123.206.83.233:8191',
+				target: 'http://192.168.34.58:8181',
 				changeOrigin: true
 			},
 		},

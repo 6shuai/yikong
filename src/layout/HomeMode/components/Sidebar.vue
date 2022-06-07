@@ -36,11 +36,14 @@ export default {
     data() {
         return {
             activeName: 0,
-            currentTab: {}
+            currentTab: {},
+
+            // 财务主页 tab栏路由
+            financeTabs: ['/finance/projectView', '/finance/returnMoney', '/finance/commissionSystem', '/contract/approval', '/finance/projectAuthority', '/invoiceCenter']
         }
     },
     mounted() {
-        this.activeName = this.$route.name.split('--')[0]
+        if(this.$route.name) this.activeName = this.$route.name.split('--')[0]
     },
     computed: {
         currentRoleHomePageData() {
@@ -53,7 +56,7 @@ export default {
             tabsData.forEach(element => {
                 if(element.children && element.children.length){
                     for(let i = 0; i < element.children.length; i++){
-                        if(element.children[i].moduleName != 'User') data.push(element.children[i])
+                        if(element.children[i].moduleName != 'User' && element.children[i].moduleName != 'InvoiceCenter') data.push(element.children[i])
                     }
                 }else{
                     data.push(element)

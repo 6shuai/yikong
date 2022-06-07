@@ -18,30 +18,27 @@
                 name="projectView"
             ></el-tab-pane>
             <el-tab-pane 
-                label="合同" 
-                name="contract"
-            ></el-tab-pane>
-            <el-tab-pane 
+                v-if="financeTabs.includes('BusinessTransaction')"
                 label="回款类目" 
                 name="returnMoney"
             ></el-tab-pane>
             <el-tab-pane 
-                label="发票" 
-                name="invoice"
-            ></el-tab-pane>
-            <el-tab-pane 
+                v-if="financeTabs.includes('Finance')"
                 label="项目权责" 
                 name="projectAuthority"
             ></el-tab-pane>
             <el-tab-pane 
+                v-if="financeTabs.includes('Finance')"
                 label="员工提成" 
                 name="employeeCommission"
             ></el-tab-pane>
             <el-tab-pane 
+                v-if="financeTabs.includes('CommissionSystem')"
                 label="提成体系" 
                 name="commissionSystem"
             ></el-tab-pane>
             <el-tab-pane 
+                v-if="financeTabs.includes('InvoiceCenter')"
                 label="发票中心" 
                 name="invoiceCenter"
             >
@@ -59,6 +56,7 @@
                 </el-dropdown>
             </el-tab-pane>
             <el-tab-pane 
+                v-if="financeTabs.includes('ContractApproval')"
                 label="合同审核" 
                 name="contractApproval"
             ></el-tab-pane>
@@ -75,6 +73,16 @@ export default {
     data() {
         return {
             tabActiveName: 'projectView'
+        }
+    },
+    computed: {
+        financeTabs(){
+            let data = localStorage.financeTabs ? JSON.parse(localStorage.financeTabs) : []
+            let arr = []
+            for(let i = 0; i < data.length; i++){
+                arr.push(data[i].moduleName)
+            }
+            return arr
         }
     },
     mounted() {

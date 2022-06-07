@@ -41,7 +41,7 @@ export default {
     data(){
         return {
             // 上传文件 接口地址
-            uploadMaterialUrl: 'user/project/upload',
+            uploadMaterialUrl: 'project/upload',
 
             // 上传区域id
             regionId: null,

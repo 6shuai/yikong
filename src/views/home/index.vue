@@ -14,37 +14,6 @@
                 </el-card>
             </div>
         </div>
-
-        <!-- 根据角色显示对应的权限页面 入口列表 -->
-        <!-- <div class="entrance" v-else>
-            <el-card class="entrance-list">
-                <div 
-                    class="entrance-page"
-                    @click="handleClickPageBtn('/project')"
-                >  
-                    项目
-                </div>
-            </el-card>
-            <el-card 
-                class="entrance-list"
-                v-for="(item, index) in currentRoleHomePageData"
-                v-show="item.children.length"
-                :key="index"
-            >
-                <div slot="header" class="clearfix">
-                    <span>{{ item.displayName }}</span>
-                </div>
-                <div 
-                    class="entrance-page"
-                    v-for="(sub, sIndex) in item.children"
-                    :key="sIndex"
-                    @click="handleClickPageBtn(sub.route)"
-                >  
-                    {{ sub.displayName }}
-                </div>
-            </el-card>
-        </div> -->
-
     </div>
 </template>
 
@@ -73,9 +42,22 @@ export default {
         // 选择角色 注册对应的路由
         handleSelectRole(data){
 
-            
             let authorities = data.authorities ? data.authorities : []
             let roleHomeRoutes = data.id === 1 ? [] : roleHome[data.frontRoute]
+
+            // 财务主页
+            // 运营主页 左侧菜单栏不显示发票中心
+            if(data.frontRoute === '/finance' || data.frontRoute === '/operation'){
+                for(let i = 0; i < authorities.length; i++){
+                    if(authorities[i].moduleName == 'Project'){
+                        localStorage.financeTabs = JSON.stringify(authorities[i].children)
+                        if(data.frontRoute === '/finance') authorities.splice(i, 1)   
+                    }
+                }
+            }
+
+
+
             let routes = [
                 ...roleHomeRoutes,
                 ...authorities
@@ -88,24 +70,23 @@ export default {
             this.$store.dispatch('permission/GenerateRoutes', asyncRouter).then(() => { 
                 router.addRoutes(asyncRouter) // 动态添加可访问路由表
             })
-
+            
+            
             // id =1  老用户 显示左侧菜单栏
-            if(data.id === 1){
-                this.$store.commit('settings/SET_SHOW_MENU', true)
-                this.$router.push('/project')
-            }else{
-                this.$router.push(data.frontRoute)
-            }
-            this.$store.state.user.currentRoleHomePageData = routes
-            this.currentRoleHomePageData = routes
-            localStorage.currentRoleHomePageData = JSON.stringify(routes)
-            localStorage.homeRoute = data.frontRoute.replace(/(^[\s\n\t]+|[\s\n\t]+$)/g, "" )
+            setTimeout(() => {
+                if(data.id === 1){
+                    this.$store.commit('settings/SET_SHOW_MENU', true)
+                    this.$router.push('/home')
+                }else{
+                    this.$router.push(data.frontRoute)
+                }
+                
+                this.$store.state.user.currentRoleHomePageData = routes
+                this.currentRoleHomePageData = routes
+                localStorage.currentRoleHomePageData = JSON.stringify(routes)
+                localStorage.homeRoute = data.frontRoute.replace(/(^[\s\n\t]+|[\s\n\t]+$)/g, "" )
+            }, 100);
         },
-
-        // 点击跳转页面按钮
-        handleClickPageBtn(path){
-            this.$router.push(path)
-        }
 
     }
 }
