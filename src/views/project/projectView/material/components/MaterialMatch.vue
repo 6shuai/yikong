@@ -33,7 +33,7 @@
                     <div class="screen-list-wrap">
                         <div 
                             class="screen-item" 
-                            v-for="(child, cindex) in item.placeholders" 
+                            v-for="(child, cindex) in item.orderedScreens" 
                             :key="child.id"
                             @click.prevent="handelSelectScreen(item.disabled, child.id, index)"
                             :class="{ 'active': screenIds.includes(child.id) }"
@@ -54,7 +54,7 @@
     
                             <div class="other flex">
                                 <span>{{ child.city }}</span>
-                                <span>{{ child.level }}</span>
+                                <span v-if="child.level">{{ child.level }}</span>
                             </div>
                             
                         </div>
