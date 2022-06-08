@@ -22,7 +22,10 @@ const state = {
 	priceTypeData: [],
 
 	// 品牌列表
-	brandData: undefined
+	brandData: undefined,
+
+	// 点击头像  主页显示选择角色
+	clickAvatarCount: 0
 };
 
 const mutations = {

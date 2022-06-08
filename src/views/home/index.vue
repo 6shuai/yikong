@@ -41,6 +41,7 @@ export default {
     methods: {
         // 选择角色 注册对应的路由
         handleSelectRole(data){
+            this.$store.state.user.clickAvatarCount = 0
 
             let authorities = data.authorities ? data.authorities : []
             let roleHomeRoutes = data.id === 1 ? [] : roleHome[data.frontRoute]
@@ -55,7 +56,6 @@ export default {
                     }
                 }
             }
-
 
 
             let routes = [

@@ -22,11 +22,11 @@
                                 v-for="(item, index) in resData" 
                                 :key="item.id"
                                 :class="{ 'active': currentMaterialIndex==index }"
-                                @click.stop="currentMaterialIndex = index;currentPlaceholder = null;getScreenList(item.id)"
+                                @click="currentMaterialIndex = index;currentPlaceholder = null;getScreenList(item.id)"
                             >   
                                 <div class="delete-wrap flex-center" v-if="currentMaterialIndex==index">
                                     <div class="mask"></div>
-                                    <div class="del-btn" @click="handleDelete()">删除素材</div>
+                                    <div class="del-btn" @click.stop="handleDelete()">删除素材</div>
                                 </div>
                                 <p class="overflow">{{ item.name }}</p>
                                 <div class="material-cover">
@@ -121,7 +121,6 @@
                                     </div>
             
                                     <div class="screen-img flex">
-                                        <!-- <el-image fit="cover" :src="child.photo"></el-image> -->
                                         <div 
                                             class="item" 
                                             v-for="(sub, sIndex) in child.materials[0].regions" 
@@ -293,12 +292,7 @@ export default {
                     this.btnLoading = false
                     if(res.code === this.$successCode){
                         this.$message.success('操作成功~')
-                        if(!placeholder) {
-                            this.currentMaterialIndex = null
-                            this.getMaterial()
-                        }else{
-                            this.getScreenList(this.currentMaterialId)
-                        }
+                        this.getScreenList(this.currentMaterialId)
                     }
                 })
             })
@@ -328,7 +322,7 @@ export default {
         .material-content-wrap{
             margin-top: 20px;
             width: 100%;
-            height: calc(100vh - 230px);
+            height: calc(100vh - 198px);
             display: flex;
 
             .material-list{

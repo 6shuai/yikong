@@ -17,7 +17,7 @@
             <el-empty v-if="!resData.length"></el-empty>
         
             <div class="already-lock-list" v-loading="tLoading">
-                <el-card class="item" v-for="item in resData" :key="item.id">
+                <el-card class="item" v-for="(item, index) in resData" :key="item.id">
                     <div class="top-content">
                         <div class="left-time-info">
                             <p class="time-period">上刊时间段： {{ item.publishDate }} -- {{ item.dueDate }}</p>
@@ -31,36 +31,43 @@
                                 <span class="play-duration ml20">开始时间： {{ item.time }}</span>
                                 <span class="play-count ml20">每日时间：{{ item.duration }}秒</span>
                             </p>
-                        </div>
-                        <div class="right-limit">
                             <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
                                 <span v-for="(limitTime, index) in item.limits" :key="index">{{ limitTime.begin }} - {{ limitTime.end }}</span>
                             </p>
                         </div>
+                        <div class="right-limit">
+                            <span class="locating-time">订单号: {{ item.orderNumber }}</span>
+                        </div>
+                    </div>
+
+                    <div class="fold flex-center" @click="$set(resData[index], 'fold', !item.fold)">
+                        <div class="line"></div>
+                        <div class="right">
+                            <i :class="item.fold ? 'el-icon-caret-bottom' : 'el-icon-caret-top'"></i>
+                            <span>{{ item.fold ? '展开' : '收起' }}</span>
+                        </div>
                     </div>
     
-                    <el-scrollbar class="hidden-scroll-y" style="width: 100%;">
-                        <div class="screen-list mt20" :style="{ width: item.orderedScreens.length * 270 +'px' }">
-                            <div class="screen-item" 
-                                v-for="screen in item.orderedScreens" 
-                                :key="screen.id"
-                                @click.stop="handleShowDetail(screen.id, item.priceSystem.id)"
-                            >
-                                <div class="screen-img">
-                                    <el-image fit="cover" :src="screen.photo"></el-image>
-                                    <div class="screen-name overflow">{{ screen.name }} {{ screen.location ? `(${screen.location})` : '' }}</div>
-                                </div>
-                                <div class="screen-bottom">
-                                    <el-tag size="small" v-if="screen.city">{{ screen.city }}</el-tag>
-                                    <el-tag size="small" v-if="screen.level">{{ screen.level }}</el-tag>
-                                </div>
+                    <div class="screen-list" :class="{ 'to-fold': item.fold }">
+                        <div class="screen-item" 
+                            v-for="screen in item.orderedScreens" 
+                            :key="screen.id"
+                            @click.stop="handleShowDetail(screen.id, item.priceSystem.id)"
+                        >
+                            <div class="screen-img">
+                                <el-image fit="cover" :src="screen.photo"></el-image>
+                                <div class="screen-name overflow">{{ screen.name }} {{ screen.location ? `(${screen.location})` : '' }}</div>
+                            </div>
+                            <div class="screen-bottom">
+                                <el-tag size="small" v-if="screen.city">{{ screen.city }}</el-tag>
+                                <el-tag size="small" v-if="screen.level">{{ screen.level }}</el-tag>
                             </div>
                         </div>
-                    </el-scrollbar>
+                    </div>
+
                     <div class="bottom mt20 clearfix">
-                        <el-button type="primary" plain @click="handleLockAgain(item)">再次预定</el-button>
-                        <el-button type="danger" plain @click="handleShowFreed(item)">释放大屏</el-button>
-                        <span class="locating-time">订单号: {{ item.orderNumber }}</span>
+                        <el-button type="primary" size="small" plain @click="handleLockAgain(item)">再次预定</el-button>
+                        <el-button type="danger" size="small" plain @click="handleShowFreed(item)">释放大屏</el-button>
                     </div>
     
                 </el-card>
@@ -255,8 +262,8 @@ export default {
             .top-content{
                 display: flex;
                 justify-content: space-between;
+                align-items: flex-end;
                 padding-bottom: 10px;
-                border-bottom: 1px solid #e5e5e5;
 
                 p{
                     line-height: 26px;
@@ -283,19 +290,51 @@ export default {
                 }
 
                 .right-limit{
-                    display: flex;
-                    align-items: end;
+                    .locating-time{
+                        float: right;
+                        font-size: 14px;
+                        color: #999;
+                        line-height: 40px;
+                    }
                 }
             }   
 
-            .el-scrollbar{
-                border-bottom: 1px solid #e5e5e5;
+            .fold{
+                cursor: pointer;
+                
+                .line{
+                    flex: 1;
+                    height: 1px;
+                    background: #6F6F6F;
+                }
+
+                .right{
+                    width: 76px;
+                    padding-left: 10px;
+
+                    i{
+                        font-size: 20px;
+                        color: var(--color-primary);
+                        margin-right: 5px;
+                    }
+
+                    span{
+                        font-size: 14px;
+                        vertical-align: text-bottom;
+                    }
+                }
             }
 
             .screen-list{
                 display: flex;
                 flex-wrap: wrap;
+                padding-top: 20px;
                 margin-left: -20px;
+
+                &.to-fold{
+                    height: 0;
+                    overflow: hidden;
+                }
 
                 .screen-item{
                     width: 250px;
@@ -329,15 +368,6 @@ export default {
                         text-align: center;
                         padding: 10px 0;
                     }
-                }
-            }
-
-            .bottom{
-                .locating-time{
-                    float: right;
-                    font-size: 14px;
-                    color: #999;
-                    line-height: 40px;
                 }
             }
         }

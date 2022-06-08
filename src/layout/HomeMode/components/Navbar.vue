@@ -8,7 +8,7 @@
 		<div class="right-menu">
 			<el-dropdown class="avatar-container" trigger="click">
 				<div class="avatar-wrapper">
-					<el-image class="icon user-avatar" :src="user.avatar" fit="cover">
+					<el-image class="icon user-avatar" :src="user.avatar" fit="cover" @click="handleShowSelectRole">
 						<div slot="error" class="image-slot">
 							<svg-icon icon-class="defalut-header-img"></svg-icon>
 						</div>
@@ -39,7 +39,8 @@ export default {
 	},
 	computed: {
 		...mapState({
-			user: state => state.user.loginData
+			user: state => state.user.loginData,
+			clickAvatarCount: state => state.user.clickAvatarCount
 		})
 	},
 	methods: {
@@ -47,6 +48,17 @@ export default {
 			await this.$store.dispatch("user/logout");
 			this.$router.push(`/login?redirect=${this.$route.fullPath}`);
 			location.reload()
+		},
+
+		// 显示选择角色
+		handleShowSelectRole(){
+			this.$store.state.user.clickAvatarCount += 1
+			if(this.$store.state.user.clickAvatarCount > 9){
+				this.$store.state.user.currentRoleHomePageData = []
+				localStorage.currentRoleHomePageData = []
+				localStorage.homeRoute = ''
+				this.$router.push('/')
+			}
 		}
 	}
 }

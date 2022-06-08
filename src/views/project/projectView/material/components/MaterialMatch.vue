@@ -16,20 +16,43 @@
                                 <span class="play-duration ml20">开始时间： {{ item.time }}</span>
                                 <span class="play-count ml20">每日时间：{{ item.duration }}秒</span>
                             </p>
+
+                            <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
+                                <span v-for="(limitTime, limitIndex) in item.limits" :key="limitIndex">{{ limitTime.begin }} - {{ limitTime.end }}</span>
+                            </p>
                         </div>
                         <div class="tip" v-if="item.disabled">
                             <p>素材时长 {{ item.duration > materialData.duration ? '<' : '>' }} 大屏时长暂不可选择</p>
                         </div>
                     </div>
                     <div class="right-limit">
-                        <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                            <span v-for="(limitTime, limitIndex) in item.limits" :key="limitIndex">{{ limitTime.begin }} - {{ limitTime.end }}</span>
-                        </p>
+                        <div class="order-number">订单编号: {{ item.orderNumber }}</div>
+                        
                     </div>
                 </div>
 
+                <div class="fold flex-center" @click="$set(screenData[index], 'fold', !item.fold)">
+                    <div class="line"></div>
+                    <div class="right">
+                        <i :class="item.fold ? 'el-icon-caret-bottom' : 'el-icon-caret-top'"></i>
+                        <span>{{ item.fold ? '展开' : '收起' }}</span>
+                    </div>
+                </div>
+
+
                 <!-- 大屏列表 -->
-                <el-scrollbar class="order-screen-scroll hidden-scroll-x">
+                <div class="order-screen-scroll"  :class="{ 'to-fold': item.fold }">
+
+                    <div class="mt10">
+                        <el-checkbox 
+                            :disabled="(materialData.image && !item.disabled) ? false : true"
+                            :value="orderScreenIds[index] && orderScreenIds[index].length == item.orderedScreens.length" 
+                            @change="handleSelectAll(item.orderedScreens, index)"
+                        >
+                            全选
+                        </el-checkbox>
+                    </div>
+
                     <div class="screen-list-wrap">
                         <div 
                             class="screen-item" 
@@ -61,19 +84,6 @@
 
 
                     </div>
-                </el-scrollbar>
-
-                <div class="order-bottom flex-between-center">
-                    <el-checkbox 
-                        :disabled="(materialData.image && !item.disabled) ? false : true"
-                        :value="orderScreenIds[index] && orderScreenIds[index].length == item.orderedScreens.length" 
-                        @change="handleSelectAll(item.orderedScreens, index)"
-                    >
-                        全选
-                    </el-checkbox>
-
-                    <div class="order-number">订单编号: {{ item.orderNumber }}</div>
-
                 </div>
             </div>
         </el-scrollbar>
@@ -358,21 +368,31 @@ export default {
                         align-items: end;
                     }
                 }   
-
-                .order-bottom{
-                    font-size: 14px;
-                    padding-top: 10px;
-                }
-
             }
 
-            .order-screen-scroll {
-                padding-bottom: 10px;
-                border-top: 1px solid $borderColor;
-                border-bottom: 1px solid $borderColor;
+            .fold{
+                cursor: pointer;
+                
+                .line{
+                    flex: 1;
+                    height: 1px;
+                    background: #6F6F6F;
+                }
 
-                .el-scrollbar__wrap{
-                    max-height: 410px;
+                .right{
+                    width: 76px;
+                    padding-left: 10px;
+
+                    i{
+                        font-size: 20px;
+                        color: var(--color-primary);
+                        margin-right: 5px;
+                    }
+
+                    span{
+                        font-size: 14px;
+                        vertical-align: text-bottom;
+                    }
                 }
             }
 
@@ -380,7 +400,12 @@ export default {
                 display: flex;
                 flex-wrap: wrap;
                 padding-top: 20px;
-                
+
+                &.to-fold{
+                    height: 0;
+                    overflow: hidden;
+                }
+    
                 .screen-item{
                     width: 240px;
                     margin: 0 12px 20px 8px;

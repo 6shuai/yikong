@@ -18,31 +18,31 @@
                                 clearable 
                                 placeholder="屏幕名称" 
                                 v-model="searchParams.displayName" 
-                                @input="$debounce(getScreenList)"
+                                @input="$debounce(handleSearch)"
                             ></el-input>
                         </el-row>
                         <el-row class="search-list">
                             <ul class="screen-type-filter">
                                 <li>
-                                    <span :class="{ active: !searchParams.hotPlace }" @click="$delete(searchParams, 'hotPlace'); getScreenList()">全部</span>
-                                    <span :class="{ active: searchParams.hotPlace }" @click="searchParams.hotPlace=1;getScreenList()">热门商场</span>
+                                    <span :class="{ active: !searchParams.hotPlace }" @click="$delete(searchParams, 'hotPlace'); handleSearch()">全部</span>
+                                    <span :class="{ active: searchParams.hotPlace }" @click="searchParams.hotPlace=1;handleSearch()">热门商场</span>
                                     <el-divider direction="vertical"></el-divider>
                                 </li>
                                 <li>
-                                    <span :class="{ active: !searchParams.indoor && !isNaN(searchParams.indoor) }" @click="searchParams.indoor==0 && !isNaN(searchParams.indoor) ? $delete(searchParams, 'indoor') : searchParams.indoor=0;getScreenList()">室内</span>
-                                    <span :class="{ active: searchParams.indoor }" @click="searchParams.indoor==1 ? $delete(searchParams, 'indoor') : searchParams.indoor=1;getScreenList()">室外</span>
+                                    <span :class="{ active: !searchParams.indoor && !isNaN(searchParams.indoor) }" @click="searchParams.indoor==0 && !isNaN(searchParams.indoor) ? $delete(searchParams, 'indoor') : searchParams.indoor=0;handleSearch()">室内</span>
+                                    <span :class="{ active: searchParams.indoor }" @click="searchParams.indoor==1 ? $delete(searchParams, 'indoor') : searchParams.indoor=1;handleSearch()">室外</span>
                                     <el-divider direction="vertical"></el-divider>
                                 </li>
                                 <li>
-                                    <span :class="{ active: searchParams.resourceType==1 }" @click="searchParams.resourceType==1 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=1;getScreenList()">硬广资源</span>
-                                    <span :class="{ active: searchParams.resourceType==2 }" @click="searchParams.resourceType==2 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=2;getScreenList()">互动资源</span>
+                                    <span :class="{ active: searchParams.resourceType==1 }" @click="searchParams.resourceType==1 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=1;handleSearch()">硬广资源</span>
+                                    <span :class="{ active: searchParams.resourceType==2 }" @click="searchParams.resourceType==2 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=2;handleSearch()">互动资源</span>
                                 </li>
                             </ul>
                         </el-row>
                         <el-row class="search-list">
                             <el-col :md="2" :sm="24"  class="title">选择地区</el-col>
                             <el-col :md="22" :sm="24">
-                                <select-region @selectArea="searchParams={...searchParams, ...$event};getScreenList()"></select-region>
+                                <select-region @selectArea="searchParams={...searchParams, ...$event};handleSearch()"></select-region>
                             </el-col>
                         </el-row>
                         <el-row class="search-list">
@@ -50,13 +50,13 @@
                             <el-col :md="22" :sm="24">
                                 <el-button 
                                     :class="{focus: !searchParams.brand}" 
-                                    @click="$delete(searchParams, 'brand');getScreenList()" 
+                                    @click="$delete(searchParams, 'brand');handleSearch()" 
                                     size="small">全部
                                 </el-button>
                                 <el-button 
                                     v-for="item in groupData"
                                     :key="item.id"
-                                    @click="$set(searchParams, 'brand', item.id);getScreenList()"
+                                    @click="$set(searchParams, 'brand', item.id);handleSearch()"
                                     :class="{focus: searchParams.brand == item.id}"
                                     size="small">
                                     {{item.displayName}}
@@ -147,7 +147,6 @@
                                </span>
                             </el-scrollbar>
                         </div>
-    
     
                         <div class="screen-count-wrap">
                             <div class="screen-count mr10" @click="showSelectedList = !showSelectedList">
@@ -324,6 +323,12 @@ export default {
             this.selectedScreenList = []
             this.getScreenList()
         },
+
+        // 搜索
+        handleSearch(){
+            this.searchParams.pageNo = 1
+            this.getScreenList()
+        },  
 
         // 大屏地址  省市区 拼接
         addressJoint(row){

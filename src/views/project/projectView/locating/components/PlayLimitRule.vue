@@ -335,10 +335,11 @@ export default {
             this.limitType = data[0].type
             
             for(let i = 0; i < data.length; i++){
-                let { begin, end } = data[i]
+                let { begin, end, type } = data[i]
                 // data[i].time = [begin, end]
 
                 this.$set(this.limitTime[i], 'time', [begin, end])
+                this.$set(this.limitTime[i], 'type', type)
             }
             
         }
