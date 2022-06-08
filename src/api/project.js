@@ -16,6 +16,9 @@ export function projectDetail(data) { return get('/project/publishedProjectDetai
 // 新建或修改合同
 export function projectContractCreate(data) { return post('/project/publishedContract', data) }
 
+// 新建或修改合同   获取提成体系列表
+export function projectCommissionSystemList(data) { return get('/project/commissionSystem', data); }
+
 // 提交合同审批
 export function projectContractSubmitApproval(data) { return put(`/project/contractApproval?contract=${data}`); }
 

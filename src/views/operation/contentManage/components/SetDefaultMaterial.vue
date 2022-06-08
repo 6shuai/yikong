@@ -31,7 +31,7 @@
 
 <script>
 import { setScreenLayoutContent } from '@/api/contentManage'
-import { ajaxUrl } from '@/utils'
+import { ajaxUrl, uploadMaterial } from '@/utils'
 
 export default {
     props: {
@@ -40,9 +40,6 @@ export default {
     },
     data(){
         return {
-            // 上传文件 接口地址
-            uploadMaterialUrl: 'project/upload',
-
             // 上传区域id
             regionId: null,
 
@@ -91,7 +88,7 @@ export default {
             fd.append('size', size)
             if(cover) fd.append('image', cover)
             fd.append('file', file)
-            fetch(ajaxUrl + this.uploadMaterialUrl, {
+            fetch(ajaxUrl + uploadMaterial, {
                 method: 'post',
                 body: fd
             }).then(data => {

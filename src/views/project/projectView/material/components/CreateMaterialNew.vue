@@ -74,7 +74,7 @@
 
 <script>
 import { videoShot } from '@/mixins/UploadVideoShot'
-import { ajaxUrl, aspectRatioCompute } from '@/utils'
+import { ajaxUrl, uploadMaterial, aspectRatioCompute } from '@/utils'
 import MaterialMatch  from './MaterialMatch'
 
 export default {
@@ -84,8 +84,6 @@ export default {
     mixins: [videoShot],
     data(){
         return {
-            // 上传内容接口
-            uploadMaterialUrl: 'project/upload',
             borderhover: false,
 
             // 文件是否上传中
@@ -218,7 +216,7 @@ export default {
             fd.append('size', size)
             if(cover) fd.append('image', cover)
             fd.append('file', file)
-            fetch(ajaxUrl + this.uploadMaterialUrl, {
+            fetch(ajaxUrl + uploadMaterial, {
                 method: 'post',
                 body: fd
             }).then(data => {

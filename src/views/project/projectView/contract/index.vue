@@ -345,7 +345,7 @@
 import UploadImg from '@/components/Upload/UploadImg'
 import { organizationListProject } from '@/api/user'
 import { projectDetail, projectContractCreate, organizationUser, projectContractSubmitApproval, projectContractSubmitReturnDate } from '@/api/project'
-import { financeCommissionSystemList } from '@/api/finance'
+import { projectCommissionSystemList } from '@/api/project'
 import { dateAddHMS, priceFormat } from '@/utils/index'
 
 export default {
@@ -473,7 +473,7 @@ export default {
 
         // 查询提成体系列表
         getCommissionSystemList(){
-            financeCommissionSystemList().then(res => {
+            projectCommissionSystemList().then(res => {
                 if(res.code === this.$successCode){
                     this.CommissionSystemData = res.obj
                 }

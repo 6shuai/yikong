@@ -25,7 +25,7 @@
 <script>
 import { operationPutMaterial } from '@/api/contentManage'
 import { videoShot } from '@/mixins/UploadVideoShot'
-import { ajaxUrl } from '@/utils'
+import { ajaxUrl, uploadMaterial } from '@/utils'
 
 export default {
     mixins: [videoShot],
@@ -36,9 +36,6 @@ export default {
         return {
             // 显示上传素材
             showPutMaterial: false,
-
-            // 上传内容接口
-            uploadMaterialUrl: 'project/upload',
 
             // 上传中
             uploadLoading: false,
@@ -131,7 +128,7 @@ export default {
             fd.append('size', size)
             if(cover) fd.append('image', cover)
             fd.append('file', file)
-            fetch(ajaxUrl + this.uploadMaterialUrl, {
+            fetch(ajaxUrl + uploadMaterial, {
                 method: 'post',
                 body: fd
             }).then(data => {

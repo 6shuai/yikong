@@ -1,7 +1,7 @@
 import { get, post, put, del, postKeyValueRequest } from '@/utils/request'
 
 // 获取屏幕列表 按收藏和城市分组
-export function getScreenGoupList(data) { return get('/project/materialPlaybackDetail', data) }
+export function getScreenGoupList(data) { return get('/materialPlayback/screenGroupByCity', data) }
 
 
 // 获取屏幕的基本数据，包括屏幕分辨率，和该屏幕绑定的运营锁位订单

@@ -40,6 +40,18 @@ router.beforeEach((to, from, next) => {
 						// 只有一个角色时 直接显示首页    多个角色要选选择角色进入
 						if(res.obj.length === 1){
 							let { frontRoute, authorities } = res.obj[0]
+							
+							// 财务主页
+							// 运营主页 左侧菜单栏不显示发票中心
+							if(frontRoute === '/finance' || frontRoute === '/operation'){
+								for(let i = 0; i < authorities.length; i++){
+									if(authorities[i].moduleName == 'Project'){
+										localStorage.financeTabs = JSON.stringify(authorities[i].children)
+										if(frontRoute === '/finance') authorities.splice(i, 1)   
+									}
+								}
+							}
+
 							localStorage.currentRoleHomePageData = JSON.stringify([
 								...roleHome[frontRoute],
 								...authorities

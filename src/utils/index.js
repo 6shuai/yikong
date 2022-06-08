@@ -274,11 +274,16 @@ export const aspectRatioCompute = (width, height) => {
 }
 
 
-//上传路径
-export const uploadUrl = 'common/upload/';
+// 上传路径
+export const uploadUrl = 'common/upload/'
 
-//上传游戏包路径 
-export const uploadGamePackage = '/common/uploadApplicationPackage';
+// 上传游戏包路径 
+export const uploadGamePackage = 'common/uploadApplicationPackage'
+
+// 上传物料路径
+export const uploadMaterial = 'common/uploadMaterial'
+
+
 
 //获取登录验证码
-export const getLoginCode = 'entry/verifyCode';
+export const getLoginCode = 'entry/verifyCode'
