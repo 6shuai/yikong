@@ -262,6 +262,8 @@ export default {
                     this.$message.success('素材投放成功~')
                     this.$emit('materialPutSuccess')
                 }
+            }).catch(err => {
+                this.btnLoading = false
             })
         },
 
