@@ -132,7 +132,7 @@
                         <!-- 大屏列表 -->
                         <div class="screen-list-wrap" :class="{ 'show-screen-list': showSelectedList }">
                             <el-scrollbar class="hidden-scroll-x screen-scrollbar">
-                                <span v-for="(item, sindex) in selectedScreenList.concat(againData)" :key="sindex">
+                                <span v-for="(item, sindex) in selectedScreenList.concat([againData])" :key="sindex">
                                    <div 
                                        class="item" 
                                        v-for="screen in item"
@@ -279,6 +279,7 @@ export default {
                     this.againIds.push(id)
                     this.againData.push(data)
                 }
+                console.log(this.againData)
             }
         }
     },

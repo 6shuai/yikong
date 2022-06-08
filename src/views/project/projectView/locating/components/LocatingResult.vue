@@ -108,6 +108,7 @@ export default {
     methods: {
         // 显示寻位结果
         showLocatingResultDialog(data, screenList, screenTotalPrice){
+            this.resultHasFalse = false
             this.showLocatingResult = true
             for(let i = 0; i < data.length; i++){
                 for(let j = 0; j < screenList.length; j++){
@@ -144,6 +145,8 @@ export default {
         // 跳转到锁位列表
         handleGoLocating(){
             if(this.resultHasFalse){
+                this.$emit('lockFail')
+
                 // 含有锁位失败的屏幕  关闭寻位结果 重新选择屏幕再提交
                 this.showLocatingResult = false
             }else{

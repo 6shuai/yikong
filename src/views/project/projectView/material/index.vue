@@ -101,14 +101,14 @@
                             <div class="screen-list-wrap" :class="{ 'to-fold': item.fold }">
                                 <div 
                                     class="screen-item" 
-                                    v-for="(child, cindex) in item.placeholders" 
+                                    v-for="(child, cindex) in item.orderedScreens" 
                                     :key="child.id"
                                     @click.prevent="currentPlaceholder = child.id"
                                 >
 
                                     <div class="delete-wrap flex-center" v-if="currentPlaceholder==child.id">
                                         <div class="mask"></div>
-                                        <div class="del-btn" @click="handleDelete(child.id)">删除素材</div>
+                                        <div class="del-btn" @click="handleDelete(child.placeholder)">删除素材</div>
                                     </div>
             
                                     <div class="content flex-between-center">

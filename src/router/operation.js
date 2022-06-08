@@ -44,7 +44,7 @@ const operationRoutes = [
 				name: 'ContentManage--lockPosition',
 				component: () => import('@/views/operation/contentManage/lockPosition'),
 				meta: {
-					title: '锁位'
+					title: '配置屏幕时长'
 				}
 			}
 		],

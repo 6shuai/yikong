@@ -75,6 +75,7 @@
                             </div>
                             <div 
                                 class="screen-wrap flex-center not-layout" 
+                                @click="handelSelectScreen(item, groupName, childIndex)"
                                 v-else
                             >
                                 <div 
@@ -132,7 +133,7 @@
             <div class="lock-position-config-bottom">
                 <div class="success-count"><span v-show="successCount">已变更{{ successCount }}个屏幕布局配置</span></div>
                 <div class="right-btn">
-                    <el-button size="small" @click="$router.push('/contentManage')">取消</el-button>
+                    <el-button size="small" @click="$router.push('/operation/contentManage')">取消</el-button>
                     <el-button 
                         type="primary" 
                         size="small"

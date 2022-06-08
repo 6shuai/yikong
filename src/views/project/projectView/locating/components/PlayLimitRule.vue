@@ -332,6 +332,8 @@ export default {
 
         // 格式化限制播放时间格式
         formatLimitTime(data){
+            this.limitType = data[0].type
+            
             for(let i = 0; i < data.length; i++){
                 let { begin, end } = data[i]
                 // data[i].time = [begin, end]

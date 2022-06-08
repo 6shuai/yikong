@@ -191,7 +191,7 @@
                 <el-date-picker
                     v-show="showEdit"
                     v-model="contractParams.paymentDue"
-                    type="datetime"
+                    type="date"
                     placeholder="选择日期"
                     format="yyyy-MM-dd"
                     value-format="yyyy-MM-dd">

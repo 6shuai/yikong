@@ -1,5 +1,5 @@
 <template>
-    <div class="material-match-wrap">
+    <div class="material-match-wrap" v-loading="getLockListLoading">
         <el-scrollbar class="screen-preview hidden-scroll-x mb10">
             <div class="order-list" v-for="(item, index) in screenData" :key="item.id">
                 <div class="top-content">
@@ -35,8 +35,8 @@
                             class="screen-item" 
                             v-for="(child, cindex) in item.orderedScreens" 
                             :key="child.id"
-                            @click.prevent="handelSelectScreen(item.disabled, child.id, index)"
-                            :class="{ 'active': screenIds.includes(child.id) }"
+                            @click.prevent="handelSelectScreen(item.disabled, child.placeholder, index)"
+                            :class="{ 'active': screenIds.includes(child.placeholder) }"
                         >
     
                             <div class="content flex-between-center">
@@ -66,8 +66,8 @@
                 <div class="order-bottom flex-between-center">
                     <el-checkbox 
                         :disabled="(materialData.image && !item.disabled) ? false : true"
-                        :value="orderScreenIds[index] && orderScreenIds[index].length == item.placeholders.length" 
-                        @change="handleSelectAll(item.placeholders, index)"
+                        :value="orderScreenIds[index] && orderScreenIds[index].length == item.orderedScreens.length" 
+                        @change="handleSelectAll(item.orderedScreens, index)"
                     >
                         全选
                     </el-checkbox>
@@ -112,6 +112,9 @@ export default {
             // 屏幕最大宽
             maxWidth: 250,
 
+            // 获取锁位列表 loading
+            getLockListLoading: false,
+
             // 屏幕列表
             screenData: [],
             
@@ -141,7 +144,9 @@ export default {
     methods: {
         // 锁位列表
         getLockList(){
+            this.getLockListLoading = true
             projectMaterialLockList({ project: this.$route.params.id }).then(res => {
+                this.getLockListLoading = false
                 if(res.code === this.$successCode){
                     this.screenData = res.obj
                 }
@@ -151,7 +156,7 @@ export default {
         // 检查大屏的时长 是否符合素材的时长 
         durationWhetherMatch(){
             for(let i = 0 ; i < this.screenData.length; i++){
-                this.screenCount += this.screenData[i].placeholders.length
+                this.screenCount += this.screenData[i].orderedScreens.length
                 let order = this.screenData[i]
                 // 检查大屏的时长 是否符合素材的时长  素材包时长比输入的值默认多一秒
                 if(order.duration + 1 > this.materialData.duration && order.duration + 1 - this.materialData.duration <= 1){
@@ -179,13 +184,13 @@ export default {
         },
 
         // 全选
-        handleSelectAll(placeholders, index){
+        handleSelectAll(orderedScreens, index){
             let result = true
-            if(this.orderScreenIds[index] && this.orderScreenIds[index].length == placeholders.length){
+            if(this.orderScreenIds[index] && this.orderScreenIds[index].length == orderedScreens.length){
                 result = false                
             }
-            for(let i = 0; i < placeholders.length; i++){
-                let id = placeholders[i].id
+            for(let i = 0; i < orderedScreens.length; i++){
+                let id = orderedScreens[i].placeholder
                 if(this.screenIds.includes(id) && !result){
                     let idIndex = this.screenIds.indexOf(id)
                     this.$delete(this.screenIds, idIndex)
