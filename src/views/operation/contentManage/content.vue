@@ -61,8 +61,8 @@
                                 </div>
                             </div>
                             <ul class="screen-content">
-                                <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex">
-                                    <span class="screen-layout-name">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
+                                <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content.name">
+                                    <span class="screen-layout-name overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
                                     <span class="content-name overflow">{{ content.content.name }}</span>
                                 </li>
                             </ul>

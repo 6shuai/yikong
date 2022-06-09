@@ -236,9 +236,11 @@ export default {
                     times,
                     priceSystem: isNaN(priceSystem) ? priceSystem.id : priceSystem
                 }
-                if(limits && limits.length) this.formatLimitTime(limits)
+                if(limits && limits.length) {
+                    this.formatLimitTime(limits)
+                    this.showPlayLimit = limits.length ? true : false
+                }
                 
-                this.showPlayLimit = limits.length ? true : false
             }
 
             // 获取价格体系列表
