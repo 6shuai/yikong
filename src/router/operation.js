@@ -3,53 +3,45 @@ import Layout from '@/layout'
 const operationRoutes = [
     // 内容管理
 	{
-		path: '/operation',
-		redirect: '/operation/contentManage',
+		path: '/',
 		component: Layout,
 		children: [
 			{
-				path: 'contentManage',
+				path: '/operation',
+				redirect: '/operation/contentManage',
 				name: 'ContentManage',
 				component: () => import('@/views/operation/contentManage/index'),
 				meta: {
-					title: '内容管理'
-				}
+					title: '播放管理'
+				},
+				children: [
+					{
+						path: 'contentManage',
+						name: 'ContentManage--content',
+						component: () => import('@/views/operation/contentManage/content')
+					},
+					{
+						path: 'screenLayout',
+						name: 'ContentManage--screenLayout',
+						component: () => import('@/views/operation/contentManage/screenLayout'),
+						meta: {
+							title: '配置屏幕布局'
+						}
+					},
+					{
+						path: 'lockPosition',
+						name: 'ContentManage--lockPosition',
+						component: () => import('@/views/operation/contentManage/lockPosition'),
+						meta: {
+							title: '配置屏幕时长'
+						}
+					}
+				]
 			}
 		],
 		hidden: true
 	},
 
-	{
-		path: '/operation',
-		component: Layout,
-		children: [
-			{
-				path: 'screenLayout',
-				name: 'ContentManage--screenLayout',
-				component: () => import('@/views/operation/contentManage/screenLayout'),
-				meta: {
-					title: '配置屏幕布局'
-				}
-			}
-		],
-		hidden: true
-	},
-
-	{
-		path: '/operation',
-		component: Layout,
-		children: [
-			{
-				path: 'lockPosition',
-				name: 'ContentManage--lockPosition',
-				component: () => import('@/views/operation/contentManage/lockPosition'),
-				meta: {
-					title: '配置屏幕时长'
-				}
-			}
-		],
-		hidden: true
-	},
 
 	// 监播统计
 	{

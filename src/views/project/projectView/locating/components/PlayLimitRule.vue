@@ -92,7 +92,12 @@
                     <p>
                         <label>价格体系</label>
                         <span>
-                            <el-select class="w200" v-model="limitParams.priceSystem" placeholder="请选择价格体系">
+                            <el-select 
+                                class="w200" 
+                                v-model="limitParams.priceSystem" 
+                                placeholder="请选择价格体系"
+                                :disabled="source == 'capturing'"
+                            >
                                 <el-option
                                     v-for="(item, index) in priceSystem"
                                     :key="index"
@@ -171,6 +176,9 @@
 import { projectLockPriceSystemList } from '@/api/project'
 
 export default {
+    props: {
+        source: String
+    },
     data() {
         return {
             // 显示选择播放规则

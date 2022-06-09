@@ -65,7 +65,7 @@
                         </div>
                     </div>
 
-                    <div class="bottom mt20 clearfix">
+                    <div class="bottom">
                         <el-button type="primary" size="small" plain @click="handleLockAgain(item)">再次预定</el-button>
                         <el-button type="danger" size="small" plain @click="handleShowFreed(item)">释放大屏</el-button>
                     </div>
@@ -333,6 +333,7 @@ export default {
 
                 &.to-fold{
                     height: 0;
+                    padding: 0;
                     overflow: hidden;
                 }
 

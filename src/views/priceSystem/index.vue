@@ -29,6 +29,7 @@
         </div>
         
         <el-input 
+            class="mb20"
             clearable
             suffix-icon="el-icon-search" 
             v-model="params.displayName"
@@ -36,6 +37,7 @@
         ></el-input>
 
         <el-card
+            shadow="hover"
             v-for="(item, index) in resData"
             :key="index"
             @click.native.prevent="$router.push(`/priceSystem/${item.id}`)"
@@ -48,7 +50,21 @@
             ></el-checkbox>
 
             <!-- 是否生效 effect: 1生效  2否 -->
-            <div v-if="item.effect==1" class="dot"></div>
+            <div 
+                v-if="item.effect==2" 
+                class="not-effect flex-center"
+                v-loading="item.takeEffectLoading"
+            >
+                <el-switch
+                    class="ml10"
+                    :value="item.effect"
+                    :active-value="1"
+                    :inactive-value="2"
+                    @click.stop.native="()=>{}"
+                    @change="handleTakeEffect($event, item.id, index)"
+                >
+                </el-switch>
+            </div>
             <div class="type" :class="{ 'insert': item.lockType != 1 }">{{ item.lockType == 1 ? '轮播' : '插播' }}</div>
 
             <div class="title overflow">{{ item.displayName }}</div>
@@ -96,7 +112,7 @@
 </template>
 
 <script>
-import { priceSystemList, priceSystemDelete, priceSystemCopy } from '@/api/priceSystem'
+import { priceSystemList, priceSystemDelete, priceSystemCopy, priceSystemEffect } from '@/api/priceSystem'
 import CreatePriceSystem from './components/CreatePriceSystem'
 
 export default {
@@ -245,6 +261,20 @@ export default {
             this.showCheckbox = false
             this.priceSystemIds = []
             this.effectIds = []
+        },
+
+        // 使价格体系生效
+        handleTakeEffect(val, id, index){
+            this.takeEffectLoading = true
+            this.$set(this.resData[index], 'takeEffectLoading', true)
+            priceSystemEffect({ id, effect: val }).then(res => {
+                this.takeEffectLoading = false
+                this.$set(this.resData[index], 'takeEffectLoading', false)
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~')
+                    this.$set(this.resData[index], 'effect', 1)
+                }
+            })
         }
     }
 }
@@ -294,13 +324,12 @@ export default {
         }
         
         .el-card{
-            width: 300px;
+            width: 265px;
             cursor: pointer;
             display: inline-block;
-            margin: 20px 20px 0 0;
             position: relative;
 
-            .type, .dot{
+            .type, .not-effect{
                 font-size: 14px;
                 position: absolute;
                 top: 0;
@@ -314,12 +343,20 @@ export default {
                 }
             }
 
-            .dot{
-                padding: 5px;
+            .not-effect{
                 left: 0;
-                right: auto;
-                background: var(--color-primary);
-                border-radius: 50%;
+                width: 100%;
+                height: 100%;
+                z-index: 100;
+                background: rgba(17, 24, 39, 0.6);
+
+                .el-switch{
+                    display: none;
+                }
+
+                &:hover .el-switch{
+                    display: inline-block;
+                }
             }
 
             .el-checkbox{

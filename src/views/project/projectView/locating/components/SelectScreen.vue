@@ -140,7 +140,7 @@
                                    >
                                        <div class="screen-img">
                                            <el-image fit="cover" :src="screen.defaultShow"></el-image>
-                                           <i class="el-icon-error" @click="handleSelectScreen(screen)"></i>
+                                           <i class="el-icon-error" @click="handleSelectScreen(screen, 'delete')"></i>
                                        </div>
                                        <p class="screen-name overflow">{{ screen.displayName }}</p>
                                    </div>
@@ -278,7 +278,6 @@ export default {
                     this.againIds.push(id)
                     this.againData.push(data)
                 }
-                console.log(this.againData)
             }
         }
     },
@@ -336,7 +335,15 @@ export default {
         },
 
         // 选择屏幕
-        handleSelectScreen(data){
+        handleSelectScreen(data, type){
+            if(this.againIds.includes(data.id) && type === 'delete'){
+                let index = this.againIds.findIndex((item) => item == data.id)
+                this.$delete(this.againIds, index)
+                this.$delete(this.againData, index)
+                return 
+            }
+
+
             let page = this.searchParams.pageNo - 1
 
             if(!this.screenIds[page]) this.screenIds[page] = []

@@ -16,7 +16,7 @@
                         <i class="el-icon-s-operation"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>配置内容组</el-dropdown-item>
+                        <el-dropdown-item command="/operation/contentManage">配置内容组</el-dropdown-item>
                         <el-dropdown-item command="/operation/screenLayout">配置屏幕布局</el-dropdown-item>
                         <el-dropdown-item command="/operation/lockPosition">配置屏幕时长</el-dropdown-item>
                     </el-dropdown-menu>

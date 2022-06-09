@@ -92,6 +92,7 @@ export default {
                 }
             }
             this.listLoading = true
+            this.params.isFinance = 1
             projectList(this.params).then(res => {
                 this.listLoading = false
                 if(res.code === this.$successCode){

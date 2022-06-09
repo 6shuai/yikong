@@ -18,7 +18,7 @@ export function priceSystemDelete(data) { return del(`/priceSystem/?ids=${data}`
 export function priceSystemDetail(data) { return get('/priceSystem/detail', data); }
 
 // 价格体系生效
-export function priceSystemEffect(data) { return put(`/priceSystem/?id=${data}`); }
+export function priceSystemEffect(data) { return put(`/priceSystem/?id=${data.id}&effect=${data.effect}`); }
 
 
 // 保存或修改屏幕刊例价

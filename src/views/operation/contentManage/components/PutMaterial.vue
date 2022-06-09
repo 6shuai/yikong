@@ -1,24 +1,65 @@
 <template>
-    <div 
-        v-if="order.length && showPutMaterial"
-        class="put-material-drag-wrap" 
-        :class="'order-count-' + order.length"
-        v-loading="uploadLoading"
-    >
+    <div>
         <div 
-            class="item" 
-            :class="{ 'active': item.hover }"
-            v-for="(item, index) in order" 
-            :key="index"
-            @dragenter="$set(order[index], 'hover', true)"
-            @dragover="$set(order[index], 'hover', true)"
-            @dragleave="$set(order[index], 'hover', false)"
-            @drop="handleDrop($event, index); $set(order[index], 'hover', false)"
+            v-if="type == 'drag'"
+            class="put-material-drag-wrap" 
+            :class="'order-count-' + order.length"
+            v-loading="uploadLoading"
         >
-            <input type="file" multiple="multiple" accept="image/*, .mp4" @change="handleChangeFile($event, index)">
-            <i class="el-icon-upload"></i>
-            <p>添加至 {{ item.roomType == 1 ? '商场' : '小风景' }} 时间池</p>
+            <div 
+                class="item" 
+                :class="{ 'active': item.hover }"
+                v-for="(item, index) in order" 
+                :key="index"
+                @dragenter="$set(order[index], 'hover', true)"
+                @dragover="$set(order[index], 'hover', true)"
+                @dragleave="$set(order[index], 'hover', false); $emit('closeUpload')"
+                @drop="handleDrop($event, index); $set(order[index], 'hover', false)"
+            >
+                <input type="file" multiple="multiple" accept="image/*, .mp4" @change="handleChangeFile($event, index)">
+                <i class="el-icon-upload"></i>
+                <p>添加至 {{ item.roomType == 1 ? '商场' : '小风景' }} 时间池</p>
+            </div>
         </div>
+
+        <el-dialog
+            width="520px"
+            title="选择时间池"
+            class="select-time-pool-dialog"
+            :visible.sync="showSelectTimePool"
+            :show-close="false"
+            append-to-body
+        >
+            <el-form label-width="180px">
+                <el-form-item label="该素材所属的时间池">
+                    <el-radio-group 
+                        size="mini" 
+                        v-model="selectedOrderIndex"
+                    >
+                        <el-radio 
+                            v-for="(item, index) in order" 
+                            :key="index"
+                            :label="index"
+                        >
+                            {{ item.roomType == 1 ? '商场' : '小风景' }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button size="mini" @click="showSelectTimePool = false">取消</el-button>
+
+                <div class="confirm-btn">
+                    <el-button
+                        size="mini"
+                        type="primary"
+                        >确认</el-button
+                    >
+                    <input type="file" multiple="multiple" accept="image/*, .mp4" @change="handleChangeFile($event, selectedOrderIndex)">
+                </div>
+            </span>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -30,13 +71,11 @@ import { ajaxUrl, uploadMaterial } from '@/utils'
 export default {
     mixins: [videoShot],
     props: {
-        screenId: Number
+        screenId: Number,
+        type: String
     },
     data() {
         return {
-            // 显示上传素材
-            showPutMaterial: false,
-
             // 上传中
             uploadLoading: false,
 
@@ -46,13 +85,16 @@ export default {
             // 选择的订单index
             selectedOrderIndex: 0,
 
-            order: []
+            order: [],
+
+            // 显示选择时间池
+            showSelectTimePool: false
         }
     },
     methods: {
         showUploadMaterial(order){
             this.order = order
-            this.showPutMaterial = true
+            if(this.type === 'add') this.showSelectTimePool = true
         },
 
         handleDrop(e, index){
@@ -255,6 +297,27 @@ export default {
             .item{
                 width: 50%;
                 height: 50%;
+            }
+        }
+    }
+</style>
+
+<style lang="scss">
+    .select-time-pool-dialog{
+        .confirm-btn{
+            display: inline-block;
+            width: 56px;
+            height: 28px;
+            cursor: pointer;
+            position: relative;
+
+            input{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
             }
         }
     }

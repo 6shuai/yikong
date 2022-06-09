@@ -2,13 +2,32 @@
     <div class="screen-layout-config-wrap">
         <div class="left-screen-list">
             <div class="filter-wrap">
-                <el-input 
-                    clearable
-                    prefix-icon="el-icon-search"
-                    size="small"
-                    v-model="screenParams.search"
-                    @input="$debounce(getScreenList)"
-                ></el-input>
+                
+                <div class="head-wrap">
+                    <el-dropdown 
+                        class="head-left-icon" 
+                        placement="bottom-start"
+                        @command="$router.push($event)"
+                    >
+                        <span class="el-dropdown-link">
+                            <i class="el-icon-s-operation"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="/operation/contentManage">配置内容组</el-dropdown-item>
+                            <el-dropdown-item command="/operation/screenLayout">配置屏幕布局</el-dropdown-item>
+                            <el-dropdown-item command="/operation/lockPosition">配置屏幕时长</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+
+                    <el-input 
+                        clearable
+                        prefix-icon="el-icon-search"
+                        size="small"
+                        v-model="screenParams.search"
+                        @input="$debounce(getScreenList)"
+                    ></el-input>
+                </div>
+                
 
                 <!-- <div class="filter-item">
                     <label>分组</label>
@@ -335,6 +354,21 @@ export default {
         
             .filter-wrap{
                 padding: 0 12px;
+
+                .head-wrap{
+                    display: flex;
+                    align-items: center;
+                    
+                    .head-left-icon{
+                        font-size: 18px;
+                        margin-right: 12px;
+                        cursor: pointer;
+                    }
+
+                    .el-input{
+                        flex: 1;
+                    }
+                }
 
                 .el-input{
                     margin: 12px 0;

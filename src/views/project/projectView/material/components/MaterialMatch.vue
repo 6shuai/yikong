@@ -41,7 +41,7 @@
 
 
                 <!-- 大屏列表 -->
-                <div class="order-screen-scroll"  :class="{ 'to-fold': item.fold }">
+                <div class="order-screen-scroll">
 
                     <div class="mt10">
                         <el-checkbox 
@@ -53,7 +53,7 @@
                         </el-checkbox>
                     </div>
 
-                    <div class="screen-list-wrap">
+                    <div class="screen-list-wrap"  :class="{ 'to-fold': item.fold }">
                         <div 
                             class="screen-item" 
                             v-for="(child, cindex) in item.orderedScreens" 

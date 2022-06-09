@@ -134,7 +134,7 @@
         <locating-result ref="locatingResult" @lockFail="showEdit=true"></locating-result>
 
         <!-- 播放规则 -->
-        <play-limit-rule ref="playLimitRule" @editSuccess="init"></play-limit-rule>
+        <play-limit-rule ref="playLimitRule" source="capturing" @editSuccess="init"></play-limit-rule>
 
     </el-card>
 

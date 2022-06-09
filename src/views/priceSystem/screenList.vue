@@ -14,13 +14,14 @@
                     <span class="play-type" v-if="priceSystemDetail.lockType==1">轮播</span>
                     <span class="play-type insert" v-if="priceSystemDetail.lockType==3">插播</span>
 
-                    <div class="title flex-left-center">
+                    <div class="title flex-left-center" v-loading="btnLoading">
                         {{ priceSystemDetail.displayName }}
                         <el-switch
                             class="ml10"
-                            v-model="priceSystemDetail.effect"
+                            :value="priceSystemDetail.effect"
                             :active-value="1"
                             :inactive-value="2"
+                            @change="handleEffect"
                         >
                         </el-switch>
                         <span :class="{effect: priceSystemDetail.effect == 1 }">{{ priceSystemDetail.effect == 1 ? '已生效' : '未生效' }}</span>
@@ -49,24 +50,24 @@
                                 clearable 
                                 placeholder="屏幕名称" 
                                 v-model="searchParams.displayName" 
-                                @input="$debounce(getScreenList)"
+                                @input="$debounce(handleSearch)"
                             ></el-input>
                         </el-row>
                         <el-row class="search-list">
                             <ul class="screen-type-filter">
                                 <li>
-                                    <span :class="{ active: !searchParams.hotPlace }" @click="$delete(searchParams, 'hotPlace'); getScreenList()">全部</span>
-                                    <span :class="{ active: searchParams.hotPlace }" @click="searchParams.hotPlace=1;getScreenList()">热门商场</span>
+                                    <span :class="{ active: !searchParams.hotPlace }" @click="$delete(searchParams, 'hotPlace'); handleSearch()">全部</span>
+                                    <span :class="{ active: searchParams.hotPlace }" @click="searchParams.hotPlace=1;handleSearch()">热门商场</span>
                                     <el-divider direction="vertical"></el-divider>
                                 </li>
                                 <li>
-                                    <span :class="{ active: !searchParams.indoor && !isNaN(searchParams.indoor) }" @click="searchParams.indoor==0 && !isNaN(searchParams.indoor) ? $delete(searchParams, 'indoor') : searchParams.indoor=0;getScreenList()">室内</span>
-                                    <span :class="{ active: searchParams.indoor }" @click="searchParams.indoor==1 ? $delete(searchParams, 'indoor') : searchParams.indoor=1;getScreenList()">室外</span>
+                                    <span :class="{ active: !searchParams.indoor && !isNaN(searchParams.indoor) }" @click="searchParams.indoor==0 && !isNaN(searchParams.indoor) ? $delete(searchParams, 'indoor') : searchParams.indoor=0;handleSearch()">室内</span>
+                                    <span :class="{ active: searchParams.indoor }" @click="searchParams.indoor==1 ? $delete(searchParams, 'indoor') : searchParams.indoor=1;handleSearch()">室外</span>
                                     <el-divider direction="vertical"></el-divider>
                                 </li>
                                 <li>
-                                    <span :class="{ active: searchParams.resourceType==1 }" @click="searchParams.resourceType==1 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=1;getScreenList()">硬广资源</span>
-                                    <span :class="{ active: searchParams.resourceType==2 }" @click="searchParams.resourceType==2 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=2;getScreenList()">互动资源</span>
+                                    <span :class="{ active: searchParams.resourceType==1 }" @click="searchParams.resourceType==1 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=1;handleSearch()">硬广资源</span>
+                                    <span :class="{ active: searchParams.resourceType==2 }" @click="searchParams.resourceType==2 ? $delete(searchParams, 'resourceType') : searchParams.resourceType=2;handleSearch()">互动资源</span>
                                 </li>
                             </ul>
                         </el-row>
@@ -177,7 +178,6 @@
                         type="danger" 
                         size="small"
                         :disabled="screenIds.length ? false : true"
-                        :loading="btnLoading"
                         @click="handleShowEdit"
                     >
                         编辑
@@ -301,6 +301,12 @@ export default {
             this.getScreenList()
         },
 
+        // 搜索
+        handleSearch(){
+            this.searchParams.pageNo = 1
+            this.getScreenList()
+        },  
+
         // 大屏地址  省市区 拼接
         addressJoint(row){
             return `${row.proName ? row.proName+'  ' : ''}${row.cityName ? row.cityName+'  ' : ''}${row.areaName ? row.areaName : ''}`;
@@ -348,25 +354,34 @@ export default {
         },
 
         // 价格体系生效
-        handleEffect(){
-            this.$confirm(
-                '此价格体系生效后将被投入使用',
-                "提示",
-                {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    type: "warning",
-                    center: true,
-                }
-            ).then(() => {
-                this.btnLoading = true
-                priceSystemEffect(this.$route.params.id).then(res => {
-                    this.btnLoading = false
-                    if(res.code === this.$successCode){
-                        this.$message.success('操作成功~')
-                        this.getScreenList()
+        handleEffect(val){
+            if(val == 1){
+                this.$confirm(
+                    '此价格体系生效后将被投入使用',
+                    "提示",
+                    {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning",
+                        center: true,
                     }
+                ).then(() => {
+                    this.priceSystemTakesEffect(val)
                 })
+            }else{
+                this.priceSystemTakesEffect(val)
+            }
+
+        },
+
+        priceSystemTakesEffect(val){
+            this.btnLoading = true
+            priceSystemEffect({ id: this.$route.params.id, effect: val }).then(res => {
+                this.btnLoading = false
+                if(res.code === this.$successCode){
+                    this.$message.success('操作成功~')
+                    this.$set(this.priceSystemDetail, 'effect', val)
+                }
             })
         }
     }
