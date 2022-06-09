@@ -1,7 +1,7 @@
 <template>
     <!-- 新建价格体系 -->
     <el-dialog
-        class="screen-attributes-dialog"
+        class="create-price-system-dialog"
         width="620px"
         :title="addParams.id ? '编辑价格体系' : '新建价格体系'"
         :visible.sync="showCreatePriceSystem"
@@ -258,7 +258,7 @@ export default {
 <style lang="scss">
 $borderColor: #e5e5e5;
 
-.screen-attributes-dialog{
+.create-price-system-dialog{
     .cattributes-content{
         padding: 0 20px;
 
