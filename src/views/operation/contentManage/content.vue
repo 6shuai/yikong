@@ -21,7 +21,7 @@
                     v-show="showPutMaterial"
                     ref="putMaterial" 
                     :type="uploadMaterialType"
-                    @closeUpload="showPutMaterial=false"
+                    @closeUpload="closeUpload"
                     @putSuccess="getScreenMaterialList()"
                 ></put-material>
 
@@ -158,6 +158,10 @@ export default {
             this.$nextTick(() => {
                 this.$refs.putMaterial.showUploadMaterial(this.screenLayout.orders)
             })
+        },
+
+        closeUpload(val){
+            console.log('????', val)
         }
     }
 

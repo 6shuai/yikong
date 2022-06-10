@@ -3,17 +3,18 @@
         <div 
             v-if="type == 'drag'"
             class="put-material-drag-wrap" 
-            :class="'order-count-' + order.length"
+            :class="'order-count-' + (order ? order.length : 1)"
             v-loading="uploadLoading"
+            @dragleave="$emit('closeUpload')"
         >
             <div 
                 class="item" 
                 :class="{ 'active': item.hover }"
                 v-for="(item, index) in order" 
                 :key="index"
-                @dragenter="$set(order[index], 'hover', true)"
-                @dragover="$set(order[index], 'hover', true)"
-                @dragleave="$set(order[index], 'hover', false); $emit('closeUpload')"
+                @dragenter="$set(order[index], 'hover', true), selectedOrderIndex=index"
+                @dragover="$set(order[index], 'hover', true), selectedOrderIndex=index"
+                @dragleave="$set(order[index], 'hover', false)"
                 @drop="handleDrop($event, index); $set(order[index], 'hover', false)"
             >
                 <input type="file" multiple="multiple" accept="image/*, .mp4" @change="handleChangeFile($event, index)">

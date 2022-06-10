@@ -9,24 +9,32 @@
                 @click="$emit('jumpPage', item)"
             >
                 <el-card shadow="hover">
-                    <div class="name overflow">{{ item.displayName }}</div>
-                    <div class="desc" :title="item.description">{{ item.description }}</div>
-                    <el-tag 
-                        type="primary" 
-                        plain
-                        size="mini"
-                        v-show="item.clientName"
-                    >
-                        {{ item.clientName }}
-                    </el-tag>
+                    <div class="content flex">
+                        <div class="project-img" :style="{ background: `url(${item.image}) center no-repeat` }">
+                            <div class="mask flex-center"><span>{{ item.displayName.substr(0, 1) }}</span></div>
+                        </div>
+                        <div class="project-detail">
+                            <div class="name overflow">{{ item.displayName }}</div>
+                            <div class="client-name">{{ item.clientName }}</div>
 
-                    <div 
-                        class="edit" 
-                        v-show="!hideEdit"
-                        @click.stop="$emit('handleShowCreateProject', item)"
-                    >
-                        <i class="el-icon-edit"></i>编辑
+                            <ul>
+                                <li class="flex-between-center">
+                                    <span><img src="../../../assets/images/pingmugongxiang.png"> <b>{{ item.screenCount }}</b>块</span>
+                                    <span><img src="../../../assets/images/hetong.png">{{ item.state }}</span>
+                                </li>
+                                <li>
+                                    <span><img src="../../../assets/images/huikuanjilu.png"> 
+                                        <span :class="{ overdue: item.overdue }"></span>{{ item.payment }}/{{ item.contractAmount }}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span><img src="../../../assets/images/fapiaoguanli.png"> {{ item.invoiceAmount }}/{{ item.contractAmount }}</span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
+
+                    <div class="time"><img src="../../../assets/images/shijianzhouqi.png"> {{ item.validBegin }} -- {{ item.validEnd }}</div>
                     
                 </el-card>
             </div>
@@ -55,8 +63,7 @@ export default {
     props: {
         listLoading: Boolean,
         resData: Array,
-        totalCount: Number,
-        hideEdit: Boolean
+        totalCount: Number
     },
     data(){
         return {
@@ -93,50 +100,86 @@ export default {
 
         .item{
             cursor: pointer;
+            font-size: 12px;
 
             .el-card{
-                margin: 10px;
                 position: relative;
 
                 .el-card__body{
                     padding: 0;
                     margin: 20px 20px 15px;
                 }
-                
-                .desc{
-                    font-size: 12px;
-                    color: #999;
-                    line-height: 14px;
-                    height: 14px;
-                    overflow: hidden;
-                    margin: 10px 0;
+
+                .content{
+                    .project-img{
+                        width: 44px;
+                        height: 48px;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        position: relative;
+
+                        .mask{
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 99;
+                            background: rgba(17, 24, 39, 0.45);
+
+                            span{
+                                font-size: 36px;
+                                color: #FDFDFD;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+
+                    .project-detail{
+                        flex: 1;
+                        margin-left: 20px;
+
+                        .name{
+                            font-size: 14px;
+                            padding-bottom: 10px;
+                        }
+
+                        .client-name{
+                            display: inline-block;
+                            color: #06B6D4;
+                            border: 1px solid #06B6D4;
+                            border-radius: 3px;
+                            line-height: 16px;
+                            padding: 0 6px;
+                        }
+
+                        ul{
+                            padding-top: 7px;
+
+                            .overdue{
+                                color: red;
+                            }
+                        }
+
+                    }
                 }
 
-                .edit{
-                    font-size: 14px;
-                    position: absolute;
-                    right: 0;
-                    bottom: 0px;
-                    height: 30px;
-                    line-height: 30px;
-                    padding: 0 20px;
-                    text-align: center;
-                    color: #999;
-                    background: #f9fafcd1;
-                    display: none;
+                .time, ul>li{
+                    padding-top: 6px;
 
-                    &:hover{
-                        color: var(--color-primary);
+                    line-height: 18px;
+
+                    img{
+                        width: 18px;
+                        height: 18px;
+                        display: inline-block;
+                        vertical-align: bottom;
+                        margin-right: 10px;
                     }
                 }
 
             }
 
-            &:hover{
-                .edit{
-                    display: block;
-                }
-            }
         }
     }
 }
