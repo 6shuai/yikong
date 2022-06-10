@@ -2,15 +2,14 @@
  * @Author: liushuai
  * @Date: 2022-04-28 11:15:22
  * @LastEditors: liushuai
- * @LastEditTime: 2022-04-28 13:50:00
+ * @LastEditTime: 2022-06-10 14:26:50
  * @Description: file content
- * @FilePath: \pclient\src\views\contentManage\index.vue
+ * @FilePath: \pclient\src\views\operation\contentManage\content.vue
 -->
 <template>
     <div 
         class="content-manage-wrap"
         @dragenter="handleShowPutMaterial('drag')"
-        @dragover="handleShowPutMaterial('drag')"
     >
         
         <left-screen-list @currentScreenId="getScreenDataAndOrder"></left-screen-list>
@@ -26,7 +25,7 @@
                 ></put-material>
 
                 <div class="content-wrap-top" v-if="materialData">
-                    <p>全部内容{{showPutMaterial}}</p>
+                    <p>全部内容</p>
                     <div class="btn-wrap">
                         <el-button 
                             type="primary" 
@@ -40,10 +39,13 @@
 
                 <el-empty v-else></el-empty>
 
-                <el-scrollbar class="hidden-scroll-y" v-if="materialData">
+                <el-scrollbar class="hidden-scroll-x" v-if="materialData">
                     <div class="content-wrap flex">
                         <div class="content-item" v-for="item in materialData" :key="item.id">
-                            <p class="duration">{{ item.duration }}s</p>
+                            <div class="flex-between-center top-wrap">
+                                <div>{{ findTimePool(item.projectId) }}</div>
+                                <div class="duration">{{ item.duration }}s</div>
+                            </div>
                             <div class="layout">
                                 <div
                                     class="region"
@@ -57,13 +59,13 @@
                                         top:  regions.region.y + '%', 
                                     }"
                                 >   
-                                    <el-image :src="regions.content.thumbnail"></el-image>   
+                                    <el-image v-if="regions.content" :src="regions.content.thumbnail"></el-image>   
                                 </div>
                             </div>
                             <ul class="screen-content">
-                                <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content.name">
+                                <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content ? content.content.name : ''">
                                     <span class="screen-layout-name overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
-                                    <span class="content-name overflow">{{ content.content.name }}</span>
+                                    <span class="content-name overflow" v-if="content.content">{{ content.content.name }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -73,6 +75,7 @@
                             @click="handleShowPutMaterial('add')"
                         >
                             <i class="el-icon-plus"></i>
+                            <select-other-layout @selectedLayout="selectedLayout"></select-other-layout>
                         </div>
                     </div>
                 </el-scrollbar>
@@ -97,12 +100,14 @@ import { getScreenLayoutAndOrderDetail, operationMaterialData } from '@/api/cont
 import LeftScreenList from '../components/LeftScreenList'
 import SetDefaultMaterial from './components/SetDefaultMaterial'
 import PutMaterial from './components/PutMaterial'
+import SelectOtherLayout from './components/SelectOtherLayout'
 
 export default {
     components: {
         LeftScreenList,
         SetDefaultMaterial,
-        PutMaterial
+        PutMaterial,
+        SelectOtherLayout
     },
     data() {
         return {
@@ -125,6 +130,20 @@ export default {
 
             // 上传素材方式  add 点击添加按钮   drag 拖放
             uploadMaterialType: 'add'
+        }
+    },
+    computed: {
+        findTimePool(){
+            return (projectId) => {
+                let orders = this.screenLayout.orders
+                let msg = ''
+                for(let i = 0; i < orders.length; i++){
+                    if(orders[i].projectId == projectId){
+                        msg = orders[i].roomType == 1 ? '商场' : '小风景'
+                    }
+                }
+                return msg
+            }
         }
     },
     methods: {
@@ -159,9 +178,18 @@ export default {
                 this.$refs.putMaterial.showUploadMaterial(this.screenLayout.orders)
             })
         },
-
+        
+        // 关闭上传窗口
         closeUpload(val){
-            console.log('????', val)
+            this.showPutMaterial = false
+        },
+
+        // 选择了其他布局
+        selectedLayout(data){
+            this.otherLayoutData = {
+                screenLayout: data
+            }
+            this.handleShowPutMaterial('other')
         }
     }
 
@@ -206,9 +234,11 @@ export default {
                     overflow: hidden;
                     border-left: 12px solid #3B82F6;
 
-                    .duration{
-                        text-align: right;
+                    .top-wrap{
+                        padding-bottom: 6px;   
+                        color: #6B7280;
                     }
+
 
                     .screen-content{
                         li{
@@ -234,6 +264,21 @@ export default {
                         font-size: 52px;
                         cursor: pointer;
                         border: none;
+                        position: relative;
+
+                        .other-layout-btn{
+                            font-size: 14px;
+                            position: absolute;
+                            bottom: 12px;
+                            right: 12px;
+                            width: 90px;
+                            height: 30px;
+                            line-height: 30px;
+                            text-align: center;
+                            background: #6B7280;
+                            border-radius: 3px;
+                            color: #fff;
+                        }
                     }
                 }
 

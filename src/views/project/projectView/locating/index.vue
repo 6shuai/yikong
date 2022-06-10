@@ -32,7 +32,10 @@
                                 <span class="play-count ml20">每日时间：{{ item.duration }}秒</span>
                             </p>
                             <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                                <span v-for="(limitTime, index) in item.limits" :key="index">{{ limitTime.begin }} - {{ limitTime.end }}</span>
+                                <span v-for="(limitTime, index) in item.limits" :key="index">
+                                    {{ limitTime.begin }} - {{ limitTime.end }}
+                                    <span v-if="index < item.limits.length-1">, </span>
+                                </span>
                             </p>
                         </div>
                         <div class="right-limit">
@@ -271,7 +274,6 @@ export default {
                 }
 
                 .left-time-info{
-                    width: 400px;
                     font-weight: bold;
 
                     .play-type{

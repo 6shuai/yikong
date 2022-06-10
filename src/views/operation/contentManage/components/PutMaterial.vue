@@ -5,7 +5,6 @@
             class="put-material-drag-wrap" 
             :class="'order-count-' + (order ? order.length : 1)"
             v-loading="uploadLoading"
-            @dragleave="$emit('closeUpload')"
         >
             <div 
                 class="item" 
@@ -56,7 +55,7 @@
                         type="primary"
                         >确认</el-button
                     >
-                    <input type="file" multiple="multiple" accept="image/*, .mp4" @change="handleChangeFile($event, selectedOrderIndex)">
+                    <input v-if="type != 'other'" type="file" multiple="multiple" accept="image/*, .mp4" @change="handleChangeFile($event, selectedOrderIndex)">
                 </div>
             </span>
         </el-dialog>
@@ -99,6 +98,7 @@ export default {
         },
 
         handleDrop(e, index){
+            this.$emit('closeUpload')
             this.handleChangeFile(null, index, e.dataTransfer.files)
         },
 
@@ -233,13 +233,13 @@ export default {
         flex-wrap: wrap;
 
         .item{
-            background: rgba($color: #000000, $alpha: 0.4);
+            background: rgba(17, 24, 39, 0.6);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #fff;
-            border: 1px solid #e5e5e5;
+            border: 1px solid rgba(17, 24, 39, 0.75);
             cursor: pointer;
             position: relative;
 
@@ -259,13 +259,11 @@ export default {
             }
 
             &.active{
-                border: 2px solid var(--color-primary);
-                color: var(--color-primary);
+                background: rgba(2, 132, 199, 0.75);
             }
 
             &:hover{
-                border: 2px solid var(--color-primary);
-                color: var(--color-primary);
+                background: rgba(2, 132, 199, 0.75);
             }
         }
         
