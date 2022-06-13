@@ -22,12 +22,21 @@
                         <span class="ml10" v-if="limitParams.type==3">播放时长: {{ limitParams.duration }}s</span>
                     </p>
 
-                    <div class="limit" v-if="limitParams.limits && limitParams.limits.length">
-                        <p>{{ limitParams.limits[0].type == 1 ? '限制播放时间' : '禁止播放时间' }}: 
-                            <span v-if="!limitParams.limits || !limitParams.limits.length">--</span>
-                            <span v-else v-for="(item, index) in limitParams.limits" :key="index">
+                    <div class="limit" v-if="limitParams.limitTimeData && limitParams.limitTimeData.length">
+                        <p>限制播放时间: 
+                            <span v-if="!limitParams.limitTimeData || !limitParams.limitTimeData.length">--</span>
+                            <span v-else v-for="(item, index) in limitParams.limitTimeData" :key="index">
                                 {{ item.begin + ' - ' + item.end }} 
-                                {{ index!= limitParams.limits.length-1 ? ' , ' : '' }}
+                                {{ index!= limitParams.limitTimeData.length-1 ? ' , ' : '' }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="limit" v-if="limitParams.disableTimeData && limitParams.disableTimeData.length">
+                        <p>禁止播放时间: 
+                            <span v-if="!limitParams.disableTimeData || !limitParams.disableTimeData.length">--</span>
+                            <span v-else v-for="(item, index) in limitParams.disableTimeData" :key="index">
+                                {{ item.begin + ' - ' + item.end }} 
+                                {{ index!= limitParams.disableTimeData.length-1 ? ' , ' : '' }}
                             </span>
                         </p>
                     </div>
@@ -308,15 +317,23 @@ export default {
     
         // 确定锁位
         handleLock(){
-            this.limitParams.project = Number(this.$route.params.id)
-            this.limitParams.screens = this.screenIds
+            let data = JSON.parse(JSON.stringify(this.limitParams))
+            data.project = Number(this.$route.params.id)
+            data.screens = this.screenIds
+            data.limits = data.limitTimeData.concat(data.disableTimeData)
+            delete data.limitTimeData
+            delete data.disableTimeData
 
             this.btnLoading = true
-            projectLockPositionCreate(this.limitParams).then(res => {
+            projectLockPositionCreate(data).then(res => {
                 this.btnLoading = false
                 if(res.code === this.$successCode){
-
-                    this.$refs.locatingResult.showLocatingResultDialog(res.obj.screens, this.screenList, this.screenTotalPrice)
+                    if(res.obj.screens && res.obj.screens.length){
+                        this.$refs.locatingResult.showLocatingResultDialog(res.obj.screens, this.screenList, this.screenTotalPrice, this.limitParams)
+                    }else{
+                        this.$message.success('操作成功~')
+                        this.$router.push(`/project/${this.$route.params.id}/locating`)
+                    }
                 }
             })
         }

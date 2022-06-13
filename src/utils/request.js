@@ -4,7 +4,6 @@ import { ajaxUrl } from '@/utils/index';
 import qs from 'qs';
 import store from '../store';
 import router from '@/router';
-
 axios.defaults.timeout = 60000;   
 axios.defaults.baseURL = ajaxUrl;    //设置请求域名 
 axios.defaults.withCredentials = true;  //携带cookie

@@ -118,21 +118,13 @@
                                 @click="showPlayLimit=true"
                             >添加播放限制</el-button>
                         </span>
-
-                        <div class="limit-time" v-if="showPlayLimit">
-                            <label class="limit-label">限制类型</label>
-                            <el-radio-group v-model="limitType" @change="limitTime=[{type: limitType}]">
-                                <el-radio :label="1">限制时间</el-radio>
-                                <el-radio :label="2">禁止时间</el-radio>
-                            </el-radio-group>
-                        </div>
                         
                         <div class="limit-time" v-if="showPlayLimit">
-                            <label class="limit-label">{{ limitType==1 ? '限制时间' : '禁止时间' }}</label>
+                            <label class="limit-label">限制时间</label>
                             <div class="limit-time-list">
                                 <div 
                                     class="time-item" 
-                                    v-for="(item, index) in limitTime"
+                                    v-for="(item, index) in limitTimeData"
                                     :key="index"
                                 >
                                     <el-time-picker
@@ -146,13 +138,44 @@
                                     </el-time-picker>
                                     <i 
                                         class="el-icon-circle-plus" 
-                                        v-if="limitTime.length <=1 || limitTime.length-1 == index" 
-                                        @click="limitTime.push({type: limitType})"
+                                        v-if="limitTimeData.length <=1 || limitTimeData.length-1 == index" 
+                                        @click="limitTimeData.push({type: 1})"
                                     ></i>
                                     <i 
                                         class="el-icon-remove" 
-                                        v-if="limitTime.length > 1" 
-                                        @click="$delete(limitTime, index)"
+                                        v-if="limitTimeData.length > 1" 
+                                        @click="$delete(limitTimeData, index)"
+                                    ></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="limit-time" v-if="showPlayLimit">
+                            <label class="limit-label">禁止时间</label>
+                            <div class="limit-time-list">
+                                <div 
+                                    class="time-item" 
+                                    v-for="(item, index) in disableTimeData"
+                                    :key="index"
+                                >
+                                    <el-time-picker
+                                        is-range
+                                        v-model="item.time"
+                                        value-format="HH:mm:ss"
+                                        range-separator="至"
+                                        start-placeholder="开始时间"
+                                        end-placeholder="结束时间"
+                                        placeholder="选择时间范围">
+                                    </el-time-picker>
+                                    <i 
+                                        class="el-icon-circle-plus" 
+                                        v-if="disableTimeData.length <=1 || disableTimeData.length-1 == index" 
+                                        @click="disableTimeData.push({type: 2})"
+                                    ></i>
+                                    <i 
+                                        class="el-icon-remove" 
+                                        v-if="disableTimeData.length > 1" 
+                                        @click="$delete(disableTimeData, index)"
                                     ></i>
                                 </div>
                             </div>
@@ -199,11 +222,11 @@ export default {
             // 播放规则
             limitParams: {},
 
-            // 限制类型
-            limitType: 1,
-
             // 限制时间
-            limitTime: [{ type: 1 }],
+            limitTimeData: [{ type: 1 }],
+
+            // 禁止时间
+            disableTimeData: [{ type: 2 }],
             
             // 是否显示播放限制
             showPlayLimit: false
@@ -218,9 +241,7 @@ export default {
                 duration: 15,
 
                 // 播放次数 默认120
-                times: 120,
-
-                limits: [{ type: 1 }]
+                times: 120
             }
             this.period = []
             
@@ -297,6 +318,9 @@ export default {
                 return
             }
 
+
+            
+
             this.limitParams = {
                 ...this.limitParams,
 
@@ -309,8 +333,10 @@ export default {
 
             if(type == 1){
                 this.$delete(this.limitParams, 'time')
-                this.limitParams.limits = await this.getLimitTimeList(this.limitTime)
-                if(!this.limitParams.limits.length) this.$delete(this.limitParams, 'limits')
+                this.limitParams.limitTimeData = await this.getLimitTimeList(this.limitTimeData)
+                this.limitParams.disableTimeData = await this.getLimitTimeList(this.disableTimeData)
+                if(!this.limitParams.limitTimeData.length) this.$delete(this.limitParams, 'limitTimeData')
+                if(!this.limitParams.disableTimeData.length) this.$delete(this.limitParams, 'disableTimeData')
 
             }else if(type == 3){
                 this.$delete(this.limitParams, 'limits')
@@ -342,16 +368,27 @@ export default {
 
         // 格式化限制播放时间格式
         formatLimitTime(data){
-            this.limitType = data[0].type
-            
             for(let i = 0; i < data.length; i++){
                 let { begin, end, type } = data[i]
-                // data[i].time = [begin, end]
 
-                this.$set(this.limitTime[i], 'time', [begin, end])
-                this.$set(this.limitTime[i], 'type', type)
+                if(type == 1){
+                    this.limitTimeData.push({
+                        time: [begin, end],
+                        type: type
+                    })
+                }else{
+                    this.disableTimeData.push({
+                        time: [begin, end],
+                        type: type
+                    })
+                }
             }
-            
+        },
+
+        // 查询时间是否有交叉
+        finTimeHasCross(){
+            let data = this.limitTimeData.concat(this.disableTimeData)
+            // for(let data)
         }
     }
 }

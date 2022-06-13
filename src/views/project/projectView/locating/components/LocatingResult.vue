@@ -2,67 +2,44 @@
     <el-dialog
         class="locating-result"
         width="1200px"
-        title="寻位结果"
+        :title="`${lockDate.publishDate} -- ${lockDate.dueDate} 寻位结果`"
         :visible.sync="showLocatingResult"
-        :close-on-click-modal="false"
         :close-on-press-escape="false"
-        :show-close="false"
         append-to-body
     >
 
-        <!-- 占位详情 -->
-        <el-dialog
-            width="520px"
-            :visible.sync="showScreenContentOccupyList"
-            :title="screenName"
-            append-to-body
-        >
-            <screen-content-occupy-detail
-                v-if="showScreenContentOccupyList"
-                :data="screenParams"
-                source="locating"
-            ></screen-content-occupy-detail>
-        </el-dialog>
-
+        <!-- 锁位失败详情 -->
+        <lock-fail-detail ref="lockFailDetail"></lock-fail-detail>
 
         <div class="total-price mb20">
             <el-tag type="primary">总刊例价: {{ totalPrice ? totalPrice : '-' }}</el-tag>
         </div>
 
-        <div 
+        <el-card 
             class="screen-result"
-            v-for="(item, index) in resData"
+            v-for="(item, date,  index) in resData"
             :key="index"
         >
-            <h3>{{ item.screen }}</h3>
-            <el-table
-                class="mt20 mb20"
-                stripe
-                size="small"
-                row-key="id"
-                :data="[item]"
-                border>
-                <el-table-column 
-                    v-for="(list, lIndex) in item.results"
-                    :key="lIndex"
-                    :label="list.date" 
-                    min-width="80"
+            <el-tag type="danger">{{ date }} 锁位失败</el-tag>
+
+            <div class="screen-list">
+                <div class="screen-item" 
+                    v-for="screen in item" 
+                    :key="screen.screenContent.id"
+                    @click="handleShowOccupyDetail(date, screen)"
                 >
-                    <template slot-scope="scope">
-                        <i v-if="list.result" class="el-icon-success"></i>
-                        <div v-else>
-                            <i class="el-icon-error"></i>
-                            <el-button 
-                                type="danger" 
-                                plain
-                                size="mini"
-                                @click="handleShowOccupyDetail(list.date, item.id, item.screen)"
-                            >占位详情</el-button>
-                        </div>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
+
+                    <el-image class="screen-photo" fit="cover" :src="screen.screenContent.defaultShow"></el-image>
+
+                    <div class="screen-name overflow">{{ screen.screenContent.displayName }} {{ screen.screenContent.location ? `(${screen.screenContent.location})` : '' }}</div>
+
+                    <div class="screen-bottom flex-center">
+                        <span v-if="screen.screenContent.cityName">{{ screen.screenContent.cityName }}</span>
+                        <span v-if="screen.screenContent.levelName">{{ screen.screenContent.levelName }}</span>
+                    </div>
+                </div>
+            </div>
+        </el-card>
 
         <span slot="footer" class="dialog-footer">
             <el-button
@@ -77,10 +54,12 @@
 
 <script>
 import ScreenContentOccupyDetail from './ScreenContentOccupyDetail'
+import LockFailDetail from './LockFailDetail'
 
 export default {
     components: {
-        ScreenContentOccupyDetail
+        ScreenContentOccupyDetail,
+        LockFailDetail
     },
     data(){
         return {
@@ -89,69 +68,63 @@ export default {
             lockPositionParams: [],
             resData: [],
 
+            // 寻位日期
+            lockDate: {},
+
             // 总刊例价
             totalPrice: null,
 
-            // 寻位结果是否有  没有空位的
-            resultHasFalse: false,
-
-            // 显示上刊详情
-            showScreenContentOccupyList: false,
-
             // 查询上刊详情 传递的参数
-            screenParams: {},
-
-            // 占位详情屏幕名称
-            screenName: ''
+            screenParams: {}
         }
     },
     methods: {
         // 显示寻位结果
-        showLocatingResultDialog(data, screenList, screenTotalPrice){
-            this.resultHasFalse = false
+        showLocatingResultDialog(data, screenList, screenTotalPrice, { publishDate, dueDate }){
             this.showLocatingResult = true
+            
+            let arr = {}
             for(let i = 0; i < data.length; i++){
-                for(let j = 0; j < screenList.length; j++){
-                    if(data[i].id == screenList[j].id){
-                        data[i].screen = screenList[j].displayName + (screenList[j].screenCount ? `(${screenList[j].location})` : '')
-                    }
+                for(let j = 0; j < data[i].results.length; j++){
+                    data[i].results[j].screenContent = this.findScreenDetail(screenList, data[i].id)
+                    if(!arr[data[i].results[j].date]) arr[data[i].results[j].date] = []
+                    arr[data[i].results[j].date].push(data[i].results[j])
                 }
-                this.findResultHasFalse(data[i].results)
             }
-            this.resData = data
+
+            console.log(arr)
+            
+            this.resData = arr
             this.totalPrice = screenTotalPrice
+            this.lockDate = {
+                publishDate,
+                dueDate
+            }
         },
 
-        // 查询寻位结果  是否含有 false
-        findResultHasFalse(list){
-            for(let i = 0; i < list.length; i++){
-                if(!list[i].result){
-                    this.resultHasFalse = true
-                    return
+        // 查找屏幕详情
+        findScreenDetail(data, id){
+            let obj = {}
+            for(let i = 0; i < data.length; i++){
+                if(data[i].id == id){
+                    obj = data[i]
                 }
             }
-        },
+            return obj
+        },  
 
         // 查询屏幕占位详情
-        handleShowOccupyDetail(date, screenId, screenName){
-            this.screenParams = {
-                date, 
-                screenId
-            }
-            this.screenName = screenName + ' - ' + date
-            this.showScreenContentOccupyList = true
+        handleShowOccupyDetail(date, screenId){
+            console.log(date, this.$refs)
+            this.$refs.lockFailDetail.showFailDetail(date)
         },
 
         // 跳转到锁位列表
         handleGoLocating(){
-            if(this.resultHasFalse){
-                this.$emit('lockFail')
+            this.$emit('lockFail')
 
-                // 含有锁位失败的屏幕  关闭寻位结果 重新选择屏幕再提交
-                this.showLocatingResult = false
-            }else{
-                this.$router.push(`/project/${this.$route.params.id}/locating`)
-            }
+            // 含有锁位失败的屏幕  关闭寻位结果 重新选择屏幕再提交
+            this.showLocatingResult = false
         }
     }
 }
@@ -160,27 +133,52 @@ export default {
 
 <style lang="scss" scoped>
     .locating-result{
-
-        .cell {
-            i{
-                font-size: 20px;
-
-                &.el-icon-success{
-                    color: var(--color-success);
-                }
-
-                &.el-icon-error{
-                    color: var(--color-danger);
-                }
-            }
-
-            .el-button{
-                padding: 5px;
-            }
-        }
-
         .total-price{
             text-align: right;
+        }
+
+        .screen-list{
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 20px;
+
+            .screen-item{
+                width: 190px;
+                margin: 0 24px 20px 24px;
+                position: relative;
+
+                .screen-photo{
+                    width: 100%;
+                    height: 133px;
+                }
+
+                .screen-name{
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    z-index: 99;
+                    width: 100%;
+                    text-align: center;
+                    color: #fff;
+                    background:rgba(17, 24, 39, 0.45);
+                    padding: 5px;
+                }
+
+                .screen-bottom{
+                    font-size: 12px;
+                    text-align: center;
+                    padding: 10px 0;
+
+                    span{
+                        height: 20px;
+                        line-height: 18px;
+                        border: 1px solid #171717;
+                        border-radius: 2px;
+                        margin-left: 8px;
+                        padding: 0 10px;
+                    }
+                }
+            }
         }
     }
     

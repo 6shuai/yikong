@@ -135,11 +135,7 @@
                                             <el-image fit="cover" v-if="sub.content" :src="sub.content.thumbnail"></el-image> 
                                         </div>
                                     </div>
-            
-                                    <div class="other">
-                                        此屏已投放 <span>{{ child.materials.length }}</span> 个物料
-                                    </div>
-                                    
+  
                                 </div>
 
 
@@ -544,21 +540,6 @@ export default {
                                     .el-image{
                                         width: 100%;
                                         height: 100%;
-                                    }
-                                }
-
-                                .other{
-                                    height: 17px;
-                                    line-height: 17px;
-                                    margin-top: 8px;
-                                    text-align: right;
-                                    font-size: 12px;
-                                    color: #767676;
-
-                                    span{
-                                        font-weight: bold;
-                                        padding: 0 3px;
-                                        text-decoration: underline;
                                     }
                                 }
                             }

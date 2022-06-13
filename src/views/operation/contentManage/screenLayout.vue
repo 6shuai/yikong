@@ -136,6 +136,8 @@
                             class="layout-item" 
                             v-for="(item, index) in layoutData" 
                             :key="index"
+                            @click="layoutId = item.id"
+                            :class="{ active: layoutId == item.id }"
                         >
                             <div
                                 class="layout"
@@ -148,8 +150,7 @@
                                     class="region"
                                     v-for="(regions, regionsIndex) in item.regions"
                                     :key="regionsIndex"
-                                    @click="mainRegionId = regions.id; layoutId = item.id"
-                                    :class="{ 'active': mainRegionId == regions.id}"
+                                    :class="{ 'active': item.mainRegion == regions.id}"
                                     :style="{
                                         width: regions.region.width + '%',
                                         height: regions.region.height + '%', 
@@ -180,7 +181,7 @@
                     <el-button 
                         type="primary" 
                         size="small" 
-                        :disabled="!mainRegionId || !selectedScreenIds.length"
+                        :disabled="!layoutId || !selectedScreenIds.length"
                         :loading="btnLoading"
                         @click="handleApplication"
                     >
@@ -234,9 +235,6 @@ export default {
 
             // 选定的屏幕布局id
             layoutId: null,
-            
-            // 选定的主逻辑区域id
-            mainRegionId: null,
 
             // 最大宽
             maxWidth: 56,
@@ -316,11 +314,9 @@ export default {
         // 应用
         handleApplication(){
             console.log('屏幕布局id', this.layoutId)
-            console.log('布局主区域id', this.mainRegionId)
             console.log('屏幕id', this.selectedScreenIds)
             let data = {
                 layout: this.layoutId,
-                mainRegion: this.mainRegionId,
                 screens: this.selectedScreenIds
             }
             this.btnLoading = true
@@ -510,10 +506,14 @@ export default {
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
-                margin-left: -20px;
 
                 .layout-item{
                     text-align: center;
+                    cursor: pointer;
+
+                    &:hover, &.active{
+                        background: #d5ebfd;
+                    }
                 }
             }
 
@@ -525,7 +525,6 @@ export default {
                 overflow: hidden;
                 margin: 20px;
                 position: relative;
-                cursor: pointer;
 
                 &.vertical{
                     width: 102px;
@@ -539,10 +538,6 @@ export default {
 
                     &.active{
                         background: var(--color-primary);
-                    }
-
-                    &:hover{
-                        background: var(--color-primary);                 
                     }
                 }
             }

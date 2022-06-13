@@ -22,6 +22,7 @@
                     :type="uploadMaterialType"
                     @closeUpload="closeUpload"
                     @putSuccess="getScreenMaterialList()"
+                    @addLayout="addLayout"
                 ></put-material>
 
                 <div class="content-wrap-top" v-if="materialData">
@@ -41,17 +42,19 @@
 
                 <el-scrollbar class="hidden-scroll-x" v-if="materialData">
                     <div class="content-wrap flex">
-                        <div class="content-item" v-for="item in materialData" :key="item.id">
+                        <div class="content-item" v-for="(item, index) in materialData" :key="item.id">
+
+                            <i class="el-icon-warning" v-if="regionsAllHasContent(item.screenLayout.regions) && item.type == 'other'"></i>
+
                             <div class="flex-between-center top-wrap">
                                 <div>{{ findTimePool(item.projectId) }}</div>
-                                <div class="duration">{{ item.duration }}s</div>
+                                <div class="duration" v-if="item.duration">{{ item.duration }}s</div>
                             </div>
                             <div class="layout">
                                 <div
                                     class="region"
                                     v-for="(regions, regionsIndex) in item.screenLayout.regions"
                                     :key="regionsIndex"
-                                    :class="{ 'active': screenLayout.layout && screenLayout.layout.mainRegion == regions.id}"
                                     :style="{
                                         width: regions.region.width + '%',
                                         height: regions.region.height + '%', 
@@ -59,13 +62,24 @@
                                         top:  regions.region.y + '%', 
                                     }"
                                 >   
-                                    <el-image v-if="regions.content" :src="regions.content.thumbnail"></el-image>   
+
+                                    <el-image v-if="regions.content" :src="regions.content.thumbnail || regions.content.content"></el-image>   
+
+                                    <div class="upload-content flex-center" v-else-if="item.type=='other'">
+                                        <img v-if="!regions.uploadLoading" src="../../../assets/images/upload.png" />
+                                        <el-progress v-else type="circle" :width="40" :percentage="regions.percentage"></el-progress>
+                                        <material-upload
+                                            @uploadState="uploadState($event, index, regionsIndex)"
+                                        ></material-upload>
+                                    </div>
+
+
                                 </div>
                             </div>
                             <ul class="screen-content">
                                 <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content ? content.content.name : ''">
                                     <span class="screen-layout-name overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
-                                    <span class="content-name overflow" v-if="content.content">{{ content.content.name }}</span>
+                                    <span class="content-name overflow">{{ content.content ? content.content.name : '素材文件待上传' }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -101,13 +115,15 @@ import LeftScreenList from '../components/LeftScreenList'
 import SetDefaultMaterial from './components/SetDefaultMaterial'
 import PutMaterial from './components/PutMaterial'
 import SelectOtherLayout from './components/SelectOtherLayout'
+import MaterialUpload from '../components/MaterialUpload'
 
 export default {
     components: {
         LeftScreenList,
         SetDefaultMaterial,
         PutMaterial,
-        SelectOtherLayout
+        SelectOtherLayout,
+        MaterialUpload
     },
     data() {
         return {
@@ -144,7 +160,20 @@ export default {
                 }
                 return msg
             }
-        }
+        },
+
+        // 其他布局 区域内容是否都已上传
+        regionsAllHasContent(){
+            return (data) => {
+                let result = true
+                for(let i = 0; i < data.length; i++){
+                    if(!data.content){
+                        result = false
+                    }
+                }
+                return result
+            }
+        } 
     },
     methods: {
         // 获取屏幕数据和绑定的锁位订单
@@ -187,9 +216,30 @@ export default {
         // 选择了其他布局
         selectedLayout(data){
             this.otherLayoutData = {
+                type: 'other',
                 screenLayout: data
             }
             this.handleShowPutMaterial('other')
+        },
+
+        // 往内容列表 添加一个其他布局的数据
+        addLayout(){
+            this.materialData.push(this.otherLayoutData)
+        },
+
+        // 上传状态
+        uploadState(event, index, regionsIndex){
+            let { type, completeVal, obj } = event
+
+            let data = this.materialData[index]
+
+            data.screenLayout.regions[regionsIndex] = {
+                ...data.screenLayout.regions[regionsIndex],
+                uploadLoading: type=='progress' ? true : false,
+                percentage: completeVal || 0,
+                content: obj || null
+            }
+            this.$set(this.materialData, index, data)
         }
     }
 
@@ -233,6 +283,14 @@ export default {
                     margin: 0 28px 28px 0;
                     overflow: hidden;
                     border-left: 12px solid #3B82F6;
+                    position: vertical;
+
+                    .el-icon-warning{
+                        position: absolute;
+                        top: -10px;
+                        right: -10px;
+                        color: red;
+                    }
 
                     .top-wrap{
                         padding-bottom: 6px;   
@@ -299,6 +357,7 @@ export default {
                     .region{
                         position: absolute;
                         border: 1px solid #fff;
+                        background: #F3F4F6;
                         cursor: pointer;
                         
                         .el-image{
@@ -308,6 +367,12 @@ export default {
 
                         &.active{
                             background: var(--color-primary);
+                        }
+
+                        .upload-content{
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
                         }
                     }
                 }
