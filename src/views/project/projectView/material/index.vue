@@ -80,12 +80,24 @@
                                             <span class="play-duration ml20">开始时间： {{ item.time }}</span>
                                             <span class="play-count ml20">每日时间：{{ item.duration }}秒</span>
                                         </p>
+                                        <div class="limit-time-wrap">
+                                            <p v-if="formatLimitTime(item.limits).limitTimeData.length">限制播放时间 ：
+                                                <span v-for="(limitTime, index) in formatLimitTime(item.limits).limitTimeData" :key="index">
+                                                    {{ limitTime.begin }} - {{ limitTime.end }}
+                                                    <span v-if="index < formatLimitTime(item.limits).limitTimeData.length-1">, </span>
+                                                </span>
+                                            </p>
+                                            <p v-if="formatLimitTime(item.limits).disableTimeData.length">禁止播放时间 ：
+                                                <span v-for="(limitTime, index) in formatLimitTime(item.limits).disableTimeData" :key="index">
+                                                    {{ limitTime.begin }} - {{ limitTime.end }}
+                                                    <span v-if="index < formatLimitTime(item.limits).disableTimeData.length-1">, </span>
+                                                </span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="right-limit">
-                                    <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                                        <span v-for="(limitTime, limitIndex) in item.limits" :key="limitIndex">{{ limitTime.begin }} - {{ limitTime.end }}</span>
-                                    </p>
+                                    <div class="order-number">订单编号: {{ item.orderNumber }}</div>
                                 </div>
                             </div>
 
@@ -121,29 +133,11 @@
                                     </div>
             
                                     <div class="screen-img flex">
-                                        <div 
-                                            class="item" 
-                                            v-for="(sub, sIndex) in child.materials[0].regions" 
-                                            :key="sIndex"
-                                            :style="{
-                                                width: sub.region.width + '%',
-                                                height: sub.region.height + '%',
-                                                top: sub.region.y + '%',
-                                                left: sub.region.x + '%'
-                                            }"
-                                        >   
-                                            <el-image fit="cover" v-if="sub.content" :src="sub.content.thumbnail"></el-image> 
-                                        </div>
+                                        <el-image fit="cover" :src="child.photo"></el-image> 
                                     </div>
   
                                 </div>
 
-
-                            </div>
-
-                            <div class="order-bottom flex-between-center">
-
-                                <div class="order-number">订单编号: {{ item.orderNumber }}</div>
 
                             </div>
                         </div>
@@ -240,6 +234,24 @@ export default {
                     this.screenData = res.obj
                 }
             })
+        },
+
+        // 格式化限制播放时间格式
+        formatLimitTime(data){
+            let obj = {
+                limitTimeData: [],
+                disableTimeData: []
+            }
+
+            for(let i = 0; i < data.length; i++){
+                let { begin, end, type } = data[i]
+                if(type == 1){
+                    obj.limitTimeData.push(data[i])
+                }else{
+                    obj.disableTimeData.push(data[i])
+                }
+            }
+            return obj
         },
     
         // 显示添加素材页
@@ -442,6 +454,10 @@ export default {
                                         }
                                     }
                                 }
+
+                                .limit-time-wrap{
+                                    padding-left: 70px;
+                                }
                                 
 
 
@@ -457,8 +473,9 @@ export default {
 
 
                             .right-limit{
-                                display: flex;
-                                align-items: end;
+                                font-size: 14px;
+                                color: #787878;
+                                line-height: 40px;
                             }
                         }   
 
@@ -486,12 +503,6 @@ export default {
                                     vertical-align: text-bottom;
                                 }
                             }
-                        }
-
-                        .order-bottom{
-                            font-size: 14px;
-                            padding-top: 10px;
-                            text-align: right;
                         }
 
                         .screen-list-wrap{

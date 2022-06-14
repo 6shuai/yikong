@@ -19,22 +19,43 @@
 
                             <ul>
                                 <li class="flex-between-center">
-                                    <span><img src="../../../assets/images/pingmugongxiang.png"> <b>{{ item.screenCount }}</b>块</span>
-                                    <span><img src="../../../assets/images/hetong.png">{{ item.state }}</span>
-                                </li>
-                                <li>
-                                    <span><img src="../../../assets/images/huikuanjilu.png"> 
-                                        <span :class="{ overdue: item.overdue }"></span>{{ item.payment }}/{{ item.contractAmount }}
+                                    <span>
+                                        <el-tooltip effect="dark" content="大屏数量" placement="top">
+                                            <img src="../../../assets/images/pingmugongxiang.png" />
+                                        </el-tooltip>
+                                        <b>{{ item.screenCount }}</b>块</span>
+                                    <span>
+                                        <el-tooltip effect="dark" content="合同进度" placement="top">
+                                            <img src="../../../assets/images/hetong.png" />
+                                        </el-tooltip>
+                                        <span :class="{ overdue: item.state==='请尽快上传合同' }">{{ item.state }}</span>
                                     </span>
                                 </li>
                                 <li>
-                                    <span><img src="../../../assets/images/fapiaoguanli.png"> {{ item.invoiceAmount }}/{{ item.contractAmount }}</span>
+                                    <span>
+                                        <el-tooltip effect="dark" content="回款进度" placement="top">
+                                            <img src="../../../assets/images/huikuanjilu.png" /> 
+                                        </el-tooltip>
+                                        <span :class="{ overdue: item.overdue }">{{ item.payment }}/{{ item.contractAmount }}</span>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        <el-tooltip effect="dark" content="发票信息" placement="top">
+                                            <img src="../../../assets/images/fapiaoguanli.png" /> 
+                                        </el-tooltip>
+                                        {{ item.invoiceAmount }}/{{ item.contractAmount }}</span>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="time"><img src="../../../assets/images/shijianzhouqi.png"> {{ item.validBegin }} -- {{ item.validEnd }}</div>
+                    <div class="time">
+                        <el-tooltip effect="dark" content="回款时间" placement="top">
+                            <img src="../../../assets/images/shijianzhouqi.png" /> 
+                        </el-tooltip>
+                        {{ item.validBegin }} -- {{ item.validEnd }}
+                    </div>
                     
                 </el-card>
             </div>
