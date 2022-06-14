@@ -7,11 +7,20 @@ export function getScreenGoupList(data) { return get('/materialPlayback/screenGr
 // 获取屏幕的基本数据，包括屏幕分辨率，和该屏幕绑定的运营锁位订单
 export function getScreenLayoutAndOrderDetail(data) { return get('/screen_for_operation', data, 'published') }
 
-// 运营投放素材
-export function operationPutMaterial(data) { return post('/throw_in_content', data, 'published') }
 
 // 获取运营在某个屏幕上投放的素材数据
 export function operationMaterialData(data) { return get('/operational_material', data, 'published') }
+
+// 运营投放素材
+export function operationPutMaterial(data) { return post('/throw_in_content', data, 'published') }
+
+// 投放任意布局的素材
+export function operationPutOtherLayoutMaterial(data) { return post('/throw_in_material', data, 'published') }
+
+// 设置内容的适配模式
+export function operationContentAdaptation(data) { return post('/adaptation', data, 'published') }
+
+
 
 
 

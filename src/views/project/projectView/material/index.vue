@@ -426,6 +426,7 @@ export default {
                         .top-content{
                             display: flex;
                             justify-content: space-between;
+                            align-items: flex-end;
                             padding-bottom: 10px;
 
                             p{

@@ -129,7 +129,7 @@ export default {
         handleAddLayout(){
             if(this.type === 'add') return 
             this.showSelectTimePool = false
-            this.$emit('addLayout')
+            this.$emit('addLayout', this.order[this.selectedOrderIndex].projectId)
         }
     }
 }

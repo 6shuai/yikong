@@ -2,7 +2,7 @@
  * @Author: liushuai
  * @Date: 2022-04-28 11:15:22
  * @LastEditors: liushuai
- * @LastEditTime: 2022-06-10 14:26:50
+ * @LastEditTime: 2022-06-14 15:16:57
  * @Description: file content
  * @FilePath: \pclient\src\views\operation\contentManage\content.vue
 -->
@@ -44,44 +44,69 @@
                     <div class="content-wrap flex">
                         <div class="content-item" v-for="(item, index) in materialData" :key="item.id">
 
-                            <i class="el-icon-warning" v-if="regionsAllHasContent(item.screenLayout.regions) && item.type == 'other'"></i>
+                            <i class="el-icon-warning" v-if="!regionsAllHasContent(item.screenLayout.regions) && item.type == 'other'"></i>
 
                             <div class="flex-between-center top-wrap">
                                 <div>{{ findTimePool(item.projectId) }}</div>
                                 <div class="duration" v-if="item.duration">{{ item.duration }}s</div>
                             </div>
-                            <div class="layout">
-                                <div
-                                    class="region"
-                                    v-for="(regions, regionsIndex) in item.screenLayout.regions"
-                                    :key="regionsIndex"
+
+                            <div class="layout-wrap flex-center">
+                                <div 
+                                    class="layout"
                                     :style="{
-                                        width: regions.region.width + '%',
-                                        height: regions.region.height + '%', 
-                                        left: regions.region.x + '%',
-                                        top:  regions.region.y + '%', 
+                                        width: item.screenLayout.height > item.screenLayout.width ? item.screenLayout.width / item.screenLayout.height * layoutMaxHeight + 'px' : layoutMaxWidth + 'px',
+                                        height: item.screenLayout.height > item.screenLayout.width ? layoutMaxHeight + 'px' : item.screenLayout.height / item.screenLayout.width * layoutMaxWidth + 'px'
                                     }"
-                                >   
+                                >
+                                    <div
+                                        class="region"
+                                        v-for="(regions, regionsIndex) in item.screenLayout.regions"
+                                        :key="regionsIndex"
+                                        :style="{
+                                            width: regions.region.width + '%',
+                                            height: regions.region.height + '%', 
+                                            left: regions.region.x + '%',
+                                            top:  regions.region.y + '%', 
+                                        }"
+                                    >   
+    
+                                        <el-image v-if="regions.content" :src="regions.content.thumbnail || regions.content.content"></el-image>   
+    
+                                        <div class="upload-content flex-center" v-else-if="item.type=='other'">
+                                            <img v-if="!regions.uploadLoading" src="../../../assets/images/upload.png" />
+                                            <el-progress v-else type="circle" :width="40" :percentage="regions.percentage"></el-progress>
+                                            <material-upload
+                                                @uploadState="uploadState($event, index, regionsIndex)"
+                                            ></material-upload>
+                                        </div>
 
-                                    <el-image v-if="regions.content" :src="regions.content.thumbnail || regions.content.content"></el-image>   
 
-                                    <div class="upload-content flex-center" v-else-if="item.type=='other'">
-                                        <img v-if="!regions.uploadLoading" src="../../../assets/images/upload.png" />
-                                        <el-progress v-else type="circle" :width="40" :percentage="regions.percentage"></el-progress>
-                                        <material-upload
-                                            @uploadState="uploadState($event, index, regionsIndex)"
-                                        ></material-upload>
+                                        <!-- 素材操作按钮 -->
+                                        <ul class="content-operate flex-center">
+                                            <li class="adaptation flex-center" @click="e=> showPop(e, item.id, item.projectId, regions.id)">
+                                                <img src="../../../assets/images/operation_adaptation.png" />
+                                            </li>
+                                        </ul>
+    
+    
                                     </div>
-
-
                                 </div>
                             </div>
-                            <ul class="screen-content">
-                                <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content ? content.content.name : ''">
-                                    <span class="screen-layout-name overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
-                                    <span class="content-name overflow">{{ content.content ? content.content.name : '素材文件待上传' }}</span>
-                                </li>
-                            </ul>
+                            
+                            <el-scrollbar class="hidden-scroll-x screen-content">
+                                <ul>
+                                    <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content ? content.content.name : ''">
+                                        <span class="screen-layout-name overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
+                                        <span class="content-name overflow">
+                                            <img v-if="content.content && content.content.type==1" src="../../../assets/images/operation_content_type_img.png" />
+                                            <img v-if="content.content && content.content.type==2" src="../../../assets/images/operation_content_type_video.png" />
+                                            {{ content.content ? content.content.name : '素材文件待上传' }}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </el-scrollbar>
+
                         </div>
 
                         <div 
@@ -106,16 +131,20 @@
             @setSuccess="showSetDefaultMaterial=false;getScreenMaterialList()"
         ></set-default-material>
 
+
+        <content-adaptation ref="contentAdaptation"></content-adaptation>
+
     </div>
 </template>
 
 <script>
-import { getScreenLayoutAndOrderDetail, operationMaterialData } from '@/api/contentManage'
+import { getScreenLayoutAndOrderDetail, operationMaterialData, operationPutOtherLayoutMaterial } from '@/api/contentManage'
 import LeftScreenList from '../components/LeftScreenList'
 import SetDefaultMaterial from './components/SetDefaultMaterial'
 import PutMaterial from './components/PutMaterial'
 import SelectOtherLayout from './components/SelectOtherLayout'
 import MaterialUpload from '../components/MaterialUpload'
+import ContentAdaptation from './components/ContentAdaptation'
 
 export default {
     components: {
@@ -123,7 +152,8 @@ export default {
         SetDefaultMaterial,
         PutMaterial,
         SelectOtherLayout,
-        MaterialUpload
+        MaterialUpload,
+        ContentAdaptation
     },
     data() {
         return {
@@ -144,8 +174,11 @@ export default {
             // 显示上传素材
             showPutMaterial: false,
 
+            layoutMaxWidth: 314,
+            layoutMaxHeight: 135,
+
             // 上传素材方式  add 点击添加按钮   drag 拖放
-            uploadMaterialType: 'add'
+            uploadMaterialType: 'add',
         }
     },
     computed: {
@@ -155,7 +188,7 @@ export default {
                 let msg = ''
                 for(let i = 0; i < orders.length; i++){
                     if(orders[i].projectId == projectId){
-                        msg = orders[i].roomType == 1 ? '商场' : '小风景'
+                        msg = orders[i].roomType == 1 ? '商场' : orders[i].roomType == 2 ? '小风景' : '政府'
                     }
                 }
                 return msg
@@ -167,7 +200,7 @@ export default {
             return (data) => {
                 let result = true
                 for(let i = 0; i < data.length; i++){
-                    if(!data.content){
+                    if(!data[i].content){
                         result = false
                     }
                 }
@@ -223,7 +256,8 @@ export default {
         },
 
         // 往内容列表 添加一个其他布局的数据
-        addLayout(){
+        addLayout(projectId){
+            this.otherLayoutData.projectId = projectId
             this.materialData.push(this.otherLayoutData)
         },
 
@@ -240,6 +274,75 @@ export default {
                 content: obj || null
             }
             this.$set(this.materialData, index, data)
+
+            if(this.regionsAllHasContent(data.screenLayout.regions)){
+                console.log('全部上传完成~', data)
+
+
+                let { data, longestTime } = this.regionsData(data.screenLayout.regions)
+
+                let params = {
+                    project: data.projectId,
+                    duration: longestTime,
+                    layout: {
+                        id: data.screenLayout.id,
+                        regions: data
+                    }
+                }
+
+                console.log(params)
+                this.putOtherLayout(params)
+            }
+        },
+
+        // 获取逻辑区域id 和内容   longestTime 最长时长 
+        regionsData(regions){
+            let obj = {
+                data: [],
+                longestTime: 15
+            }
+            for(let i = 0; i < regions.length; i++){
+                let item = regions[i]
+                obj.longestTime = item.content.duration > longestTime ? item.content.duration : longestTime
+                obj.data.push({
+                    id: item.id,
+                    content: {
+                        id: item.content.id,
+                        duration: item.content.duration
+                    }
+                })
+            }
+            return obj
+        },
+
+        // 投放其他布局的素材
+        putOtherLayout(params){
+            operationPutOtherLayoutMaterial(params).then(res => {
+                if(res.code === this.$successCode){
+                    this.$message.success('投放成功~')
+                    this.getScreenMaterialList()
+                }
+            })
+        },
+
+        showPop(e, id, placeholder, region){
+
+            //先隐藏并销毁之前显示的
+            this.$refs.contentAdaptation.visible = false
+
+            this.$refs.contentAdaptation.params = {
+                package: id,
+                placeholder,
+                region
+            }
+            var pop1 = this.$refs.contentAdaptation.$refs.pop1
+            pop1.doDestroy(true)
+
+            this.$nextTick(() => {
+                //显示新的
+                pop1.referenceElm = pop1.$refs.reference = e.target
+                this.$refs.contentAdaptation.visible = true
+            })
         }
     }
 
@@ -281,11 +384,11 @@ export default {
                     background: #fff;
                     border-radius: 12px;
                     margin: 0 28px 28px 0;
-                    overflow: hidden;
                     border-left: 12px solid #3B82F6;
-                    position: vertical;
+                    position: relative;
 
                     .el-icon-warning{
+                        font-size: 26px;
                         position: absolute;
                         top: -10px;
                         right: -10px;
@@ -299,8 +402,11 @@ export default {
 
 
                     .screen-content{
+                        height: 70px;
+
                         li{
-                            line-height: 26px;
+                            line-height: 24px;
+                            padding-top: 6px;
                             display: flex;
 
                             span.screen-layout-name{
@@ -340,10 +446,13 @@ export default {
                     }
                 }
 
-
-                .layout{
+                .layout-wrap{
                     width: 314px;
                     height: 135px;
+                }
+
+
+                .layout{
                     overflow: hidden;
                     position: relative;
                     background: #D0D4DA;
@@ -373,6 +482,33 @@ export default {
                             position: relative;
                             width: 100%;
                             height: 100%;
+                        }
+
+                        .content-operate{
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            z-index: 100;
+                            background: rgba(17, 24, 39, 0.6);
+                            display: none;
+
+                            li{
+                                width: 44px;
+                                height: 44px;
+                                border-radius: 50%;
+
+                                &.adaptation{
+                                    background: #0EA5E9;
+                                }
+                            }
+                        }
+
+                        &:hover{
+                            .content-operate{
+                                display: flex;
+                            }
                         }
                     }
                 }

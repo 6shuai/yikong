@@ -216,6 +216,10 @@ module.exports = {
 				target: 'https://static.xfengjing.com/publish',
 				changeOrigin: true
 			},
+			'/adaptation': {
+				target: 'https://static.xfengjing.com/publish',
+				changeOrigin: true
+			},
 			'/screen':  {
 				target: 'http://192.168.34.58:8181',
 				changeOrigin: true

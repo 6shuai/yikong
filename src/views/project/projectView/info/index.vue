@@ -176,7 +176,7 @@ export default {
 
         // 查看发票  
         handleShowInvoiceDetail(){
-            this.$router.push(`/invoiceApply?projectId=${this.$route.params.id}&clientId=${this.$store.state.project.projectDetail.client}`)
+            this.$router.push(`/invoiceApply?projectId=${this.$route.params.id}&clientId=${this.$store.state.project.projectDetail.publishedContract.firstParty}`)
         },
 
         // 编辑项目

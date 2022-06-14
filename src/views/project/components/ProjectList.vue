@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="time">
-                        <el-tooltip effect="dark" content="回款时间" placement="top">
+                        <el-tooltip effect="dark" content="合同时间" placement="top">
                             <img src="../../../assets/images/shijianzhouqi.png" /> 
                         </el-tooltip>
                         {{ item.validBegin }} -- {{ item.validEnd }}
