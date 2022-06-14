@@ -81,7 +81,6 @@ export default {
     methods: {
         // 显示寻位结果
         showLocatingResultDialog(data, screenList, screenTotalPrice, { publishDate, dueDate }){
-            this.showLocatingResult = true
             
             let arr = {}
             for(let i = 0; i < data.length; i++){
@@ -91,8 +90,14 @@ export default {
                     arr[data[i].results[j].date].push(data[i].results[j])
                 }
             }
-
-            console.log(arr)
+            
+            // 是否空对象
+            let obj = JSON.stringify(arr) 
+            if(obj == '{}'){
+                this.$message.success('操作成功~')
+                this.$router.push(`/project/${this.$route.params.id}/locating`)
+                return
+            }
             
             this.resData = arr
             this.totalPrice = screenTotalPrice
@@ -100,6 +105,8 @@ export default {
                 publishDate,
                 dueDate
             }
+        
+            this.showLocatingResult = true
         },
 
         // 查找屏幕详情

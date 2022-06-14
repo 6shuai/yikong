@@ -318,11 +318,19 @@ export default {
         // 确定锁位
         handleLock(){
             let data = JSON.parse(JSON.stringify(this.limitParams))
+            let limit = []
             data.project = Number(this.$route.params.id)
             data.screens = this.screenIds
-            data.limits = data.limitTimeData.concat(data.disableTimeData)
+            if(data.limitTimeData && data.limitTimeData.length){
+                limit = limit.concat(data.limitTimeData)
+            }
+            if(data.disableTimeData && data.disableTimeData.length){
+                limit = limit.concat(data.disableTimeData)
+            }
+            data.limits = limit
             delete data.limitTimeData
             delete data.disableTimeData
+            if(!data.limits || !data.limits.length) delete data.limits
 
             this.btnLoading = true
             projectLockPositionCreate(data).then(res => {

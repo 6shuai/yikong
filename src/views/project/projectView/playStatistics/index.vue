@@ -36,10 +36,12 @@
                         row-key="id"
                     >
                         <el-table-column
-                            label="大屏名称"
+                            label="大屏名称11"
                             min-width="80"
+                            align="center"
                         >
                             <template slot-scope="scope">
+                                <span class="delete" v-if="scope.row.deleted == 1">释</span>
                                 <a href="javascript:;" class="screen-name" @click="handlClickShowPlayCalendar(scope.row.placeholder)">
                                     {{ scope.row.screenName }}
                                 </a>
@@ -50,6 +52,7 @@
                             v-if="key.indexOf('-') > -1"
                             :label="key"
                             min-width="80"
+                            align="center"
                         >
                             <template slot-scope="scope">
                                 <a 
@@ -64,6 +67,7 @@
                         <el-table-column
                             label="漏播次数"
                             min-width="80"
+                            align="center"
                         >
                             <template slot-scope="scope">
                                 {{ scope.row.missingCount }}
@@ -194,6 +198,18 @@ export default {
                 .el-table thead tr th{
                     color: #333;
                     background: #D8D8D8;
+                }
+
+                .delete{
+                    display: inline-block;
+                    width: 24px;
+                    height: 24px;
+                    line-height: 24px;
+                    text-align: center;
+                    background: #D82323;
+                    color: #fff;
+                    transform: rotate(20deg);
+                    border-radius: 50%;
                 }
 
                 .screen-name{

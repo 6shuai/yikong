@@ -25,7 +25,7 @@
 
                             <div class="material-detail">
                                 <p>素材时长：{{ materialData.duration }}s</p>
-                                <p>素材分辨率：{{ materialData.width }} * {{ materialData.height }} &nbsp;({{ materialData.aspectRatio }})</p>
+                                <p>素材分辨率：{{ materialData.width }} * {{ materialData.height }} &nbsp;{{ materialData.aspectRatio ? `(${materialData.aspectRatio})` : '' }}</p>
                             </div>
                         </div>
                         <div class="right-content flex-center">
@@ -150,7 +150,15 @@ export default {
             this.progress()
             let myImg = URL.createObjectURL(file[0])
             let size = file[0].size
-            let _this = this;
+            let _this = this
+
+            let isLt300M = size / 1024 / 1024  < 300
+
+            if (!isLt300M) {
+                this.$message.error('上传视频大小不能超过300MB哦~')
+                this.uploadLoading = false
+                return false
+            }
 
             if(file[0].type.indexOf('video') > -1){
                 // 视频
@@ -162,7 +170,7 @@ export default {
                 videoElement.addEventListener("loadedmetadata", async function (_event) {
                     let width = videoElement.videoWidth
                     let height = videoElement.videoHeight
-                    let duration = videoElement.duration; // 视频时长
+                    let duration = videoElement.duration // 视频时长
 
                     _this.materialData = {
                         width,

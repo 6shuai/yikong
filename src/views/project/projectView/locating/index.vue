@@ -32,10 +32,16 @@
                                 <span class="play-count ml20">每日时间：{{ item.duration }}秒</span>
                             </p>
                             <div class="limit-time-wrap">
-                                <p v-if="item.limits && item.limits.length ">{{ item.limits[0].type == 2 ? '禁止播放时间' : '限制播放时间' }} ：
-                                    <span v-for="(limitTime, index) in item.limits" :key="index">
+                                <p v-if="formatLimitTime(item.limits).limitTimeData.length">限制播放时间 ：
+                                    <span v-for="(limitTime, index) in formatLimitTime(item.limits).limitTimeData" :key="index">
                                         {{ limitTime.begin }} - {{ limitTime.end }}
-                                        <span v-if="index < item.limits.length-1">, </span>
+                                        <span v-if="index < formatLimitTime(item.limits).limitTimeData.length-1">, </span>
+                                    </span>
+                                </p>
+                                <p v-if="formatLimitTime(item.limits).disableTimeData.length">禁止播放时间 ：
+                                    <span v-for="(limitTime, index) in formatLimitTime(item.limits).disableTimeData" :key="index">
+                                        {{ limitTime.begin }} - {{ limitTime.end }}
+                                        <span v-if="index < formatLimitTime(item.limits).disableTimeData.length-1">, </span>
                                     </span>
                                 </p>
                             </div>
@@ -86,9 +92,16 @@
 
 
                             <div class="screen-name overflow">{{ screen.name }} {{ screen.location ? `(${screen.location})` : '' }}</div>
+                            <div class="mask" v-if="screen.deleted"></div>
 
                             <div class="screen-bottom flex-center">
-                                <a href="javascript:;" @click.stop="handleFreedScreen(item.id, screen.id)">释放</a>
+                                <a 
+                                    href="javascript:;" 
+                                    @click.stop="!screen.deleted ? handleFreedScreen(item.id, screen.id) : ''"
+                                    :class="{ delete: screen.deleted }"
+                                >
+                                    释放 
+                                </a>
                                 <span v-if="screen.city">{{ screen.city }}</span>
                                 <span v-if="screen.level">{{ screen.level }}</span>
                             </div>
@@ -161,6 +174,25 @@ export default {
                     this.resData = res.obj
                 }
             })
+        },
+
+        // 格式化限制播放时间格式
+        formatLimitTime(data){
+            let obj = {
+                limitTimeData: [],
+                disableTimeData: []
+            }
+
+            for(let i = 0; i < data.length; i++){
+                let { begin, end, type } = data[i]
+
+                if(type == 1){
+                    obj.limitTimeData.push(data[i])
+                }else{
+                    obj.disableTimeData.push(data[i])
+                }
+            }
+            return obj
         },
 
         // 时间差
@@ -405,7 +437,7 @@ export default {
 
                     }
 
-                    .screen-name{
+                    .screen-name, .mask{
                         position: absolute;
                         left: 0;
                         top: 0;
@@ -415,6 +447,12 @@ export default {
                         color: #fff;
                         background:rgba(17, 24, 39, 0.45);
                         padding: 5px;
+                    }
+
+                    .mask{
+                        z-index: 98;
+                        width: 100%;
+                        height: 133px;
                     }
 
                     .screen-bottom{
@@ -440,6 +478,10 @@ export default {
                             color: #fff;
                             transform: rotate(20deg);
                             border-radius: 50%;
+
+                            &.delete{
+                                background: #D82323;
+                            }
                         }
                     }
 

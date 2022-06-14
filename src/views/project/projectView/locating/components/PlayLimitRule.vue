@@ -223,10 +223,10 @@ export default {
             limitParams: {},
 
             // 限制时间
-            limitTimeData: [{ type: 1 }],
+            limitTimeData: [],
 
             // 禁止时间
-            disableTimeData: [{ type: 2 }],
+            disableTimeData: [],
             
             // 是否显示播放限制
             showPlayLimit: false
@@ -244,8 +244,12 @@ export default {
                 times: 120
             }
             this.period = []
-            
+
+            this.limitTimeData = [{ type: 1 }]
+            this.disableTimeData = [{ type: 2 }]
+
             this.showPlayRule = true
+            this.showPlayLimit = false
 
             if((this.$route.query.type == 'again' && this.$store.state.project.againReserveData) || data){
                 let { publishDate, dueDate, duration, type, time, times, limits, priceSystem } = data ? data : this.$store.state.project.againReserveData
@@ -316,9 +320,10 @@ export default {
             }else if(!priceSystem) {
                 this.$message.warning('请选择价格体系~')
                 return
+            }else if(this.isHasRepeatTime()){
+                this.$message.warning('限制时间或禁止时间不允许重叠~')
+                return
             }
-
-
             
 
             this.limitParams = {
@@ -368,6 +373,8 @@ export default {
 
         // 格式化限制播放时间格式
         formatLimitTime(data){
+            this.limitTimeData = []
+            this.disableTimeData = []
             for(let i = 0; i < data.length; i++){
                 let { begin, end, type } = data[i]
 
@@ -383,12 +390,32 @@ export default {
                     })
                 }
             }
+
+            if(!this.limitTimeData.length) this.limitTimeData = [{ type: 1 }]
+            if(!this.disableTimeData.length) this.disableTimeData = [{ type: 1 }]
         },
 
         // 查询时间是否有交叉
-        finTimeHasCross(){
+        isHasRepeatTime(){ 
             let data = this.limitTimeData.concat(this.disableTimeData)
-            // for(let data)
+
+            const startTimeArr = []
+            const endTimeArr = [];
+            (data || []).map(function(item) {
+                if(item.time){
+                    startTimeArr.push(item.time[0])
+                    endTimeArr.push(item.time[1])
+                }
+            })
+            const allStartTime = startTimeArr.sort()
+            const allEndTime = endTimeArr.sort()
+            let result = 0
+            for (let k = 1; k < allStartTime.length; k++) {
+                if (allStartTime[k] < allEndTime[k - 1]) {
+                    result += 1
+                }
+            }
+            return result > 0
         }
     }
 }
