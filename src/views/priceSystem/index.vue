@@ -40,7 +40,7 @@
             shadow="hover"
             v-for="(item, index) in resData"
             :key="index"
-            @click.native.prevent="$router.push(`/priceSystem/${item.id}`)"
+            @click.native.prevent="handleClickCard(item)"
         >
             <el-checkbox 
                 v-show="showCheckbox"
@@ -254,6 +254,12 @@ export default {
                     this.handleCloseManage()
                 }
             })
+        },
+
+        // 点击价格体系 卡片
+        handleClickCard(item){
+            if(!this.showCheckbox) this.$router.push(`/priceSystem/${item.id}`)
+            else this.handelSelectPriceSystem(item)
         },
 
         // 关闭管理

@@ -252,7 +252,14 @@ export default {
             this.showPlayLimit = false
 
             if((this.$route.query.type == 'again' && this.$store.state.project.againReserveData) || data){
-                let { publishDate, dueDate, duration, type, time, times, limits, priceSystem } = data ? data : this.$store.state.project.againReserveData
+                let { publishDate, dueDate, duration, type, time, times, limits, priceSystem, limitTimeData, disableTimeData } = data ? data : this.$store.state.project.againReserveData
+
+                let limitsData = []
+                if(limitTimeData && limitTimeData.length) limitsData = limitsData.concat(limitTimeData)
+                if(disableTimeData && disableTimeData.length) limitsData = limitsData.concat(disableTimeData)
+                if(limitsData.length) limits = limitsData
+                
+
                 this.period = [publishDate, dueDate]
                 this.limitParams = {
                     duration,
@@ -261,11 +268,11 @@ export default {
                     times,
                     priceSystem: isNaN(priceSystem) ? priceSystem.id : priceSystem
                 }
+
                 if(limits && limits.length) {
                     this.formatLimitTime(limits)
                     this.showPlayLimit = limits.length ? true : false
                 }
-                
             }
 
             // 获取价格体系列表
@@ -392,7 +399,7 @@ export default {
             }
 
             if(!this.limitTimeData.length) this.limitTimeData = [{ type: 1 }]
-            if(!this.disableTimeData.length) this.disableTimeData = [{ type: 1 }]
+            if(!this.disableTimeData.length) this.disableTimeData = [{ type: 2 }]
         },
 
         // 查询时间是否有交叉

@@ -21,7 +21,7 @@
                             <li 
                                 v-for="(item, index) in resData" 
                                 :key="item.id"
-                                :class="{ 'active': currentMaterialIndex==index }"
+                                :class="`${currentMaterialIndex==index ? 'active' : ''} ${item.type == 2 ? 'video' : item.type == 3 ? 'game' : ''}`"
                                 @click="currentMaterialIndex = index;currentPlaceholder = null;getScreenList(item.id)"
                             >   
                                 <div class="delete-wrap flex-center" v-if="currentMaterialIndex==index">
@@ -361,6 +361,14 @@ export default {
                         border-left: 25px solid #5996FF; 
                         border-radius: 16px 0px 0px 16px;
                         position: relative;
+
+                        &.video{
+                            border-color: #6C59FF;
+                        }
+
+                        &.game{
+                            border-color: #FF597D;
+                        }
                         
                         .material-cover{
                             display: inline-block;

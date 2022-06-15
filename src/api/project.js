@@ -52,31 +52,6 @@ export function projectFinanceInfo(data) { return get('/project/publishedContrac
 export function projectFinanceCreateLog(data) { return post('/project/publishedContractPayment', data) }
 
 
-// 删除发票
-export function projectFinanceInvoiceDelete(data) { return del(`/project/publishedInvoice?id=${data}`) }
-
-
-
-// 查询成员列表
-export function projectMemberList(data) { return get('/project/publishedProjectMember', data) }
-
-// 添加项目成员
-export function projectMemberCreate(data) { return post('/project/publishedProjectMember', data) }
-
-// 删除项目成员
-export function projectMemberDelete(data) { return del(`/project/publishedProjectMember?id=${data}`) }
-
-// 根据用户名或昵称 查询用户列表
-export function projectMemberSearch(data) { return get('/project/platformUser', data) }
-
-
-// 添加 修改 受益人
-export function projectBeneficiaryCreate(data) { return post('/project/publishedBeneficiary', data) }
-
-// 删除受益人
-export function projectBeneficiaryDelete(data) { return del(`/project/publishedBeneficiary?id=${data}`) }
-
-
 // 寻位 - 获取屏幕列表
 export function projectLocationScreenList(data) { return get('/project/placeAndScreen', data) }
 

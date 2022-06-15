@@ -48,7 +48,10 @@
 
                             <div class="flex-between-center top-wrap">
                                 <div>{{ findTimePool(item.projectId) }}</div>
-                                <div class="duration" v-if="item.duration">{{ item.duration }}s</div>
+                                <div class="duration" v-if="item.duration || item.longestTime">
+                                    {{ item.duration || item.longestTime }}s
+                                    <i class="el-icon-arrow-down" @click="e=> showSetDurationPop(e, index, item.longestTime || item.duration)"></i>
+                                </div>
                             </div>
 
                             <div class="layout-wrap flex-center">
@@ -83,7 +86,7 @@
 
 
                                         <!-- 素材操作按钮 -->
-                                        <ul class="content-operate flex-center">
+                                        <ul class="content-operate flex-center" v-if="regions.content && item.type!='other'">
                                             <li class="adaptation flex-center" @click="e=> showPop(e, item.id, item.projectId, regions.id)">
                                                 <img src="../../../assets/images/operation_adaptation.png" />
                                             </li>
@@ -102,6 +105,7 @@
                                             <img v-if="content.content && content.content.type==1" src="../../../assets/images/operation_content_type_img.png" />
                                             <img v-if="content.content && content.content.type==2" src="../../../assets/images/operation_content_type_video.png" />
                                             {{ content.content ? content.content.name : '素材文件待上传' }}
+                                            <span class="duration" v-if="content.content && content.content.duration">{{ content.content.duration }}s</span>
                                         </span>
                                     </li>
                                 </ul>
@@ -131,8 +135,11 @@
             @setSuccess="showSetDefaultMaterial=false;getScreenMaterialList()"
         ></set-default-material>
 
-
+        <!-- 设置内容适配模式 -->
         <content-adaptation ref="contentAdaptation"></content-adaptation>
+
+        <!-- 设置素材包时长 -->
+        <set-content-duration ref="setContentDuration" @saveContentDuration="saveContentDuration"></set-content-duration>
 
     </div>
 </template>
@@ -145,6 +152,7 @@ import PutMaterial from './components/PutMaterial'
 import SelectOtherLayout from './components/SelectOtherLayout'
 import MaterialUpload from '../components/MaterialUpload'
 import ContentAdaptation from './components/ContentAdaptation'
+import SetContentDuration from './components/SetContentDuration'
 
 export default {
     components: {
@@ -153,7 +161,8 @@ export default {
         PutMaterial,
         SelectOtherLayout,
         MaterialUpload,
-        ContentAdaptation
+        ContentAdaptation,
+        SetContentDuration
     },
     data() {
         return {
@@ -273,38 +282,38 @@ export default {
                 percentage: completeVal || 0,
                 content: obj || null
             }
+
+            if(obj && obj.duration) data.longestTime = (obj.duration > data.longestTime || !data.longestTime) ? obj.duration : data.longestTime
+
+
             this.$set(this.materialData, index, data)
+
 
             if(this.regionsAllHasContent(data.screenLayout.regions)){
                 console.log('全部上传完成~', data)
 
-
-                let { data, longestTime } = this.regionsData(data.screenLayout.regions)
+                let regionsData = this.regionsData(data.screenLayout.regions)
 
                 let params = {
                     project: data.projectId,
-                    duration: longestTime,
+                    duration: data.duration || data.longestTime,
                     layout: {
                         id: data.screenLayout.id,
-                        regions: data
+                        regions: regionsData
                     }
                 }
 
-                console.log(params)
                 this.putOtherLayout(params)
             }
         },
 
         // 获取逻辑区域id 和内容   longestTime 最长时长 
         regionsData(regions){
-            let obj = {
-                data: [],
-                longestTime: 15
-            }
+            let regionsData = []
+
             for(let i = 0; i < regions.length; i++){
                 let item = regions[i]
-                obj.longestTime = item.content.duration > longestTime ? item.content.duration : longestTime
-                obj.data.push({
+                regionsData.push({
                     id: item.id,
                     content: {
                         id: item.content.id,
@@ -312,7 +321,7 @@ export default {
                     }
                 })
             }
-            return obj
+            return regionsData
         },
 
         // 投放其他布局的素材
@@ -324,15 +333,16 @@ export default {
                 }
             })
         },
-
-        showPop(e, id, placeholder, region){
+        
+        // 显示内容适配
+        showPop(e, id, projectId, region){
 
             //先隐藏并销毁之前显示的
             this.$refs.contentAdaptation.visible = false
 
             this.$refs.contentAdaptation.params = {
                 package: id,
-                placeholder,
+                placeholder: this.findCurrentPlaceholder(projectId),
                 region
             }
             var pop1 = this.$refs.contentAdaptation.$refs.pop1
@@ -343,6 +353,42 @@ export default {
                 pop1.referenceElm = pop1.$refs.reference = e.target
                 this.$refs.contentAdaptation.visible = true
             })
+        },
+
+        // 查找素材包投放的锁位id
+        findCurrentPlaceholder(projectId){
+            let placeholder = null
+            for(let i = 0; i < this.screenLayout.orders.length; i++){
+                if(this.screenLayout.orders[i].projectId == projectId){
+                    placeholder = this.screenLayout.orders[i].placeholder
+                }
+            }
+
+            return placeholder
+        },
+
+        // 显示设置素材时长
+        showSetDurationPop(e, index, defaultDuration){
+            //先隐藏并销毁之前显示的
+            this.$refs.setContentDuration.visible = false
+
+            this.$refs.setContentDuration.params = {
+                index,
+                defaultDuration
+            }
+            var pop = this.$refs.setContentDuration.$refs.setDurationPop
+            pop.doDestroy(true)
+
+            this.$nextTick(() => {
+                //显示新的
+                pop.referenceElm = pop.$refs.reference = e.target
+                this.$refs.setContentDuration.visible = true
+            })
+        },
+
+        // 把设置好的时长 添加到当前素材包
+        saveContentDuration(duration, index){
+            this.$set(this.materialData[index], 'duration', duration)
         }
     }
 
@@ -398,6 +444,11 @@ export default {
                     .top-wrap{
                         padding-bottom: 6px;   
                         color: #6B7280;
+                        font-size: 14px;
+
+                        i{
+                            cursor: pointer;
+                        }
                     }
 
 
@@ -418,6 +469,11 @@ export default {
 
                             span.content-name{
                                 flex: 1;
+
+                                .duration{
+                                    font-size: 12px;
+                                    color: #6B7280;
+                                }
                             }
                         }
                     }

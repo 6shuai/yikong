@@ -7,36 +7,28 @@
         <el-card class="screen-play-detail"> 
             <div class="detail-content">
                 <div class="property">
-                    <p class="title">播放规则
-                        <span class="limit-1" v-if="limitParams.type==1">轮播</span>
-                        <span class="limit-2" v-if="limitParams.type==3">插播</span>
+                    <p class="time-period">上刊时间段： {{ limitParams.publishDate }} -- {{ limitParams.dueDate }}</p>
+                    <p v-if="limitParams.type == 1">
+                        <span class="play-type">轮播</span>
+                        <span class="play-duration ml20">播放时长： {{ limitParams.duration }}s</span>
+                        <span class="play-count ml20">每日播放次数：{{ limitParams.times }}次</span>
                     </p>
-                    <p>
-                        <span>开始日期: {{ limitParams.publishDate }}</span>
-                        <span class="ml10" v-if="limitParams.type==1">素材时长: {{ limitParams.duration }}s</span>
-                        <span class="ml10" v-if="limitParams.type==3">开始时间: {{ limitParams.time }}</span>
+                    <p v-if="limitParams.type == 3">
+                        <span class="play-type limit-2">插播</span>
+                        <span class="play-duration ml20">开始时间： {{ limitParams.time }}</span>
+                        <span class="play-count ml20">每日时间：{{ limitParams.duration }}秒</span>
                     </p>
-                    <p>
-                        <span>结束日期: {{ limitParams.dueDate }}</span>
-                        <span class="ml10" v-if="limitParams.type==1">每日播放次数: {{ limitParams.times }}次</span>
-                        <span class="ml10" v-if="limitParams.type==3">播放时长: {{ limitParams.duration }}s</span>
-                    </p>
-
-                    <div class="limit" v-if="limitParams.limitTimeData && limitParams.limitTimeData.length">
-                        <p>限制播放时间: 
-                            <span v-if="!limitParams.limitTimeData || !limitParams.limitTimeData.length">--</span>
-                            <span v-else v-for="(item, index) in limitParams.limitTimeData" :key="index">
-                                {{ item.begin + ' - ' + item.end }} 
-                                {{ index!= limitParams.limitTimeData.length-1 ? ' , ' : '' }}
+                    <div class="limit-time-wrap">
+                        <p v-if="limitParams.limitTimeData && limitParams.limitTimeData.length">限制播放时间 ：
+                            <span v-for="(limitTime, index) in limitParams.limitTimeData" :key="index">
+                                {{ limitTime.begin }} - {{ limitTime.end }}
+                                <span v-if="index < limitParams.limitTimeData.length-1">, </span>
                             </span>
                         </p>
-                    </div>
-                    <div class="limit" v-if="limitParams.disableTimeData && limitParams.disableTimeData.length">
-                        <p>禁止播放时间: 
-                            <span v-if="!limitParams.disableTimeData || !limitParams.disableTimeData.length">--</span>
-                            <span v-else v-for="(item, index) in limitParams.disableTimeData" :key="index">
-                                {{ item.begin + ' - ' + item.end }} 
-                                {{ index!= limitParams.disableTimeData.length-1 ? ' , ' : '' }}
+                        <p v-if="limitParams.disableTimeData && limitParams.disableTimeData.length">禁止播放时间 ：
+                            <span v-for="(limitTime, index) in limitParams.disableTimeData " :key="index">
+                                {{ limitTime.begin }} - {{ limitTime.end }}
+                                <span v-if="index < limitParams.disableTimeData .length-1">, </span>
                             </span>
                         </p>
                     </div>
@@ -374,23 +366,17 @@ export default {
             background: #e3fdfd;
             padding: 0 20px;
 
-            p{
-                line-height: 24px;
-
-                &.title{
-                    font-size: 18px;
-                    font-weight: bold;
-                    padding-bottom: 10px;
-                }
-            }
-
             .detail-content{
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
 
-                .property .title{
-                    span{
+                .property{
+                    line-height: 26px;
+                    font-size: 14px;
+                    font-weight: bold;
+
+                    .play-type{
                         display: inline-block;
                         background: #0091C2;
                         border-radius: 4px;
@@ -398,11 +384,14 @@ export default {
                         padding: 2px 10px;
                         font-size: 14px;
                         line-height: 20px;
-                        margin-left: 10px;
 
                         &.limit-2{
                             background: #C27B00;
                         }
+                    }
+
+                    .limit-time-wrap{
+                        padding-left: 70px;
                     }
                 }
 

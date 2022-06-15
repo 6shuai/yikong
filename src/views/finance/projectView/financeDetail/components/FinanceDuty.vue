@@ -38,6 +38,9 @@
                     :label="index=='screenName' ? '点位' : index" 
                     min-width="100"
                 >
+                    <template slot-scope="scope">
+                        {{ index == 'screenName' ? scope.row.screenName : moneyFormat(scope.row[index]) }}
+                    </template>
                 </el-table-column>
             </el-table>
         </div>
@@ -46,10 +49,20 @@
 </template>
 
 <script>
+import { priceFormat } from '@/utils/index'
+
 export default {
     props: {
         dutyData: Array,
         projectId: Number,
+    },
+    computed: {
+        // 金额格式化
+        moneyFormat(){
+            return (key) => {
+                return priceFormat(key)
+            }
+        }
     },
     methods: {
         download(){

@@ -44,7 +44,6 @@
                         ...resData.invoiceData,
                         amount: resData.amount
                     }"
-                    @handleAddInvoice="handleAddInvoice"
                 ></finance-invoice>
             </el-tab-pane>
 
@@ -61,9 +60,6 @@
         <!-- 添加付款记录 -->
         <create-payment-log ref="createPaymentLog"></create-payment-log>
 
-        <!-- 添加发票 -->
-        <create-invoice ref="createInvoice"></create-invoice>
-
     </div>
 </template>
 
@@ -74,7 +70,6 @@ import FinanceDetail from './components/FinanceDetail'
 import FinancePayment from './components/FinancePayment'
 import CreatePaymentLog from './components/CreatePaymentLog'
 import FinanceInvoice from './components/FinanceInvoice'
-import CreateInvoice from './components/CreateInvoice'
 import FinanceDuty from './components/FinanceDuty'
 
 export default {
@@ -83,7 +78,6 @@ export default {
         FinancePayment,
         CreatePaymentLog,
         FinanceInvoice,
-        CreateInvoice,
         FinanceDuty
     },
     props: {
@@ -132,11 +126,6 @@ export default {
         // 显示添加付款记录窗口
         handleAddLog(data = { contract: this.contractId }){
             this.$refs.createPaymentLog.showCreatePaymentLogDialog(data, this.paymentInfo.nonPayment)
-        },
-
-        // 显示添加发票窗口
-        handleAddInvoice(data = { contract: this.contractId }){
-            this.$refs.createInvoice.showCreateInvoiceDialog(data)
         }
     }
 }

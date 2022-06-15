@@ -25,9 +25,11 @@
                                 @change="handleAllSelected"
                             ></el-checkbox>
                         </el-col>
-                        <el-col :span="8">项目名称</el-col>
-                        <el-col :span="7">回款金额</el-col>
-                        <el-col :span="7">可开票金额</el-col>
+                        <el-col :span="6">项目名称</el-col>
+                        <el-col :span="4">合同金额</el-col>
+                        <el-col :span="4">回款金额</el-col>
+                        <el-col :span="4">已开票金额</el-col>
+                        <el-col :span="4">可开票金额</el-col>
                     </el-row>
                     <el-scrollbar class="project-list-scrollbar hidden-scroll-x">
                         <el-row 
@@ -43,9 +45,11 @@
                                     @change="item.checked = !item.checked; handleClickCheckbox(item)"
                                 ></el-checkbox>
                             </el-col>
-                            <el-col :span="8">{{ item.displayName }}</el-col>
-                            <el-col :span="7">{{ moneyFormat(item.payment) }}</el-col>
-                            <el-col :span="7">{{ moneyFormat(item.allowInvoicing) }}</el-col>
+                            <el-col :span="6">{{ item.displayName }}</el-col>
+                            <el-col :span="4">{{ moneyFormat(item.amount) }}</el-col>
+                            <el-col :span="4">{{ moneyFormat(item.payment) }}</el-col>
+                            <el-col :span="4">{{ moneyFormat(item.amount - item.allowInvoicing) }}</el-col>
+                            <el-col :span="4">{{ moneyFormat(item.allowInvoicing) }}</el-col>
                         </el-row>
                     </el-scrollbar>
                 </div>

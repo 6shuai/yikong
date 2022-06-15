@@ -86,14 +86,6 @@ const projectRoutes = [
                         }
                     },
                     {
-                        path: 'member',
-                        name: 'Project--member',
-                        component: () => import('@/views/project/projectView/member/index'),
-                        meta: {
-                            title: '项目 - 成员'
-                        }
-                    },
-                    {
                         path: 'locating',
                         name: 'Project--locating',
                         component: () => import('@/views/project/projectView/locating/index'),

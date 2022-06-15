@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         width="1000px"
-        title="创建提成体系"
+        :title="ruleData.id ? '编辑提成体系' : '创建提成体系'"
         :visible.sync="showCreateSystemDialog"
         :close-on-click-modal="false"
         :close-on-press-escape="false"

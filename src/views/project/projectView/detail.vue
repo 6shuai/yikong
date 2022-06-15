@@ -41,10 +41,6 @@
                     :disabled="projectContractDetail && !projectContractDetail.id"
                 ></el-tab-pane>
                 <el-tab-pane 
-                    label="项目成员" 
-                    :name="`/project/${$route.params.id}/member`"
-                ></el-tab-pane>
-                <el-tab-pane 
                     label="发票中心" 
                     :name="`/project/${$route.params.id}/invoiceCenter`"
                 ></el-tab-pane>

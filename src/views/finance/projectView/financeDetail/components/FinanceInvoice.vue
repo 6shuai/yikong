@@ -9,16 +9,6 @@
 <template>
     <div class="add-invoice">
         <div class="payment-log-top">
-            <el-button 
-                type="primary"
-                size="small"
-                icon="el-icon-plus"
-                class="mt20"
-                @click="handleAddInvoice()"
-            >
-                添加发票
-            </el-button>
-    
             <div class="statistics">
                 <span>应开票金额: {{ moneyFormat(invoiceData.amount) }}</span>
                 <span>已开票金额: {{ moneyFormat(invoiceData.sumInvoice) }}</span>
@@ -61,45 +51,11 @@
                 label="开票时间" 
                 min-width="60"
             ></el-table-column>
-            <el-table-column 
-                prop="beginTime" 
-                label="操作" 
-                width="150"
-            >
-                <template slot-scope="scope">
-                    <el-button
-                        type="primary"
-                        plain
-                        size="mini"
-                        @click="handleAddInvoice(scope.row)"
-                    >
-                        编辑
-                    </el-button>
-                    <el-popconfirm
-                        confirm-button-text='删除'
-                        cancel-button-text='取消'
-                        icon="el-icon-info"
-                        icon-color="red"
-                        title="此操作将删除此发票, 是否继续?"
-                        @confirm="handleDelete(scope.row.id, scope.$index)"
-                    >
-                        <el-button 
-                            type="danger" 
-                            slot="reference"
-                            size="mini"
-                            plain
-                        >
-                            删除
-                        </el-button>
-                    </el-popconfirm>
-                </template>
-            </el-table-column>
         </el-table>
     </div>
 </template>
 
 <script>
-import { projectFinanceInvoiceDelete } from '@/api/project'
 import { priceFormat } from '@/utils/index'
 
 export default {
@@ -112,22 +68,6 @@ export default {
             return (key) => {
                 return priceFormat(key)
             }
-        }
-    },
-    methods: {
-        // 添加 或 编辑 发票
-        handleAddInvoice(data){
-            this.$emit('handleAddInvoice', data)
-        },
-
-        // 删除发票
-        handleDelete(id, index){
-            projectFinanceInvoiceDelete(id).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('删除成功~')
-                    this.invoiceData.publishedInvoices.splice(index, 1)
-                }
-            })
         }
     }
 }

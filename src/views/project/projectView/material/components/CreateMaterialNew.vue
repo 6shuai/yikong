@@ -152,10 +152,12 @@ export default {
             let size = file[0].size
             let _this = this
 
-            let isLt300M = size / 1024 / 1024  < 300
+            let isLt300M = size / 1024 / 1024  < 1
 
             if (!isLt300M) {
-                this.$message.error('上传视频大小不能超过300MB哦~')
+                this.$alert('请上传不大于300M的素材内容。', '提示', {
+                    confirmButtonText: '确定'
+                })
                 this.uploadLoading = false
                 return false
             }

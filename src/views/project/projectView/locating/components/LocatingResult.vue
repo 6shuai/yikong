@@ -6,6 +6,7 @@
         :visible.sync="showLocatingResult"
         :close-on-press-escape="false"
         append-to-body
+        @close="handleGoLocating"
     >
 
         <!-- 锁位失败详情 -->

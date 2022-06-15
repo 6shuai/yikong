@@ -118,6 +118,7 @@ export default {
                         height, 
                         duration, 
                         content: contentPath,
+                        thumbnail: cover || contentPath,
                         name: displayName,
                         id
                     }
