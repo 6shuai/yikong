@@ -6,11 +6,78 @@
 
 :root{
 	--color-primary: #0284C7;
-	--color-success: #36D977;
-	--color-warning: #F2AA3D;
-	--color-danger: #E63939;
-	--color-info: #FF4066;
+	--color-success: #059669;
+	--color-warning: #D97706;
+	--color-danger: #DC2626;
+	--color-info: #6B7280;
+	--color-text: #111827;
+	--bg-color-1: #F3F4F6;
+	--bg-color-2: #E5E7EB;
+	--bg-color-3: #D1D5DB;
+	
+	// 暗黑
+	--color-dark-primary: #0EA5E9;
+	--color-dark-success: #10B981;
+	--color-dark-warning: #F59E0B; 
+	--color-dark-danger: #EF4444;
+	--color-dark-info: #9CA3AF;
+	--bg-color-dark-1: #1F2937;
+	--bg-color-dark-2: #374151;
+	--bg-color-dark-3: #4B5563;
+	
 }
+
+.color-primary{
+	color: #0284C7;
+}
+.color-success{
+	color: #059669;
+}
+.color-warning{
+	color: #D97706;
+}
+.color-danger{
+	color: #DC2626;
+}
+.color-info{
+	color: #6B7280;
+}
+
+// 轻提示
+.text-q{
+	font-size: 12px;
+}
+
+// 提示 
+.text-t{
+	font-size: 12px;
+	font-weight: 500;
+}
+
+// 正文
+.text-z{
+	font-size: 14px;
+}
+
+// 重点
+.text-zd{
+	font-size: 14px;
+	font-weight: 500;
+}
+
+// 二级标题
+.text-title-2{
+	font-size: 16px;
+	font-weight: 500;
+}
+
+// 一级标题
+.text-title{
+	font-size: 18px;
+	font-weight: 500;
+}
+
+
 
 body {
 	height: 100vh;
@@ -18,6 +85,8 @@ body {
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	font-family: '思源黑体';
+	color: #111827;
+	font-size: 14px;
 }
 
 .el-table th.gutter{

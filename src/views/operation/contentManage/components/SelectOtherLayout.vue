@@ -14,7 +14,7 @@
         width="578"
         ref="popover"
         trigger="click">
-        <div class="other-layout-btn" slot="reference" @click.stop="handleShowOtherLayout">
+        <div class="other-layout-btn text-z" slot="reference" @click.stop="handleShowOtherLayout">
             其他布局<i class="el-icon-arrow-down"></i>
         </div>
         
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="name">{{ item.name }}</div>
+                    <div class="name text-q">{{ item.name }}</div>
                 </div>
             </div>
         </el-scrollbar>
@@ -108,6 +108,7 @@ export default {
 
         .layout-list{
             width: 576px;
+            min-height: 156px;
             display: flex;
             flex-wrap: wrap;
 
@@ -122,7 +123,7 @@ export default {
                 }
 
                 .layout{
-                    background: #6B7280;
+                    background: var(--color-info);
                     border-radius: 6px;
                     overflow: hidden;
                     position: relative;
@@ -140,21 +141,21 @@ export default {
                     }
                 }
 
-                .name{
-                    font-size: 12px;
-                }
-
                 &:hover{
                     background: var(--color-primary);
                     color: #fff;
 
                     .layout{
-                        background: #9CA3AF;
+                        background: var(--color-dark-info);
 
                         .region{
                             border-color: var(--color-primary);
                         }
                     }
+                }
+
+                .name{
+                    padding-bottom: 10px;
                 }
             }
         }

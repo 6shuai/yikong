@@ -289,7 +289,7 @@ export default {
 
     .created-material-wrap{
         padding: 40px 20px 0;
-        background: #F3F4F6;
+        background: var(--bg-color-1);
         border-radius: 12px;
 
         .drag-upload-wrap{

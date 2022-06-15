@@ -98,7 +98,7 @@ export default {
         bottom: 0;
         left: 0;
         z-index: 1001;
-        background: #1F2937;
+        background: var(--bg-color-dark-1);
         color: #fff;
         transition: width 0.28s;
 
@@ -127,13 +127,13 @@ export default {
                 }
 
                 &.active{
-                    color: #111827;
-                    background: #0EA5E9;
+                    color: var(--color-text);
+                    background: var(--color-dark-primary);
                 }
 
                 &:hover{
-                    color: #111827;
-                    background: #0EA5E9;
+                    color: var(--color-text);
+                    background: var(--color-dark-primary);
                 }
             }
         }

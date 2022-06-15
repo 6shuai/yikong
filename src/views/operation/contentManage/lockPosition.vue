@@ -28,24 +28,13 @@
                 </div>
 
 
-                <!-- <div class="filter-item">
-                    <label>分组</label>
-                    <div class="tabs">
-                        <span 
-                            v-for="(item, index) in ['按城市', '按宽高比']"
-                            :key="index"
-                            :class="{ 'active': groupTypetabIndex == index }"
-                            @click="groupTypetabIndex = index; placeGrouSet()"
-                        >{{ item }}</span>
-                    </div>
-                </div> -->
-
-                <div class="filter-item">
+                <div class="filter-item text-q color-info">
                     <label>筛选</label>
                     <div class="tabs">
                         <span 
                             v-for="(item, index) in [{ name: '全部', value: true }, { name: '未分配', value: false }]"
                             :key="index"
+                            class="text-q color-info"
                             :class="{ 'active': placeParams.all == item.value }"
                             @click="placeParams.all=item.value;getLockPositionList()"
                         >{{ item.name }}</span>
@@ -61,7 +50,7 @@
                         :key="index"
                     >
                         <div 
-                            class="city-title flex-between-center" 
+                            class="city-title text-q flex-between-center" 
                             @click="handleToggleHide(index)"
                         >
                             <span>{{ groupName }}</span> 
@@ -129,7 +118,7 @@
                                 <p class="value">{{ item.type == 2 ? item.durationText : item.duration }}<span>{{ item.type==4 ? '%' : '' }}</span></p>
                             </div>
                         </div>
-                        <div class="add" @click="$refs.createdLockRule.showCreateRuleDialog()">
+                        <div class="add color-info" @click="$refs.createdLockRule.showCreateRuleDialog()">
                             <i class="el-icon-plus"></i>
                         </div>
                     </div>
@@ -369,8 +358,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    $bgColor: #F3F4F6;
-
     .lock-position-config-wrap {
         width: 100%;
         height: calc(100vh - 40px);
@@ -378,7 +365,7 @@ export default {
         
         .left-screen-list{
             width: 266px;
-            background: $bgColor;
+            background: var(--bg-color-1);
         
             .filter-wrap{
                 padding: 0 12px;
@@ -406,8 +393,6 @@ export default {
                     padding: 6px 0;
                     display: flex;
                     align-items: center;
-                    font-size: 12px;
-                    color: #6B7280;
 
                     label{
                         width: 36px;
@@ -418,22 +403,20 @@ export default {
                         height: 27px;
                         line-height: 27px;
                         display: flex;
-                        border: 1px solid #6B7280;
+                        border: 1px solid var(--color-info);
                         border-radius: 3px;
 
                         span{
                             flex: 1;
-                            font-size: 12px;
-                            color: #6B7280;
                             text-align: center;
                             cursor: pointer;
 
                             &:first-child{
-                                border-right: 1px solid #6B7280;
+                                border-right: 1px solid var(--color-info);
                             }
 
                             &.active{
-                                background: #6B7280;
+                                background: var(--color-info);
                                 color: #fff
                             }
                         }
@@ -450,7 +433,6 @@ export default {
 
                 .city-group{
                     .city-title{
-                        font-size: 12px;
                         line-height: 39px;
                         padding: 0 12px;
                     }
@@ -492,7 +474,7 @@ export default {
 
                         &.not-layout{
                             height: 39px;
-                            background: #D97706;
+                            background: var(--color-warning);
                             color: #fff;
                             font-size: 13px;
                             
@@ -534,7 +516,7 @@ export default {
             .item{
                 width: 172px;
                 height: 78px;
-                background: #6B7280;
+                background: var(--color-info);
                 border-radius: 6px;
                 overflow: hidden;
                 margin: 12px;
@@ -569,8 +551,7 @@ export default {
                 width: 60px;
                 height: 60px;
                 line-height: 60px;
-                border: 1px solid #6B7280;
-                color: #6B7280;
+                border: 1px solid var(--color-info);
                 font-size: 28px;
                 border-radius: 6px;
                 margin: 12px;
@@ -581,7 +562,7 @@ export default {
 
         .selected-screen-list-wrap{
             flex: 1;
-            background: $bgColor;
+            background: var(--bg-color-1);
             margin: 12px;
             flex-wrap: wrap;
 
@@ -606,7 +587,7 @@ export default {
         .lock-position-config-bottom{
             height: 50px;
             padding: 0 20px;
-            background: $bgColor;
+            background: var(--bg-color-1);
             display: flex;
             justify-content: space-between;
             align-items: center;

@@ -391,7 +391,7 @@ export default {
             }
 
             .material-screen-list{
-                background: #F3F4F6;
+                background: var(--bg-color-1);
                 border-radius: 12px;
                 margin-left: 40px;
                 padding: 16px;
@@ -592,7 +592,6 @@ export default {
                 line-height: 30px;
                 font-size: 14px;
                 background: rgba(255, 255, 255, 0.73);
-                color: #111827;
                 border-radius: 8px;
                 text-align: center;
                 z-index: 1000;

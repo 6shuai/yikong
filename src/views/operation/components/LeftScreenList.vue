@@ -29,14 +29,7 @@
                     @input="$debounce(getScreenList)"
                 ></el-input>
             </div>
-            <!-- <div class="screen-list-tab">
-                <span 
-                    v-for="(item, index) in [{ id: 1, name: '按城市' }, { id: 2, name: '按屏幕比例' }]"
-                    :key="index"
-                    :class="{ 'active': searchParams.groupType == item.id }"
-                    @click="searchParams.groupType = item.id; getScreenList()"
-                >{{ item.name }}</span>
-            </div> -->
+
             <el-scrollbar class="screen-list hidden-scroll-x">
                 <div 
                     class="screen-group-wrap"
@@ -61,11 +54,11 @@
                     </ul>
                 </div>
             </el-scrollbar>
-            <div class="toggel-fold-list" @click="foldList = !foldList">
+            <div class="toggel-fold-list text-q" @click="foldList = !foldList">
                 <a href="javascript:;"><i class="el-icon-arrow-left"></i>点击折叠商场列表</a>
             </div>
         </div>
-        <div v-show="foldList" class="fold-list">
+        <div v-show="foldList" class="fold-list text-q">
             <a href="javascript:;" @click="foldList = !foldList">
                 <span>点击展开商场列表<i class="el-icon-arrow-right"></i></span>
             </a>
@@ -154,8 +147,6 @@ export default {
 </script>
 
 <style lang="scss">
-    $bgColor: #F3F4F6;
-
     .content-manage-wrap{
         display: flex;
         height: calc(100vh - 40px);
@@ -163,7 +154,7 @@ export default {
 
         .left-screen-list{
             width: 240px;
-            background: $bgColor;
+            background: var(--bg-color-1);
 
             &.fold{
                 width: 36px;
@@ -180,8 +171,8 @@ export default {
             }
 
             .head-wrap{
-                padding: 12px;
                 display: flex;
+                padding: 12px;
                 align-items: center;
                 
                 .head-left-icon{
@@ -195,32 +186,6 @@ export default {
                 }
             }
 
-            .screen-list-tab{
-                margin: 6px 12px;
-                height: 27px;
-                line-height: 27px;
-                display: flex;
-                border: 1px solid #6B7280;
-                border-radius: 3px;
-                
-                span{
-                    flex: 1;
-                    font-size: 12px;
-                    color: #6B7280;
-                    text-align: center;
-                    cursor: pointer;
-
-                    &:first-child{
-                        border-right: 1px solid #6B7280;
-                    }
-
-                    &.active{
-                        background: #6B7280;
-                        color: #fff
-                    }
-                }
-            }
-
             .screen-list{
                 height: calc(100vh - 125px);
 
@@ -228,7 +193,7 @@ export default {
                     .group-title{
                         font-size: 12px;
                         line-height: 15px;
-                        color: #374151;
+                        color: var(--bg-color-dark-2);
                         padding: 12px;
                         cursor: pointer;
                     }
@@ -241,7 +206,6 @@ export default {
                     li{
                         padding: 0 18px;
                         line-height: 36px;
-                        color: #111827;
                         cursor: pointer;
                         overflow: hidden;
                         text-overflow: ellipsis;
@@ -289,10 +253,9 @@ export default {
             }
 
             .toggel-fold-list, .fold-list{
-                font-size: 12px;
                 line-height: 29px;
                 text-align: center;
-                color: #9CA3AF;
+                color: var(--color-dark-info);
 
                 &:hover{
                     color: var(--color-primary)

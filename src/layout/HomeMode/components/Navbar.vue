@@ -73,17 +73,17 @@ export default {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background: #374151;
+	background: var(--bg-color-dark-2);
 	box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 	
 	.nickname, .el-icon-arrow-down, .el-breadcrumb__inner a{
-		color: #F3F4F6; 
+		color: var(--bg-color-1); 
 	}
 
 	.breadcrumb-container {
 		float: left;
 		cursor: pointer;
-		color: #F3F4F6;
+		color: var(--bg-color-1);
 		transition: background 0.3s;
 		-webkit-tap-highlight-color: transparent;
 

@@ -48,7 +48,7 @@
 
                             <div class="flex-between-center top-wrap">
                                 <div>{{ findTimePool(item.projectId) }}</div>
-                                <div class="duration" v-if="item.duration || item.longestTime">
+                                <div class="duration text-q color-info" v-if="item.duration || item.longestTime">
                                     {{ item.duration || item.longestTime }}s
                                     <i class="el-icon-arrow-down" @click="e=> showSetDurationPop(e, index, item.longestTime || item.duration)"></i>
                                 </div>
@@ -100,7 +100,7 @@
                             <el-scrollbar class="hidden-scroll-x screen-content">
                                 <ul>
                                     <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content ? content.content.name : ''">
-                                        <span class="screen-layout-name overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
+                                        <span class="screen-layout-name text-q overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
                                         <span class="content-name overflow">
                                             <img v-if="content.content && content.content.type==1" src="../../../assets/images/operation_content_type_img.png" />
                                             <img v-if="content.content && content.content.type==2" src="../../../assets/images/operation_content_type_video.png" />
@@ -404,7 +404,7 @@ export default {
 
             .content-wrap{
                 height: 100%;
-                background: #F3F3F4;
+                background: var(--bg-color-1);
                 border-radius: 6px;
                 padding: 20px;
                 position: relative;
@@ -443,8 +443,7 @@ export default {
 
                     .top-wrap{
                         padding-bottom: 6px;   
-                        color: #6B7280;
-                        font-size: 14px;
+                        color: var(--color-info);
 
                         i{
                             cursor: pointer;
@@ -462,32 +461,25 @@ export default {
 
                             span.screen-layout-name{
                                 width: 30px; 
-                                font-size: 12px;
                                 color: #999;
                                 margin-right: 10px;
                             }
 
                             span.content-name{
                                 flex: 1;
-
-                                .duration{
-                                    font-size: 12px;
-                                    color: #6B7280;
-                                }
                             }
                         }
                     }
 
                     &.add{
-                        color: #9CA3AF;
-                        background: #E5E7EB;
+                        color: var(--color-dark-info);
+                        background: var(--bg-color-2);
                         font-size: 52px;
                         cursor: pointer;
                         border: none;
                         position: relative;
 
                         .other-layout-btn{
-                            font-size: 14px;
                             position: absolute;
                             bottom: 12px;
                             right: 12px;
@@ -495,7 +487,7 @@ export default {
                             height: 30px;
                             line-height: 30px;
                             text-align: center;
-                            background: #6B7280;
+                            background: var(--color-info);
                             border-radius: 3px;
                             color: #fff;
                         }
@@ -511,7 +503,7 @@ export default {
                 .layout{
                     overflow: hidden;
                     position: relative;
-                    background: #D0D4DA;
+                    background: var(--bg-color-1);
                     cursor: pointer;
 
                     &.vertical{
@@ -522,7 +514,7 @@ export default {
                     .region{
                         position: absolute;
                         border: 1px solid #fff;
-                        background: #F3F4F6;
+                        background: var(--bg-color-1);
                         cursor: pointer;
                         
                         .el-image{
@@ -556,7 +548,7 @@ export default {
                                 border-radius: 50%;
 
                                 &.adaptation{
-                                    background: #0EA5E9;
+                                    background: var(--color-dark-primary);
                                 }
                             }
                         }

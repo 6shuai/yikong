@@ -469,7 +469,7 @@ export default {
             padding: 0 50px;
             width: 100%;
             height: 59px;
-            background: #F3F4F6;
+            background: var(--bg-color-1);
 
             .screen-count{
                 color: #3D3D3D;

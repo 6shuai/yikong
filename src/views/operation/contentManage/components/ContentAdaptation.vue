@@ -16,7 +16,7 @@
 
                 <div class="bottom">
                     <p class="title">适应</p>
-                    <p class="msg">全部显示 不变形 可能黑边</p>
+                    <p class="msg text-q">全部显示 不变形 可能黑边</p>
                 </div>
             </li>
             <li class="stretch" @click="setAdaptationModel(2)">
@@ -28,7 +28,7 @@
 
                 <div class="bottom">
                     <p class="title">拉伸</p>
-                    <p class="msg">全部显示 可能变形 无黑边</p>
+                    <p class="msg text-q">全部显示 可能变形 无黑边</p>
                 </div>
             </li>
             <li class="full" @click="setAdaptationModel(3)">
@@ -41,7 +41,7 @@
 
                 <div class="bottom">
                     <p class="title">充满</p>
-                    <p class="msg">可能部分显示 无变形 无黑边</p>
+                    <p class="msg text-q">可能部分显示 无变形 无黑边</p>
                 </div>
             </li>
         </ul>
@@ -99,7 +99,7 @@ export default {
 
                     .image-wrap{
                         width: 100%;
-                        background: #1F2937;
+                        background: var(--bg-color-dark-1);
                         text-align: center;
                     }
                 }
@@ -140,7 +140,7 @@ export default {
                         bottom: 14px;
                         left: 0;
                         width: 100%;
-                        background: #1F2937;
+                        background: var(--bg-color-dark-1);
                         opacity: 0.4;
                     }
                 }
@@ -148,13 +148,8 @@ export default {
                 .bottom{
                     padding-top: 3px;
 
-                    .title{
-                        font-size: 14px;    
+                    .title{   
                         line-height: 24px;
-                    }
-
-                    .msg{
-                        font-size: 12px;
                     }
                 }
 

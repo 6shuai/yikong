@@ -227,8 +227,6 @@ export default {
 </script>
 
 <style lang="scss">
-    $bgColor: #F3F4F6;
-
     .play-statistics-wrap{
 
         .right-content{
@@ -240,12 +238,12 @@ export default {
             .title{
                 padding: 15px 26px;
                 border-radius: 12px;
-                background: $bgColor;
+                background: var(--bg-color-1);
             }
 
             .fliter-wrap{
                 padding: 18px 34px;
-                background: $bgColor;
+                background: var(--bg-color-1);
                 border-radius: 12px;
 
                 .filter-item{
@@ -298,7 +296,7 @@ export default {
             .content-wrap{
                 margin-top: 20px;
                 flex: 1;
-                background: $bgColor;
+                background: var(--bg-color-1);
                 border-radius: 6px;
                 padding: 20px;
 

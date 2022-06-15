@@ -136,7 +136,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
     .put-material-drag-wrap{
         position: absolute;
         top: 0;

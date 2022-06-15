@@ -41,12 +41,13 @@
                     </div>
                 </div> -->
 
-                <div class="filter-item">
+                <div class="filter-item text-q color-info">
                     <label>筛选</label>
                     <div class="tabs">
                         <span 
                             v-for="(item, index) in [{ name: '全部', value: true }, { name: '未分配', value: false }]"
                             :key="index"
+                            class="text-q color-info"
                             :class="{ 'active': screenParams.all == item.value }"
                             @click="screenParams.all=item.value;getScreenList()"
                         >{{ item.name }}</span>
@@ -62,7 +63,7 @@
                         :key="index"
                     >
                         <div 
-                            class="city-title flex-between-center" 
+                            class="city-title text-q flex-between-center" 
                             @click="handleToggleHide(index)"
                         >
                             <span>{{ groupName }}</span> 
@@ -337,8 +338,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    $bgColor: #F3F4F6;
-
     .screen-layout-config-wrap {
         width: 100%;
         height: calc(100vh - 40px);
@@ -346,7 +345,7 @@ export default {
         
         .left-screen-list{
             width: 266px;
-            background: $bgColor;
+            background: var(--bg-color-1);
         
             .filter-wrap{
                 padding: 0 12px;
@@ -374,8 +373,6 @@ export default {
                     padding: 6px 0;
                     display: flex;
                     align-items: center;
-                    font-size: 12px;
-                    color: #6B7280;
 
                     label{
                         width: 36px;
@@ -386,22 +383,20 @@ export default {
                         height: 27px;
                         line-height: 27px;
                         display: flex;
-                        border: 1px solid #6B7280;
+                        border: 1px solid var(--color-info);
                         border-radius: 3px;
 
                         span{
                             flex: 1;
-                            font-size: 12px;
-                            color: #6B7280;
                             text-align: center;
                             cursor: pointer;
 
                             &:first-child{
-                                border-right: 1px solid #6B7280;
+                                border-right: 1px solid var(--color-info);
                             }
 
                             &.active{
-                                background: #6B7280;
+                                background: var(--color-info);
                                 color: #fff
                             }
                         }
@@ -418,7 +413,6 @@ export default {
 
                 .city-group{
                     .city-title{
-                        font-size: 12px;
                         line-height: 39px;
                         padding: 0 12px;
                     }
@@ -449,7 +443,7 @@ export default {
                             margin: 8px;
                             display: block;
                             position: relative;
-                            background: #6B7280;
+                            background: var(--color-info);
                             margin: 0 auto;
 
                             .item{
@@ -468,7 +462,7 @@ export default {
 
                         &.not-layout{
                             height: 39px;
-                            background: #D97706;
+                            background: var(--color-warning);
                             color: #fff;
                             font-size: 13px;
                             
@@ -520,7 +514,7 @@ export default {
             .layout{
                 width: 240px;
                 height: 102px;
-                background: #6B7280;
+                background: var(--color-info);
                 border-radius: 6px;
                 overflow: hidden;
                 margin: 20px;
@@ -545,7 +539,7 @@ export default {
 
         .selected-screen-list-wrap{
             flex: 1;
-            background: $bgColor;
+            background: var(--bg-color-1);
             margin: 0 20px 20px;
             flex-wrap: wrap;
 
@@ -570,7 +564,7 @@ export default {
 
         .screen-list-wrap{
             height: 200px;
-            background: $bgColor;
+            background: var(--bg-color-1);
             margin: 0 20px 20px;
             padding: 10px 20px;
 
@@ -587,7 +581,7 @@ export default {
         .screen-layout-config-bottom{
             height: 60px;
             padding: 0 20px;
-            background: $bgColor;
+            background: var(--bg-color-1);
             display: flex;
             justify-content: space-between;
             align-items: center;
