@@ -152,7 +152,7 @@ export default {
             let size = file[0].size
             let _this = this
 
-            let isLt300M = size / 1024 / 1024  < 1
+            let isLt300M = size / 1024 / 1024  < 300
 
             if (!isLt300M) {
                 this.$alert('请上传不大于300M的素材内容。', '提示', {

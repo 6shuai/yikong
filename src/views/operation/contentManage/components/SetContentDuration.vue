@@ -1,3 +1,11 @@
+<!--
+ * @Author: liushuai
+ * @Date: 2022-06-15 11:30:37
+ * @LastEditors: liushuai
+ * @LastEditTime: 2022-06-16 10:59:13
+ * @Description: file content
+ * @FilePath: \pclient\src\views\operation\contentManage\components\SetContentDuration.vue
+-->
 <template>
     <el-popover
         popper-class="operation-set-content-duration-popver"
@@ -16,9 +24,9 @@
                 <el-input-number
                     size="mini" 
                     :controls="false"
-                    v-model="customDuration"
+                    v-model="params.customDuration"
                 ></el-input-number>
-                <span @click="handleSetContentDuration(customDuration)">自定义</span>
+                <span @click="handleSetContentDuration(params.customDuration)">自定义</span>
             </li>
         </ul>
 
@@ -33,15 +41,16 @@ export default {
             visible: false,
 
             durationList: [5, 10, 15, 30],
-
-            customDuration: null,
-
+            
             params: {
                 // 当前素材包的index
                 index: null,
 
                 // 默认时长
-                defaultDuration: null
+                defaultDuration: null,
+
+                // 自定义时长
+                customDuration: null
             }
         }
     },

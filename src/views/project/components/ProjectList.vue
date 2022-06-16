@@ -19,14 +19,21 @@
 
                             <ul>
                                 <li class="flex-between-center">
-                                    <span>
-                                        <el-tooltip effect="dark" content="大屏数量" placement="top">
-                                            <img src="../../../assets/images/pingmugongxiang.png" />
+                                    <span v-if="source=='finance'">
+                                        <el-tooltip effect="dark" content="负责人" placement="top">
+                                            <svg-icon icon-class="project-fz"></svg-icon>
                                         </el-tooltip>
-                                        <b>{{ item.screenCount }}</b>块</span>
+                                        {{ item.nickname }}
+                                    </span>
+                                    <span v-else>
+                                        <el-tooltip effect="dark" content="大屏数量" placement="top">
+                                            <svg-icon icon-class="project-pm"></svg-icon>
+                                        </el-tooltip>
+                                        <b>{{ item.screenCount }}</b>块
+                                    </span>
                                     <span>
                                         <el-tooltip effect="dark" content="合同进度" placement="top">
-                                            <img src="../../../assets/images/hetong.png" />
+                                            <svg-icon icon-class="project-ht"></svg-icon>
                                         </el-tooltip>
                                         <span :class="{ overdue: item.state==='请尽快上传合同' }">{{ item.state }}</span>
                                     </span>
@@ -34,7 +41,7 @@
                                 <li>
                                     <span>
                                         <el-tooltip effect="dark" content="回款进度" placement="top">
-                                            <img src="../../../assets/images/huikuanjilu.png" /> 
+                                            <svg-icon icon-class="project-hk"></svg-icon>
                                         </el-tooltip>
                                         <span :class="{ overdue: item.overdue }">{{ item.payment }}/{{ item.contractAmount }}</span>
                                     </span>
@@ -42,17 +49,18 @@
                                 <li>
                                     <span>
                                         <el-tooltip effect="dark" content="发票信息" placement="top">
-                                            <img src="../../../assets/images/fapiaoguanli.png" /> 
+                                            <svg-icon icon-class="project-fp"></svg-icon>
                                         </el-tooltip>
-                                        {{ item.invoiceAmount }}/{{ item.contractAmount }}</span>
+                                        {{ item.invoiceAmount }}/{{ item.contractAmount }}
+                                    </span>
                                 </li>
                             </ul>
                         </div>
                     </div>
 
-                    <div class="time">
+                    <div class="time" v-if="!source">
                         <el-tooltip effect="dark" content="合同时间" placement="top">
-                            <img src="../../../assets/images/shijianzhouqi.png" /> 
+                            <svg-icon icon-class="project-sj"></svg-icon>
                         </el-tooltip>
                         {{ item.validBegin }} -- {{ item.validEnd }}
                     </div>
@@ -84,7 +92,8 @@ export default {
     props: {
         listLoading: Boolean,
         resData: Array,
-        totalCount: Number
+        totalCount: Number,
+        source: String
     },
     data(){
         return {
@@ -190,7 +199,7 @@ export default {
 
                     line-height: 18px;
 
-                    img{
+                    svg.svg-icon{
                         width: 18px;
                         height: 18px;
                         display: inline-block;

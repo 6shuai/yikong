@@ -2,7 +2,7 @@
  * @Author: liushuai
  * @Date: 2022-04-28 11:15:22
  * @LastEditors: liushuai
- * @LastEditTime: 2022-06-14 15:16:57
+ * @LastEditTime: 2022-06-16 11:10:45
  * @Description: file content
  * @FilePath: \pclient\src\views\operation\contentManage\content.vue
 -->
@@ -48,9 +48,13 @@
 
                             <div class="flex-between-center top-wrap">
                                 <div>{{ findTimePool(item.projectId) }}</div>
-                                <div class="duration text-q color-info" v-if="item.duration || item.longestTime">
+                                <div 
+                                    class="duration text-q color-info" 
+                                    v-if="item.duration || item.longestTime"
+                                    @click="e=> showSetDurationPop(e, index, item.longestTime || item.duration)"
+                                >
                                     {{ item.duration || item.longestTime }}s
-                                    <i class="el-icon-arrow-down" @click="e=> showSetDurationPop(e, index, item.longestTime || item.duration)"></i>
+                                    <i class="el-icon-arrow-down"></i>
                                 </div>
                             </div>
 
@@ -100,7 +104,7 @@
                             <el-scrollbar class="hidden-scroll-x screen-content">
                                 <ul>
                                     <li v-for="(content, contentIndex) in item.screenLayout.regions" :key="contentIndex" :title="content.content ? content.content.name : ''">
-                                        <span class="screen-layout-name text-q overflow">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
+                                        <span class="screen-layout-name text-q overflow" :title="item.screenLayout.regions[contentIndex].region.name">{{ item.screenLayout.regions[contentIndex].region.name }}</span>
                                         <span class="content-name overflow">
                                             <img v-if="content.content && content.content.type==1" src="../../../assets/images/operation_content_type_img.png" />
                                             <img v-if="content.content && content.content.type==2" src="../../../assets/images/operation_content_type_video.png" />
@@ -239,6 +243,9 @@ export default {
             operationMaterialData({ screen: id }).then(res => {
                 this.materialDataLoading = false
                 this.materialData = res.obj
+                this.materialData.forEach(e => {
+                    e.longestTime = e.duration  
+                })
             })
         },
 
@@ -374,7 +381,8 @@ export default {
 
             this.$refs.setContentDuration.params = {
                 index,
-                defaultDuration
+                defaultDuration,
+                customDuration: null
             }
             var pop = this.$refs.setContentDuration.$refs.setDurationPop
             pop.doDestroy(true)

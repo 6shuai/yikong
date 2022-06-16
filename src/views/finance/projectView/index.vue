@@ -23,8 +23,8 @@
         <project-list
             :listLoading="listLoading"
             :resData="resData"
-            :totalCount="totalCount"
-            :hideEdit="true"
+            :totalCount="totalCount" 
+            source="finance"
             @getList="getList"
             @jumpPage="showProjectFinanceDetail"
         ></project-list>

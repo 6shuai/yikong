@@ -7,8 +7,8 @@
 		
 		<div class="right-menu">
 			<el-dropdown class="avatar-container" trigger="click">
-				<div class="avatar-wrapper">
-					<el-image class="icon user-avatar" :src="user.avatar" fit="cover" @click="handleShowSelectRole">
+				<div class="avatar-wrapper" @click="handleShowSelectRole">
+					<el-image class="icon user-avatar" :src="user.avatar" fit="cover">
 						<div slot="error" class="image-slot">
 							<svg-icon icon-class="defalut-header-img"></svg-icon>
 						</div>
