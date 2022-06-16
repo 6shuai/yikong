@@ -106,7 +106,7 @@
                             <div class="operate">
                                 <div class="checkbox mr10" v-if="showEdit">
                                     <el-checkbox
-                                        v-model="isSelectAll" 
+                                        v-model="isSelectedAll" 
                                         @change="handleSelectAll"
                                     >全选</el-checkbox>
                                 </div>
@@ -123,10 +123,10 @@
                                         class="place-list" 
                                         shadow="always"
                                         @click.native.stop="handelSelectScreen(item)"
-                                    >
+                                    >   
                                         <el-checkbox
                                             v-show="showEdit"
-                                            :value="screenIds.includes(item.media)" 
+                                            :value="(screenIds[searchParams.pageNo-1] && screenIds[searchParams.pageNo-1].includes(item.media))" 
                                             @change="handelSelectScreen(item)"
                                         ></el-checkbox>
 
@@ -172,7 +172,7 @@
 
                 <!-- 已选择大屏的数量 -->
                 <div class="price-system-bottom" v-if="showEdit">
-                    <div class="mr20">已选择<span class="count">{{ screenIds.length }}</span>个大屏</div>
+                    <div class="mr20">已选择<span class="count">{{ screenIds.flat().length }}</span>个大屏</div>
                     <el-button 
                         class="mr20" 
                         type="danger" 
@@ -191,7 +191,10 @@
         <place-screen-detail ref="placeScreenDetail"></place-screen-detail>
 
         <!-- 编辑大屏价格 -->
-        <edit-screen-price ref="editScreenPrice"></edit-screen-price>
+        <edit-screen-price 
+            ref="editScreenPrice"
+            @editSuccess="editSuccess"
+        ></edit-screen-price>
 
         <!-- 编辑价格体系 -->
         <create-price-system 
@@ -250,10 +253,10 @@ export default {
             screenIds: [],
 
             // 已选中的屏幕
-            selectedScreenData: [],
+            selectedScreenList: [],
 
             // 是否全选
-            isSelectAll: false,
+            isSelectedAll: false,
 
             // 生效提交loading
             btnLoading: false
@@ -274,9 +277,6 @@ export default {
         // 获取屏幕列表
         getScreenList(){
             this.dataLoading = true
-            this.screenIds = []
-            this.selectedScreenData = []
-            this.showEdit = false
             this.searchParams.id = this.$route.params.id
             priceSystemDetail(this.searchParams).then(res => {
                 this.dataLoading = false
@@ -285,6 +285,9 @@ export default {
                     this.screenData = list
                     this.totalCount = totalRecords
                     this.priceSystemDetail = res.obj.priceSystem
+
+                    this.isSelectedAll = !this.screenIds[this.searchParams.pageNo-1] ? false : this.screenIds[this.searchParams.pageNo-1].length === this.screenData.length
+
                 }
             })
         },
@@ -320,37 +323,56 @@ export default {
 
         // 选择屏幕
         handelSelectScreen(data){
-            if(this.screenIds.includes(data.media)){
-                let index = this.screenIds.indexOf(data.media)
-                this.screenIds.splice(index, 1)
-                this.selectedScreenData.splice(index, 1)
+            let page = this.searchParams.pageNo - 1
+
+            if(!this.screenIds[page]) this.screenIds[page] = []
+            if(!this.selectedScreenList[page]) this.selectedScreenList[page] = []
+            if(this.screenIds[page].includes(data.media)){
+                let index = this.screenIds[page].findIndex((item) => item == data.media)
+                this.$delete(this.screenIds[page], index)
+                this.$delete(this.selectedScreenList[page], index)
             }else{
-                this.screenIds.push(data.media)
-                this.selectedScreenData.push(data)
+                this.screenIds[page].push(data.media)
+                this.$set(this.screenIds, page, this.screenIds[page])
+                this.selectedScreenList[page].push(data)
+                this.$set(this.selectedScreenList, page, this.selectedScreenList[page])
             }
-            this.isSelectAll = this.screenIds.length === this.screenData.length
+            this.isSelectedAll = this.screenIds[page].length === this.screenData.length
         },
 
          // 全选
         handleSelectAll(){
-            if(this.screenIds.length === this.screenData.length){
-                this.screenIds = []
-                this.selectedScreenData = []
-                this.isSelectAll = false
+            let page = this.searchParams.pageNo - 1
+
+            if(!this.screenIds[page]) this.screenIds[page] = []
+            if(!this.selectedScreenList[page]) this.selectedScreenList[page] = []
+
+            if(this.screenIds[page].length === this.screenData.length){
+                this.screenIds[page] = []
+                this.selectedScreenList[page] = []
+                this.isSelectedAll = false
             }else{
-                this.screenIds = []
-                this.selectedScreenData = []
+                this.screenIds[page] = []
+                this.selectedScreenList[page] = []
                 for(let i = 0 ; i < this.screenData.length; i++){
-                    this.screenIds.push(this.screenData[i].media)
-                    this.selectedScreenData.push(this.screenData[i])
+                    this.screenIds[page].push(this.screenData[i].media)
+                    this.selectedScreenList[page].push(this.screenData[i])
                 }
-                this.isSelectAll = true
+                this.isSelectedAll = true
             }
         },
 
         // 显示编辑屏幕价格
         handleShowEdit(){
-            this.$refs.editScreenPrice.showAddScreenPriceDialog(this.selectedScreenData)
+            this.$refs.editScreenPrice.showAddScreenPriceDialog(this.selectedScreenList)
+        },
+
+        // 编辑价格成功
+        editSuccess(){
+            this.screenIds = []
+            this.selectedScreenList = []
+            this.showEdit = false
+            this.getScreenList()
         },
 
         // 价格体系生效

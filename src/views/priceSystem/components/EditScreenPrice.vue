@@ -61,7 +61,7 @@ export default {
     methods: {
         // 显示新建屏幕刊例价窗口
         showAddScreenPriceDialog(data = []){
-            this.selectedData = JSON.parse(JSON.stringify(data))
+            this.selectedData = JSON.parse(JSON.stringify(data.flat()))
 
             this.addParams = {}
             if(this.selectedData.length == 1) this.addParams.price = this.selectedData[0].price
@@ -93,7 +93,7 @@ export default {
                         this.createdLoading = false
                         if(res.code === this.$successCode){
                             this.showAddScreenPrice = false 
-                            this.$parent.getScreenList()
+                            this.$emit('editSuccess')
                             this.$message.success('操作成功~')
                         }
                     })

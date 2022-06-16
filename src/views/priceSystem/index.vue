@@ -56,6 +56,7 @@
                 v-loading="item.takeEffectLoading"
             >
                 <el-switch
+                    v-if="!showCheckbox"
                     class="ml10"
                     :value="item.effect"
                     :active-value="1"
@@ -353,7 +354,7 @@ export default {
                 left: 0;
                 width: 100%;
                 height: 100%;
-                z-index: 100;
+                z-index: 98;
                 background: rgba(17, 24, 39, 0.6);
 
                 .el-switch{

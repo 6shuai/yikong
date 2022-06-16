@@ -47,7 +47,7 @@
             </el-form-item>
     
             <div class="horizontal">
-                <el-form-item label="甲方:">
+                <el-form-item label="甲方:" prop="firstParty">
                     <el-select 
                         v-show="showEdit"
                         v-model="contractParams.firstParty" 
@@ -90,7 +90,7 @@
             </div>
     
             <div class="horizontal">
-                <el-form-item label="乙方:">
+                <el-form-item label="乙方:" prop="secondParty">
                     <el-select 
                         v-show="showEdit"
                         v-model="contractParams.secondParty" 
@@ -381,6 +381,8 @@ export default {
             // 创建合同 表单验证
             contractRules: {
                 contractNumber: [{ required: true, message: '请输入合同号~', trigger: 'blur' }],
+                firstParty: [{ required: true, message: '请选择甲方~', type: 'number', trigger: 'change' }],
+                secondParty: [{ required: true, message: '请选择乙方~', type: 'number', trigger: 'change' }],
                 amount: [{ required: true, message: '请输入合同金额~', type: 'number', trigger: 'blur' }],
                 paymentDue: [{ required: true, message: '请输入付款截止日期~', trigger: 'change' }],
                 commissionSystem: [{ required: true, message: '请选择提成体系~', type: 'number', trigger: 'change' }],

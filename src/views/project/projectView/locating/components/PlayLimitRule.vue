@@ -15,6 +15,7 @@
                 <el-date-picker
                     v-model="period"
                     type="daterange"
+                    :picker-options="pickerOptions"
                     value-format="yyyy-MM-dd"
                     range-separator="至"
                     start-placeholder="开始日期"
@@ -229,7 +230,13 @@ export default {
             disableTimeData: [],
             
             // 是否显示播放限制
-            showPlayLimit: false
+            showPlayLimit: false,
+
+            pickerOptions: {
+                disabledDate(time) {
+                    return time.getTime() < Date.now() - 8.64e7
+                }
+            }
         }
     },
     methods: {
