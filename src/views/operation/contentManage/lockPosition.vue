@@ -103,8 +103,8 @@
 
         <div class="right-content">
             <div class="lock-position-list">
-                <el-scrollbar class="hidden-scroll-x">
-                    <div class="lock-list-wrap">
+                <el-scrollbar class="hidden-scroll-y">
+                    <div class="lock-list-wrap" :style="`width: ${ruleData.length ? 200 * ruleData.length + 80 : 200}px`">
                         <div 
                             class="item flex-between-center" 
                             v-for="(item, index) in ruleData" 
@@ -127,6 +127,11 @@
             
             <div class="selected-screen-list-wrap">
                 <div v-if="ruleData.length">
+                    <p>
+                        <span v-if="ruleData[currentRuleIndex].type==2">按时长 - {{ ruleData[currentRuleIndex].durationText }} &nbsp;&nbsp; </span>
+                        <span v-if="ruleData[currentRuleIndex].type==4">按占比 - {{ ruleData[currentRuleIndex].duration }} %&nbsp;&nbsp; </span>
+                        {{ ruleData[currentRuleIndex].selectedScreens ? ruleData[currentRuleIndex].selectedScreens.length : 0 }}个
+                    </p>
                     <div class="screen-card" 
                         v-for="(item, index) in ruleData[currentRuleIndex].selectedScreens" 
                         :key="item.id"
@@ -225,14 +230,15 @@ export default {
                 }
                 var result = ""
                 if(hour> 0) {
-                    result += parseInt(hour)+"小时"+result
+                    result += parseInt(hour)+"小时"
                 }
                 if(middle > 0) {
-                    result += parseInt(middle)+"分"+result
+                    result += parseInt(middle)+"分"
                 }
                 if(theTime > 0){
                     result += parseInt(theTime)+"秒"
                 }
+
                 return result
             }
         }
@@ -269,7 +275,6 @@ export default {
                 obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city].push(data[i])
             }
             this.placeData = obj
-            console.log(this.placeData)
         },
 
         // 折叠商场分组
@@ -317,7 +322,7 @@ export default {
         handleApplication(){
             let data = []
             for(let i = 0; i < this.ruleData.length; i++){
-                if(this.ruleData[i].selectedScreenIds){
+                if(this.ruleData[i].selectedScreenIds && this.ruleData[i].selectedScreenIds.length){
                     let { type, duration, durationType, selectedScreenIds } = this.ruleData[i]
                     let obj = {
                         type,
@@ -497,13 +502,14 @@ export default {
             display: flex;
             flex-direction: column;
             background: #fff;
+            overflow: hidden;
         }
 
         .lock-position-list{
             height: 102px;
 
             .el-scrollbar{
-                height: 102px;
+                width: 100%;
             }
 
             .lock-list-wrap{
@@ -564,6 +570,7 @@ export default {
             flex: 1;
             background: var(--bg-color-1);
             margin: 12px;
+            padding: 12px;
             flex-wrap: wrap;
 
             .screen-card{
@@ -571,7 +578,7 @@ export default {
                 padding: 20px;
                 background: #fff;
                 border-radius: 6px;
-                margin: 10px;
+                margin: 12px 12px 0 0;
                 position: relative;
 
                 .el-icon-circle-close{

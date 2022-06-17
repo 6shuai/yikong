@@ -266,8 +266,6 @@ export default {
                 if(disableTimeData && disableTimeData.length) limitsData = limitsData.concat(disableTimeData)
                 if(limitsData.length) limits = limitsData
                 
-
-                this.period = [publishDate, dueDate]
                 this.limitParams = {
                     duration,
                     type,

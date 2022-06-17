@@ -51,8 +51,7 @@
 </template>
 
 <script>
-import { projectScreenPublicDetail, projectScreenUseDetail } from '@/api/project'
-import { timeDifference } from '@/utils/index'
+import { projectScreenPublicDetail } from '@/api/project'
 
 export default {
     props: {
@@ -66,11 +65,7 @@ export default {
         }
     },
     mounted() {
-        if(this.source === 'locating'){
-            this.getScreenUseDetail()
-        }else{
-            this.getScreenOccupyDetail()
-        }
+        this.getScreenOccupyDetail()
     },
     methods: {
         // 获取屏幕某天的刊挂信息  占用情况
@@ -84,58 +79,7 @@ export default {
                 this.tLoading = false
                 this.resData = res.obj
             })
-        },
-
-        // 寻位锁位失败后  查询某天的占用情况
-        getScreenUseDetail(){
-            let data = {
-                screen: this.data.screenId,
-                date: this.data.date
-            }
-            projectScreenUseDetail(data).then(async res => {
-                let { projects, beginTime, endTime } = res.obj
-
-                // 总时长
-                let totalDuration = timeDifference(beginTime, endTime)
-                
-                // 占用时长 和 项目占用详情列表
-                let { details, occupation } = await this.calculateOccupancy(projects)
-
-                this.resData = {
-                    total: totalDuration,
-                    occupation,
-                    leisure: totalDuration - occupation,
-                    details
-                }
-                
-            })
-        },
-
-        // 计算占用时长
-        calculateOccupancy(projects){
-            let details = []
-            let occupation = 0
-            for(let i = 0; i < projects.length; i++){
-                let item = projects[i]
-                let orderDuration = 0
-                details.push({
-                    projectName: item.name
-                })
-
-                for(let j = 0; j < item.orders.length; j++){
-                    let { duration, times, type } = item.orders[j]
-                    orderDuration += type === 1 ? duration * times : type === 3 ? duration : 0 
-                    details[i].duration = orderDuration
-                }
-
-                occupation += orderDuration
-            }
-            return {
-                details,
-                occupation
-            }
         }
-
     }
 }
 </script>

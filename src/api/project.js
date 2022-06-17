@@ -79,7 +79,7 @@ export function projectLockList(data) { return get('/get_order', data, 'publishe
 export function projectScreenPublicDetail(data) { return get('/screen/screenMaterial', data) }
 
 
-// 查询屏幕某天的上刊信息 查询一个屏幕在某天的刊挂情况，用于锁位失败时候，查看该屏幕的使用详情 (姚哥) 
+// 查询屏幕某天的上刊信息 查询一个屏幕在某天的刊挂情况，用于锁位失败时候，查看该屏幕的使用详情 
 export function projectScreenUseDetail(data) { return get('/screen_statistics', data, 'published') }
 
 

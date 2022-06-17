@@ -27,7 +27,7 @@
                 <div class="screen-item" 
                     v-for="screen in item" 
                     :key="screen.screenContent.id"
-                    @click="handleShowOccupyDetail(date, screen)"
+                    @click="handleShowOccupyDetail(date, screen.screenContent)"
                 >
 
                     <el-image class="screen-photo" fit="cover" :src="screen.screenContent.defaultShow"></el-image>
@@ -75,13 +75,18 @@ export default {
             // 总刊例价
             totalPrice: null,
 
+            // 订单时长
+            orderDuration: null,
+
             // 查询上刊详情 传递的参数
             screenParams: {}
         }
     },
     methods: {
         // 显示寻位结果
-        showLocatingResultDialog(data, screenList, screenTotalPrice, { publishDate, dueDate }){
+        showLocatingResultDialog(data, screenList, screenTotalPrice, { publishDate, dueDate, duration, type, times }){
+
+            this.orderDuration = type == 1 ? duration * times : duration
             
             let arr = {}
             for(let i = 0; i < data.length; i++){
@@ -123,8 +128,7 @@ export default {
 
         // 查询屏幕占位详情
         handleShowOccupyDetail(date, screenId){
-            console.log(date, this.$refs)
-            this.$refs.lockFailDetail.showFailDetail(date)
+            this.$refs.lockFailDetail.showFailDetail(date, screenId, this.orderDuration)
         },
 
         // 跳转到锁位列表

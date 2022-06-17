@@ -153,9 +153,10 @@ export default {
                 let durationDay = type == 1 ? duration * times : duration
                 let playDay = this.getDaysBetween(publishDate, dueDate)
                 for(let j = 0; j < this.resData[i].orderedScreens.length; j++){
-                    let { price } = this.resData[i].orderedScreens[j]
+                    let { price, deleted } = this.resData[i].orderedScreens[j]
                     
-                    result += price * playDay * durationDay
+                    // 已释放的不计入刊例总价
+                    if(!deleted) result += price * playDay * durationDay
                 }
             }
             return priceFormat(result)
@@ -232,24 +233,34 @@ export default {
                 order: id,
                 force
             }
-            projectLockPositionDeleteOrder(data).then(res => {
-                if(res.code === this.$successCode){
-                    this.$message.success('操作成功~')
-                    this.getScreenList()
-                }else if(res.code === 1204){
-                    this.$confirm(
-                        `要释放的锁位已经投放了素材,是否要删除?`,
-                        "提示",
-                        {
-                            confirmButtonText: "确定",
-                            cancelButtonText: "取消",
-                            type: "warning",
-                            center: true,
-                        }
-                    ).then(() => {
-                        this.handleDeleteOrder(id, true)
-                    })
+
+            this.$confirm(
+                `您确定要取消该订单吗?`,
+                "提示",
+                {
+                    confirmButtonText: "确定",
+                    cancelButtonText: "我再想想",
                 }
+            ).then(() => {
+                projectLockPositionDeleteOrder(data).then(res => {
+                    if(res.code === this.$successCode){
+                        this.$message.success('操作成功~')
+                        this.getScreenList()
+                    }else if(res.code === 1204){
+                        this.$confirm(
+                            `要释放的锁位已经投放了素材,是否要删除?`,
+                            "提示",
+                            {
+                                confirmButtonText: "确定",
+                                cancelButtonText: "取消",
+                                type: "warning",
+                                center: true,
+                            }
+                        ).then(() => {
+                            this.handleDeleteOrder(id, true)
+                        })
+                    }
+                })
             })
         },
 

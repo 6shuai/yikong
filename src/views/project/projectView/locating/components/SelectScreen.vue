@@ -140,7 +140,7 @@
                                    >
                                        <div class="screen-img">
                                            <el-image fit="cover" :src="screen.defaultShow"></el-image>
-                                           <i class="el-icon-error" @click="handleSelectScreen(screen, 'delete')"></i>
+                                           <i class="el-icon-error" @click="handleSelectScreen(screen, 'delete', screen.pageNo)"></i>
                                        </div>
                                        <p class="screen-name overflow">{{ screen.displayName }}</p>
                                    </div>
@@ -335,7 +335,7 @@ export default {
         },
 
         // 选择屏幕
-        handleSelectScreen(data, type){
+        handleSelectScreen(data, type, pageNo){
             if(this.againIds.includes(data.id) && type === 'delete'){
                 let index = this.againIds.findIndex((item) => item == data.id)
                 this.$delete(this.againIds, index)
@@ -343,8 +343,7 @@ export default {
                 return 
             }
 
-
-            let page = this.searchParams.pageNo - 1
+            let page = type === 'delete' ? pageNo : this.searchParams.pageNo - 1
 
             if(!this.screenIds[page]) this.screenIds[page] = []
             if(!this.selectedScreenList[page]) this.selectedScreenList[page] = []
@@ -356,7 +355,10 @@ export default {
             }else{
                 this.screenIds[page].push(data.id)
                 this.$set(this.screenIds, page, this.screenIds[page])
-                this.selectedScreenList[page].push(data)
+                this.selectedScreenList[page].push({
+                    ...data,
+                    pageNo: page
+                })
                 this.$set(this.selectedScreenList, page, this.selectedScreenList[page])
             }
             this.isSelectedAll = this.screenIds[page].length === this.placeData.length
@@ -378,7 +380,10 @@ export default {
                 this.selectedScreenList[page] = []
                 for(let i = 0 ; i < this.placeData.length; i++){
                     this.screenIds[page].push(this.placeData[i].id)
-                    this.selectedScreenList[page].push(this.placeData[i])
+                    this.selectedScreenList[page].push({
+                        ...this.placeData[i],
+                        pageNo: page
+                    })
                 }
                 this.isSelectedAll = true
             }
