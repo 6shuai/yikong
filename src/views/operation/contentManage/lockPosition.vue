@@ -41,8 +41,14 @@
                     </div>
                 </div>
             </div>
+            
 
             <el-scrollbar class="hidden-scroll-x" v-loading="placeListLoading">
+                    
+                <div class="unopened-count" v-if="unopenedCount">
+                    <i class="el-icon-warning-outline"></i> 有{{ unopenedCount }}个屏幕未进行配置
+                </div>
+
                 <div class="screen-list">
                     <div 
                         class="city-group"
@@ -191,6 +197,9 @@ export default {
             // 商场锁位列表
             placeData: [],
 
+            // 未配置数量
+            unopenedCount: 0,
+
             // 获取商场列表参数
             placeParams: {
                 // true 全部  fasle 未分配
@@ -257,6 +266,7 @@ export default {
         getLockPositionList(){
             let data = JSON.parse(JSON.stringify(this.placeParams))
             if(!data.all) delete data.all
+            this.unopenedCount = 0
             this.placeListLoading = true
             contentMangeGetPlaceLockPosition(data).then(res => {
                 this.placeListLoading = false
@@ -270,9 +280,13 @@ export default {
             let obj = {}
             let data = JSON.parse(JSON.stringify(this.placeDataUncategorized))
             for(let i = 0; i < data.length; i++){
-                let { city, width, height } = data[i]
+                let { city, width, height, orders } = data[i]
                 if(!obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city]) obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city] = []
                 obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city].push(data[i])
+
+                if(!orders || !orders.length){
+                    this.unopenedCount += 1
+                }
             }
             this.placeData = obj
         },
@@ -431,6 +445,14 @@ export default {
 
             .el-scrollbar{
                 height: calc(100% - 96px);
+            }
+
+            .unopened-count{
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                color: #fff;
+                background: var(--color-warning);
             }
 
             .screen-list{

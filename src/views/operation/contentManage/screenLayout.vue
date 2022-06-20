@@ -56,6 +56,11 @@
             </div>
 
             <el-scrollbar class="hidden-scroll-x" v-loading="screenListLoading">
+
+                <div class="unopened-count" v-if="unopenedCount">
+                    <i class="el-icon-warning-outline"></i> 有{{ unopenedCount }}个屏幕未进行配置
+                </div>
+
                 <div class="screen-list">
                     <div 
                         class="city-group"
@@ -224,6 +229,9 @@ export default {
             // 屏幕列表
             screenData: [],
 
+            // 未配置数量
+            unopenedCount: 0,
+
             // 已选择的屏幕
             selectedScreens: [],
 
@@ -270,6 +278,7 @@ export default {
 
         // 屏幕列表 
         getScreenList(){
+            this.unopenedCount = 0
             this.screenListLoading = true
             let data = JSON.parse(JSON.stringify(this.screenParams))
             if(!data.all) delete data.all
@@ -285,9 +294,12 @@ export default {
             let obj = {}
             let data = JSON.parse(JSON.stringify(this.screenDataUncategorized))
             for(let i = 0; i < data.length; i++){
-                let { city, width, height } = data[i]
+                let { city, width, height, layout } = data[i]
                 if(!obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city]) obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city] = []
                 obj[this.groupTypetabIndex ? aspectRatioCompute(width, height) : city].push(data[i])
+                if(!layout){
+                    this.unopenedCount += 1
+                }
             }
             this.screenData = obj
         },
@@ -409,6 +421,14 @@ export default {
 
             .el-scrollbar{
                 height: calc(100% - 96px);
+            }
+
+            .unopened-count{
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                color: #fff;
+                background: var(--color-warning);
             }
 
             .screen-list{
