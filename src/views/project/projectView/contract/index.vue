@@ -286,7 +286,7 @@
                             <i 
                                 v-if="contractParams.paymentSchedules.length!=1"
                                 class="el-icon-close" 
-                                @click="$delete(contractParams.paymentSchedules, index)"
+                                @click="$delete(contractParams.paymentSchedules, index); $refs.contractForm && $refs.contractForm.validate()"
                             ></i>
                         </span>
                     </li>
@@ -366,8 +366,8 @@ export default {
 
             if(!result){
                 return callback(new Error('回款计划未填写完整~'))
-            }else if(money > this.contractParams.amount){
-                return callback(new Error('回款计划未填写完整~'))
+            }else if(money != this.contractParams.amount){
+                return callback(new Error('回款计划总金额不等于合同金额~'))
             }else {
                 callback()
             }
@@ -386,7 +386,7 @@ export default {
                 amount: [{ required: true, message: '请输入合同金额~', type: 'number', trigger: 'blur' }],
                 paymentDue: [{ required: true, message: '请输入付款截止日期~', trigger: 'change' }],
                 commissionSystem: [{ required: true, message: '请选择提成体系~', type: 'number', trigger: 'change' }],
-                paymentSchedules: [ { validator: checkPaymentSchedules, trigger: 'blur' }]
+                paymentSchedules: [ { validator: checkPaymentSchedules, trigger: 'change' }]
             },
 
             // 组织列表
