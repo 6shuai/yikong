@@ -140,28 +140,30 @@
                             @click="layoutId = item.id"
                             :class="{ active: layoutId == item.id }"
                         >
-                            <div
-                                class="layout"
-                                :style="{
-                                    width: item.height > item.width ? item.width / item.height * layoutMaxWidth + 'px' : layoutMaxWidth + 'px',
-                                    height: item.height > item.width ? layoutMaxWidth + 'px' : item.height / item.width * layoutMaxWidth + 'px'
-                                }"
-                            >
+                            <div class="layout-content flex-center">
                                 <div
-                                    class="region"
-                                    v-for="(regions, regionsIndex) in item.regions"
-                                    :key="regionsIndex"
-                                    :class="{ 'active': item.mainRegion == regions.id}"
+                                    class="layout"
                                     :style="{
-                                        width: regions.region.width + '%',
-                                        height: regions.region.height + '%', 
-                                        left: regions.region.x + '%',
-                                        top:  regions.region.y + '%', 
+                                        width: item.height > item.width ? item.width / item.height * layoutMaxHeight + 'px' : (item.height / item.width * layoutMaxWidth) > 103 ? 102 / (item.height / item.width * layoutMaxWidth) * layoutMaxWidth + 'px' : layoutMaxWidth + 'px',
+                                        height: item.height > item.width ? layoutMaxHeight + 'px' : (item.height / item.width * layoutMaxWidth > 102 ? 102 : item.height / item.width * layoutMaxWidth) + 'px'
                                     }"
                                 >
+                                    <div
+                                        class="region"
+                                        v-for="(regions, regionsIndex) in item.regions"
+                                        :key="regionsIndex"
+                                        :class="{ 'active': item.mainRegion == regions.id}"
+                                        :style="{
+                                            width: regions.region.width + '%',
+                                            height: regions.region.height + '%', 
+                                            left: regions.region.x + '%',
+                                            top:  regions.region.y + '%', 
+                                        }"
+                                    >
+                                    </div>
                                 </div>
                             </div>
-                            <div>{{ item.name }}</div>
+                            <div class="name">{{ item.name }}</div>
                         </div>
                     </div>
                 </el-scrollbar>
@@ -244,6 +246,7 @@ export default {
             maxHeight: 62,
 
             layoutMaxWidth: 240,
+            layoutMaxHeight: 102,
 
 
             // 应用中
@@ -504,6 +507,17 @@ export default {
                 .layout-item{
                     text-align: center;
                     cursor: pointer;
+                    margin: 20px;
+                    padding: 10px;
+
+                    .layout-content{
+                        width: 240px;
+                        height: 102px;
+                    }
+
+                    .name{
+                        padding-top: 10px;
+                    }
 
                     &:hover, &.active{
                         background: #d5ebfd;
@@ -517,7 +531,6 @@ export default {
                 background: var(--color-info);
                 border-radius: 6px;
                 overflow: hidden;
-                margin: 20px;
                 position: relative;
 
                 &.vertical{
