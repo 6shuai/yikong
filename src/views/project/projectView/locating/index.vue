@@ -17,7 +17,12 @@
             <el-empty v-if="!resData.length"></el-empty>
         
             <div class="already-lock-list" v-loading="tLoading">
-                <el-card class="item" v-for="(item, index) in resData" :key="item.id">
+                <el-card 
+                    class="item" 
+                    v-for="(item, index) in resData" 
+                    :key="item.id"
+                    :class="{ expired: !whetherItHasExpired(item.dueDate) }"
+                >
                     <div class="top-content">
                         <div class="left-time-info">
                             <p class="time-period">上刊时间段： {{ item.publishDate }} -- {{ item.dueDate }}</p>
@@ -109,7 +114,7 @@
                     </div>
 
                     <div class="bottom mt20">
-                        <el-button size="small" @click="handleDeleteOrder(item.id)">取消订单</el-button>
+                        <el-button size="small" @click="handleDeleteOrder(item.id)" v-if="whetherItHasExpired(item.dueDate)">取消订单</el-button>
                         <el-button type="primary" size="small" @click="handleLockAgain(item)">再次预定</el-button>
                     </div>
     
@@ -208,6 +213,17 @@ export default {
             }
             let days=(endDate - startDate)/(1*24*60*60*1000)
             return  days + 1
+        },
+
+        // 订单是否已经过期
+        whetherItHasExpired (endDateStr) {
+            let curDate = new Date(),
+                endDate = new Date(endDateStr + ' 23:59:59')
+            
+            if (curDate <= endDate) {
+                return true
+            }
+            return false
         },
 
         // 显示 选择播放规则
@@ -336,6 +352,12 @@ export default {
         &>.item{
             margin-bottom: 20px;
             padding: 0 10px;
+            box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.3);
+            position: relative;
+
+            &.expired{
+                opacity: 0.5;
+            }
 
             .top-content{
                 display: flex;
